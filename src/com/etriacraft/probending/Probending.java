@@ -51,6 +51,13 @@ public class Probending extends JavaPlugin {
 		Commands.fieldSpawnSet = Methods.colorize(getConfig().getString("messages.fieldSpawnSet"));
 		Commands.SentToArena = Methods.colorize(getConfig().getString("messages.SentToArena"));
 		Commands.configReloaded = Methods.colorize(getConfig().getString("messages.configReloaded"));
+		
+		try {
+		    MetricsLite metrics = new MetricsLite(this);
+		    metrics.start();
+		} catch (IOException e) {
+		    // Failed to submit the stats :-(
+		}
 	}
 	
 	public void configCheck() {
