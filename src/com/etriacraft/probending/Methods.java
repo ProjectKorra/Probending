@@ -17,13 +17,13 @@ public class Methods {
 		if (Probending.plugin.getConfig().getConfigurationSection("TeamInfo") == null) {
 			return false;
 		}
-		Set<String> teams = Probending.plugin.getConfig().getConfigurationSection("TeamInfo").getKeys(false);
-
-		if (teams.contains(teamName)) {
-			return true;
-		} else {
-			return false;
+		Set<String> teams = getTeams();
+		for (String team: teams) {
+			if (team.equalsIgnoreCase(teamName)) {
+				return true;
+			}
 		}
+		return false;
 	}
 
 	public static void createTeam(String teamName, String owner) {
@@ -153,6 +153,16 @@ public class Methods {
 		World world = Bukkit.getWorld(Probending.plugin.getConfig().getString("ArenaInfo." + arenaName + ".FieldSpawn.world"));
 		Location location = new Location(world, x, y, z);
 		return location;
-	}	
+	}
+	
+	public static Set<String> getTeams() {
+		Set<String> teams = Probending.plugin.getConfig().getConfigurationSection("TeamInfo").getKeys(false);
+		return teams;
+	}
+	
+	public static Set<String> getArenas() {
+		Set<String> arenas = Probending.plugin.getConfig().getConfigurationSection("ArenaInfo").getKeys(false);
+		return arenas;
+	}
 
 }

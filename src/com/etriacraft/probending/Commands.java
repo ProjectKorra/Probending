@@ -127,6 +127,14 @@ public class Commands {
 							s.sendMessage(Prefix + ArenaDoesNotExist);
 							return true;
 						}
+						
+						Set<String> arenas = Methods.getArenas();
+						for (String arena: arenas) {
+							if (arena.equalsIgnoreCase(arenaName)) {
+								arenaName = arena;
+							}
+						}
+						
 						if (args.length > 4) {
 							s.sendMessage(Prefix + "§cProper Usage: §3/pb arena spawn [Name] spectator|field");
 							return true;
@@ -159,6 +167,12 @@ public class Commands {
 						if (!Methods.arenaExists(arenaName)) {
 							s.sendMessage(Prefix + ArenaDoesNotExist);
 							return true;
+						}
+						Set<String> arenas = Methods.getArenas();
+						for (String arena: arenas) {
+							if (arena.equalsIgnoreCase(arenaName)) {
+								arenaName = arena;
+							}
 						}
 						if (args[3].equalsIgnoreCase("spectator")) {
 							if (!s.hasPermission("probending.arena.setspawn.spectator")) {
@@ -203,6 +217,14 @@ public class Commands {
 							s.sendMessage(Prefix + ArenaAlreadyExists.replace("%arena", arenaName));
 							return true;
 						}
+						Set<String> arenas = Methods.getArenas();
+						for (String arena: arenas) {
+							if (arena.equalsIgnoreCase(arenaName)) {
+								arenaName = arena;
+								s.sendMessage(Prefix + ArenaAlreadyExists.replace("%arena", arenaName));
+								return false;
+							}
+						}
 						Methods.createArena(arenaName);
 						s.sendMessage(Prefix + ArenaCreated.replace("%arena", arenaName));
 						return true;
@@ -221,6 +243,12 @@ public class Commands {
 						if (!Methods.arenaExists(arenaName)) {
 							s.sendMessage(Prefix + ArenaDoesNotExist.replace("%arena", arenaName));
 							return true;
+						}
+						Set<String> arenas = Methods.getArenas();
+						for (String arena: arenas) {
+							if (arena.equalsIgnoreCase(arenaName)) {
+								arenaName = arena;
+							}
 						}
 						
 						Methods.deleteArena(arenaName);
@@ -482,6 +510,13 @@ public class Commands {
 						if (!Methods.teamExists(teamName)) {
 							s.sendMessage(Prefix + TeamDoesNotExist);
 							return true;
+						}
+						
+						Set<String> teams = Methods.getTeams();
+						for (String team: teams) {
+							if (team.equalsIgnoreCase(teamName)) {
+								teamName = team;
+							}
 						}
 						String teamOwner = plugin.getConfig().getString("TeamInfo." + teamName + ".Owner");
 						s.sendMessage("§3Team Name:§e " + teamName);
