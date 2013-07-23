@@ -13,6 +13,8 @@ public class Methods {
 	public Methods(Probending plugin) {
 		this.plugin = plugin;
 	}
+	
+	// Checks if the team exists, returns true if the team does exist, returns false if not.
 	public static boolean teamExists(String teamName) {
 		if (Probending.plugin.getConfig().getConfigurationSection("TeamInfo") == null) {
 			return false;
@@ -26,23 +28,27 @@ public class Methods {
 		return false;
 	}
 
+	// Creates a team.
 	public static void createTeam(String teamName, String owner) {
 		Probending.plugin.getConfig().set("TeamInfo." + teamName + ".Owner", owner);
 		Probending.plugin.saveConfig();
 	}
 
+	// Adds a player to a team.
 	public static void addPlayerToTeam(String teamName, String player, String element) {
 		Probending.plugin.getConfig().set("TeamInfo." + teamName + "." + element, player);
 		Probending.plugin.getConfig().set("players." + player, teamName);
 		Probending.plugin.saveConfig();
 	}
 
+	// Removes a player from a team.
 	public static void removePlayerFromTeam(String teamName, String player, String element) {
 		Probending.plugin.getConfig().set("TeamInfo." + teamName + "." + element, null);
 		Probending.plugin.getConfig().set("players." + player, null);
 		Probending.plugin.saveConfig();
 	}
 
+	// Checks if the player is in a team. Returns true if the player is in a team.
 	public static boolean playerInTeam(String playerName) {
 		if (Probending.plugin.getConfig().get("players." + playerName) == (null)) {
 			return false;
@@ -51,10 +57,12 @@ public class Methods {
 		}
 	}
 
+	// Returns the name of the player's team.
 	public static String getPlayerTeam(String player) {
 		return Probending.plugin.getConfig().getString("players." + player);
 	}
 
+	// Returns the amount of players in a team.
 	public static int getTeamSize(String teamName) {
 		int size = 0;
 		if (Probending.plugin.getConfig().get("TeamInfo." + teamName + ".Air") != null) {
@@ -75,24 +83,26 @@ public class Methods {
 		return size;
 	}
 
+	// Returns true if the player is the owner of the team.
 	public static boolean isPlayerOwner(String player, String teamName) {
 		if (Probending.plugin.getConfig().getString("TeamInfo." + teamName + ".Owner").equals(player)) {
 			return true;
 		}
 		return false;
 	}
-	public static Set<String> teamHasElement(String teamName) {
+	
+	// Returns a set (List) of all of the teams elements.
+	public static Set<String> getTeamElements(String teamName) {
 		Set<String> teamelements = Probending.plugin.getConfig().getConfigurationSection("TeamInfo." + teamName).getKeys(true);
 		return teamelements;
-		//		if (Probending.plugin.getConfig().get("TeamInfo." + teamName + "." + element) == null) {
-//			return true;
-//		}
-//		return false;
 	}
+	
+	// Adds color to messages.
 	public static String colorize(String message) {
 		return message.replaceAll("(?i)&([a-fk-or0-9])", "\u00A7$1");
 	}
 
+	// Returns true if an arena exists.
 	public static boolean arenaExists(String arenaName) {
 		if (Probending.plugin.getConfig().getConfigurationSection("ArenaInfo") == null) {
 			return false;
@@ -105,16 +115,19 @@ public class Methods {
 		}
 	}
 	
+	// Creates an arena.
 	public static void createArena(String arenaName) {
 		Probending.plugin.getConfig().set("ArenaInfo." + arenaName + ".created", true);
 		Probending.plugin.saveConfig();
 	}
 	
+	// Delete an arena.
 	public static void deleteArena(String arenaName) {
 		Probending.plugin.getConfig().set("ArenaInfo." + arenaName, null);
 		Probending.plugin.saveConfig();
 	}
 	
+	// Set's the spectator spawn of an arena.
 	public static void setSpectatorSpawn(String arenaName, Double x, Double y, Double z, String world) {
 		Probending.plugin.getConfig().set("ArenaInfo." + arenaName + ".SpectatorSpawn.world", world);
 		Probending.plugin.getConfig().set("ArenaInfo." + arenaName + ".SpectatorSpawn.x", x);
@@ -123,6 +136,7 @@ public class Methods {
 		Probending.plugin.saveConfig();
 	}
 	
+	// Sets the field spawn of an arena.
 	public static void setFieldSpawn(String arenaName, Double x, Double y, Double z, String world) {
 		Probending.plugin.getConfig().set("ArenaInfo." + arenaName + ".FieldSpawn.world", world);
 		Probending.plugin.getConfig().set("ArenaInfo." + arenaName + ".FieldSpawn.x", x);
@@ -131,6 +145,7 @@ public class Methods {
 		Probending.plugin.saveConfig();
 	}
 	
+	// Returns the Spectator Spawn of an arena.
 	public static Location getSpectatorSpawn(String arenaName) {
 		Double x = Probending.plugin.getConfig().getDouble("ArenaInfo." + arenaName + ".SpectatorSpawn.x");
 		Double y = Probending.plugin.getConfig().getDouble("ArenaInfo." + arenaName + ".SpectatorSpawn.y");
@@ -140,6 +155,7 @@ public class Methods {
 		return location;
 	}
 	
+	// Returns the field spawn of an arena.
 	public static Location getFieldSpawn(String arenaName) {
 		Double x = Probending.plugin.getConfig().getDouble("ArenaInfo." + arenaName + ".FieldSpawn.x");
 		Double y = Probending.plugin.getConfig().getDouble("ArenaInfo." + arenaName + ".FieldSpawn.y");
@@ -149,11 +165,13 @@ public class Methods {
 		return location;
 	}
 	
+	// Returns a Set (List) of Strings.
 	public static Set<String> getTeams() {
 		Set<String> teams = Probending.plugin.getConfig().getConfigurationSection("TeamInfo").getKeys(false);
 		return teams;
 	}
 	
+	// Returns a Set (List) of Arenas.
 	public static Set<String> getArenas() {
 		Set<String> arenas = Probending.plugin.getConfig().getConfigurationSection("ArenaInfo").getKeys(false);
 		return arenas;

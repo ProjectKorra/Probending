@@ -72,7 +72,7 @@ public class PlayerListener implements Listener {
 					if (!playerElementInTeam.equals(playerElement)) {
 						player.sendMessage(Commands.Prefix + RemovedFromTeamBecauseDifferentElement);
 						Methods.removePlayerFromTeam(team, player.getName(), playerElementInTeam);
-						Set<String> teamElements = Methods.teamHasElement(team);
+						Set<String> teamElements = Methods.getTeamElements(team);
 						if (teamElements.contains("Air")) {
 							String airbender = Probending.plugin.getConfig().getString("TeamInfo." + team + ".Air");
 							Probending.plugin.getConfig().set("TeamInfo." + team + ".Owner", airbender);

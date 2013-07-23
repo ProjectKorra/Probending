@@ -315,7 +315,7 @@ public class Commands {
 							playerElement = "Chi";
 						}
 						Methods.removePlayerFromTeam(teamName, s.getName(), playerElement);
-						Set<String> teamelements = Methods.teamHasElement(teamName);
+						Set<String> teamelements = Methods.getTeamElements(teamName);
 						if (teamelements.contains("Air")) {
 							Methods.removePlayerFromTeam(teamName, plugin.getConfig().getString("TeamInfo." + teamName + ".Air"), "Air");
 						}
@@ -476,7 +476,7 @@ public class Commands {
 						if (Tools.isBender(s.getName(), BendingType.ChiBlocker)) {
 							playerElement = "Chi";
 						}
-						Set<String> teamelements = Methods.teamHasElement(teamName);
+						Set<String> teamelements = Methods.getTeamElements(teamName);
 						if (teamelements.contains(playerElement)) {
 							s.sendMessage(Prefix + TeamAlreadyHasElement);
 							return true;
@@ -641,7 +641,7 @@ public class Commands {
 								return true;
 							}
 						}
-						Set<String> teamelements = Methods.teamHasElement(playerTeam);
+						Set<String> teamelements = Methods.getTeamElements(playerTeam);
 						if (teamelements.contains(playerElement)) {
 							s.sendMessage(Prefix + TeamAlreadyHasElement);
 							return true;
