@@ -51,12 +51,6 @@ public class Methods {
 		}
 	}
 
-	public static boolean teamHasType(String element, String teamName) {
-		if (Probending.plugin.getConfig().get("TeamInfo." + teamName + "." + element) != null) {
-			return true;
-		}
-		return false;
-	}
 	public static String getPlayerTeam(String player) {
 		return Probending.plugin.getConfig().getString("players." + player);
 	}

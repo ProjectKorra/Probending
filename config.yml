@@ -39,3 +39,4 @@ messages:
   fieldSpawnSet: '&aSet field spawn in &e%arena&a.'
   SentToArena: '&aSent to &e%arena&a.'
   configReloaded: '&aConfiguration reloaded.'
+  RemovedFromTeamBecauseDifferentElement: '&cYou have been removed from your team because your element has changed.'

@@ -1,5 +1,6 @@
 package com.etriacraft.probending;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.bukkit.plugin.java.JavaPlugin;
@@ -51,6 +52,7 @@ public class Probending extends JavaPlugin {
 		Commands.fieldSpawnSet = Methods.colorize(getConfig().getString("messages.fieldSpawnSet"));
 		Commands.SentToArena = Methods.colorize(getConfig().getString("messages.SentToArena"));
 		Commands.configReloaded = Methods.colorize(getConfig().getString("messages.configReloaded"));
+		PlayerListener.RemovedFromTeamBecauseDifferentElement = Methods.colorize(getConfig().getString("messages.RemovedFromTeamBecauseDifferentElement"));
 		
 		try {
 		    MetricsLite metrics = new MetricsLite(this);
@@ -58,6 +60,8 @@ public class Probending extends JavaPlugin {
 		} catch (IOException e) {
 		    // Failed to submit the stats :-(
 		}
+		
+		getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
 	}
 	
 	public void configCheck() {
@@ -100,6 +104,7 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("messages.fieldSpawnSet", "&aSet field spawn in &e%arena§a.");
 		getConfig().addDefault("messages.SentToArena", "&aSent to &e%arena&a.");
 		getConfig().addDefault("messages.configReloaded", "&aConfiguration Reloaded.");
+		getConfig().addDefault("messages.RemovedFromTeamBecauseDifferentElement", "&cYou have been removed from your team because your element has changed.");
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 	}
