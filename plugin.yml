@@ -1,0 +1,25 @@
+name: Probending
+author: MistPhizzle
+version: 1.0
+main: com.etriacraft.probending.Probending
+commands:
+  probending:
+    aliases: [pb]
+permissions:
+  probending.admin:
+    default: false
+    children:
+      probending.arena.spawn: true
+      probending.arena.create: true
+      probending.arena.setspawn.spectator: true
+      probending.arena.setspawn.field: true
+      probending.arena.delete: true
+      probending.team.create: true
+      probending.team.invite: true
+      probending.team.info: true
+      probending.team.join: true
+      probending.team.kick: true
+      probending.team.quit: true
+      probending.team.disband: true
+      probending.team.list: true
+      probending.reload: true

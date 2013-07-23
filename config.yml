@@ -1,0 +1,41 @@
+TeamSettings:
+  AllowFire: true
+  AllowAir: false
+  AllowWater: true
+  AllowEarth: true
+  AllowChi: false
+  MaxTeamSize: 4
+messages:
+  Prefix: '&7[&6Probending&7] '
+  noPermission: '&cYou dont have permission to do that.'
+  teamAlreadyExists: '&cThat team already exists.'
+  noBendingType: '&cYou do not have a Bending Type.'
+  PlayerAlreadyInTeam: '&cThat player is already in a team.'
+  ElementNotAllowed: '&c%element are not allowed to participate in Probending events.'
+  TeamCreated: '&e%team &ahas been created.'
+  PlayerNotInTeam: '&cYou do not have a team.'
+  NotOwnerOfTeam: '&cYou dont own this team.'
+  PlayerNotOnline: '&cThat player is not online.'
+  MaxSizeReached: '&cThis team has reached the maximum size.'
+  TeamAlreadyHasElement: '&cThis team already has this type of Bender.'
+  PlayerInviteSent: '&aYou have invited &e%player &ato join &e%team.'
+  PlayerInviteReceived: '&aYou have been invited to join &e%team.'
+  InviteInstructions: '&aAccept this invitation using &3/pb team join %team&a.'
+  TeamDoesNotExist: '&cThat team does not exist.'
+  NoInviteFromTeam: '&cYou dont have an invite from that team.'
+  PlayerJoinedTeam: '&e%player &ahas joined &e%team&a.'
+  CantBootFromOwnTeam: '&cYou cant boot yourself from your own team.'
+  PlayerNotOnThisTeam: '&cThat player is not on this team.'
+  YouHaveBeenBooted: '&cYou have been booted from &3%team&c.'
+  PlayerHasBeenBooted: '&e%player &chas been booted from &e%team&c.'
+  YouHaveQuit: '&cYou have quit &e%team&c.'
+  PlayerHasQuit: '&e%player &chas quit &e%team&c.'
+  TeamDisbanded: '&e%team &chas been disbanded.'
+  ArenaAlreadyExists: '&cThe arena &e%arena &calready exists.'
+  ArenaCreated: '&aArena &e%arena &acreated.'
+  ArenaDoesNotExist: '&cThe arena &e%arena &cdoes not exist.'
+  ArenaDeleted: '&e%arena &chas been deleted.'
+  SpectatorSpawnSet: '&aSet spectator spawn in &e%arena&ca.'
+  fieldSpawnSet: '&aSet field spawn in &e%arena&a.'
+  SentToArena: '&aSent to &e%arena&a.'
+  configReloaded: '&aConfiguration reloaded.'
