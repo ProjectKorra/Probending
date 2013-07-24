@@ -2,6 +2,8 @@ name: Probending
 author: MistPhizzle
 version: 1.0
 main: com.etriacraft.probending.Probending
+depend: [Bending]
+softdepend: [Vault]
 commands:
   probending:
     aliases: [pb]
@@ -23,3 +25,5 @@ permissions:
       probending.team.disband: true
       probending.team.list: true
       probending.reload: true
+      probending.team.rename: true
+      probending.chat: true
