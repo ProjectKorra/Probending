@@ -56,68 +56,43 @@ public class PlayerListener implements Listener {
 				if (Tools.isBender(player.getName(), BendingType.ChiBlocker)) {
 					playerElement = "Chi";
 				}
-				String playerElementInTeam = null;
-				if (Probending.plugin.getConfig().getString("TeamInfo." + team + ".Air") != null) {
-					if (Probending.plugin.getConfig().getString("TeamInfo." + team + ".Air").equals(player.getName())) {
-						playerElementInTeam = "Air";
-					}
-				}
-				if (Probending.plugin.getConfig().getString("TeamInfo." + team + ".Water") != null) {
-					if (Probending.plugin.getConfig().getString("TeamInfo." + team + ".Water").equals(player.getName())) {
-						playerElementInTeam = "Water";
-					}
-				}
-				if (Probending.plugin.getConfig().getString("TeamInfo." + team + ".Earth") != null) {
-					if (Probending.plugin.getConfig().getString("TeamInfo." + team + ".Earth").equals(player.getName())) {
-						playerElementInTeam = "Earth";
-					}
-				}
-				if (Probending.plugin.getConfig().getString("TeamInfo." + team + ".Fire") != null) {
-					if (Probending.plugin.getConfig().getString("TeamInfo." + team + ".Fire").equals(player.getName())) {
-						playerElementInTeam = "Fire";
-					}
-				}
-				if (Probending.plugin.getConfig().getString("TeamInfo." + team + ".Chi") != null) {
-					if (Probending.plugin.getConfig().getString("TeamInfo." + team + ".Chi").equals(player.getName())) {
-						playerElementInTeam = "Chi";
-					}
-				}
+				String playerElementInTeam = Methods.getPlayerElementInTeam(player.getName(), team);
 				if (playerElementInTeam != null) {
 					if (!playerElementInTeam.equals(playerElement)) {
 						player.sendMessage(Commands.Prefix + RemovedFromTeamBecauseDifferentElement);
 						Methods.removePlayerFromTeam(team, player.getName(), playerElementInTeam);
 						Set<String> teamElements = Methods.getTeamElements(team);
 						if (teamElements.contains("Air")) {
-							String airbender = Probending.plugin.getConfig().getString("TeamInfo." + team + ".Air");
+							String airbender = Methods.getTeamAirbender(team);
 							Probending.plugin.getConfig().set("TeamInfo." + team + ".Owner", airbender);
 							Probending.plugin.saveConfig();
 							return;
 						}
 						if (teamElements.contains("Water")) {
-							String bender = Probending.plugin.getConfig().getString("TeamInfo." + team + ".Water");
+							String bender = Methods.getTeamWaterbender(team);
 							Probending.plugin.getConfig().set("TeamInfo." + team + ".Owner", bender);
 							Probending.plugin.saveConfig();
 							return;
 						}
 						if (teamElements.contains("Earth")) {
-							String bender = Probending.plugin.getConfig().getString("TeamInfo." + team + ".Earth");
+							String bender = Methods.getTeamEarthbender(team);
 							Probending.plugin.getConfig().set("TeamInfo." + team + ".Owner", bender);
 							Probending.plugin.saveConfig();
 							return;
 						}
 						if (teamElements.contains("Fire")) {
-							String bender = Probending.plugin.getConfig().getString("TeamInfo." + team + ".Fire");
+							String bender = Methods.getTeamFirebender(team);
 							Probending.plugin.getConfig().set("TeamInfo." + team + ".Owner", bender);
 							Probending.plugin.saveConfig();
 							return;
 						}
 						if (teamElements.contains("Chi")) {
-							String bender = Probending.plugin.getConfig().getString("TeamInfo." + team + ".Chi");
+							String bender = Methods.getTeamChiblocker(team);
 							Probending.plugin.getConfig().set("TeamInfo." + team + ".Owner", bender);
 							Probending.plugin.saveConfig();
 							return;
 						} else {
-							Probending.plugin.getConfig().set("TeamInf." + team, null);
+							Probending.plugin.getConfig().set("TeamInfo." + team, null);
 							Probending.plugin.saveConfig();
 						}
 					}

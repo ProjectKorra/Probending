@@ -13,7 +13,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
-import tools.BendingType;
 import tools.Tools;
 
 public class Commands {
@@ -37,44 +36,44 @@ public class Commands {
 	public static String InviteInstructions;
 	public static String NotOwnerOfTeam;
 	public static String PlayerNotOnline;
-	
+
 	public static String TeamDoesNotExist;
-	
+
 	public static String NoInviteFromTeam;
 	public static String PlayerJoinedTeam;
-	
+
 	public static String CantBootFromOwnTeam;
 	public static String PlayerNotOnThisTeam;
 	public static String YouHaveBeenBooted;
 	public static String PlayerHasBeenBooted;
-	
+
 	public static String YouHaveQuit;
 	public static String PlayerHasQuit;
-	
+
 	public static String TeamDisbanded;
-	
+
 	public static String ArenaAlreadyExists;
 	public static String ArenaCreated;
 	public static String ArenaDoesNotExist;
 	public static String ArenaDeleted;
-	
+
 	public static String SpectatorSpawnSet;
 	public static String fieldSpawnSet;
-	
+
 	public static String SentToArena;
-	
+
 	public static String configReloaded;
-	
+
 	public static String NotEnoughMoney;
 	public static String MoneyWithdrawn;
-	
+
 	public static String NameTooLong;
 	public static String TeamRenamed;
 	public static String TeamAlreadyNamedThat;
-	
+
 	public static String ChatEnabled;
 	public static String ChatDisabled;
-	
+
 	Probending plugin;
 
 	public Commands(Probending plugin) {
@@ -85,7 +84,7 @@ public class Commands {
 	public static Set<Player> pbChat = new HashSet<Player>();
 	public static HashMap<String, LinkedList<String>> teamInvites = new HashMap<String, LinkedList<String>>();
 	public static HashMap<String, LinkedList<String>> teamChallenges = new HashMap<String, LinkedList<String>>();
-	
+
 	private void init() {
 		PluginCommand probending = plugin.getCommand("probending");
 		CommandExecutor exe;
@@ -102,11 +101,11 @@ public class Commands {
 					return true;
 				}
 
-					/*
-					 * if (!teamInvites.containsKey(player.getName())) {
+				/*
+				 * if (!teamInvites.containsKey(player.getName())) {
 							teamInvites.put(player.getName(), new LinkedList<String>());
 						}
-					 */
+				 */
 				if (args[0].equalsIgnoreCase("chat")) {
 					if (!s.hasPermission("probending.chat")) {
 						s.sendMessage(Prefix + noPermission);
@@ -161,14 +160,14 @@ public class Commands {
 							s.sendMessage(Prefix + ArenaDoesNotExist);
 							return true;
 						}
-						
+
 						Set<String> arenas = Methods.getArenas();
 						for (String arena: arenas) {
 							if (arena.equalsIgnoreCase(arenaName)) {
 								arenaName = arena;
 							}
 						}
-						
+
 						if (args.length > 4) {
 							s.sendMessage(Prefix + "§cProper Usage: §3/pb arena spawn [Name] spectator|field");
 							return true;
@@ -246,7 +245,7 @@ public class Commands {
 						if (args.length == 3) {
 							arenaName = args[2];
 						}
-						
+
 						if (Methods.arenaExists(arenaName)) {
 							s.sendMessage(Prefix + ArenaAlreadyExists.replace("%arena", arenaName));
 							return true;
@@ -263,7 +262,7 @@ public class Commands {
 						s.sendMessage(Prefix + ArenaCreated.replace("%arena", arenaName));
 						return true;
 					}
-					
+
 					if (args[1].equalsIgnoreCase("delete")) {
 						if (!s.hasPermission("probending.arena.delete")) {
 							s.sendMessage(Prefix + noPermission);
@@ -272,7 +271,7 @@ public class Commands {
 							s.sendMessage("§cProper Usage: §3/pb arena delete [Name]");
 							return true;
 						}
-						
+
 						String arenaName = args[2];
 						if (!Methods.arenaExists(arenaName)) {
 							s.sendMessage(Prefix + ArenaDoesNotExist.replace("%arena", arenaName));
@@ -284,7 +283,7 @@ public class Commands {
 								arenaName = arena;
 							}
 						}
-						
+
 						Methods.deleteArena(arenaName);
 						s.sendMessage(Prefix + ArenaDeleted.replace("%arena", arenaName));
 						return true;
@@ -323,7 +322,7 @@ public class Commands {
 							return true;
 						}
 						boolean econEnabled = plugin.getConfig().getBoolean("Economy.Enabled");
-						
+
 						String newName = args[2];
 						if (newName.length() > 15) {
 							s.sendMessage(Prefix + NameTooLong);
@@ -346,60 +345,33 @@ public class Commands {
 							Probending.econ.depositPlayer(serverAccount, renameFee);
 							s.sendMessage(Prefix + MoneyWithdrawn.replace("%amount", renameFee.toString()).replace("%currency", currency));
 						}
-						Set<String> teamElements = Methods.getTeamElements(teamName);
-						String airbender = null;
-						String waterbender = null;
-						String earthbender = null;
-						String firebender = null;
-						String chiblocker = null;
-						
-						if (teamElements.contains("Air")) {
-							airbender = plugin.getConfig().getString("TeamInfo." + teamName + ".Air");
-						}
-						if (teamElements.contains("Water")) {
-							waterbender = plugin.getConfig().getString("TeamInfo." + teamName + ".Water");
-						}
-						if (teamElements.contains("Earth")) {
-							earthbender = plugin.getConfig().getString("TeamInfo." + teamName + ".Earth");
-						}
-						if (teamElements.contains("Fire")) {
-							firebender = plugin.getConfig().getString("TeamInfo." + teamName + ".Fire");
-						}
-						if (teamElements.contains("Chi")) {
-							chiblocker = plugin.getConfig().getString("TeamInfo." + teamName + ".Chi");
-						}
-						
+						String airbender = Methods.getTeamAirbender(teamName);
+						String waterbender = Methods.getTeamWaterbender(teamName);
+						String earthbender = Methods.getTeamEarthbender(teamName);
+						String firebender = Methods.getTeamFirebender(teamName);
+						String chiblocker = Methods.getTeamChiblocker(teamName);
+
 						if (airbender != null) {
 							Methods.removePlayerFromTeam(teamName, airbender, "Air");
-						}
-						if (waterbender != null) {
-							Methods.removePlayerFromTeam(teamName, waterbender, "Water");
-						}
-						if (earthbender != null) {
-							Methods.removePlayerFromTeam(teamName, earthbender, "Earth");
-						}
-						if (firebender != null) {
-							Methods.removePlayerFromTeam(teamName, firebender, "Fire");
-						}
-						if (chiblocker != null) {
-							Methods.removePlayerFromTeam(teamName, chiblocker, "Chi");
-						}
-						
-						if (airbender != null) {
 							Methods.addPlayerToTeam(newName, airbender, "Air");
 						}
 						if (waterbender != null) {
+							Methods.removePlayerFromTeam(teamName, waterbender, "Water");
 							Methods.addPlayerToTeam(newName, waterbender, "Water");
 						}
 						if (earthbender != null) {
+							Methods.removePlayerFromTeam(teamName, earthbender, "Earth");
 							Methods.addPlayerToTeam(newName, earthbender, "Earth");
 						}
 						if (firebender != null) {
+							Methods.removePlayerFromTeam(teamName, firebender, "Fire");
 							Methods.addPlayerToTeam(newName, firebender, "Fire");
 						}
 						if (chiblocker != null) {
+							Methods.removePlayerFromTeam(teamName, chiblocker, "Chi");
 							Methods.addPlayerToTeam(newName, chiblocker, "Chi");
 						}
+
 						s.sendMessage(Prefix + TeamRenamed.replace("%newname", newName));
 						plugin.getConfig().set("TeamInfo." + newName + ".Owner", s.getName());
 						plugin.getConfig().set("TeamInfo." + teamName, null);
@@ -435,22 +407,8 @@ public class Commands {
 								s.sendMessage(Prefix + TeamDisbanded.replace("%team", teamName));
 							}
 						}
-						String playerElement = null;
-						if (Tools.isBender(s.getName(), BendingType.Air)) {
-							playerElement = "Air";
-						}
-						if (Tools.isBender(s.getName(), BendingType.Water)){
-							playerElement = "Water";
-						}
-						if (Tools.isBender(s.getName(), BendingType.Earth)){
-							playerElement = "Earth";
-						}
-						if (Tools.isBender(s.getName(), BendingType.Fire)){
-							playerElement = "Fire";
-						}
-						if (Tools.isBender(s.getName(), BendingType.ChiBlocker)) {
-							playerElement = "Chi";
-						}
+						String playerElement = Methods.getPlayerElementAsString(s.getName());
+
 						Methods.removePlayerFromTeam(teamName, s.getName(), playerElement);
 						Set<String> teamelements = Methods.getTeamElements(teamName);
 						if (teamelements.contains("Air")) {
@@ -481,7 +439,7 @@ public class Commands {
 							s.sendMessage(Prefix + "&cProper Usage: &3/pb team quit");
 							return true;
 						}
-						
+
 						String teamName = Methods.getPlayerTeam(s.getName());
 						if (teamName == null) {
 							s.sendMessage(Prefix + PlayerNotInTeam);
@@ -491,22 +449,8 @@ public class Commands {
 							s.sendMessage(Prefix + CantBootFromOwnTeam);
 							return true;
 						}
-						String playerElement = null;
-						if (Tools.isBender(s.getName(), BendingType.Air)) {
-							playerElement = "Air";
-						}
-						if (Tools.isBender(s.getName(), BendingType.Water)){
-							playerElement = "Water";
-						}
-						if (Tools.isBender(s.getName(), BendingType.Earth)){
-							playerElement = "Earth";
-						}
-						if (Tools.isBender(s.getName(), BendingType.Fire)){
-							playerElement = "Fire";
-						}
-						if (Tools.isBender(s.getName(), BendingType.ChiBlocker)) {
-							playerElement = "Chi";
-						}
+						String playerElement = Methods.getPlayerElementAsString(s.getName());
+						
 						Methods.removePlayerFromTeam(teamName, s.getName(), playerElement);
 						s.sendMessage(Prefix + YouHaveQuit.replace("%team", teamName));
 						for (Player player: Bukkit.getOnlinePlayers()) {
@@ -540,26 +484,25 @@ public class Commands {
 							s.sendMessage(Prefix + CantBootFromOwnTeam);
 							return true;
 						}
-						if (!Methods.getPlayerTeam(playerName).equals(teamName)) {
+						Player p3 = Bukkit.getPlayer(args[2]);
+						String playerTeam = null;
+
+						String playerElement = null;
+						if (p3.isOnline()) {
+							playerElement = Methods.getPlayerElementInTeam(p3.getName(), teamName);
+							playerTeam = Methods.getPlayerTeam(p3.getName());
+						} else {
+							playerElement = Methods.getPlayerElementInTeam(playerName, teamName);
+							playerTeam = Methods.getPlayerTeam(playerName);
+						}
+						
+						if (playerTeam == null) {
 							s.sendMessage(Prefix + PlayerNotOnThisTeam);
 							return true;
 						}
-						Player p3 = Bukkit.getPlayer(args[2]);
-						String playerElement = null;
-						if (Tools.isBender(p3.getName(), BendingType.Air)) {
-							playerElement = "Air";
-						}
-						if (Tools.isBender(p3.getName(), BendingType.Water)){
-							playerElement = "Water";
-						}
-						if (Tools.isBender(p3.getName(), BendingType.Earth)){
-							playerElement = "Earth";
-						}
-						if (Tools.isBender(p3.getName(), BendingType.Fire)){
-							playerElement = "Fire";
-						}
-						if (Tools.isBender(p3.getName(), BendingType.ChiBlocker)) {
-							playerElement = "Chi";
+						if (!playerTeam.equals(teamName)) {
+							s.sendMessage(Prefix + PlayerNotOnThisTeam);
+							return true;
 						}
 						Methods.removePlayerFromTeam(teamName, playerName, playerElement);
 						Player player = Bukkit.getPlayer(playerName);
@@ -579,7 +522,7 @@ public class Commands {
 							s.sendMessage(Prefix + noPermission);
 							return true;
 						}
-						
+
 						if (args.length != 3) {
 							s.sendMessage("§cProper Usage: §3/pb team join [TeamName]");
 							return true;
@@ -597,21 +540,11 @@ public class Commands {
 							s.sendMessage(Prefix + NoInviteFromTeam);
 							return true;
 						}
-						String playerElement = null;
-						if (Tools.isBender(s.getName(), BendingType.Air)) {
-							playerElement = "Air";
-						}
-						if (Tools.isBender(s.getName(), BendingType.Water)){
-							playerElement = "Water";
-						}
-						if (Tools.isBender(s.getName(), BendingType.Earth)){
-							playerElement = "Earth";
-						}
-						if (Tools.isBender(s.getName(), BendingType.Fire)){
-							playerElement = "Fire";
-						}
-						if (Tools.isBender(s.getName(), BendingType.ChiBlocker)) {
-							playerElement = "Chi";
+						String playerElement = Methods.getPlayerElementAsString(s.getName());
+						
+						if (playerElement == null) {
+							s.sendMessage(Prefix + noBendingType);
+							return true;
 						}
 						Set<String> teamelements = Methods.getTeamElements(teamName);
 						if (teamelements.contains(playerElement)) {
@@ -643,12 +576,12 @@ public class Commands {
 						if (args.length == 3) {
 							teamName = args[2];
 						}
-						
+
 						if (!Methods.teamExists(teamName)) {
 							s.sendMessage(Prefix + TeamDoesNotExist);
 							return true;
 						}
-						
+
 						Set<String> teams = Methods.getTeams();
 						for (String team: teams) {
 							if (team.equalsIgnoreCase(teamName)) {
@@ -658,38 +591,38 @@ public class Commands {
 						String teamOwner = plugin.getConfig().getString("TeamInfo." + teamName + ".Owner");
 						s.sendMessage("§3Team Name:§e " + teamName);
 						s.sendMessage("§3Team Owner:§5 " + teamOwner);
-						
-						String air = plugin.getConfig().getString("TeamInfo." + teamName + ".Air");
-						String water = plugin.getConfig().getString("TeamInfo." + teamName + ".Water");
-						String earth = plugin.getConfig().getString("TeamInfo." + teamName + ".Earth");
-						String fire = plugin.getConfig().getString("TeamInfo." + teamName + ".Fire");
-						String chi = plugin.getConfig().getString("TeamInfo." + teamName + ".Chi");
-						if (plugin.getConfig().getBoolean("TeamSettings.AllowAir")) {
+
+						String air = Methods.getTeamAirbender(teamName);
+						String water = Methods.getTeamWaterbender(teamName);
+						String earth = Methods.getTeamEarthbender(teamName);
+						String fire = Methods.getTeamFirebender(teamName);
+						String chi = Methods.getTeamChiblocker(teamName);
+						if (Methods.getAirAllowed()) {
 							if (air != null) {
 								s.sendMessage("§3Airbender: §7" + air);
 							}
 						}
-						if (plugin.getConfig().getBoolean("TeamSettings.AllowWater")) {
+						if (Methods.getWaterAllowed()) {
 							if (water != null) {
 								s.sendMessage("§3Waterbender: §b" + water);
 							}
 						}
-						if (plugin.getConfig().getBoolean("TeamSettings.AllowEarth")) {
+						if (Methods.getEarthAllowed()) {
 							if (earth != null) {
 								s.sendMessage("§3Earthbender: §a" + earth);
 							}
 						}
-						if (plugin.getConfig().getBoolean("TeamSettings.AllowFire")) {
+						if (Methods.getFireAllowed()) {
 							if (fire != null) {
 								s.sendMessage("§3Firebender: §c" + fire);
 							}
 						}
-						if (plugin.getConfig().getBoolean("TeamSettings.AllowChi")) {
+						if (Methods.getChiAllowed()) {
 							if (chi != null) {
 								s.sendMessage("§3Chiblocker: &6" + chi);
 							}
 						}
-						
+
 					}
 					if (args[1].equalsIgnoreCase("invite")) {
 						if (args.length != 3) {
@@ -700,79 +633,69 @@ public class Commands {
 							s.sendMessage(Prefix + noPermission);
 							return true;
 						}
-						
+
 						if (!Methods.playerInTeam(s.getName())) {
 							s.sendMessage(Prefix + PlayerNotInTeam);
 							return true;
 						}
-						
+
 						String playerTeam = Methods.getPlayerTeam(s.getName());
 						if (!Methods.isPlayerOwner(s.getName(), playerTeam)) {
 							s.sendMessage(Prefix + NotOwnerOfTeam);
 							return true;
 						}
-						
+
 						Player player = Bukkit.getPlayer(args[2]);
-						
+
 						if (player == null) {
 							s.sendMessage(Prefix + PlayerNotOnline);
 							return true;
 						}
-						
+
 						if (Methods.playerInTeam(player.getName())) {
 							s.sendMessage(Prefix + PlayerAlreadyInTeam);
 							return true;
 						}
-						
+
 						if (!teamInvites.containsKey(player.getName())) {
 							teamInvites.put(player.getName(), new LinkedList<String>());
 						}
-						
+
 						int maxSize = plugin.getConfig().getInt("TeamSettings.MaxTeamSize");
 						if (Methods.getTeamSize(playerTeam) >= maxSize) {
 							s.sendMessage(Prefix + MaxSizeReached);
 						}
-						String playerElement = null;
-						if (Tools.isBender(player.getName(), BendingType.Air)) {
-							playerElement = "Air";
+						String playerElement = Methods.getPlayerElementAsString(player.getName());
+
+						if (playerElement == null) {
+							s.sendMessage(Prefix + Commands.noBendingType);
+							return true;
 						}
-						if (Tools.isBender(player.getName(), BendingType.Water)) {
-							playerElement = "Water";
-						}
-						if (Tools.isBender(player.getName(), BendingType.Earth)) {
-							playerElement = "Earth";
-						}
-						if (Tools.isBender(player.getName(), BendingType.Fire)){
-							playerElement = "Fire";
-						}
-						if (Tools.isBender(player.getName(), BendingType.ChiBlocker)) {
-							playerElement = "Chi";
-						}
-						if (!plugin.getConfig().getBoolean("TeamSettings.AllowAir")) {
+						if (!Methods.getAirAllowed()) {
 							if (playerElement.equals("Air")) {
 								s.sendMessage(Prefix + ElementNotAllowed.replace("%element", "Airbenders"));
 								return true;
 							}
 						}
-						if (!plugin.getConfig().getBoolean("TeamSettings.AllowWater")) {
+						if (!Methods.getWaterAllowed()) {
 							if (playerElement.equals("Water")) {
 								s.sendMessage(Prefix + ElementNotAllowed.replace("%element", "Waterbenders"));
 								return true;
 							}
 						}
-						if (!plugin.getConfig().getBoolean("TeamSettings.AllowEarth")) {
+						if (!Methods.getEarthAllowed()) {
 							if (playerElement.equals("Earth")) {
 								s.sendMessage(Prefix + ElementNotAllowed.replace("%element", "Earthbenders"));
 								return true;
 							}
 						}
-						if (!plugin.getConfig().getBoolean("TeamSettings.AllowFire")) {
+						if (!Methods.getFireAllowed()) {
 							if (playerElement.equals("Fire")) {
 								s.sendMessage(Prefix + ElementNotAllowed.replace("%element", "Firebenders"));
 								return true;
 							}
 						}
-						if (!plugin.getConfig().getBoolean("TeamSettings.AllowChi")) {
+						if (!Methods.getChiAllowed()) {
 							if (playerElement.equals("Chi")) {
 								s.sendMessage(Prefix + ElementNotAllowed.replace("%element", "Chiblockers"));
 								return true;
@@ -783,7 +706,7 @@ public class Commands {
 							s.sendMessage(Prefix + TeamAlreadyHasElement);
 							return true;
 						}
-						
+
 						teamInvites.get(player.getName()).add(playerTeam);
 						s.sendMessage(Prefix + PlayerInviteSent.replace("%team", playerTeam).replace("%player", player.getName()));
 						player.sendMessage(Prefix + PlayerInviteReceived.replace("%team", playerTeam).replace("%player", player.getName()));
@@ -804,7 +727,7 @@ public class Commands {
 							s.sendMessage(Prefix + teamAlreadyExists);
 							return true;
 						}
-						
+
 						if (teamName.length() > 15) {
 							s.sendMessage(Prefix + NameTooLong);
 							return true;
@@ -822,8 +745,8 @@ public class Commands {
 						Double creationCost = plugin.getConfig().getDouble("Economy.TeamCreationFee");
 						String serverAccount = plugin.getConfig().getString("Economy.ServerAccount");
 						boolean econEnabled = plugin.getConfig().getBoolean("Economy.Enabled");
-						
-						
+
+
 						if (econEnabled) {
 							String currencyName = Probending.econ.currencyNamePlural();
 							Double playerBalance = Probending.econ.getBalance(s.getName());
@@ -836,48 +759,33 @@ public class Commands {
 							s.sendMessage(Prefix + MoneyWithdrawn.replace("%amount", creationCost.toString()).replace("%currency", currencyName));
 						}
 
-						String playerElement = null;
-						if (Tools.isBender(s.getName(), BendingType.Air)) {
-							playerElement = "Air";
-						}
-						if (Tools.isBender(s.getName(), BendingType.Water)) {
-							playerElement = "Water";
-						}
-						if (Tools.isBender(s.getName(), BendingType.Earth)) {
-							playerElement = "Earth";
-						}
-						if (Tools.isBender(s.getName(), BendingType.Fire)){
-							playerElement = "Fire";
-						}
-						if (Tools.isBender(s.getName(), BendingType.ChiBlocker)) {
-							playerElement = "Chi";
-						}
+						String playerElement = Methods.getPlayerElementAsString(s.getName());
 
-						if (!plugin.getConfig().getBoolean("TeamSettings.AllowAir")) {
+						if (!Methods.getAirAllowed()) {
 							if (playerElement.equals("Air")) {
 								s.sendMessage(Prefix + ElementNotAllowed.replace("%element", "Airbenders"));
 								return true;
 							}
 						}
-						if (!plugin.getConfig().getBoolean("TeamSettings.AllowWater")) {
+						if (!Methods.getWaterAllowed()) {
 							if (playerElement.equals("Water")) {
 								s.sendMessage(Prefix + ElementNotAllowed.replace("%element", "Waterbenders"));
 								return true;
 							}
 						}
-						if (!plugin.getConfig().getBoolean("TeamSettings.AllowEarth")) {
+						if (!Methods.getEarthAllowed()) {
 							if (playerElement.equals("Earth")) {
 								s.sendMessage(Prefix + ElementNotAllowed.replace("%element", "Earthbenders"));
 								return true;
 							}
 						}
-						if (!plugin.getConfig().getBoolean("TeamSettings.AllowFire")) {
+						if (!Methods.getFireAllowed()) {
 							if (playerElement.equals("Fire")) {
 								s.sendMessage(Prefix + ElementNotAllowed.replace("%element", "Firebenders"));
 								return true;
 							}
 						}
-						if (!plugin.getConfig().getBoolean("TeamSettings.AllowChi")) {
+						if (!Methods.getChiAllowed()) {
 							if (playerElement.equals("Chi")) {
 								s.sendMessage(Prefix + ElementNotAllowed.replace("%element", "Chiblockers"));
 								return true;

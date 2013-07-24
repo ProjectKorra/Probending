@@ -14,7 +14,7 @@ messages:
   Prefix: '&7[&6Probending&7] '
   noPermission: '&cYou dont have permission to do that.'
   teamAlreadyExists: '&cThat team already exists.'
-  noBendingType: '&cYou do not have a Bending Type.'
+  noBendingType: '&cPlayer does not have a Bending Type.'
   PlayerAlreadyInTeam: '&cThat player is already in a team.'
   ElementNotAllowed: '&c%element are not allowed to participate in Probending events.'
   TeamCreated: '&e%team &ahas been created.'

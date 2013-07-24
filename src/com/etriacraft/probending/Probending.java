@@ -92,7 +92,7 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("messages.Prefix", "&7[&6Probending&7] ");
 		getConfig().addDefault("messages.noPermission", "&cYou don't have permission to do that.");
 		getConfig().addDefault("messages.teamAlreadyExists", "&cThat team already exists.");
-		getConfig().addDefault("messages.noBendingType", "&cYou dont have a bending type.");
+		getConfig().addDefault("messages.noBendingType", "&cPlayer does not have a bending type.");
 		getConfig().addDefault("messages.PlayerAlreadyInTeam", "&cThat player is already in a team.");
 		getConfig().addDefault("messages.ElementNotAllowed",  "&c%element are not allowed to participate in probending events.");
 		getConfig().addDefault("messages.TeamCreated", "&c%team &ahas been created.");
