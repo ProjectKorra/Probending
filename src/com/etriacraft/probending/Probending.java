@@ -57,7 +57,11 @@ public class Probending extends JavaPlugin {
 		Commands.SentToArena = Methods.colorize(getConfig().getString("messages.SentToArena"));
 		Commands.configReloaded = Methods.colorize(getConfig().getString("messages.configReloaded"));
 		PlayerListener.RemovedFromTeamBecauseDifferentElement = Methods.colorize(getConfig().getString("messages.RemovedFromTeamBecauseDifferentElement"));
-		
+		Commands.NotEnoughMoney = Methods.colorize(getConfig().getString("messages.NotEnoughMoney"));
+		Commands.MoneyWithdrawn = Methods.colorize(getConfig().getString("messages.MoneyWithdrawn"));
+		Commands.NameTooLong = Methods.colorize(getConfig().getString("messages.NameTooLong"));
+		Commands.TeamRenamed = Methods.colorize(getConfig().getString("messages.TeamRenamed"));
+		Commands.TeamAlreadyNamedThat = Methods.colorize(getConfig().getString("messages.TeamAlreadyNamedThat"));
 		try {
 		    MetricsLite metrics = new MetricsLite(this);
 		    metrics.start();
@@ -82,6 +86,7 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("Economy.Enabled", false);
 		getConfig().addDefault("Economy.ServerAccount", "Server");
 		getConfig().addDefault("Economy.TeamCreationFee", 350.0);
+		getConfig().addDefault("Economy.TeamRenameFee", 150.0);
 		getConfig().addDefault("messages.Prefix", "&7[&6Probending&7] ");
 		getConfig().addDefault("messages.noPermission", "&cYou don't have permission to do that.");
 		getConfig().addDefault("messages.teamAlreadyExists", "&cThat team already exists.");
@@ -118,6 +123,9 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("messages.RemovedFromTeamBecauseDifferentElement", "&cYou have been removed from your team because your element has changed.");
 		getConfig().addDefault("messages.NotEnoughMoney", "&cYou do not have the &e%amount %currency &crequired to do that.");
 		getConfig().addDefault("messages.MoneyWithdrawn", "&e%amount %currency &awithdrawn from your account.");
+		getConfig().addDefault("messages.NameTooLong", "&cTeam names cant be more than 15 characters long.");
+		getConfig().addDefault("messages.TeamRenamed", "&aYour team has been renamed to &e%newname&a.");
+		getConfig().addDefault("messages.TeamAlreadyNamedThat", "&aYour team is already named &e%newname&a.");
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 	}

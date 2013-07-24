@@ -67,6 +67,10 @@ public class Commands {
 	public static String NotEnoughMoney;
 	public static String MoneyWithdrawn;
 	
+	public static String NameTooLong;
+	public static String TeamRenamed;
+	public static String TeamAlreadyNamedThat;
+	
 	Probending plugin;
 
 	public Commands(Probending plugin) {
@@ -263,6 +267,7 @@ public class Commands {
 					if (args.length == 1) {
 						s.sendMessage("-----§6Probending Team Commands§f-----");
 						s.sendMessage("§3/pb team create [Name]§f - Create a team."); // Done
+						s.sendMessage("§3/pb team rename [Name]§f - Rename a team.");
 						s.sendMessage("§3/pb team invite [Player]§f - Invite a player to a team."); // Done
 						s.sendMessage("§3/pb team info <Name>§f - View info on a team."); // Done
 						s.sendMessage("§3/pb team join <Name>§f - Join a team."); // Done
@@ -270,6 +275,108 @@ public class Commands {
 						s.sendMessage("§3/pb team quit §f- Quit your current team."); // Done
 						s.sendMessage("§3/pb team disband §f- Disband your team."); // Done
 						s.sendMessage("§3/pb team list§f - List all teams.");
+						return true;
+					}
+					if (args[1].equalsIgnoreCase("rename")) {
+						if (!s.hasPermission("probending.team.rename")) {
+							s.sendMessage(Prefix + noPermission);
+							return true;
+						}
+						String teamName = Methods.getPlayerTeam(s.getName());
+						if (!Methods.playerInTeam(s.getName())) {
+							s.sendMessage(Prefix + PlayerNotInTeam);
+							return true;
+						}
+						if (!Methods.isPlayerOwner(s.getName(), teamName)) {
+							s.sendMessage(Prefix + NotOwnerOfTeam);
+							return true;
+						}
+						if (args.length < 3) {
+							s.sendMessage(Prefix + "§cProper Usage §3/pb team rename [Name]");
+							return true;
+						}
+						boolean econEnabled = plugin.getConfig().getBoolean("Economy.Enabled");
+						
+						String newName = args[2];
+						if (newName.length() > 15) {
+							s.sendMessage(Prefix + NameTooLong);
+							return true;
+						}
+						if (newName.equalsIgnoreCase(teamName)) {
+							s.sendMessage(Prefix + TeamAlreadyNamedThat.replace("%newname", teamName));
+							return true;
+						}
+						if (econEnabled) {
+							Double playerBalance = Probending.econ.getBalance(s.getName());
+							Double renameFee = plugin.getConfig().getDouble("Economy.TeamRenameFee");
+							String serverAccount = plugin.getConfig().getString("Economy.ServerAccount");
+							String currency = Probending.econ.currencyNamePlural();
+							if (playerBalance < renameFee) {
+								s.sendMessage(Prefix + NotEnoughMoney.replace("%amount", renameFee.toString()).replace("%currency", currency));
+								return true;
+							}
+							Probending.econ.withdrawPlayer(s.getName(), renameFee);
+							Probending.econ.depositPlayer(serverAccount, renameFee);
+							s.sendMessage(Prefix + MoneyWithdrawn.replace("%amount", renameFee.toString()).replace("%currency", currency));
+						}
+						Set<String> teamElements = Methods.getTeamElements(teamName);
+						String airbender = null;
+						String waterbender = null;
+						String earthbender = null;
+						String firebender = null;
+						String chiblocker = null;
+						
+						if (teamElements.contains("Air")) {
+							airbender = plugin.getConfig().getString("TeamInfo." + teamName + ".Air");
+						}
+						if (teamElements.contains("Water")) {
+							waterbender = plugin.getConfig().getString("TeamInfo." + teamName + ".Water");
+						}
+						if (teamElements.contains("Earth")) {
+							earthbender = plugin.getConfig().getString("TeamInfo." + teamName + ".Earth");
+						}
+						if (teamElements.contains("Fire")) {
+							firebender = plugin.getConfig().getString("TeamInfo." + teamName + ".Fire");
+						}
+						if (teamElements.contains("Chi")) {
+							chiblocker = plugin.getConfig().getString("TeamInfo." + teamName + ".Chi");
+						}
+						
+						if (airbender != null) {
+							Methods.removePlayerFromTeam(teamName, airbender, "Air");
+						}
+						if (waterbender != null) {
+							Methods.removePlayerFromTeam(teamName, waterbender, "Water");
+						}
+						if (earthbender != null) {
+							Methods.removePlayerFromTeam(teamName, earthbender, "Earth");
+						}
+						if (firebender != null) {
+							Methods.removePlayerFromTeam(teamName, firebender, "Fire");
+						}
+						if (chiblocker != null) {
+							Methods.removePlayerFromTeam(teamName, chiblocker, "Chi");
+						}
+						
+						if (airbender != null) {
+							Methods.addPlayerToTeam(newName, airbender, "Air");
+						}
+						if (waterbender != null) {
+							Methods.addPlayerToTeam(newName, waterbender, "Water");
+						}
+						if (earthbender != null) {
+							Methods.addPlayerToTeam(newName, earthbender, "Earth");
+						}
+						if (firebender != null) {
+							Methods.addPlayerToTeam(newName, firebender, "Fire");
+						}
+						if (chiblocker != null) {
+							Methods.addPlayerToTeam(newName, chiblocker, "Chi");
+						}
+						s.sendMessage(Prefix + TeamRenamed.replace("%newname", newName));
+						plugin.getConfig().set("TeamInfo." + newName + ".Owner", s.getName());
+						plugin.getConfig().set("TeamInfo." + teamName, null);
+						plugin.saveConfig();
 						return true;
 					}
 					if (args[1].equalsIgnoreCase("list")) {
@@ -670,6 +777,11 @@ public class Commands {
 							s.sendMessage(Prefix + teamAlreadyExists);
 							return true;
 						}
+						
+						if (teamName.length() > 15) {
+							s.sendMessage(Prefix + NameTooLong);
+							return true;
+						}
 
 						if (!Tools.isBender(s.getName())) {
 							s.sendMessage(Prefix + noBendingType);
@@ -683,9 +795,10 @@ public class Commands {
 						Double creationCost = plugin.getConfig().getDouble("Economy.TeamCreationFee");
 						String serverAccount = plugin.getConfig().getString("Economy.ServerAccount");
 						boolean econEnabled = plugin.getConfig().getBoolean("Economy.Enabled");
-						String currencyName = Probending.econ.currencyNamePlural();
+						
 						
 						if (econEnabled) {
+							String currencyName = Probending.econ.currencyNamePlural();
 							Double playerBalance = Probending.econ.getBalance(s.getName());
 							if (playerBalance < creationCost) {
 								s.sendMessage(Prefix + NotEnoughMoney.replace("%currency", currencyName));
