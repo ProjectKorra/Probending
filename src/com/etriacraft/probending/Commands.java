@@ -64,6 +64,9 @@ public class Commands {
 	
 	public static String configReloaded;
 	
+	public static String NotEnoughMoney;
+	public static String MoneyWithdrawn;
+	
 	Probending plugin;
 
 	public Commands(Probending plugin) {
@@ -676,6 +679,21 @@ public class Commands {
 						if (Methods.playerInTeam(s.getName())) {
 							s.sendMessage(Prefix + PlayerAlreadyInTeam);
 							return true;
+						}
+						Double creationCost = plugin.getConfig().getDouble("Economy.TeamCreationFee");
+						String serverAccount = plugin.getConfig().getString("Economy.ServerAccount");
+						boolean econEnabled = plugin.getConfig().getBoolean("Economy.Enabled");
+						String currencyName = Probending.econ.currencyNamePlural();
+						
+						if (econEnabled) {
+							Double playerBalance = Probending.econ.getBalance(s.getName());
+							if (playerBalance < creationCost) {
+								s.sendMessage(Prefix + NotEnoughMoney.replace("%currency", currencyName));
+								return true;
+							}
+							Probending.econ.withdrawPlayer(s.getName(), creationCost);
+							Probending.econ.depositPlayer(serverAccount, creationCost);
+							s.sendMessage(Prefix + MoneyWithdrawn.replace("%amount", creationCost.toString()).replace("%currency", currencyName));
 						}
 
 						String playerElement = null;

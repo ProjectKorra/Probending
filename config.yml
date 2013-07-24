@@ -5,6 +5,10 @@ TeamSettings:
   AllowEarth: true
   AllowChi: false
   MaxTeamSize: 4
+Economy:
+  Enabled: false
+  ServerAccount: Server
+  TeamCreationFee: 350.0
 messages:
   Prefix: '&7[&6Probending&7] '
   noPermission: '&cYou dont have permission to do that.'
@@ -40,3 +44,5 @@ messages:
   SentToArena: '&aSent to &e%arena&a.'
   configReloaded: '&aConfiguration reloaded.'
   RemovedFromTeamBecauseDifferentElement: '&cYou have been removed from your team because your element has changed.'
+  NotEnoughMoney: '&cYou do not have the &e%amount %currency &crequired to do that.'
+  MoneyWithdrawn: '&e%amount %currency &awithdrawn from your account.'

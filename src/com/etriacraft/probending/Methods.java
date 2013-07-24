@@ -2,9 +2,12 @@ package com.etriacraft.probending;
 
 import java.util.Set;
 
+import net.milkbowl.vault.economy.Economy;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class Methods {
 
@@ -175,6 +178,12 @@ public class Methods {
 	public static Set<String> getArenas() {
 		Set<String> arenas = Probending.plugin.getConfig().getConfigurationSection("ArenaInfo").getKeys(false);
 		return arenas;
+	}
+	
+	public static boolean setupEconomy() {
+		RegisteredServiceProvider<Economy> economyProvider = Probending.plugin.getServer().getServicesManager().getRegistration(Economy.class);
+		Probending.econ = economyProvider.getProvider();
+		return (Probending.econ != null);
 	}
 
 }

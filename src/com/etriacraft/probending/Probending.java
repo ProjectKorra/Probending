@@ -3,12 +3,16 @@ package com.etriacraft.probending;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import net.milkbowl.vault.economy.Economy;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Probending extends JavaPlugin {
 	
 	public static Probending plugin;
 	protected static Logger log;
+	
+	public static Economy econ;
 	
 	Commands cmd;
 	Methods methods;
@@ -62,6 +66,10 @@ public class Probending extends JavaPlugin {
 		}
 		
 		getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+		
+		if (getConfig().getBoolean("Economy.Enabled")) {
+			Methods.setupEconomy();
+		}
 	}
 	
 	public void configCheck() {
@@ -71,6 +79,9 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("TeamSettings.AllowEarth", true);
 		getConfig().addDefault("TeamSettings.AllowChi", false);
 		getConfig().addDefault("TeamSettings.MaxTeamSize", 4);
+		getConfig().addDefault("Economy.Enabled", false);
+		getConfig().addDefault("Economy.ServerAccount", "Server");
+		getConfig().addDefault("Economy.TeamCreationFee", 350.0);
 		getConfig().addDefault("messages.Prefix", "&7[&6Probending&7] ");
 		getConfig().addDefault("messages.noPermission", "&cYou don't have permission to do that.");
 		getConfig().addDefault("messages.teamAlreadyExists", "&cThat team already exists.");
@@ -105,6 +116,8 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("messages.SentToArena", "&aSent to &e%arena&a.");
 		getConfig().addDefault("messages.configReloaded", "&aConfiguration Reloaded.");
 		getConfig().addDefault("messages.RemovedFromTeamBecauseDifferentElement", "&cYou have been removed from your team because your element has changed.");
+		getConfig().addDefault("messages.NotEnoughMoney", "&cYou do not have the &e%amount %currency &crequired to do that.");
+		getConfig().addDefault("messages.MoneyWithdrawn", "&e%amount %currency &awithdrawn from your account.");
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 	}
