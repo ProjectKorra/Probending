@@ -62,6 +62,8 @@ public class Probending extends JavaPlugin {
 		Commands.NameTooLong = Methods.colorize(getConfig().getString("messages.NameTooLong"));
 		Commands.TeamRenamed = Methods.colorize(getConfig().getString("messages.TeamRenamed"));
 		Commands.TeamAlreadyNamedThat = Methods.colorize(getConfig().getString("messages.TeamAlreadyNamedThat"));
+		Commands.ChatEnabled = Methods.colorize(getConfig().getString("messages.ChatEnabled"));
+		Commands.ChatDisabled = Methods.colorize(getConfig().getString("messages.ChatDisabled"));
 		try {
 		    MetricsLite metrics = new MetricsLite(this);
 		    metrics.start();
@@ -126,6 +128,9 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("messages.NameTooLong", "&cTeam names cant be more than 15 characters long.");
 		getConfig().addDefault("messages.TeamRenamed", "&aYour team has been renamed to &e%newname&a.");
 		getConfig().addDefault("messages.TeamAlreadyNamedThat", "&aYour team is already named &e%newname&a.");
+		getConfig().addDefault("messages.ChatEnabled", "&aYou have enabled Probending Chat. To disable it, run the command again.");
+		getConfig().addDefault("messages.ChatDisabled", "&cYou have disabled Probending Chat.");
+		
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 	}

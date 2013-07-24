@@ -2,9 +2,11 @@ package com.etriacraft.probending;
 
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import tools.BendingType;
@@ -20,6 +22,18 @@ public class PlayerListener implements Listener {
 	
 	public static String RemovedFromTeamBecauseDifferentElement;
 	
+	@EventHandler
+	public static void onPlayerChat(AsyncPlayerChatEvent e) {
+		if (Commands.pbChat.contains(e.getPlayer())) {
+			e.getRecipients().clear();
+			for (Player player: Bukkit.getOnlinePlayers()) {
+				if (Commands.pbChat.contains(player)) {
+					e.getRecipients().add(player);
+				}
+			}
+			e.setFormat(Commands.Prefix + e.getFormat());
+		}
+	}
 	@EventHandler
 	public static void onPlayerJoin(PlayerJoinEvent e) {
 		Player player = e.getPlayer();

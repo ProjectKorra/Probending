@@ -1,6 +1,7 @@
 package com.etriacraft.probending;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -71,6 +72,9 @@ public class Commands {
 	public static String TeamRenamed;
 	public static String TeamAlreadyNamedThat;
 	
+	public static String ChatEnabled;
+	public static String ChatDisabled;
+	
 	Probending plugin;
 
 	public Commands(Probending plugin) {
@@ -78,6 +82,7 @@ public class Commands {
 		init();
 	}
 	//HashMaps
+	public static Set<Player> pbChat = new HashSet<Player>();
 	public static HashMap<String, LinkedList<String>> teamInvites = new HashMap<String, LinkedList<String>>();
 	public static HashMap<String, LinkedList<String>> teamChallenges = new HashMap<String, LinkedList<String>>();
 	
@@ -92,6 +97,7 @@ public class Commands {
 					s.sendMessage("-----§6Probending Commands§f----");
 					s.sendMessage("§3/probending team§f - View team commands.");
 					s.sendMessage("§3/probending arena§f - View arena commands.");
+					s.sendMessage("§3/probending chat§f - Turn on Probending Chat.");
 					s.sendMessage("§3/probending reload§f - Reload Configuration.");
 					return true;
 				}
@@ -101,6 +107,27 @@ public class Commands {
 							teamInvites.put(player.getName(), new LinkedList<String>());
 						}
 					 */
+				if (args[0].equalsIgnoreCase("chat")) {
+					if (!s.hasPermission("probending.chat")) {
+						s.sendMessage(Prefix + noPermission);
+						return true;
+					}
+					if (args.length > 1) {
+						s.sendMessage(Prefix + "§cProper Usage: §3/pb chat");
+						return true;
+					}
+					Player p = (Player) s;
+					if (!pbChat.contains(p)) {
+						pbChat.add(p);
+						s.sendMessage(Prefix + ChatEnabled);
+						return true;
+					}
+					if (pbChat.contains(p)) {
+						pbChat.remove(p);
+						s.sendMessage(Prefix + ChatDisabled);
+						return true;
+					}
+				}
 				if (args[0].equalsIgnoreCase("reload")) {
 					if (!s.hasPermission("probending.reload")) {
 						s.sendMessage(Prefix + noPermission);
