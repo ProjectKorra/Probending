@@ -27,3 +27,7 @@ permissions:
       probending.reload: true
       probending.team.rename: true
       probending.chat: true
+      probending.clock.start: true
+      probending.clock.stop: true
+      probending.clock.pause: true
+      probending.close.resume: true

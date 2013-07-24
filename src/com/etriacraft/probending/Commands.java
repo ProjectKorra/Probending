@@ -12,13 +12,19 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
-
 import tools.Tools;
 
 public class Commands {
 
+	public static Player clockSender;
+	// Integers
+	public static int startingNumber;
+	public static int currentNumber;
+	public static int clockTask;
 	// Booleans
 	public static Boolean arenainuse;
+	public static Boolean clockRunning = false;
+	public static boolean clockPaused = false;
 	// Strings
 	public static String Prefix;
 	public static String teamAlreadyExists;
@@ -73,6 +79,16 @@ public class Commands {
 
 	public static String ChatEnabled;
 	public static String ChatDisabled;
+	
+	public static String RoundComplete;
+	public static String OneMinuteRemaining;
+	public static String ClockAlreadyRunning;
+	public static String RoundStarted;
+	public static String ClockPaused;
+	public static String ClockNotRunning;
+	public static String ClockNotPaused;
+	public static String ClockResumed;
+	public static String ClockStopped;
 
 	Probending plugin;
 
@@ -93,19 +109,162 @@ public class Commands {
 			@Override
 			public boolean onCommand(CommandSender s, Command c, String label, String[] args) {
 				if (args.length == 0) {
-					s.sendMessage("-----§6Probending Commands§f----");
+					s.sendMessage("-----§6Probending Commands§f-----");
 					s.sendMessage("§3/probending team§f - View team commands.");
 					s.sendMessage("§3/probending arena§f - View arena commands.");
 					s.sendMessage("§3/probending chat§f - Turn on Probending Chat.");
+					s.sendMessage("§3/probending clock§f - View all clock commands.");
 					s.sendMessage("§3/probending reload§f - Reload Configuration.");
 					return true;
 				}
 
-				/*
-				 * if (!teamInvites.containsKey(player.getName())) {
-							teamInvites.put(player.getName(), new LinkedList<String>());
+				if (args[0].equalsIgnoreCase("clock")) {
+					if (args.length == 1) {
+						s.sendMessage("-----§6Probending Clock Commands§f-----");
+						s.sendMessage("§3/pb clock start [Seconds]");
+						s.sendMessage("§3/pb clock pause");
+						s.sendMessage("&3/pb clock resumse");
+						s.sendMessage("§3/pb clock stop");
+						return true;
+					}
+					if (args[1].equalsIgnoreCase("stop")) {
+						if (!s.hasPermission("probending.clock.stop")) {
+							s.sendMessage(Prefix + noPermission);
+							return true;
 						}
-				 */
+						if (args.length != 2) {
+							s.sendMessage("§cProper Usage: §3/pb clock stop");
+							return true;
+						}
+						if (!clockRunning) {
+							s.sendMessage(Prefix + ClockNotRunning);
+							return true;
+						}
+						
+						clockPaused = false;
+						clockRunning = false;
+						Bukkit.getServer().getScheduler().cancelTask(clockTask);
+						for (Player player: Bukkit.getOnlinePlayers()) {
+							if (pbChat.contains(player)) {
+								player.sendMessage(Prefix + ClockStopped);
+							}
+						}
+						return true;
+					}
+					if (args[1].equalsIgnoreCase("resume")) {
+						if (!s.hasPermission("probending.clock.resume")) {
+							s.sendMessage(Prefix + noPermission);
+							return true;
+						}
+						
+						if (args.length != 2) {
+							s.sendMessage("§cProper Usage: §3/pb clock resume");
+							return true;
+						}
+						if (!clockRunning) {
+							s.sendMessage(Prefix + ClockNotRunning);
+							return true;
+						}
+						if (!clockPaused) {
+							s.sendMessage(Prefix + ClockNotPaused);
+							return true;
+						}
+						clockPaused = false;
+						for (Player player: Bukkit.getOnlinePlayers()) {
+							if (pbChat.contains(player)) {
+								player.sendMessage(Prefix + ClockResumed.replace("%seconds", String.valueOf(currentNumber / 20)));
+							}
+						}
+						clockTask = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+							public void run() {
+								clockRunning = true;
+								currentNumber--;
+								for (Player player: Bukkit.getOnlinePlayers()) {
+									if (pbChat.contains(player)) {
+										if (currentNumber == 1200) {
+											player.sendMessage(Prefix + OneMinuteRemaining);
+										}
+										if (currentNumber == 0) {
+											player.sendMessage(Prefix + RoundComplete);
+											clockRunning = false;
+											Bukkit.getServer().getScheduler().cancelTask(clockTask);
+										}
+									}
+								}
+								
+							}
+						}, 0L, 1L);
+					}
+					if (args[1].equalsIgnoreCase("pause")) {
+						if (!s.hasPermission("probending.clock.pause")) {
+							s.sendMessage(Prefix + noPermission);
+							return true;
+						}
+						if (args.length != 2) {
+							s.sendMessage("§cProper Usage: §3/pb clock pause");
+							return true;
+						}
+						if (!clockRunning) {
+							s.sendMessage(Prefix + ClockNotRunning);
+							return true;
+							
+						}
+						Bukkit.getServer().getScheduler().cancelTask(clockTask);
+						clockPaused = true;
+						for (Player player: Bukkit.getOnlinePlayers()) {
+							if (pbChat.contains(player)) {
+								player.sendMessage(Prefix + ClockPaused.replace("%seconds", String.valueOf(currentNumber / 20)));
+							}
+						}
+						return true;
+					}
+					if (args[1].equalsIgnoreCase("start")) {
+						if (!s.hasPermission("probending.clock.start")) {
+							s.sendMessage(Prefix + noPermission);
+							return true;
+						}
+						if (args.length != 3) {
+							s.sendMessage("§cProper Usage: §3/pb clock start [Seconds]");
+							return true;
+						}
+						if (Bukkit.getServer().getScheduler().isCurrentlyRunning(clockTask)) {
+							s.sendMessage(Prefix + ClockAlreadyRunning);
+							return true;
+						}
+						if (clockRunning) {
+							s.sendMessage(Prefix + ClockAlreadyRunning);
+							return true;
+						}
+						int desiredTime = Integer.parseInt(args[2]);
+						currentNumber = desiredTime * 20;
+						startingNumber = desiredTime * 20;
+						clockSender = (Player) s;
+												
+						clockTask = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+							public void run() {
+								clockRunning = true;
+								currentNumber--;
+								for (Player player: Bukkit.getOnlinePlayers()) {
+									if (pbChat.contains(player)) {
+										if (currentNumber == startingNumber - 1) {
+											player.sendMessage(Prefix + RoundStarted.replace("%seconds", String.valueOf(startingNumber / 20)));
+										}
+										if (currentNumber == 1200) {
+											player.sendMessage(Prefix + OneMinuteRemaining);
+										}
+										if (currentNumber == 0) {
+											player.sendMessage(Prefix + RoundComplete);
+											clockRunning = false;
+											Bukkit.getServer().getScheduler().cancelTask(clockTask);
+										}
+									}
+								}
+								
+							}
+						}, 0L, 1L);
+
+					}
+				}
 				if (args[0].equalsIgnoreCase("chat")) {
 					if (!s.hasPermission("probending.chat")) {
 						s.sendMessage(Prefix + noPermission);

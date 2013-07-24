@@ -64,6 +64,15 @@ public class Probending extends JavaPlugin {
 		Commands.TeamAlreadyNamedThat = Methods.colorize(getConfig().getString("messages.TeamAlreadyNamedThat"));
 		Commands.ChatEnabled = Methods.colorize(getConfig().getString("messages.ChatEnabled"));
 		Commands.ChatDisabled = Methods.colorize(getConfig().getString("messages.ChatDisabled"));
+		Commands.OneMinuteRemaining = Methods.colorize(getConfig().getString("messages.OneMinuteRemaining"));
+		Commands.RoundComplete = Methods.colorize(getConfig().getString("messages.RoundComplete"));
+		Commands.ClockAlreadyRunning = Methods.colorize(getConfig().getString("messages.ClockAlreadyRunning"));
+		Commands.RoundStarted = Methods.colorize(getConfig().getString("messages.RoundStarted"));
+		Commands.ClockNotRunning = Methods.colorize(getConfig().getString("messages.ClockNotRunning"));
+		Commands.ClockPaused = Methods.colorize(getConfig().getString("messages.ClockPaused"));
+		Commands.ClockNotPaused = Methods.colorize(getConfig().getString("messages.ClockNotPaused"));
+		Commands.ClockResumed = Methods.colorize(getConfig().getString("messages.ClockResumed"));
+		Commands.ClockStopped = Methods.colorize(getConfig().getString("messages.ClockStopped"));
 		try {
 		    MetricsLite metrics = new MetricsLite(this);
 		    metrics.start();
@@ -130,6 +139,15 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("messages.TeamAlreadyNamedThat", "&aYour team is already named &e%newname&a.");
 		getConfig().addDefault("messages.ChatEnabled", "&aYou have enabled Probending Chat. To disable it, run the command again.");
 		getConfig().addDefault("messages.ChatDisabled", "&cYou have disabled Probending Chat.");
+		getConfig().addDefault("messages.OneMinuteRemaining", "&cThere is one minute remaining in this round.");
+		getConfig().addDefault("messages.RoundComplete", "&cThis round is now complete.");
+		getConfig().addDefault("messages.ClockAlreadyRunning", "&cThe clock is already running.");
+		getConfig().addDefault("messages.RoundStarted", "&cA probending round has been started for %seconds seconds.");
+		getConfig().addDefault("messages.ClockNotRunning", "&cThe clock is currently not running.");
+		getConfig().addDefault("messages.ClockPaused", "&cThe clock has been paused with &3%seconds seconds &cleft.");
+		getConfig().addDefault("messages.ClockResumed", "&cThe clock has been resumed with &3%seconds seconds &cleft.");
+		getConfig().addDefault("messages.ClockNotPaused", "&cThe clock is not paused.");
+		getConfig().addDefault("messages.ClockStopped", "&cThe clock has been stopped.");
 		
 		getConfig().options().copyDefaults(true);
 		saveConfig();
