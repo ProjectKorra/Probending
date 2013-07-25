@@ -73,6 +73,10 @@ public class Probending extends JavaPlugin {
 		Commands.ClockNotPaused = Methods.colorize(getConfig().getString("messages.ClockNotPaused"));
 		Commands.ClockResumed = Methods.colorize(getConfig().getString("messages.ClockResumed"));
 		Commands.ClockStopped = Methods.colorize(getConfig().getString("messages.ClockStopped"));
+		Commands.NoArenaPermissions = Methods.colorize(getConfig().getString("messages.NoArenaPermissions"));
+		Commands.NoTeamPermissions = Methods.colorize(getConfig().getString("messages.NoTeamPermissions"));
+		Commands.NoClockPermissions = Methods.colorize(getConfig().getString("messages.NoClockPermissions"));
+		
 		try {
 		    MetricsLite metrics = new MetricsLite(this);
 		    metrics.start();
@@ -148,6 +152,9 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("messages.ClockResumed", "&cThe clock has been resumed with &3%seconds seconds &cleft.");
 		getConfig().addDefault("messages.ClockNotPaused", "&cThe clock is not paused.");
 		getConfig().addDefault("messages.ClockStopped", "&cThe clock has been stopped.");
+		getConfig().addDefault("messages.NoArenaPermissions", "&cYou dont have permission for any arena commands.");
+		getConfig().addDefault("messages.NoClockPermissions", "&cYou dont have permission for any clock commands.");
+		getConfig().addDefault("messages.NoTeamPermissions", "&cYou dont have permission for any team commands.");
 		
 		getConfig().options().copyDefaults(true);
 		saveConfig();

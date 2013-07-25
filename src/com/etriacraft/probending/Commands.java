@@ -79,7 +79,7 @@ public class Commands {
 
 	public static String ChatEnabled;
 	public static String ChatDisabled;
-	
+
 	public static String RoundComplete;
 	public static String OneMinuteRemaining;
 	public static String ClockAlreadyRunning;
@@ -89,6 +89,10 @@ public class Commands {
 	public static String ClockNotPaused;
 	public static String ClockResumed;
 	public static String ClockStopped;
+	
+	public static String NoClockPermissions;
+	public static String NoArenaPermissions;
+	public static String NoTeamPermissions;
 
 	Probending plugin;
 
@@ -112,19 +116,33 @@ public class Commands {
 					s.sendMessage("-----§6Probending Commands§f-----");
 					s.sendMessage("§3/probending team§f - View team commands.");
 					s.sendMessage("§3/probending arena§f - View arena commands.");
-					s.sendMessage("§3/probending chat§f - Turn on Probending Chat.");
+					if (s.hasPermission("probending.chat")) {
+						s.sendMessage("§3/probending chat§f - Turn on Probending Chat.");
+					}
 					s.sendMessage("§3/probending clock§f - View all clock commands.");
-					s.sendMessage("§3/probending reload§f - Reload Configuration.");
+					if (s.hasPermission("probending.reload")) {
+						s.sendMessage("§3/probending reload§f - Reload Configuration.");
+					}
 					return true;
 				}
 
 				if (args[0].equalsIgnoreCase("clock")) {
 					if (args.length == 1) {
 						s.sendMessage("-----§6Probending Clock Commands§f-----");
-						s.sendMessage("§3/pb clock start [Seconds]");
-						s.sendMessage("§3/pb clock pause");
-						s.sendMessage("&3/pb clock resumse");
-						s.sendMessage("§3/pb clock stop");
+						if (s.hasPermission("probending.clock.start")) {
+							s.sendMessage("§3/pb clock start [Seconds]");
+						}
+						if (s.hasPermission("probending.clock.pause")) {
+							s.sendMessage("§3/pb clock pause");
+						}
+						if (s.hasPermission("probending.clock.resume")) {
+							s.sendMessage("&3/pb clock resumse");
+						}
+						if (s.hasPermission("probending.clock.stop")) {
+							s.sendMessage("§3/pb clock stop");
+						} else {
+							s.sendMessage(Prefix + NoClockPermissions);
+						}
 						return true;
 					}
 					if (args[1].equalsIgnoreCase("stop")) {
@@ -140,7 +158,7 @@ public class Commands {
 							s.sendMessage(Prefix + ClockNotRunning);
 							return true;
 						}
-						
+
 						clockPaused = false;
 						clockRunning = false;
 						Bukkit.getServer().getScheduler().cancelTask(clockTask);
@@ -156,7 +174,7 @@ public class Commands {
 							s.sendMessage(Prefix + noPermission);
 							return true;
 						}
-						
+
 						if (args.length != 2) {
 							s.sendMessage("§cProper Usage: §3/pb clock resume");
 							return true;
@@ -191,7 +209,7 @@ public class Commands {
 										}
 									}
 								}
-								
+
 							}
 						}, 0L, 1L);
 					}
@@ -207,7 +225,7 @@ public class Commands {
 						if (!clockRunning) {
 							s.sendMessage(Prefix + ClockNotRunning);
 							return true;
-							
+
 						}
 						Bukkit.getServer().getScheduler().cancelTask(clockTask);
 						clockPaused = true;
@@ -239,7 +257,7 @@ public class Commands {
 						currentNumber = desiredTime * 20;
 						startingNumber = desiredTime * 20;
 						clockSender = (Player) s;
-												
+
 						clockTask = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 							public void run() {
 								clockRunning = true;
@@ -259,7 +277,7 @@ public class Commands {
 										}
 									}
 								}
-								
+
 							}
 						}, 0L, 1L);
 
@@ -297,11 +315,23 @@ public class Commands {
 				if (args[0].equalsIgnoreCase("arena")) {
 					if (args.length == 1) {
 						s.sendMessage("-----§6Probending Arena Commands§f-----");
-						s.sendMessage("§3/pb arena create [Name]§f - Create an arena."); // Done
-						s.sendMessage("§3/pb arena delete [Name]§f - Delete an arena."); // Done
-						s.sendMessage("§3/pb arena setspawn [Name] spectator§f - Set spectator spawn."); // Done
-						s.sendMessage("§3/pb arena setspawn [Name] field §f- Set field spawn point."); // Done
-						s.sendMessage("§3/pb arena spawn [Name] spectator|field§f - Warp to an arena."); // Done
+						if (s.hasPermission("probending.arena.create")) {
+							s.sendMessage("§3/pb arena create [Name]§f - Create an arena."); // Done
+						}
+						if (s.hasPermission("probending.arena.delete")) {
+							s.sendMessage("§3/pb arena delete [Name]§f - Delete an arena."); // Done
+						}
+						if (s.hasPermission("probending.arena.setspawn.spectator")) {
+							s.sendMessage("§3/pb arena setspawn [Name] spectator§f - Set spectator spawn."); // Done
+						}
+						if (s.hasPermission("probending.arena.setspawn.field")) {
+							s.sendMessage("§3/pb arena setspawn [Name] field §f- Set field spawn point."); // Done
+						}
+						if (s.hasPermission("probending.arena.spawn")) {
+							s.sendMessage("§3/pb arena spawn [Name] spectator|field§f - Warp to an arena."); // Done
+						} else {
+							s.sendMessage(Prefix + NoArenaPermissions);
+						}
 						return true;
 					}
 					if (args[1].equalsIgnoreCase("spawn")) {
@@ -451,15 +481,35 @@ public class Commands {
 				if (args[0].equalsIgnoreCase("team")) {
 					if (args.length == 1) {
 						s.sendMessage("-----§6Probending Team Commands§f-----");
-						s.sendMessage("§3/pb team create [Name]§f - Create a team."); // Done
-						s.sendMessage("§3/pb team rename [Name]§f - Rename a team.");
-						s.sendMessage("§3/pb team invite [Player]§f - Invite a player to a team."); // Done
-						s.sendMessage("§3/pb team info <Name>§f - View info on a team."); // Done
-						s.sendMessage("§3/pb team join <Name>§f - Join a team."); // Done
-						s.sendMessage("§3/pb team kick <Name>§f - Kick a player from your team."); // Done
-						s.sendMessage("§3/pb team quit §f- Quit your current team."); // Done
-						s.sendMessage("§3/pb team disband §f- Disband your team."); // Done
-						s.sendMessage("§3/pb team list§f - List all teams.");
+						if (s.hasPermission("probending.team.create")) {
+							s.sendMessage("§3/pb team create [Name]§f - Create a team."); // Done
+						}
+						if (s.hasPermission("probending.team.rename")) {
+							s.sendMessage("§3/pb team rename [Name]§f - Rename a team.");
+						}
+						if (s.hasPermission("probending.team.invite")) {
+							s.sendMessage("§3/pb team invite [Player]§f - Invite a player to a team."); // Done
+						}
+						if (s.hasPermission("probending.team.info")) {
+							s.sendMessage("§3/pb team info <Name>§f - View info on a team."); // Done
+						}
+						if (s.hasPermission("probending.team.join")) {
+							s.sendMessage("§3/pb team join <Name>§f - Join a team."); // Done
+						}
+						if (s.hasPermission("probending.team.kick")) {
+							s.sendMessage("§3/pb team kick <Name>§f - Kick a player from your team."); // Done
+						}
+						if (s.hasPermission("probending.team.quit")) {
+							s.sendMessage("§3/pb team quit §f- Quit your current team."); // Done
+						}
+						if (s.hasPermission("probending.team.disband")) {
+							s.sendMessage("§3/pb team disband §f- Disband your team."); // Done
+						}
+						if (s.hasPermission("probending.team.list")) {
+							s.sendMessage("§3/pb team list§f - List all teams.");
+						} else {
+							s.sendMessage(Prefix + NoTeamPermissions);
+						}
 						return true;
 					}
 					if (args[1].equalsIgnoreCase("rename")) {
@@ -609,7 +659,7 @@ public class Commands {
 							return true;
 						}
 						String playerElement = Methods.getPlayerElementAsString(s.getName());
-						
+
 						Methods.removePlayerFromTeam(teamName, s.getName(), playerElement);
 						s.sendMessage(Prefix + YouHaveQuit.replace("%team", teamName));
 						for (Player player: Bukkit.getOnlinePlayers()) {
@@ -654,7 +704,7 @@ public class Commands {
 							playerElement = Methods.getPlayerElementInTeam(playerName, teamName);
 							playerTeam = Methods.getPlayerTeam(playerName);
 						}
-						
+
 						if (playerTeam == null) {
 							s.sendMessage(Prefix + PlayerNotOnThisTeam);
 							return true;
@@ -700,7 +750,7 @@ public class Commands {
 							return true;
 						}
 						String playerElement = Methods.getPlayerElementAsString(s.getName());
-						
+
 						if (playerElement == null) {
 							s.sendMessage(Prefix + noBendingType);
 							return true;

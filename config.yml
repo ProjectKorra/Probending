@@ -61,3 +61,6 @@ messages:
   ClockResumed: '&cThe clock has been resumed with &3%seconds seconds &cleft.'
   ClockNotPaused: '&cThe clock is not paused.'
   ClockStopped: '&cThe clock has been stopped.'
+  NoTeamPermissions: '&cYou dont have permission for any team commands.'
+  NoClockPermissions: '&cYou dont have permission for any clock commands.'
+  NoArenaPermissions: '&cYou dont have permission for any arena commands.'
