@@ -9,7 +9,7 @@ Economy:
   Enabled: false
   ServerAccount: Server
   TeamCreationFee: 350.0
-  TeamRenamingFee: 150.0
+  TeamRenameFee: 150.0
 messages:
   Prefix: '&7[&6Probending&7] '
   noPermission: '&cYou dont have permission to do that.'
