@@ -30,4 +30,4 @@ permissions:
       probending.clock.start: true
       probending.clock.stop: true
       probending.clock.pause: true
-      probending.close.resume: true
+      probending.clock.resume: true
