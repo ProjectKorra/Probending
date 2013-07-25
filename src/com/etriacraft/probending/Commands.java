@@ -136,7 +136,7 @@ public class Commands {
 							s.sendMessage("§3/pb clock pause");
 						}
 						if (s.hasPermission("probending.clock.resume")) {
-							s.sendMessage("&3/pb clock resumse");
+							s.sendMessage("§3/pb clock resume");
 						}
 						if (s.hasPermission("probending.clock.stop")) {
 							s.sendMessage("§3/pb clock stop");
@@ -602,7 +602,7 @@ public class Commands {
 							return true;
 						}
 						if (args.length != 2) {
-							s.sendMessage(Prefix + "&cProper Usage: &3/pb team disband");
+							s.sendMessage(Prefix + "§cProper Usage: §3/pb team disband");
 							return true;
 						}
 						String teamName = Methods.getPlayerTeam(s.getName());
@@ -645,7 +645,7 @@ public class Commands {
 							return true;
 						}
 						if (args.length != 2) {
-							s.sendMessage(Prefix + "&cProper Usage: &3/pb team quit");
+							s.sendMessage(Prefix + "§cProper Usage: §3/pb team quit");
 							return true;
 						}
 
@@ -676,7 +676,7 @@ public class Commands {
 							return true;
 						}
 						if (args.length != 3) {
-							s.sendMessage(Prefix + "&cProper Usage: &3/pb team kick <Name>");
+							s.sendMessage(Prefix + "§cProper Usage: §3/pb team kick <Name>");
 							return true;
 						}
 						String teamName = Methods.getPlayerTeam(s.getName());
@@ -828,7 +828,7 @@ public class Commands {
 						}
 						if (Methods.getChiAllowed()) {
 							if (chi != null) {
-								s.sendMessage("§3Chiblocker: &6" + chi);
+								s.sendMessage("§3Chiblocker: §6" + chi);
 							}
 						}
 
