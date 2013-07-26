@@ -898,6 +898,10 @@ public class Commands {
 						String earth = Methods.getTeamEarthbender(teamName);
 						String fire = Methods.getTeamFirebender(teamName);
 						String chi = Methods.getTeamChiblocker(teamName);
+						
+						int wins = Methods.getWins(teamName);
+						int losses = Methods.getLosses(teamName);
+						
 						if (Methods.getAirAllowed()) {
 							if (air != null) {
 								s.sendMessage("§3Airbender: §7" + air);
@@ -923,6 +927,8 @@ public class Commands {
 								s.sendMessage("§3Chiblocker: §6" + chi);
 							}
 						}
+						s.sendMessage("§3Wins: §e" + wins);
+						s.sendMessage("§3Losses: §e" + losses);
 
 					}
 					if (args[1].equalsIgnoreCase("invite")) {

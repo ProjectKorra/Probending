@@ -679,7 +679,7 @@ public class Methods {
 			ResultSet rs2 = DBConnection.sql.readQuery("SELECT losses FROM probending_teams WHERE team = '" + teamName + "'");
 			try {
 				if (rs2.next()) {
-					losses = rs2.getInt("wins");
+					losses = rs2.getInt("losses");
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -724,7 +724,7 @@ public class Methods {
 			String firebender = Probending.plugin.getConfig().getString("TeamInfo." + team + ".Fire");
 			String chiblocker = Probending.plugin.getConfig().getString("TeamInfo." + team + ".Chi");
 			Integer wins = Probending.plugin.getConfig().getInt("TeamInfo." + team + ".Wins");
-			Integer losses = Probending.plugin.getConfig().getInt("TeamInfo" + team + ".Losses");
+			Integer losses = Probending.plugin.getConfig().getInt("TeamInfo." + team + ".Losses");
 			
 			Methods.createTeam(team, owner);
 			if (airbender != null) {
