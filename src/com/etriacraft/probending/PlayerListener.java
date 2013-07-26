@@ -117,36 +117,30 @@ public class PlayerListener implements Listener {
 						Set<String> teamElements = Methods.getTeamElements(team);
 						if (teamElements.contains("Air")) {
 							String airbender = Methods.getTeamAirbender(team);
-							Probending.plugin.getConfig().set("TeamInfo." + team + ".Owner", airbender);
-							Probending.plugin.saveConfig();
+							Methods.setOwner(airbender, team);
 							return;
 						}
 						if (teamElements.contains("Water")) {
 							String bender = Methods.getTeamWaterbender(team);
-							Probending.plugin.getConfig().set("TeamInfo." + team + ".Owner", bender);
-							Probending.plugin.saveConfig();
+							Methods.setOwner(bender, team);
 							return;
 						}
 						if (teamElements.contains("Earth")) {
 							String bender = Methods.getTeamEarthbender(team);
-							Probending.plugin.getConfig().set("TeamInfo." + team + ".Owner", bender);
-							Probending.plugin.saveConfig();
+							Methods.setOwner(bender, team);
 							return;
 						}
 						if (teamElements.contains("Fire")) {
 							String bender = Methods.getTeamFirebender(team);
-							Probending.plugin.getConfig().set("TeamInfo." + team + ".Owner", bender);
-							Probending.plugin.saveConfig();
+							Methods.setOwner(bender, team);
 							return;
 						}
 						if (teamElements.contains("Chi")) {
 							String bender = Methods.getTeamChiblocker(team);
-							Probending.plugin.getConfig().set("TeamInfo." + team + ".Owner", bender);
-							Probending.plugin.saveConfig();
+							Methods.setOwner(bender, team);
 							return;
 						} else {
-							Probending.plugin.getConfig().set("TeamInfo." + team, null);
-							Probending.plugin.saveConfig();
+							Methods.deleteTeam(team);
 						}
 					}
 				}

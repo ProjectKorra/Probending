@@ -23,6 +23,15 @@ public class Probending extends JavaPlugin {
 		configCheck();
 		cmd = new Commands(this);
 		
+		//Database Stuff
+		DBConnection.engine = getConfig().getString("General.Storage");
+		DBConnection.host = getConfig().getString("MySQL.host", "localhost");
+		DBConnection.pass = getConfig().getString("MySQL.pass", "");
+		DBConnection.port = getConfig().getInt("MySQL.port", 3306);
+		DBConnection.db = getConfig().getString("MySQL.db", "minecraft");
+		DBConnection.user = getConfig().getString("MySQL.user", "root");
+		
+		
 		Commands.ElementNotAllowed = Methods.colorize(getConfig().getString("messages.ElementNotAllowed"));
 		Commands.noBendingType = Methods.colorize(getConfig().getString("messages.noBendingType"));
 		Commands.PlayerAlreadyInTeam = Methods.colorize(getConfig().getString("messages.PlayerAlreadyInTeam"));
@@ -94,9 +103,17 @@ public class Probending extends JavaPlugin {
 		}
 		
 		Methods.populateColors();
+		
+		DBConnection.init();
 	}
 	
 	public void configCheck() {
+		getConfig().addDefault("General.Storage", "flatfile");
+		getConfig().addDefault("MySQL.host", "localhost");
+		getConfig().addDefault("MySQL.port", 3306);
+		getConfig().addDefault("MySQL.db", "minecraft");
+		getConfig().addDefault("MySQL.user", "root");
+		getConfig().addDefault("MySQL.pass", "");
 		getConfig().addDefault("TeamSettings.AllowFire", true);
 		getConfig().addDefault("TeamSettings.AllowAir", false);
 		getConfig().addDefault("TeamSettings.AllowWater", true);

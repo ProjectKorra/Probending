@@ -89,7 +89,7 @@ public class Commands {
 	public static String ClockNotPaused;
 	public static String ClockResumed;
 	public static String ClockStopped;
-	
+
 	public static String NoClockPermissions;
 	public static String NoArenaPermissions;
 	public static String NoTeamPermissions;
@@ -554,6 +554,7 @@ public class Commands {
 							Probending.econ.depositPlayer(serverAccount, renameFee);
 							s.sendMessage(Prefix + MoneyWithdrawn.replace("%amount", renameFee.toString()).replace("%currency", currency));
 						}
+						Methods.createTeam(newName, s.getName());
 						String airbender = Methods.getTeamAirbender(teamName);
 						String waterbender = Methods.getTeamWaterbender(teamName);
 						String earthbender = Methods.getTeamEarthbender(teamName);
@@ -582,8 +583,8 @@ public class Commands {
 						}
 
 						s.sendMessage(Prefix + TeamRenamed.replace("%newname", newName));
-						plugin.getConfig().set("TeamInfo." + newName + ".Owner", s.getName());
-						plugin.getConfig().set("TeamInfo." + teamName, null);
+						Methods.setOwner(s.getName(), newName);
+						Methods.deleteTeam(teamName);
 						plugin.saveConfig();
 						return true;
 					}
@@ -592,7 +593,7 @@ public class Commands {
 							s.sendMessage(Prefix + noPermission);
 							return true;
 						}
-						Set<String> teams = plugin.getConfig().getConfigurationSection("TeamInfo").getKeys(false);
+						Set<String> teams = Methods.getTeams();
 						s.sendMessage("§cTeams: §a" + teams.toString());
 						return true;
 					}
@@ -620,23 +621,24 @@ public class Commands {
 
 						Methods.removePlayerFromTeam(teamName, s.getName(), playerElement);
 						Set<String> teamelements = Methods.getTeamElements(teamName);
-						if (teamelements.contains("Air")) {
-							Methods.removePlayerFromTeam(teamName, plugin.getConfig().getString("TeamInfo." + teamName + ".Air"), "Air");
+						if (teamelements != null) {
+							if (teamelements.contains("Air")) {
+								Methods.removePlayerFromTeam(teamName, Methods.getTeamAirbender(teamName), "Air");
+							}
+							if (teamelements.contains("Water")) {
+								Methods.removePlayerFromTeam(teamName, Methods.getTeamWaterbender(teamName), "Water");
+							}
+							if (teamelements.contains("Earth")) {
+								Methods.removePlayerFromTeam(teamName, Methods.getTeamEarthbender(teamName), "Earth");
+							}
+							if (teamelements.contains("Fire")) {
+								Methods.removePlayerFromTeam(teamName, Methods.getTeamFirebender(teamName), "Fire");
+							}
+							if (teamelements.contains("Chi")) {
+								Methods.removePlayerFromTeam(teamName, Methods.getTeamChiblocker(teamName), "Chi");
+							}
 						}
-						if (teamelements.contains("Water")) {
-							Methods.removePlayerFromTeam(teamName, plugin.getConfig().getString("TeamInfo." + teamName + ".Water"), "Water");
-						}
-						if (teamelements.contains("Earth")) {
-							Methods.removePlayerFromTeam(teamName, plugin.getConfig().getString("TeamInfo." + teamName + ".Earth"), "Earth");
-						}
-						if (teamelements.contains("Fire")) {
-							Methods.removePlayerFromTeam(teamName, plugin.getConfig().getString("TeamInfo." + teamName + ".Fire"), "Fire");
-						}
-						if (teamelements.contains("Chi")) {
-							Methods.removePlayerFromTeam(teamName, plugin.getConfig().getString("TeamInfo." + teamName + ".Chi"), "Chi");
-						}
-						plugin.getConfig().set("TeamInfo." + teamName, null);
-						plugin.saveConfig();
+						Methods.deleteTeam(teamName);
 						return true;
 					}
 					if (args[1].equalsIgnoreCase("quit")) {
@@ -697,9 +699,11 @@ public class Commands {
 						String playerTeam = null;
 
 						String playerElement = null;
-						if (p3.isOnline()) {
-							playerElement = Methods.getPlayerElementInTeam(p3.getName(), teamName);
-							playerTeam = Methods.getPlayerTeam(p3.getName());
+						if (p3 != null) {
+							if (p3.isOnline()) {
+								playerElement = Methods.getPlayerElementInTeam(p3.getName(), teamName);
+								playerTeam = Methods.getPlayerTeam(p3.getName());
+							}
 						} else {
 							playerElement = Methods.getPlayerElementInTeam(playerName, teamName);
 							playerTeam = Methods.getPlayerTeam(playerName);
@@ -756,18 +760,20 @@ public class Commands {
 							return true;
 						}
 						Set<String> teamelements = Methods.getTeamElements(teamName);
-						if (teamelements.contains(playerElement)) {
-							s.sendMessage(Prefix + TeamAlreadyHasElement);
-							return true;
-						}
-						if (!plugin.getConfig().getBoolean("TeamSettings.Allow" + playerElement)) {
-							s.sendMessage(Prefix + ElementNotAllowed.replace("%element", playerElement));
-							return true;
-						}
-						Methods.addPlayerToTeam(teamName, s.getName(), playerElement);
-						for (Player player: Bukkit.getOnlinePlayers()) {
-							if (Methods.getPlayerTeam(player.getName()).equals(teamName)) {
-								player.sendMessage(Prefix + PlayerJoinedTeam.replace("%player", player.getName()).replace("%team", teamName));
+						if (teamelements != null) {
+							if (teamelements.contains(playerElement)) {
+								s.sendMessage(Prefix + TeamAlreadyHasElement);
+								return true;
+							}
+							if (!plugin.getConfig().getBoolean("TeamSettings.Allow" + playerElement)) {
+								s.sendMessage(Prefix + ElementNotAllowed.replace("%element", playerElement));
+								return true;
+							}
+							Methods.addPlayerToTeam(teamName, s.getName(), playerElement);
+							for (Player player: Bukkit.getOnlinePlayers()) {
+								if (Methods.getPlayerTeam(player.getName()).equals(teamName)) {
+									player.sendMessage(Prefix + PlayerJoinedTeam.replace("%player", player.getName()).replace("%team", teamName));
+								}
 							}
 						}
 						teamInvites.remove(s.getName());
@@ -797,7 +803,7 @@ public class Commands {
 								teamName = team;
 							}
 						}
-						String teamOwner = plugin.getConfig().getString("TeamInfo." + teamName + ".Owner");
+						String teamOwner = Methods.getOwner(teamName);
 						s.sendMessage("§3Team Name:§e " + teamName);
 						s.sendMessage("§3Team Owner:§5 " + teamOwner);
 
@@ -873,6 +879,7 @@ public class Commands {
 						int maxSize = plugin.getConfig().getInt("TeamSettings.MaxTeamSize");
 						if (Methods.getTeamSize(playerTeam) >= maxSize) {
 							s.sendMessage(Prefix + MaxSizeReached);
+							return true;
 						}
 						String playerElement = Methods.getPlayerElementAsString(player.getName());
 
@@ -911,9 +918,11 @@ public class Commands {
 							}
 						}
 						Set<String> teamelements = Methods.getTeamElements(playerTeam);
-						if (teamelements.contains(playerElement)) {
-							s.sendMessage(Prefix + TeamAlreadyHasElement);
-							return true;
+						if (teamelements != null) {
+							if (teamelements.contains(playerElement)) {
+								s.sendMessage(Prefix + TeamAlreadyHasElement);
+								return true;
+							}
 						}
 
 						teamInvites.get(player.getName()).add(playerTeam);

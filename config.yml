@@ -1,3 +1,11 @@
+General:
+  Storage: flatfile
+MySQL:
+  host: localhost
+  port: 3306
+  user: root
+  pass: ""
+  db: minecraft
 TeamSettings:
   AllowFire: true
   AllowAir: false
