@@ -646,5 +646,42 @@ public class Methods {
 		Probending.econ = economyProvider.getProvider();
 		return (Probending.econ != null);
 	}
+	
+	public static void importTeams() {
+		for (String team: getTeams()) {
+			String owner = Probending.plugin.getConfig().getString("TeamInfo." + team + ".Owner");
+			String airbender = Probending.plugin.getConfig().getString("TeamInfo." + team + ".Air");
+			String waterbender = Probending.plugin.getConfig().getString("TeamInfo." + team + ".Water");
+			String earthbender = Probending.plugin.getConfig().getString("TeamInfo." + team + ".Earth");
+			String firebender = Probending.plugin.getConfig().getString("TeamInfo." + team + ".Fire");
+			String chiblocker = Probending.plugin.getConfig().getString("TeamInfo." + team + ".Chi");
+			int wins = Probending.plugin.getConfig().getInt("TeamInfo." + team + ".Wins");
+			int losses = Probending.plugin.getConfig().getInt("TeamInfo" + team + ".Losses");
+			
+			Methods.createTeam(team, owner);
+			if (airbender != null) {
+				Methods.addPlayerToTeam(team, airbender, "Air");
+			}
+			if (waterbender != null) {
+				Methods.addPlayerToTeam(team, waterbender, "Water");
+			}
+			if (earthbender != null) {
+				Methods.addPlayerToTeam(team, earthbender, "Earth");
+			}
+			if (firebender != null) {
+				Methods.addPlayerToTeam(team, firebender, "Fire");
+			}
+			if (chiblocker != null) {
+				Methods.addPlayerToTeam(team, chiblocker, "Chi");
+			}
+			if (wins != null) {
+				Methods.setWins(team, wins);
+			}
+			if (losses != null) {
+				Methods.setLosses(team, losses);
+			}
+			
+		}
+	}
 
 }
