@@ -34,3 +34,5 @@ permissions:
       probending.team.sign.create: true
       probending.team.sign.break: true
       probending.team.sign.use: true
+      probending.team.addwin: true
+      probending.team.addloss: true

@@ -75,3 +75,5 @@ messages:
   InvalidSign: '&cThat is not a valid Probending sign.'
   TeamSignCreated: '&cCreated a team sign for the %color team'
   SetTeamColor: '&cYour team color has been set to %color.'
+  WinAddedToTeam: '&aAdded one win to &3%team&a.'
+  LossAddedToTeam: '&aAdded one loss to &3%team&a.'

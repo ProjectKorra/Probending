@@ -647,6 +647,85 @@ public class Methods {
 		return (Probending.econ != null);
 	}
 	
+	public static void setWins(int wins, String teamName) {
+		if (storage.equalsIgnoreCase("mysql")) {
+			DBConnection.sql.modifyQuery("UPDATE probending_teams SET wins = " + wins + " WHERE team = '" + teamName + "'");
+		}
+		if (storage.equalsIgnoreCase("flatfile")) {
+			Probending.plugin.getConfig().set("TeamInfo." + teamName + ".Wins", wins);
+			Probending.plugin.saveConfig();
+		}
+	}
+	
+	public static void setLosses(int losses, String teamName) {
+		if (storage.equalsIgnoreCase("mysql")) {
+			DBConnection.sql.modifyQuery("UPDATE probending_teams SET losses = " + losses + " WHERE team = '" + teamName + "'");
+		}
+		if (storage.equalsIgnoreCase("flatfile")) {
+			Probending.plugin.getConfig().set("TeamInfo." + teamName + ".Losses", losses);
+			Probending.plugin.saveConfig();
+		}
+	}
+	
+	public static int getWins(String teamName) {
+		int wins = 0;
+		if (storage.equalsIgnoreCase("mysql")) {
+			ResultSet rs2 = DBConnection.sql.readQuery("SELECT wins FROM probending_teams WHERE team = '" + teamName + "'");
+			try {
+				if (rs2.next()) {
+					wins = rs2.getInt("wins");
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if (storage.equalsIgnoreCase("flatfile")) {
+			wins = Probending.plugin.getConfig().getInt("TeamInfo." + teamName + ".Wins");
+		}
+		return wins;
+	}
+	
+	public static int getLosses(String teamName) {
+		int losses = 0;
+		if (storage.equalsIgnoreCase("mysql")) {
+			ResultSet rs2 = DBConnection.sql.readQuery("SELECT losses FROM probending_teams WHERE team = '" + teamName + "'");
+			try {
+				if (rs2.next()) {
+					losses = rs2.getInt("wins");
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if (storage.equalsIgnoreCase("flatfile")) {
+			losses = Probending.plugin.getConfig().getInt("TeamInfo." + teamName + ".Losses");
+		}
+		return losses;
+	}
+	
+	public static void addWin(String teamName) {
+		int currentWins = getWins(teamName);
+		int newWins = currentWins + 1;
+		if (storage.equalsIgnoreCase("mysql")) {
+			DBConnection.sql.modifyQuery("UPDATE probending_teams SET wins = " + newWins + " WHERE team = '" + teamName + "'");
+		}
+		if (storage.equalsIgnoreCase("flatfile")) {
+			Probending.plugin.getConfig().set("TeamInfo." + teamName + ".Wins", newWins);
+			Probending.plugin.saveConfig();
+		}
+	}
+	
+	public static void addLoss(String teamName) {
+		int currentLosses = getLosses(teamName);
+		int newLosses = currentLosses + 1;
+		if (storage.equalsIgnoreCase("mysql")) {
+			DBConnection.sql.modifyQuery("UPDATE probending_teams SET losses = " + newLosses + " WHERE team = '" + teamName + "'");
+		}
+		if (storage.equalsIgnoreCase("flatfile")) {
+			Probending.plugin.getConfig().set("TeamInfo." + teamName + ".Losses", newLosses);
+			Probending.plugin.saveConfig();
+		}
+	}
 	public static void importTeams() {
 		for (String team: getTeams()) {
 			String owner = Probending.plugin.getConfig().getString("TeamInfo." + team + ".Owner");
@@ -655,8 +734,8 @@ public class Methods {
 			String earthbender = Probending.plugin.getConfig().getString("TeamInfo." + team + ".Earth");
 			String firebender = Probending.plugin.getConfig().getString("TeamInfo." + team + ".Fire");
 			String chiblocker = Probending.plugin.getConfig().getString("TeamInfo." + team + ".Chi");
-			int wins = Probending.plugin.getConfig().getInt("TeamInfo." + team + ".Wins");
-			int losses = Probending.plugin.getConfig().getInt("TeamInfo" + team + ".Losses");
+			Integer wins = Probending.plugin.getConfig().getInt("TeamInfo." + team + ".Wins");
+			Integer losses = Probending.plugin.getConfig().getInt("TeamInfo" + team + ".Losses");
 			
 			Methods.createTeam(team, owner);
 			if (airbender != null) {
@@ -674,11 +753,17 @@ public class Methods {
 			if (chiblocker != null) {
 				Methods.addPlayerToTeam(team, chiblocker, "Chi");
 			}
-			if (wins != null) {
-				Methods.setWins(team, wins);
+			
+			if (wins == null) {
+				Methods.setWins(0, team);
+			} else {
+				Methods.setWins(wins, team);
 			}
-			if (losses != null) {
-				Methods.setLosses(team, losses);
+			
+			if (losses == null) {
+				Methods.setLosses(0, team);
+			} else {
+				Methods.setLosses(losses, team);
 			}
 			
 		}

@@ -88,6 +88,8 @@ public class Probending extends JavaPlugin {
 		SignListener.InvalidSign = Methods.colorize(getConfig().getString("messages.InvalidSign"));
 		SignListener.TeamSignCreated = Methods.colorize(getConfig().getString("messages.TeamSignCreated"));
 		PlayerListener.SetTeamColor = Methods.colorize(getConfig().getString("messages.SetTeamColor"));
+		Commands.WinAddedToTeam = Methods.colorize(getConfig().getString("messages.WinAddedToTeam"));
+		Commands.LossAddedToTeam = Methods.colorize(getConfig().getString("messages.LossAddedToTeam"));
 		try {
 		    MetricsLite metrics = new MetricsLite(this);
 		    metrics.start();
@@ -180,6 +182,9 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("messages.InvalidSign", "&cThat is not a valid Probending sign.");
 		getConfig().addDefault("messages.TeamSignCreated", "&cCreated a team sign for the %color team.");
 		getConfig().addDefault("messages.SetTeamColor", "&cYour team color has been set to %color.");
+		getConfig().addDefault("messages.LossAddedToTeam", "&aAdded one loss to &e%team&a.");
+		getConfig().addDefault("messages.WinAddedToTeam", "&aAdded one win to &3%team&a.");
+		
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 	}

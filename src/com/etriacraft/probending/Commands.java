@@ -93,6 +93,9 @@ public class Commands {
 	public static String NoClockPermissions;
 	public static String NoArenaPermissions;
 	public static String NoTeamPermissions;
+	
+	public static String WinAddedToTeam;
+	public static String LossAddedToTeam;
 
 	Probending plugin;
 
@@ -507,8 +510,62 @@ public class Commands {
 						}
 						if (s.hasPermission("probending.team.list")) {
 							s.sendMessage("§3/pb team list§f - List all teams.");
+						} if (s.hasPermission("probending.team.addwin")) {
+							s.sendMessage("§3/pb team addwin [Team]§f - Adds a win to a team.");
+						} if (s.hasPermission("probending.team.addloss")) {
+							s.sendMessage("§3/pb team addloss [Team]§f - Adds a loss to a team.");
 						} else {
 							s.sendMessage(Prefix + NoTeamPermissions);
+						}
+						return true;
+					}
+					if (args[1].equalsIgnoreCase("addwin")) {
+						if (!s.hasPermission("probending.team.addwin")) {
+							s.sendMessage(Prefix + noPermission);
+							return true;
+						}
+						if (args.length != 3) {
+							s.sendMessage(Prefix + "§cProper Usage: §3/pb team addwin [Team]");
+							return true;
+						}
+						String teamName = args[2];
+						Set<String> teams = Methods.getTeams();
+						if (!Methods.teamExists(teamName)) {
+							s.sendMessage(Prefix + TeamDoesNotExist);
+							return true;
+						}
+						if (teams != null) {
+							for (String team: teams) {
+								if (team.equalsIgnoreCase(teamName)) {
+									Methods.addWin(team);
+									s.sendMessage(Prefix + WinAddedToTeam.replace("%team", team));
+								}
+							}
+						}
+						return true;	
+					}
+					if (args[1].equalsIgnoreCase("addloss")) {
+						if (!s.hasPermission("probending.team.addloss")) {
+							s.sendMessage(Prefix + noPermission);
+							return true;
+						}
+						if (args.length != 3) {
+							s.sendMessage("§cProper Usage: §3/pb team addloss [Team]");
+							return true;
+						}
+						String teamName = args[2];
+						Set<String> teams = Methods.getTeams();
+						if (!Methods.teamExists(teamName)) {
+							s.sendMessage(Prefix + TeamDoesNotExist);
+							return true;
+						}
+						if (teams != null) {
+							for (String team: teams) {
+								if (team.equalsIgnoreCase(teamName)) {
+									Methods.addLoss(team);
+									s.sendMessage(Prefix + LossAddedToTeam.replace("%team", team));
+								}
+							}
 						}
 						return true;
 					}
