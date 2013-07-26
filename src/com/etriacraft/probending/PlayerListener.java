@@ -3,11 +3,18 @@ package com.etriacraft.probending;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
 
 import tools.BendingType;
 import tools.Tools;
@@ -15,13 +22,14 @@ import tools.Tools;
 public class PlayerListener implements Listener {
 
 	Probending plugin;
-	
+
 	public PlayerListener(Probending plugin) {
 		this.plugin = plugin;
 	}
-	
+
 	public static String RemovedFromTeamBecauseDifferentElement;
-	
+	public static String SetTeamColor;
+
 	@EventHandler
 	public static void onPlayerChat(AsyncPlayerChatEvent e) {
 		if (Commands.pbChat.contains(e.getPlayer())) {
@@ -32,6 +40,50 @@ public class PlayerListener implements Listener {
 				}
 			}
 			e.setFormat(Commands.Prefix + e.getFormat());
+		}
+	}
+
+	@EventHandler
+	public void onPlayerInteract(PlayerInteractEvent e) {
+		Player player = e.getPlayer();
+		Block block = e.getClickedBlock();
+
+		if (e.getAction() != Action.LEFT_CLICK_BLOCK && e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+
+		if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			if (block.getState() instanceof Sign) {
+				Sign s = (Sign) block.getState();
+
+				String line1 = s.getLine(0);
+				String teamColor = s.getLine(1);
+
+				if (line1.equalsIgnoreCase("[probending]")) {
+					if (!player.hasPermission("probending.team.sign.use")) {
+						player.sendMessage(Commands.Prefix + Commands.noPermission);
+						return;
+					}
+
+					if (!SignListener.colors.contains(teamColor)) {
+						player.sendMessage(Commands.Prefix + SignListener.InvalidSign);
+						return;
+					}
+
+					ItemStack helmet = new ItemStack(Material.LEATHER_HELMET);
+					ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
+					ItemStack leggings = new ItemStack(Material.LEATHER_LEGGINGS);
+					ItemStack boots = new ItemStack(Material.LEATHER_BOOTS);
+
+					player.getInventory().setHelmet(Methods.createColorArmor(helmet, Methods.getColorFromString(teamColor)));
+					player.getInventory().setChestplate(Methods.createColorArmor(chestplate, Methods.getColorFromString(teamColor)));
+					player.getInventory().setLeggings(Methods.createColorArmor(leggings, Methods.getColorFromString(teamColor)));
+					player.getInventory().setBoots(Methods.createColorArmor(boots, Methods.getColorFromString(teamColor)));
+					e.setUseItemInHand(Result.DENY);
+					player.updateInventory();
+					player.sendMessage(Commands.Prefix + SetTeamColor.replace("%color", teamColor));
+					return;
+				}
+
+			}
 		}
 	}
 	@EventHandler

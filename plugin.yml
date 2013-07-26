@@ -31,3 +31,6 @@ permissions:
       probending.clock.stop: true
       probending.clock.pause: true
       probending.clock.resume: true
+      probending.team.sign.create: true
+      probending.team.sign.break: true
+      probending.team.sign.use: true

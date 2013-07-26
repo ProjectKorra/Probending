@@ -5,8 +5,11 @@ import java.util.Set;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import tools.BendingType;
@@ -18,6 +21,93 @@ public class Methods {
 
 	public Methods(Probending plugin) {
 		this.plugin = plugin;
+	}
+
+	// Gives the player Leather Armor (With Color)
+	public static ItemStack createColorArmor(ItemStack i, Color c)
+	{
+		LeatherArmorMeta meta = (LeatherArmorMeta)i.getItemMeta();
+		meta.setColor(c);
+		i.setItemMeta(meta);
+		return i;
+	}
+	
+	// Populates list of colors.
+	public static void populateColors() {
+		SignListener.colors.add("Cyan"); // Tested
+		SignListener.colors.add("Black"); // Tested
+		SignListener.colors.add("Blue"); // Tested
+		SignListener.colors.add("Magenta"); // Tested
+		SignListener.colors.add("Gray"); // Dark Gray?? TODO
+		SignListener.colors.add("Green"); // Tested
+		SignListener.colors.add("LightGreen"); // Tested
+		SignListener.colors.add("DarkRed"); // Tested
+		SignListener.colors.add("DarkBlue"); // Tested
+		SignListener.colors.add("Olive"); // Tested
+		SignListener.colors.add("Orange"); // Tested
+		SignListener.colors.add("Purple"); // Tested
+		SignListener.colors.add("Red"); // Tested
+		SignListener.colors.add("Gray"); // Tested
+		SignListener.colors.add("Teal"); // Tested
+		SignListener.colors.add("White"); // Tested
+		SignListener.colors.add("Yellow"); //Tested
+
+	}
+	
+	// Gets a color from a string.
+	public static Color getColorFromString (String pretendColor) {
+		if (pretendColor.equalsIgnoreCase("Cyan")) {
+			return Color.AQUA;
+		}
+		if (pretendColor.equalsIgnoreCase("Black")) {
+			return Color.BLACK;
+		}
+		if (pretendColor.equalsIgnoreCase("Blue")) {
+			return Color.BLUE;
+		}
+		if (pretendColor.equalsIgnoreCase("Magenta")) {
+			return Color.FUCHSIA;
+		}
+		if (pretendColor.equalsIgnoreCase("Gray")) {
+			return Color.GRAY;
+		}
+		if (pretendColor.equalsIgnoreCase("Green")) {
+			return Color.GREEN;
+		}
+		if (pretendColor.equalsIgnoreCase("LightGreen")) {
+			return Color.LIME;
+		}
+		if (pretendColor.equalsIgnoreCase("DarkRed")) {
+			return Color.MAROON;
+		}
+		if (pretendColor.equalsIgnoreCase("Navy")) {
+			return Color.NAVY;
+		}
+		if (pretendColor.equalsIgnoreCase("Olive")) {
+			return Color.OLIVE;
+		}
+		if (pretendColor.equalsIgnoreCase("Orange")) {
+			return Color.ORANGE;
+		}
+		if (pretendColor.equalsIgnoreCase("Purple")) {
+			return Color.PURPLE;
+		}
+		if (pretendColor.equalsIgnoreCase("Red")) {
+			return Color.RED;
+		}
+		if (pretendColor.equalsIgnoreCase("Silver")) {
+			return Color.SILVER;
+		}
+		if (pretendColor.equalsIgnoreCase("Teal")) {
+			return Color.TEAL;
+		}
+		if (pretendColor.equalsIgnoreCase("White")) {
+			return Color.WHITE;
+		}
+		if (pretendColor.equalsIgnoreCase("Yellow")) {
+			return Color.YELLOW;
+		}
+		return null;
 	}
 
 	// Checks if the team exists, returns true if the team does exist, returns false if not.

@@ -64,3 +64,6 @@ messages:
   NoTeamPermissions: '&cYou dont have permission for any team commands.'
   NoClockPermissions: '&cYou dont have permission for any clock commands.'
   NoArenaPermissions: '&cYou dont have permission for any arena commands.'
+  InvalidSign: '&cThat is not a valid Probending sign.'
+  TeamSignCreated: '&cCreated a team sign for the %color team'
+  SetTeamColor: '&cYour team color has been set to %color.'
