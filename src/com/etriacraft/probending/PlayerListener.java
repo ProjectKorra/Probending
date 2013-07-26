@@ -78,6 +78,7 @@ public class PlayerListener implements Listener {
 					player.getInventory().setLeggings(Methods.createColorArmor(leggings, Methods.getColorFromString(teamColor)));
 					player.getInventory().setBoots(Methods.createColorArmor(boots, Methods.getColorFromString(teamColor)));
 					e.setUseItemInHand(Result.DENY);
+					e.setUseInteractedBlock(Result.DENY);
 					player.updateInventory();
 					player.sendMessage(Commands.Prefix + SetTeamColor.replace("%color", teamColor));
 					return;
