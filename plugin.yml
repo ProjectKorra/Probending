@@ -36,3 +36,4 @@ permissions:
       probending.team.sign.use: true
       probending.team.addwin: true
       probending.team.addloss: true
+      probending.import: true

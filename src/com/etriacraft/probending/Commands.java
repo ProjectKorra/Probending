@@ -1,5 +1,6 @@
 package com.etriacraft.probending;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -93,7 +94,7 @@ public class Commands {
 	public static String NoClockPermissions;
 	public static String NoArenaPermissions;
 	public static String NoTeamPermissions;
-	
+
 	public static String WinAddedToTeam;
 	public static String LossAddedToTeam;
 
@@ -126,7 +127,35 @@ public class Commands {
 					if (s.hasPermission("probending.reload")) {
 						s.sendMessage("§3/probending reload§f - Reload Configuration.");
 					}
+					if (s.hasPermission("probending.import")) {
+						s.sendMessage("§4/probending import§f - Import data into MySQL Database.");
+					}
 					return true;
+				}
+
+				if (args[0].equalsIgnoreCase("import")) {
+					if (!s.hasPermission("probending.import")) {
+						s.sendMessage(Prefix + noPermission);
+						return true;
+					}
+					if (args.length != 1) {
+						s.sendMessage(Prefix + "§cProper Usage: §3/pb import");
+						return true;
+					}
+					if (!Methods.storage.equalsIgnoreCase("mysql")) {
+						s.sendMessage(Prefix + "§cYou don't have MySQL enabled.");
+						return true;
+					}
+					try {
+						if (DBConnection.sql.getConnection().isClosed()) {
+							s.sendMessage(Prefix + "§cThe MySQL Connection is closed.");
+							return true;
+						}
+					} catch (SQLException ex) {
+						ex.printStackTrace();
+					}
+					Methods.importTeams();
+					s.sendMessage(Prefix + "§aData imported to MySQL database.");
 				}
 
 				if (args[0].equalsIgnoreCase("clock")) {

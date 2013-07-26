@@ -727,7 +727,8 @@ public class Methods {
 		}
 	}
 	public static void importTeams() {
-		for (String team: getTeams()) {
+		Set<String> yamlTeams = Probending.plugin.getConfig().getConfigurationSection("TeamInfo").getKeys(false);
+		for (String team: yamlTeams) {
 			String owner = Probending.plugin.getConfig().getString("TeamInfo." + team + ".Owner");
 			String airbender = Probending.plugin.getConfig().getString("TeamInfo." + team + ".Air");
 			String waterbender = Probending.plugin.getConfig().getString("TeamInfo." + team + ".Water");
