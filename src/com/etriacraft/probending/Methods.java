@@ -26,6 +26,7 @@ public class Methods {
 		this.plugin = plugin;
 	}
 
+	public static Set<String> teams = new HashSet<String>();
 	public static String storage = Probending.plugin.getConfig().getString("General.Storage");
 
 	// Gives the player Leather Armor (With Color)
@@ -117,32 +118,31 @@ public class Methods {
 
 	// Checks if the team exists, returns true if the team does exist, returns false if not.
 	public static boolean teamExists(String teamName) {
-		if (storage.equalsIgnoreCase("mysql")) {
-			ResultSet rs2 = DBConnection.sql.readQuery("SELECT * FROM probending_teams WHERE team = '" + teamName + "'");
-			try {
-				if (rs2.next()) {
-					return true;
-				} else {
-					return false;
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		if (storage.equalsIgnoreCase("flatfile")) {
-			if (Probending.plugin.getConfig().getConfigurationSection("TeamInfo") == null) {
-				return false;
-			}
-			Set<String> teams = getTeams();
-			for (String team: teams) {
-				if (team.equalsIgnoreCase(teamName)) {
-					return true;
-				}
+		for (String team: teams) {
+			if (team.equalsIgnoreCase(teamName)) {
+				return true;
 			}
 		}
 		return false;
 	}
 
+	// Loads teams on startup
+	public static void loadTeams() {
+		if (storage.equalsIgnoreCase("mysql")) {
+			ResultSet rs2 = DBConnection.sql.readQuery("SELECT team FROM probending_teams");
+			try {
+				while (rs2.next()) {
+					teams.add(rs2.getString("team"));
+				}
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+		}
+		if (storage.equalsIgnoreCase("flatfile")) {
+			teams = Probending.plugin.getConfig().getConfigurationSection("TeamInfo").getKeys(false);
+		}
+		
+	}
 	// Creates a team.
 	public static void createTeam(String teamName, String owner) {
 		if (storage.equalsIgnoreCase("mysql")) {
@@ -152,6 +152,7 @@ public class Methods {
 			Probending.plugin.getConfig().set("TeamInfo." + teamName + ".Owner", owner);
 			Probending.plugin.saveConfig();
 		}
+		teams.add(teamName);
 	}
 	// Deletes a team.
 	public static void deleteTeam(String teamName) {
@@ -162,6 +163,7 @@ public class Methods {
 			Probending.plugin.getConfig().set("TeamInfo." + teamName, null);
 			Probending.plugin.saveConfig();
 		}
+		teams.remove(teamName);
 	}
 	// Adds a player to a team.
 	public static void addPlayerToTeam(String teamName, String player, String element) {
@@ -618,20 +620,6 @@ public class Methods {
 
 	// Returns a Set (List) of Strings.
 	public static Set<String> getTeams() {
-		Set<String> teams = new HashSet<String>();
-		if (storage.equalsIgnoreCase("mysql")) {
-			ResultSet rs2 = DBConnection.sql.readQuery("SELECT team FROM probending_teams");
-			try {
-				while (rs2.next()) {
-					teams.add(rs2.getString("team"));
-				}
-			} catch (SQLException ex) {
-				ex.printStackTrace();
-			}
-		}
-		if (storage.equalsIgnoreCase("flatfile")) {
-			teams = Probending.plugin.getConfig().getConfigurationSection("TeamInfo").getKeys(false);
-		}
 		return teams;
 	}
 

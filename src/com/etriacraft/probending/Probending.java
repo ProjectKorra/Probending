@@ -1,6 +1,7 @@
 package com.etriacraft.probending;
 
 import java.io.IOException;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.Economy;
@@ -107,6 +108,10 @@ public class Probending extends JavaPlugin {
 		Methods.populateColors();
 		
 		DBConnection.init();
+		
+		Methods.loadTeams();
+		Set<String> teamList = Methods.getTeams();
+		log.info("Loaded " + teamList.size() + " teams");
 	}
 	
 	public void configCheck() {
