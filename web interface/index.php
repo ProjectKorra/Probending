@@ -7,8 +7,7 @@
 <body>
 <div class = "container">
 <center><img src = "img/probendinglogo.png"></center>
-<table class = "table table-striped table-bordered" style = "text-aling: center">
-<tr><th>Team Name</th><th>Team Owner</th><th>Airbender</th><th>Waterbender</th><th>Earthbender</th><th>Firebender</th><th>Chiblocker</th><th>Wins</th><th>Losses</th></tr>
+<table class = "table table-striped table-bordered table-hover">
 <?php
 require ('config.php');
 $handle = mysql_connect($mysql_host, $mysql_user, $mysql_pass) or die($connect_error);
@@ -19,6 +18,32 @@ if (!(isset($pagenum))) {
 }
 $data = mysql_query("SELECT * FROM probending_teams") or die (mysql_error());
 $rows = mysql_num_rows($data);
+
+echo "<tr>";
+echo "<th>Team Name</th>";
+echo "<th>Team Owner</th>";
+if ($ShowAir != false) {
+	echo "<th>Airbender</th>";
+}
+if ($ShowWater != false) {
+	echo "<th>Waterbender</th>";
+}
+if ($ShowEarth != false) {
+	echo "<th>Earthbender</th>";
+}
+if ($ShowFire != false) {
+	echo "<th>Firebender</th>";
+}
+if ($ShowChi != false) {
+	echo "<th>Chiblocker</th>";
+}
+
+if ($ShowWins != false) {
+	echo "<th>Wins</th>";
+}
+if ($ShowLosses != false) {
+	echo "<th>Losses</th>";
+}
 
 // Rows per page
 $page_rows = 10;
@@ -40,13 +65,27 @@ while ($info = mysql_fetch_array($data_p)) {
 	echo '<tr>';
 	echo '<td>'.$info["team"].'</td>';
 	echo '<td>'.$info["owner"].'</td>';
+	if ($ShowAir != false) {
 	echo '<td>'.$info["Air"].'</td>';
+	}
+	if ($ShowWater != false) {
 	echo '<td>'.$info["Water"].'</td>';
+	}
+	if ($ShowEarth != false) {
 	echo '<td>'.$info["Earth"].'</td>';
+	}
+	if ($ShowFire != false) {
 	echo '<td>'.$info["Fire"].'</td>';
+	}
+	if ($ShowChi != false) {
 	echo '<td>'.$info["Chi"].'</td>';
+	}
+	if ($ShowWins != false) {
 	echo '<td>'.$info["wins"].'</td>';
+	}
+	if ($ShowLosses != false) {
 	echo '<td>'.$info["losses"].'</td>';
+	}
 	echo '</tr>';
 }
 echo "</table>";

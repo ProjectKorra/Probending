@@ -111,7 +111,7 @@ public class Probending extends JavaPlugin {
 		
 		Methods.loadTeams();
 		Set<String> teamList = Methods.getTeams();
-		log.info("Loaded " + teamList.size() + " teams");
+		this.log.info("Loaded " + teamList.size() + " teams");
 	}
 	
 	public void configCheck() {
