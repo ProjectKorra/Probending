@@ -857,8 +857,11 @@ public class Commands {
 							}
 							Methods.addPlayerToTeam(teamName, s.getName(), playerElement);
 							for (Player player: Bukkit.getOnlinePlayers()) {
-								if (Methods.getPlayerTeam(player.getName()).equals(teamName)) {
-									player.sendMessage(Prefix + PlayerJoinedTeam.replace("%player", player.getName()).replace("%team", teamName));
+								String teamName2 = Methods.getPlayerTeam(player.getName());
+								if (teamName2 != null) {
+									if (Methods.getPlayerTeam(player.getName()).equals(teamName)) {
+										player.sendMessage(Prefix + PlayerJoinedTeam.replace("%player", player.getName()).replace("%team", teamName));
+									}
 								}
 							}
 						}
@@ -898,10 +901,10 @@ public class Commands {
 						String earth = Methods.getTeamEarthbender(teamName);
 						String fire = Methods.getTeamFirebender(teamName);
 						String chi = Methods.getTeamChiblocker(teamName);
-						
+
 						int wins = Methods.getWins(teamName);
 						int losses = Methods.getLosses(teamName);
-						
+
 						if (Methods.getAirAllowed()) {
 							if (air != null) {
 								s.sendMessage("§3Airbender: §7" + air);
