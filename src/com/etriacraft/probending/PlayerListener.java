@@ -12,6 +12,7 @@ import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -35,10 +36,31 @@ public class PlayerListener implements Listener {
 
 	public static String RemovedFromTeamBecauseDifferentElement;
 	public static String SetTeamColor;
-	
+
 	// Match Stuff
 	public static String CantEnterField;
 
+	@EventHandler
+	public void onPlayerBreakBlock(BlockBreakEvent e) {
+		Player player = e.getPlayer();
+		Location loc = player.getLocation();
+		if (Methods.WGSupportEnabled) {
+			if (Methods.getWorldGuard() != null) {
+				ApplicableRegionSet set = WGBukkit.getRegionManager(loc.getWorld()).getApplicableRegions(loc);
+				for (ProtectedRegion region: set) {
+					if (region != null) {
+						if (region.getId().equalsIgnoreCase(Methods.ProbendingField)) {
+							if (Methods.buildDisabled) {
+								if (!player.hasPermission("probending.worldguard.buildonfield")) {
+									e.setCancelled(true);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 	@EventHandler
 	public static void onPlayerMove(PlayerMoveEvent e) {
 		Player player = e.getPlayer();

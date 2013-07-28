@@ -9,7 +9,7 @@ MySQL:
 WorldGuard:
   EnableSupport: false
   ProbendingField: ProbendingField
-  DisableBuildDuringMatches: true
+  DisableBuildOnField: true
   TeamOneZoneOne: RedZone1
   TeamOneZoneTwo: RedZone2
   TeamOneZoneThree: RedZone3

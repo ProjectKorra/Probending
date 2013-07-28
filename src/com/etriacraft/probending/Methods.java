@@ -37,7 +37,7 @@ public class Methods {
 
 	// WorldGuard Stuffs
 	public static boolean WGSupportEnabled = Probending.plugin.getConfig().getBoolean("WorldGuard.EnableSupport");
-	public static boolean buildDisabled = Probending.plugin.getConfig().getBoolean("WorldGuard.DisableBuildDuringMatches");
+	public static boolean buildDisabled = Probending.plugin.getConfig().getBoolean("WorldGuard.DisableBuildOnField");
 	public static String ProbendingField = Probending.plugin.getConfig().getString("WorldGuard.ProbendingField");
 	public static String t1z1 = Probending.plugin.getConfig().getString("WorldGuard.TeamOneZoneOne");
 	public static String t1z2 = Probending.plugin.getConfig().getString("WorldGuard.TeamOneZoneTwo");
