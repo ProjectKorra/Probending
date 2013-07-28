@@ -6,6 +6,16 @@ MySQL:
   user: root
   pass: ""
   db: minecraft
+WorldGuard:
+  EnableSupport: false
+  ProbendingField: ProbendingField
+  DisableBuildDuringMatches: true
+  TeamOneZoneOne: RedZone1
+  TeamOneZoneTwo: RedZone2
+  TeamOneZoneThree: RedZone3
+  TeamTwoZoneOne: BlueZone1
+  TeamTwoZoneTwo: BlueZone2
+  TeamTwoZoneThree: BlueZone3
 TeamSettings:
   AllowFire: true
   AllowAir: false
@@ -13,6 +23,7 @@ TeamSettings:
   AllowEarth: true
   AllowChi: false
   MaxTeamSize: 4
+  MinTeamSize: 2
 Economy:
   Enabled: false
   ServerAccount: Server
@@ -77,3 +88,9 @@ messages:
   SetTeamColor: '&cYour team color has been set to %color.'
   WinAddedToTeam: '&aAdded one win to &3%team&a.'
   LossAddedToTeam: '&aAdded one loss to &3%team&a.'
+  match:
+    MatchAlreadyGoing: '&cThere is already a match going.'
+    InvalidTeamSize: '&cThe size of the team is invalid.'
+    MatchStarted: '&cA match has been started between &e%team1 &cand &e%team2&c.'
+    MatchStopped: '&cThe ongoing match has been stopped.'
+    NoOngoingMatch: '&cThere is no ongoing match.'

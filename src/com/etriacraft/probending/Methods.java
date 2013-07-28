@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -27,6 +28,22 @@ public class Methods {
 		this.plugin = plugin;
 	}
 
+	// Probending Match Stuff
+	public static boolean matchStarted = false;
+	public static Set<String> playingTeams = new HashSet<String>();
+
+	// WorldGuard Stuffs
+	public static boolean WGEnabled = Probending.plugin.getConfig().getBoolean("WorldGuard.EnableSupport");
+	public static boolean buildDisabled = Probending.plugin.getConfig().getBoolean("WorldGuard.DisableBuildDuringMatches");
+	public static String ProbendingField = Probending.plugin.getConfig().getString("WorldGuard.ProbendingField");
+	public static String t1z1 = Probending.plugin.getConfig().getString("WorldGuard.TeamOneZoneOne");
+	public static String t1z2 = Probending.plugin.getConfig().getString("WorldGuard.TeamOneZoneTwo");
+	public static String t1z3 = Probending.plugin.getConfig().getString("WorldGuard.TeamOneZoneThree");
+	public static String t2z1 = Probending.plugin.getConfig().getString("WorldGuard.TeamTwoZoneOne");
+	public static String t2z2 = Probending.plugin.getConfig().getString("WorldGuard.TeamTwoZoneTwo");
+	public static String t2z3 = Probending.plugin.getConfig().getString("WorldGuard.TeamTwoZoneThree");
+	
+	// Storage Data
 	public static Set<String> teams = new HashSet<String>();
 	public static HashMap<String, String> players = new HashMap<String, String>();
 	public static String storage = Probending.plugin.getConfig().getString("General.Storage");
@@ -747,6 +764,22 @@ public class Methods {
 			Probending.plugin.getConfig().set("TeamInfo." + teamName + ".Losses", newLosses);
 			Probending.plugin.saveConfig();
 		}
+	}
+	
+	public static int getOnlineTeamSize(String teamName) {
+		int o = 0;
+		for (Player player: Bukkit.getOnlinePlayers()) {
+			String playerName = player.getName();
+			if (player != null) {
+				if (getPlayerTeam(playerName) != null) {
+					if (getPlayerTeam(playerName).equalsIgnoreCase(teamName)) {
+						o++;
+					}
+				}
+			}
+		}
+		return o;
+		
 	}
 	public static void importTeams() {
 		Set<String> yamlTeams = Probending.plugin.getConfig().getConfigurationSection("TeamInfo").getKeys(false);

@@ -91,6 +91,11 @@ public class Probending extends JavaPlugin {
 		PlayerListener.SetTeamColor = Methods.colorize(getConfig().getString("messages.SetTeamColor"));
 		Commands.WinAddedToTeam = Methods.colorize(getConfig().getString("messages.WinAddedToTeam"));
 		Commands.LossAddedToTeam = Methods.colorize(getConfig().getString("messages.LossAddedToTeam"));
+		Commands.MatchAlreadyGoing = Methods.colorize(getConfig().getString("messages.match.MatchAlreadyGoing"));
+		Commands.InvalidTeamSize = Methods.colorize(getConfig().getString("messages.match.InvalidTeamSize"));
+		Commands.MatchStarted = Methods.colorize(getConfig().getString("messages.match.MatchStarted"));
+		Commands.MatchStopped = Methods.colorize(getConfig().getString("messages.match.MatchStopped"));
+		Commands.NoOngoingMatch = Methods.colorize(getConfig().getString("messages.match.NoOngoingMatch"));
 		try {
 		    MetricsLite metrics = new MetricsLite(this);
 		    metrics.start();
@@ -117,22 +122,38 @@ public class Probending extends JavaPlugin {
 	}
 	
 	public void configCheck() {
+		// Set Default General Settings
 		getConfig().addDefault("General.Storage", "flatfile");
+		// Set MySQL Settings
 		getConfig().addDefault("MySQL.host", "localhost");
 		getConfig().addDefault("MySQL.port", 3306);
 		getConfig().addDefault("MySQL.db", "minecraft");
 		getConfig().addDefault("MySQL.user", "root");
 		getConfig().addDefault("MySQL.pass", "");
+		// Set Team Settings
 		getConfig().addDefault("TeamSettings.AllowFire", true);
 		getConfig().addDefault("TeamSettings.AllowAir", false);
 		getConfig().addDefault("TeamSettings.AllowWater", true);
 		getConfig().addDefault("TeamSettings.AllowEarth", true);
 		getConfig().addDefault("TeamSettings.AllowChi", false);
 		getConfig().addDefault("TeamSettings.MaxTeamSize", 4);
+		getConfig().addDefault("TeamSettings.MinTeamSize", 2);
+		// Set WorldGuard Settings
+		getConfig().addDefault("WorldGuard.EnableSupport", false);
+		getConfig().addDefault("WorldGuard.ProbendingField", "ProbendingField");
+		getConfig().addDefault("WorldGuard.DisableBuildDuringMatches", true);
+		getConfig().addDefault("WorldGuard.TeamOneZoneOne", "RedZone1");
+		getConfig().addDefault("WorldGuard.TeamOneZoneTwo", "RedZone2");
+		getConfig().addDefault("WorldGuard.TeamOneZoneThree", "RedZone3");
+		getConfig().addDefault("WorldGuard.TeamTwoZoneOne", "BlueZone1");
+		getConfig().addDefault("WorldGuard.TeamTwoZoneTwo", "BlueZone2");
+		getConfig().addDefault("WorldGuard.TeamTwoZoneThree", "BlueZone3");
+		// Set Economy Settings
 		getConfig().addDefault("Economy.Enabled", false);
 		getConfig().addDefault("Economy.ServerAccount", "Server");
 		getConfig().addDefault("Economy.TeamCreationFee", 350.0);
 		getConfig().addDefault("Economy.TeamRenameFee", 150.0);
+		// Set Messages
 		getConfig().addDefault("messages.Prefix", "&7[&6Probending&7] ");
 		getConfig().addDefault("messages.noPermission", "&cYou don't have permission to do that.");
 		getConfig().addDefault("messages.teamAlreadyExists", "&cThat team already exists.");
@@ -191,6 +212,13 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("messages.SetTeamColor", "&cYour team color has been set to %color.");
 		getConfig().addDefault("messages.LossAddedToTeam", "&aAdded one loss to &e%team&a.");
 		getConfig().addDefault("messages.WinAddedToTeam", "&aAdded one win to &3%team&a.");
+		
+		// Match Messages
+		getConfig().addDefault("messages.match.MatchAlreadyGoing", "&cThere is already a match going.");
+		getConfig().addDefault("messages.match.InvalidTeamSize", "&cThe team size of the team is invalid.");
+		getConfig().addDefault("messages.match.MatchStarted", "&cA match has been started between &e%team1 &cand &e%team2&c.");
+		getConfig().addDefault("messages.match.NoOngoingMatch", "&cThere is no ongoing match.");
+		getConfig().addDefault("messages.match.MatchStopped", "&cThe ongoing match has been stopped.");
 		
 		getConfig().options().copyDefaults(true);
 		saveConfig();

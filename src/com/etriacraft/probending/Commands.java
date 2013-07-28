@@ -97,6 +97,14 @@ public class Commands {
 
 	public static String WinAddedToTeam;
 	public static String LossAddedToTeam;
+	
+	// Match Messages
+	public static String MatchAlreadyGoing;
+	public static String InvalidTeamSize;
+	public static String MatchStarted;
+	
+	public static String NoOngoingMatch;
+	public static String MatchStopped;
 
 	Probending plugin;
 
@@ -120,6 +128,7 @@ public class Commands {
 					s.sendMessage("-----§6Probending Commands§f-----");
 					s.sendMessage("§3/probending team§f - View team commands.");
 					s.sendMessage("§3/probending arena§f - View arena commands.");
+					s.sendMessage("§3/probending match§f - View Match Commands");
 					if (s.hasPermission("probending.chat")) {
 						s.sendMessage("§3/probending chat§f - Turn on Probending Chat.");
 					}
@@ -131,6 +140,91 @@ public class Commands {
 						s.sendMessage("§4/probending import§f - Import data into MySQL Database.");
 					}
 					return true;
+				}
+
+				if (args[0].equalsIgnoreCase("match")) {
+					if (args.length == 1) {
+						s.sendMessage("-----§6Probending Match Commands§f-----");
+						if (s.hasPermission("probending.match.start")) {
+							s.sendMessage("§3/pb match start [Team1] [Team2]§f - Starts match.");
+						}
+						if (s.hasPermission("probending.match.stop")) {
+							s.sendMessage("§3/pb match stop§f - Stops match.");
+						}
+						return true;
+					}
+					if (args[1].equalsIgnoreCase("stop")) {
+						// Permissions
+						if (!s.hasPermission("probending.match.stop")) {
+							s.sendMessage(Prefix + noPermission);
+							return true;
+						}
+						
+						if (args.length != 2) {
+							s.sendMessage(Prefix + "§cProper Usage: §3/pb match stop");
+							return true;
+						}
+						
+						if (!Methods.matchStarted) {
+							s.sendMessage(Prefix + NoOngoingMatch);
+							return true;
+						}
+						Methods.playingTeams.clear();
+						Methods.matchStarted = false;
+						for (Player player: Bukkit.getOnlinePlayers()) {
+							if (pbChat.contains(player)) {
+								s.sendMessage(Prefix + MatchStopped);
+							}
+						}
+					}
+					if (args[1].equalsIgnoreCase("start")) {
+						// Permissions check.
+						if (!s.hasPermission("probending.match.start")) {
+							s.sendMessage(Prefix + noPermission);
+							return true;
+						}
+						
+						// Makes sure the command has enough arguments.
+						if (args.length != 4) {
+							s.sendMessage(Prefix + "§cProper Usage: §3/pb match start [Team1] [Team2]");
+							return true;
+						}
+						
+						// Just so we dont start another match if one is already going.
+						if (Methods.matchStarted) {
+							s.sendMessage(Prefix + MatchAlreadyGoing);
+							return true;
+						}
+						
+						String team1 = args[2]; // Team 1
+						String team2 = args[3]; // Team 2
+						
+						// Checks to make sure both teams exist.
+						if (!Methods.teamExists(team1) || !Methods.teamExists(team2)) {
+							s.sendMessage(Prefix + TeamDoesNotExist);
+							return true;
+						}
+						
+						int minSize = plugin.getConfig().getInt("TeamSettings.MinTeamSize");
+						
+						// Checks to make sure the team has enough players.
+						if (Methods.getOnlineTeamSize(team1) < minSize || Methods.getOnlineTeamSize(team2) < minSize) {
+							s.sendMessage(Prefix + InvalidTeamSize);
+							s.sendMessage(Prefix + Methods.getOnlineTeamSize(team1));
+							return true;
+						}
+						// Add players to list of playing teams and send a message confirming it.
+						Methods.matchStarted = true;
+						Methods.playingTeams.add(team1);
+						Methods.playingTeams.add(team2);
+						
+						for (Player player: Bukkit.getOnlinePlayers()) {
+							if (pbChat.contains(player)) {
+								s.sendMessage(Prefix + MatchStarted.replace("%team1", team1).replace("%team2", team2));
+							}
+						}
+					}
+
 				}
 
 				if (args[0].equalsIgnoreCase("import")) {
