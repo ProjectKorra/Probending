@@ -2,6 +2,7 @@ package com.etriacraft.probending;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,6 +28,7 @@ public class Methods {
 	}
 
 	public static Set<String> teams = new HashSet<String>();
+	public static HashMap<String, String> players = new HashMap<String, String>();
 	public static String storage = Probending.plugin.getConfig().getString("General.Storage");
 
 	// Gives the player Leather Armor (With Color)
@@ -141,7 +143,30 @@ public class Methods {
 		if (storage.equalsIgnoreCase("flatfile")) {
 			teams = Probending.plugin.getConfig().getConfigurationSection("TeamInfo").getKeys(false);
 		}
-		
+	}
+	
+	// Load Players on Starup
+	public static void loadPlayers() {
+		if (storage.equalsIgnoreCase("mysql")) {
+			ResultSet rs2 = DBConnection.sql.readQuery("SELECT * FROM probending_players");
+			try {
+				while (rs2.next()) {
+					players.put(rs2.getString("player"), rs2.getString("team"));
+				}
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+		}
+		if (storage.equalsIgnoreCase("flatfile")) {
+			Set<String> tmpPlayers = new HashSet<String>();
+			tmpPlayers.addAll(Probending.plugin.getConfig().getConfigurationSection("players").getKeys(false));
+			for (String player: tmpPlayers) {
+				if (Probending.plugin.getConfig().getString("players." + player) != null) {
+					String teamName = Probending.plugin.getConfig().getString("players." + player);
+					players.put(player, teamName);
+				}
+			}
+		}
 	}
 	// Creates a team.
 	public static void createTeam(String teamName, String owner) {
@@ -170,11 +195,13 @@ public class Methods {
 		if (storage.equalsIgnoreCase("mysql")) {
 			DBConnection.sql.modifyQuery("UPDATE probending_teams SET " + element + " = '" + player + "' WHERE team = '" + teamName + "'");
 			DBConnection.sql.modifyQuery("INSERT INTO probending_players (player, team) VALUES ('" + player + "', '" + teamName + "')");
+			players.put(player, teamName);
 		}
 		if (storage.equalsIgnoreCase("flatfile")) {
 			Probending.plugin.getConfig().set("TeamInfo." + teamName + "." + element, player);
 			Probending.plugin.getConfig().set("players." + player, teamName);
 			Probending.plugin.saveConfig();
+			players.put(player, teamName);
 		}
 	}
 
@@ -183,36 +210,42 @@ public class Methods {
 		if (storage.equalsIgnoreCase("mysql")) {
 			DBConnection.sql.modifyQuery("DELETE FROM probending_players WHERE player = '" + player + "'");
 			DBConnection.sql.modifyQuery("UPDATE probending_teams SET " + element + " = NULL WHERE team = '" + teamName + "'");
+			players.remove(player);
 		}
 		if (storage.equalsIgnoreCase("flatfile")) {
 			Probending.plugin.getConfig().set("TeamInfo." + teamName + "." + element, null);
 			Probending.plugin.getConfig().set("players." + player, null);
 			Probending.plugin.saveConfig();
+			players.remove(player);
 		}
 	}
 
 	// Checks if the player is in a team. Returns true if the player is in a team.
 	public static boolean playerInTeam(String playerName) {
-		if (storage.equalsIgnoreCase("mysql")) {
-			ResultSet rs2 = DBConnection.sql.readQuery("SELECT * FROM probending_players WHERE player = '" + playerName + "'");
-			try {
-				if (rs2.next()) {
-					return true;
-				} else {
-					return false;
-				}
-			} catch (SQLException ex) {
-				ex.printStackTrace();
-			}
-		}
-		if (storage.equalsIgnoreCase("flatfile")) {
-			if (Probending.plugin.getConfig().get("players." + playerName) == (null)) {
-				return false;
-			} else {
-				return true;
-			}
+		if (players.containsKey(playerName)) {
+			return true;
 		}
 		return false;
+//		if (storage.equalsIgnoreCase("mysql")) {
+//			ResultSet rs2 = DBConnection.sql.readQuery("SELECT * FROM probending_players WHERE player = '" + playerName + "'");
+//			try {
+//				if (rs2.next()) {
+//					return true;
+//				} else {
+//					return false;
+//				}
+//			} catch (SQLException ex) {
+//				ex.printStackTrace();
+//			}
+//		}
+//		if (storage.equalsIgnoreCase("flatfile")) {
+//			if (Probending.plugin.getConfig().get("players." + playerName) == (null)) {
+//				return false;
+//			} else {
+//				return true;
+//			}
+//		}
+//		return false;
 	}
 
 	// Checks the player's element in the team. (Regardless of if they've changed)
@@ -262,20 +295,21 @@ public class Methods {
 
 	// Returns the name of the player's team.
 	public static String getPlayerTeam(String player) {
-		if (storage.equalsIgnoreCase("mysql")) {
-			ResultSet rs2 = DBConnection.sql.readQuery("SELECT * FROM probending_players WHERE player = '" + player + "'");
-			try {
-				if (rs2.next()) {
-					return rs2.getString("team");
-				}
-			} catch (SQLException ex) {
-				ex.printStackTrace();
-			}
-		}
-		if (storage.equalsIgnoreCase("flatfile")) {
-			return Probending.plugin.getConfig().getString("players." + player);
-		}
-		return null;
+		return players.get(player);
+//		if (storage.equalsIgnoreCase("mysql")) {
+//			ResultSet rs2 = DBConnection.sql.readQuery("SELECT * FROM probending_players WHERE player = '" + player + "'");
+//			try {
+//				if (rs2.next()) {
+//					return rs2.getString("team");
+//				}
+//			} catch (SQLException ex) {
+//				ex.printStackTrace();
+//			}
+//		}
+//		if (storage.equalsIgnoreCase("flatfile")) {
+//			return Probending.plugin.getConfig().getString("players." + player);
+//		}
+//		return null;
 	}
 
 	// Returns the amount of players in a team.
@@ -440,7 +474,7 @@ public class Methods {
 			}
 		}
 		if (storage.equalsIgnoreCase("flatfile")) {
-			waterbender = Probending.plugin.getConfig().getString("TeamInfo." + teamName + ".Air");
+			waterbender = Probending.plugin.getConfig().getString("TeamInfo." + teamName + ".Water");
 		}
 		return waterbender;
 	}
@@ -459,7 +493,7 @@ public class Methods {
 			}
 		}
 		if (storage.equalsIgnoreCase("flatfile")) {
-			earthbender = Probending.plugin.getConfig().getString("TeamInfo." + teamName + ".Air");
+			earthbender = Probending.plugin.getConfig().getString("TeamInfo." + teamName + ".Earth");
 		}
 		return earthbender;
 	}
