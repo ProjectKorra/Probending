@@ -15,7 +15,10 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
+
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 import tools.BendingType;
 import tools.Tools;
@@ -33,7 +36,7 @@ public class Methods {
 	public static Set<String> playingTeams = new HashSet<String>();
 
 	// WorldGuard Stuffs
-	public static boolean WGEnabled = Probending.plugin.getConfig().getBoolean("WorldGuard.EnableSupport");
+	public static boolean WGSupportEnabled = Probending.plugin.getConfig().getBoolean("WorldGuard.EnableSupport");
 	public static boolean buildDisabled = Probending.plugin.getConfig().getBoolean("WorldGuard.DisableBuildDuringMatches");
 	public static String ProbendingField = Probending.plugin.getConfig().getString("WorldGuard.ProbendingField");
 	public static String t1z1 = Probending.plugin.getConfig().getString("WorldGuard.TeamOneZoneOne");
@@ -78,7 +81,17 @@ public class Methods {
 		SignListener.colors.add("Yellow");
 
 	}
-
+	// Checks if WorldGuard is enabled.
+	public static WorldGuardPlugin getWorldGuard() {
+	    Plugin plugin = Probending.plugin.getServer().getPluginManager().getPlugin("WorldGuard");
+	 
+	    // WorldGuard may not be loaded
+	    if (plugin == null || !(plugin instanceof WorldGuardPlugin)) {
+	        return null; // Maybe you want throw an exception instead
+	    }
+	 
+	    return (WorldGuardPlugin) plugin;
+	}
 	// Gets a color from a string.
 	public static Color getColorFromString (String pretendColor) {
 		if (pretendColor.equalsIgnoreCase("Cyan")) {

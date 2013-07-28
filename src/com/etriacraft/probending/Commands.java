@@ -215,8 +215,8 @@ public class Commands {
 						}
 						// Add players to list of playing teams and send a message confirming it.
 						Methods.matchStarted = true;
-						Methods.playingTeams.add(team1);
-						Methods.playingTeams.add(team2);
+						Methods.playingTeams.add(team1.toLowerCase());
+						Methods.playingTeams.add(team2.toLowerCase());
 						
 						for (Player player: Bukkit.getOnlinePlayers()) {
 							if (pbChat.contains(player)) {

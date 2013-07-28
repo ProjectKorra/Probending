@@ -96,6 +96,8 @@ public class Probending extends JavaPlugin {
 		Commands.MatchStarted = Methods.colorize(getConfig().getString("messages.match.MatchStarted"));
 		Commands.MatchStopped = Methods.colorize(getConfig().getString("messages.match.MatchStopped"));
 		Commands.NoOngoingMatch = Methods.colorize(getConfig().getString("messages.match.NoOngoingMatch"));
+		
+		PlayerListener.CantEnterField = Methods.colorize(getConfig().getString("messages.match.CantEnterField"));
 		try {
 		    MetricsLite metrics = new MetricsLite(this);
 		    metrics.start();
@@ -219,6 +221,7 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("messages.match.MatchStarted", "&cA match has been started between &e%team1 &cand &e%team2&c.");
 		getConfig().addDefault("messages.match.NoOngoingMatch", "&cThere is no ongoing match.");
 		getConfig().addDefault("messages.match.MatchStopped", "&cThe ongoing match has been stopped.");
+		getConfig().addDefault("messages.match.CantEnterField", "&cYou cant enter the Probending Field during a match.");
 		
 		getConfig().options().copyDefaults(true);
 		saveConfig();

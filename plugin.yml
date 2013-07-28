@@ -37,3 +37,5 @@ permissions:
       probending.team.addwin: true
       probending.team.addloss: true
       probending.import: true
+      probending.match.start: true
+      probending.match.stop: true

@@ -3,6 +3,7 @@ package com.etriacraft.probending;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -14,7 +15,12 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
+
+import com.sk89q.worldguard.bukkit.WGBukkit;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import tools.BendingType;
 import tools.Tools;
@@ -29,7 +35,42 @@ public class PlayerListener implements Listener {
 
 	public static String RemovedFromTeamBecauseDifferentElement;
 	public static String SetTeamColor;
+	
+	// Match Stuff
+	public static String CantEnterField;
 
+	@EventHandler
+	public static void onPlayerMove(PlayerMoveEvent e) {
+		Player player = e.getPlayer();
+		Location locTo = e.getTo();
+		Location locFrom = e.getFrom();
+		if (Methods.WGSupportEnabled) {
+			if (Methods.getWorldGuard() != null) {
+				ApplicableRegionSet set = WGBukkit.getRegionManager(locTo.getWorld()).getApplicableRegions(locTo);
+				for (ProtectedRegion region: set) {
+					if (region != null) {
+						if (region.getId().equalsIgnoreCase(Methods.ProbendingField)) {
+							if (Methods.matchStarted) {
+								String teamName = Methods.getPlayerTeam(player.getName());
+								if (teamName != null) {
+									if (!Methods.playingTeams.contains(teamName.toLowerCase())) {
+										player.sendMessage(Commands.Prefix + CantEnterField);
+										player.teleport(locFrom);
+										e.setCancelled(true);
+									}
+								}
+								if (teamName == null) {
+									player.sendMessage(Commands.Prefix + CantEnterField);
+									player.teleport(locFrom);
+									e.setCancelled(true);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 	@EventHandler
 	public static void onPlayerChat(AsyncPlayerChatEvent e) {
 		if (Commands.pbChat.contains(e.getPlayer())) {
