@@ -353,17 +353,10 @@ public class PlayerListener implements Listener {
 	}
 	@EventHandler
 	public static void onPlayerChat(AsyncPlayerChatEvent e) {
-		if (Commands.pbChat.contains(e.getPlayer())) {
-			e.getRecipients().clear();
-			for (Player player: Bukkit.getOnlinePlayers()) {
-				if (Commands.pbChat.contains(player)) {
-					e.getRecipients().add(player);
-				}
-			}
-			e.setFormat(Commands.Prefix + e.getFormat());
-		}
+		Methods.sendPBChat(e.getMessage());
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent e) {
 		Player player = e.getPlayer();

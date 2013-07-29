@@ -171,11 +171,7 @@ public class Commands {
 						}
 						Methods.playingTeams.clear();
 						Methods.matchStarted = false;
-						for (Player player: Bukkit.getOnlinePlayers()) {
-							if (pbChat.contains(player)) {
-								player.sendMessage(Prefix + MatchStopped);
-							}
-						}
+						Methods.sendPBChat(MatchStopped);
 					}
 					if (args[1].equalsIgnoreCase("start")) {
 						// Permissions check.
@@ -236,11 +232,7 @@ public class Commands {
 							}
 						}
 
-						for (Player player: Bukkit.getOnlinePlayers()) {
-							if (pbChat.contains(player)) {
-								player.sendMessage(Prefix + MatchStarted.replace("%team1", team1).replace("%team2", team2));
-							}
-						}
+						Methods.sendPBChat(MatchStarted.replace("%team1", team1).replace("%team2", team2));
 					}
 
 				}
@@ -306,11 +298,7 @@ public class Commands {
 						clockPaused = false;
 						clockRunning = false;
 						Bukkit.getServer().getScheduler().cancelTask(clockTask);
-						for (Player player: Bukkit.getOnlinePlayers()) {
-							if (pbChat.contains(player)) {
-								player.sendMessage(Prefix + ClockStopped);
-							}
-						}
+						Methods.sendPBChat(ClockStopped);
 						return true;
 					}
 					if (args[1].equalsIgnoreCase("resume")) {
@@ -332,28 +320,20 @@ public class Commands {
 							return true;
 						}
 						clockPaused = false;
-						for (Player player: Bukkit.getOnlinePlayers()) {
-							if (pbChat.contains(player)) {
-								player.sendMessage(Prefix + ClockResumed.replace("%seconds", String.valueOf(currentNumber / 20)));
-							}
-						}
+						Methods.sendPBChat(ClockResumed.replace("%seconds", String.valueOf(currentNumber / 20)));
+			
 						clockTask = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 							public void run() {
 								clockRunning = true;
 								currentNumber--;
-								for (Player player: Bukkit.getOnlinePlayers()) {
-									if (pbChat.contains(player)) {
-										if (currentNumber == 1200) {
-											player.sendMessage(Prefix + OneMinuteRemaining);
-										}
-										if (currentNumber == 0) {
-											player.sendMessage(Prefix + RoundComplete);
-											clockRunning = false;
-											Bukkit.getServer().getScheduler().cancelTask(clockTask);
-										}
-									}
+								if (currentNumber == 1200) {
+									Methods.sendPBChat(OneMinuteRemaining);
 								}
-
+								if (currentNumber == 0) {
+									Methods.sendPBChat(RoundComplete);
+									clockRunning = false;
+									Bukkit.getServer().getScheduler().cancelTask(clockTask);
+								}
 							}
 						}, 0L, 1L);
 					}
@@ -373,11 +353,8 @@ public class Commands {
 						}
 						Bukkit.getServer().getScheduler().cancelTask(clockTask);
 						clockPaused = true;
-						for (Player player: Bukkit.getOnlinePlayers()) {
-							if (pbChat.contains(player)) {
-								player.sendMessage(Prefix + ClockPaused.replace("%seconds", String.valueOf(currentNumber / 20)));
-							}
-						}
+						Methods.sendPBChat(ClockPaused.replace("%seconds", String.valueOf(currentNumber / 20)));
+						
 						return true;
 					}
 					if (args[1].equalsIgnoreCase("start")) {
@@ -406,20 +383,17 @@ public class Commands {
 							public void run() {
 								clockRunning = true;
 								currentNumber--;
-								for (Player player: Bukkit.getOnlinePlayers()) {
-									if (pbChat.contains(player)) {
-										if (currentNumber == startingNumber - 1) {
-											player.sendMessage(Prefix + RoundStarted.replace("%seconds", String.valueOf(startingNumber / 20)));
-										}
-										if (currentNumber == 1200) {
-											player.sendMessage(Prefix + OneMinuteRemaining);
-										}
-										if (currentNumber == 0) {
-											player.sendMessage(Prefix + RoundComplete);
-											clockRunning = false;
-											Bukkit.getServer().getScheduler().cancelTask(clockTask);
-										}
-									}
+								
+								if (currentNumber == startingNumber - 1) {
+									Methods.sendPBChat(RoundStarted.replace("%seconds", String.valueOf(startingNumber / 20)));
+								}
+								if (currentNumber == 1200) {
+									Methods.sendPBChat(Prefix + OneMinuteRemaining);
+								}
+								if (currentNumber == 0) {
+									Methods.sendPBChat(RoundComplete);
+									clockRunning = false;
+									Bukkit.getServer().getScheduler().cancelTask(clockTask);
 								}
 
 							}
