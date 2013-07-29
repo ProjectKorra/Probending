@@ -6,6 +6,8 @@ MySQL:
   user: root
   pass: ""
   db: minecraft
+RoundSettings:
+  Time: 180
 WorldGuard:
   EnableSupport: false
   ProbendingField: ProbendingField

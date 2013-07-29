@@ -59,7 +59,7 @@ public class Probending extends JavaPlugin {
 		Strings.MaxSizeReached = Methods.colorize(getConfig().getString("messages.team.MaxSizeReached"));
 		Strings.TeamAlreadyHasElement = Methods.colorize(getConfig().getString("messages.team.TeamAlreadyHasElement"));
 		Strings.TeamDoesNotExist = Methods.colorize(getConfig().getString("messages.team.TeamDoesNotExist"));
-		Strings.PlayerJoinedTeam = Methods.colorize(getConfig().getString("messages.team.PlayedJoinedTeam"));
+		Strings.PlayerJoinedTeam = Methods.colorize(getConfig().getString("messages.team.PlayerJoinedTeam"));
 		Strings.CantBootFromOwnTeam = Methods.colorize(getConfig().getString("messages.team.CantBootFromOwnTeam"));
 		Strings.PlayerNotOnThisTeam = Methods.colorize(getConfig().getString("messages.team.PlayerNotOnThisTeam"));
 		Strings.PlayerHasBeenBooted = Methods.colorize(getConfig().getString("messages.team.PlayerHasBeenBooted"));
@@ -126,6 +126,8 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("MySQL.db", "minecraft");
 		getConfig().addDefault("MySQL.user", "root");
 		getConfig().addDefault("MySQL.pass", "");
+		// Set Round Settings
+		getConfig().addDefault("RoundSettings.Time", 180);
 		// Set Team Settings
 		getConfig().addDefault("TeamSettings.AllowFire", true);
 		getConfig().addDefault("TeamSettings.AllowAir", false);

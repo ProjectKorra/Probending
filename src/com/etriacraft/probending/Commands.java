@@ -202,7 +202,6 @@ public class Commands {
 						// Checks to make sure the team has enough players.
 						if (Methods.getOnlineTeamSize(team1) < minSize || Methods.getOnlineTeamSize(team2) < minSize) {
 							s.sendMessage(Strings.Prefix + Strings.InvalidTeamSize);
-							s.sendMessage(Strings.Prefix + Methods.getOnlineTeamSize(team1));
 							return true;
 						}
 						// Add players to list of playing teams and send a message confirming it.
@@ -241,7 +240,7 @@ public class Commands {
 								currentNumber--;
 
 								if (currentNumber == startingNumber - 1) {
-									Methods.sendPBChat(Strings.RoundStarted.replace("%seconds", String.valueOf(startingNumber / 20)));
+									Methods.sendPBChat(Strings.RoundStarted.replace("%seconds", String.valueOf(startingNumber / 20).replace("%team1", Methods.TeamOne).replace("%team2", Methods.TeamTwo)));
 								}
 								if (currentNumber == 1200) {
 									Methods.sendPBChat(Strings.Prefix + Strings.OneMinuteRemaining);
@@ -270,7 +269,6 @@ public class Commands {
 								}
 							}
 						}
-						Methods.sendPBChat(Strings.RoundStarted.replace("%team1", team1).replace("%team2", team2));
 					}
 				}
 
