@@ -37,6 +37,6 @@ permissions:
       probending.team.addwin: true
       probending.team.addloss: true
       probending.import: true
-      probending.match.start: true
-      probending.match.stop: true
+      probending.round.start: true
+      probending.round.stop: true
       probending.worldguard.buildonfield: true

@@ -133,7 +133,7 @@ public class Commands {
 					s.sendMessage("-----§6Probending Commands§f-----");
 					s.sendMessage("§3/probending team§f - View team commands.");
 					s.sendMessage("§3/probending arena§f - View arena commands.");
-					s.sendMessage("§3/probending match§f - View Match Commands");
+					s.sendMessage("§3/probending round§f - View Match Commands");
 					if (s.hasPermission("probending.chat")) {
 						s.sendMessage("§3/probending chat§f - Turn on Probending Chat.");
 					}
@@ -147,26 +147,26 @@ public class Commands {
 					return true;
 				}
 
-				if (args[0].equalsIgnoreCase("match")) {
+				if (args[0].equalsIgnoreCase("round")) {
 					if (args.length == 1) {
-						s.sendMessage("-----§6Probending Match Commands§f-----");
-						if (s.hasPermission("probending.match.start")) {
-							s.sendMessage("§3/pb match start [Team1] [Team2]§f - Starts match.");
+						s.sendMessage("-----§6Probending Round Commands§f-----");
+						if (s.hasPermission("probending.round.start")) {
+							s.sendMessage("§3/pb round start [Team1] [Team2]§f - Starts match.");
 						}
 						if (s.hasPermission("probending.match.stop")) {
-							s.sendMessage("§3/pb match stop§f - Stops match.");
+							s.sendMessage("§3/pb round stop§f - Stops match.");
 						}
 						return true;
 					}
 					if (args[1].equalsIgnoreCase("stop")) {
 						// Permissions
-						if (!s.hasPermission("probending.match.stop")) {
+						if (!s.hasPermission("probending.round.stop")) {
 							s.sendMessage(Prefix + noPermission);
 							return true;
 						}
 
 						if (args.length != 2) {
-							s.sendMessage(Prefix + "§cProper Usage: §3/pb match stop");
+							s.sendMessage(Prefix + "§cProper Usage: §3/pb round stop");
 							return true;
 						}
 
@@ -189,14 +189,14 @@ public class Commands {
 					}
 					if (args[1].equalsIgnoreCase("start")) {
 						// Permissions check.
-						if (!s.hasPermission("probending.match.start")) {
+						if (!s.hasPermission("probending.round.start")) {
 							s.sendMessage(Prefix + noPermission);
 							return true;
 						}
 
 						// Makes sure the command has enough arguments.
 						if (args.length != 4) {
-							s.sendMessage(Prefix + "§cProper Usage: §3/pb match start [Team1] [Team2]");
+							s.sendMessage(Prefix + "§cProper Usage: §3/pb round start [Team1] [Team2]");
 							return true;
 						}
 
