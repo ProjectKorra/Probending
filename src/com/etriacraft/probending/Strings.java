@@ -34,16 +34,6 @@ public class Strings {
 
 	public static String TeamDisbanded;
 
-	public static String ArenaAlreadyExists;
-	public static String ArenaCreated;
-	public static String ArenaDoesNotExist;
-	public static String ArenaDeleted;
-
-	public static String SpectatorSpawnSet;
-	public static String fieldSpawnSet;
-
-	public static String SentToArena;
-
 	public static String configReloaded;
 
 	public static String NotEnoughMoney;
@@ -56,10 +46,6 @@ public class Strings {
 	public static String ChatEnabled;
 	public static String ChatDisabled;
 
-	
-
-	public static String NoClockPermissions;
-	public static String NoArenaPermissions;
 	public static String NoTeamPermissions;
 
 	public static String WinAddedToTeam;

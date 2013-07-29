@@ -11,11 +11,6 @@ permissions:
   probending.admin:
     default: false
     children:
-      probending.arena.spawn: true
-      probending.arena.create: true
-      probending.arena.setspawn.spectator: true
-      probending.arena.setspawn.field: true
-      probending.arena.delete: true
       probending.team.create: true
       probending.team.invite: true
       probending.team.info: true
@@ -27,16 +22,11 @@ permissions:
       probending.reload: true
       probending.team.rename: true
       probending.chat: true
-      probending.clock.start: true
-      probending.clock.stop: true
-      probending.clock.pause: true
-      probending.clock.resume: true
-      probending.team.sign.create: true
-      probending.team.sign.break: true
-      probending.team.sign.use: true
       probending.team.addwin: true
       probending.team.addloss: true
       probending.import: true
       probending.round.start: true
       probending.round.stop: true
+      probending.round.resume: true
+      probending.round.pause: true
       probending.worldguard.buildonfield: true

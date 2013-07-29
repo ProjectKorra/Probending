@@ -11,7 +11,6 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -733,78 +732,10 @@ public class Methods {
 		return message.replaceAll("(?i)&([a-fk-or0-9])", "\u00A7$1");
 	}
 
-	// Returns true if an arena exists.
-	public static boolean arenaExists(String arenaName) {
-		if (Probending.plugin.getConfig().getConfigurationSection("ArenaInfo") == null) {
-			return false;
-		}
-		Set<String> arenas = Probending.plugin.getConfig().getConfigurationSection("ArenaInfo").getKeys(false);
-		if (arenas.contains(arenaName)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	// Creates an arena.
-	public static void createArena(String arenaName) {
-		Probending.plugin.getConfig().set("ArenaInfo." + arenaName + ".created", true);
-		Probending.plugin.saveConfig();
-	}
-
-	// Delete an arena.
-	public static void deleteArena(String arenaName) {
-		Probending.plugin.getConfig().set("ArenaInfo." + arenaName, null);
-		Probending.plugin.saveConfig();
-	}
-
-	// Set's the spectator spawn of an arena.
-	public static void setSpectatorSpawn(String arenaName, Double x, Double y, Double z, String world) {
-		Probending.plugin.getConfig().set("ArenaInfo." + arenaName + ".SpectatorSpawn.world", world);
-		Probending.plugin.getConfig().set("ArenaInfo." + arenaName + ".SpectatorSpawn.x", x);
-		Probending.plugin.getConfig().set("ArenaInfo." + arenaName + ".SpectatorSpawn.y", y);
-		Probending.plugin.getConfig().set("ArenaInfo." + arenaName + ".SpectatorSpawn.z", z);
-		Probending.plugin.saveConfig();
-	}
-
-	// Sets the field spawn of an arena.
-	public static void setFieldSpawn(String arenaName, Double x, Double y, Double z, String world) {
-		Probending.plugin.getConfig().set("ArenaInfo." + arenaName + ".FieldSpawn.world", world);
-		Probending.plugin.getConfig().set("ArenaInfo." + arenaName + ".FieldSpawn.x", x);
-		Probending.plugin.getConfig().set("ArenaInfo." + arenaName + ".FieldSpawn.y", y);
-		Probending.plugin.getConfig().set("ArenaInfo." + arenaName + ".FieldSpawn.z", z);
-		Probending.plugin.saveConfig();
-	}
-
-	// Returns the Spectator Spawn of an arena.
-	public static Location getSpectatorSpawn(String arenaName) {
-		Double x = Probending.plugin.getConfig().getDouble("ArenaInfo." + arenaName + ".SpectatorSpawn.x");
-		Double y = Probending.plugin.getConfig().getDouble("ArenaInfo." + arenaName + ".SpectatorSpawn.y");
-		Double z = Probending.plugin.getConfig().getDouble("ArenaInfo." + arenaName + ".SpectatorSpawn.z");
-		World world = Bukkit.getWorld(Probending.plugin.getConfig().getString("ArenaInfo." + arenaName + ".SpectatorSpawn.world"));
-		Location location = new Location(world, x, y, z);
-		return location;
-	}
-
-	// Returns the field spawn of an arena.
-	public static Location getFieldSpawn(String arenaName) {
-		Double x = Probending.plugin.getConfig().getDouble("ArenaInfo." + arenaName + ".FieldSpawn.x");
-		Double y = Probending.plugin.getConfig().getDouble("ArenaInfo." + arenaName + ".FieldSpawn.y");
-		Double z = Probending.plugin.getConfig().getDouble("ArenaInfo." + arenaName + ".FieldSpawn.z");
-		World world = Bukkit.getWorld(Probending.plugin.getConfig().getString("ArenaInfo." + arenaName + ".FieldSpawn.world"));
-		Location location = new Location(world, x, y, z);
-		return location;
-	}
-
+	
 	// Returns a Set (List) of Strings.
 	public static Set<String> getTeams() {
 		return teams;
-	}
-
-	// Returns a Set (List) of Arenas.
-	public static Set<String> getArenas() {
-		Set<String> arenas = Probending.plugin.getConfig().getConfigurationSection("ArenaInfo").getKeys(false);
-		return arenas;
 	}
 
 	public static boolean setupEconomy() {
