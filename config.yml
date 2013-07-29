@@ -78,17 +78,11 @@ messages:
   RoundComplete: '&cThis round is now complete.'
   ClockAlreadyRunning: '&cThe clock is already running.'
   RoundStarted: '&cA probending round has been started for %seconds seconds.'
-  ClockPaused: '&cThe clock has been paused with &3%seconds seconds &cleft.'
-  ClockNotRunning: '&cThe clock is currently not running.'
-  ClockResumed: '&cThe clock has been resumed with &3%seconds seconds &cleft.'
-  ClockNotPaused: '&cThe clock is not paused.'
-  ClockStopped: '&cThe clock has been stopped.'
   NoTeamPermissions: '&cYou dont have permission for any team commands.'
-  NoClockPermissions: '&cYou dont have permission for any clock commands.'
   NoArenaPermissions: '&cYou dont have permission for any arena commands.'
   WinAddedToTeam: '&aAdded one win to &3%team&a.'
   LossAddedToTeam: '&aAdded one loss to &3%team&a.'
-  match:
+  round:
     MatchAlreadyGoing: '&cThere is already a match going.'
     InvalidTeamSize: '&cThe size of the team is invalid.'
     MatchStarted: '&cA match has been started between &e%team1 &cand &e%team2&c.'

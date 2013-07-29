@@ -36,6 +36,7 @@ public class Methods {
 
 	// Probending Match Stuff
 	public static boolean matchStarted = false;
+	public static boolean matchPaused = false;
 	public static Set<String> playingTeams = new HashSet<String>();
 	public static String TeamOne = null;
 	public static String TeamTwo = null;

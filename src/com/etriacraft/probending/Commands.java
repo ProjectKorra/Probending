@@ -28,8 +28,6 @@ public class Commands {
 	public static int clockTask;
 	// Booleans
 	public static Boolean arenainuse;
-	public static Boolean clockRunning = false;
-	public static boolean clockPaused = false;
 	// Strings
 	public static String Prefix;
 	public static String teamAlreadyExists;
@@ -85,15 +83,7 @@ public class Commands {
 	public static String ChatEnabled;
 	public static String ChatDisabled;
 
-	public static String RoundComplete;
-	public static String OneMinuteRemaining;
-	public static String ClockAlreadyRunning;
-	public static String RoundStarted;
-	public static String ClockPaused;
-	public static String ClockNotRunning;
-	public static String ClockNotPaused;
-	public static String ClockResumed;
-	public static String ClockStopped;
+	
 
 	public static String NoClockPermissions;
 	public static String NoArenaPermissions;
@@ -102,13 +92,19 @@ public class Commands {
 	public static String WinAddedToTeam;
 	public static String LossAddedToTeam;
 
-	// Match Messages
+	// Round Messages
 	public static String MatchAlreadyGoing;
 	public static String InvalidTeamSize;
 	public static String MatchStarted;
 
-	public static String NoOngoingMatch;
-	public static String MatchStopped;
+	public static String NoOngoingRound;
+	public static String RoundStopped;
+	public static String RoundPaused;
+	public static String RoundNotPaused;
+	public static String RoundStarted;
+	public static String RoundComplete;
+	public static String OneMinuteRemaining;
+	public static String RoundResumed;
 
 	Probending plugin;
 
@@ -151,12 +147,69 @@ public class Commands {
 					if (args.length == 1) {
 						s.sendMessage("-----§6Probending Round Commands§f-----");
 						if (s.hasPermission("probending.round.start")) {
-							s.sendMessage("§3/pb round start [Team1] [Team2]§f - Starts match.");
+							s.sendMessage("§3/pb round start [Team1] [Team2]§f - Starts Round.");
 						}
-						if (s.hasPermission("probending.match.stop")) {
-							s.sendMessage("§3/pb round stop§f - Stops match.");
+						if (s.hasPermission("probending.round.stop")) {
+							s.sendMessage("§3/pb round stop§f - Stops Round.");
+						}
+						if (s.hasPermission("probending.round.pause")) {
+							s.sendMessage("§3/pb round pause§f - Pauses Round.");
 						}
 						return true;
+					}
+					if (args[1].equalsIgnoreCase("resume")) {
+						if (args[1].equalsIgnoreCase("resume")) {
+							if (!s.hasPermission("probending.round.resume")) {
+								s.sendMessage(Prefix + noPermission);
+								return true;
+							}
+
+							if (args.length != 2) {
+								s.sendMessage("§cProper Usage: §3/pb round resume");
+								return true;
+							}
+							if (!Methods.matchStarted) {
+								s.sendMessage(Prefix + NoOngoingRound);
+								return true;
+							}
+							if (!Methods.matchPaused) {
+								s.sendMessage(Prefix + RoundNotPaused);
+								return true;
+							}
+							Methods.matchPaused = false;
+							Methods.sendPBChat(RoundResumed.replace("%seconds", String.valueOf(currentNumber / 20)));
+
+							clockTask = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+								public void run() {
+									currentNumber--;
+									if (currentNumber == 1200) {
+										Methods.sendPBChat(OneMinuteRemaining);
+									}
+									if (currentNumber == 0) {
+										Methods.sendPBChat(RoundComplete);
+										Methods.matchStarted = false;
+										Bukkit.getServer().getScheduler().cancelTask(clockTask);
+									}
+								}
+							}, 0L, 1L);
+						}
+					}
+					if (args[1].equalsIgnoreCase("pause")) {
+						if (!s.hasPermission("probending.round.pause")) {
+							s.sendMessage(Prefix + noPermission);
+							return true;
+						}
+						if (args.length != 2) {
+							s.sendMessage("§cProper Usage: §3/pb round pause");
+							return true;
+						}
+						if (!Methods.matchStarted) {
+							s.sendMessage(Prefix + NoOngoingRound);
+							return true;
+						}
+						Bukkit.getServer().getScheduler().cancelTask(clockTask);
+						Methods.matchPaused = true;
+						Methods.sendPBChat(RoundPaused.replace("%seconds", String.valueOf(currentNumber / 20)));
 					}
 					if (args[1].equalsIgnoreCase("stop")) {
 						// Permissions
@@ -171,7 +224,7 @@ public class Commands {
 						}
 
 						if (!Methods.matchStarted) {
-							s.sendMessage(Prefix + NoOngoingMatch);
+							s.sendMessage(Prefix + NoOngoingRound);
 							return true;
 						}
 						for (Player player: Bukkit.getOnlinePlayers()) {
@@ -183,9 +236,14 @@ public class Commands {
 								tmpArmor.remove(player);
 							}
 						}
+
+						Bukkit.getServer().getScheduler().cancelTask(clockTask);
+						
+						Methods.matchPaused = false;
 						Methods.playingTeams.clear();
 						Methods.matchStarted = false;
-						Methods.sendPBChat(MatchStopped);
+						Methods.sendPBChat(RoundStopped);
+						return true;
 					}
 					if (args[1].equalsIgnoreCase("start")) {
 						// Permissions check.
@@ -224,7 +282,6 @@ public class Commands {
 							return true;
 						}
 						// Add players to list of playing teams and send a message confirming it.
-						Methods.matchStarted = true;
 						Methods.playingTeams.add(team1.toLowerCase());
 						Methods.playingTeams.add(team2.toLowerCase());
 						Methods.TeamOne = team1.toLowerCase();
@@ -250,6 +307,30 @@ public class Commands {
 							}
 						}
 
+						int roundTime = plugin.getConfig().getInt("RoundSettings.Time");
+						currentNumber = roundTime * 20;
+						startingNumber = roundTime * 20;
+
+						clockTask = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+							public void run() {
+								Methods.matchStarted = true;
+								currentNumber--;
+
+								if (currentNumber == startingNumber - 1) {
+									Methods.sendPBChat(RoundStarted.replace("%seconds", String.valueOf(startingNumber / 20)));
+								}
+								if (currentNumber == 1200) {
+									Methods.sendPBChat(Prefix + OneMinuteRemaining);
+								}
+								if (currentNumber == 0) {
+									Methods.sendPBChat(RoundComplete);
+									Methods.matchStarted = false;
+									Bukkit.getServer().getScheduler().cancelTask(clockTask);
+								}
+
+							}
+						}, 0L, 1L);
+
 						if (Methods.WGSupportEnabled) {
 							if (Methods.getWorldGuard() != null) {
 								for (Player player: Bukkit.getOnlinePlayers()) {
@@ -265,9 +346,7 @@ public class Commands {
 								}
 							}
 						}
-
 						Methods.sendPBChat(MatchStarted.replace("%team1", team1).replace("%team2", team2));
-
 					}
 				}
 
@@ -298,145 +377,6 @@ public class Commands {
 					s.sendMessage(Prefix + "§aData imported to MySQL database.");
 				}
 
-				if (args[0].equalsIgnoreCase("clock")) {
-					if (args.length == 1) {
-						s.sendMessage("-----§6Probending Clock Commands§f-----");
-						if (s.hasPermission("probending.clock.start")) {
-							s.sendMessage("§3/pb clock start [Seconds]");
-						}
-						if (s.hasPermission("probending.clock.pause")) {
-							s.sendMessage("§3/pb clock pause");
-						}
-						if (s.hasPermission("probending.clock.resume")) {
-							s.sendMessage("§3/pb clock resume");
-						}
-						if (s.hasPermission("probending.clock.stop")) {
-							s.sendMessage("§3/pb clock stop");
-						} else {
-							s.sendMessage(Prefix + NoClockPermissions);
-						}
-						return true;
-					}
-					if (args[1].equalsIgnoreCase("stop")) {
-						if (!s.hasPermission("probending.clock.stop")) {
-							s.sendMessage(Prefix + noPermission);
-							return true;
-						}
-						if (args.length != 2) {
-							s.sendMessage("§cProper Usage: §3/pb clock stop");
-							return true;
-						}
-						if (!clockRunning) {
-							s.sendMessage(Prefix + ClockNotRunning);
-							return true;
-						}
-
-						clockPaused = false;
-						clockRunning = false;
-						Bukkit.getServer().getScheduler().cancelTask(clockTask);
-						Methods.sendPBChat(ClockStopped);
-						return true;
-					}
-					if (args[1].equalsIgnoreCase("resume")) {
-						if (!s.hasPermission("probending.clock.resume")) {
-							s.sendMessage(Prefix + noPermission);
-							return true;
-						}
-
-						if (args.length != 2) {
-							s.sendMessage("§cProper Usage: §3/pb clock resume");
-							return true;
-						}
-						if (!clockRunning) {
-							s.sendMessage(Prefix + ClockNotRunning);
-							return true;
-						}
-						if (!clockPaused) {
-							s.sendMessage(Prefix + ClockNotPaused);
-							return true;
-						}
-						clockPaused = false;
-						Methods.sendPBChat(ClockResumed.replace("%seconds", String.valueOf(currentNumber / 20)));
-
-						clockTask = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-							public void run() {
-								clockRunning = true;
-								currentNumber--;
-								if (currentNumber == 1200) {
-									Methods.sendPBChat(OneMinuteRemaining);
-								}
-								if (currentNumber == 0) {
-									Methods.sendPBChat(RoundComplete);
-									clockRunning = false;
-									Bukkit.getServer().getScheduler().cancelTask(clockTask);
-								}
-							}
-						}, 0L, 1L);
-					}
-					if (args[1].equalsIgnoreCase("pause")) {
-						if (!s.hasPermission("probending.clock.pause")) {
-							s.sendMessage(Prefix + noPermission);
-							return true;
-						}
-						if (args.length != 2) {
-							s.sendMessage("§cProper Usage: §3/pb clock pause");
-							return true;
-						}
-						if (!clockRunning) {
-							s.sendMessage(Prefix + ClockNotRunning);
-							return true;
-
-						}
-						Bukkit.getServer().getScheduler().cancelTask(clockTask);
-						clockPaused = true;
-						Methods.sendPBChat(ClockPaused.replace("%seconds", String.valueOf(currentNumber / 20)));
-
-						return true;
-					}
-					if (args[1].equalsIgnoreCase("start")) {
-						if (!s.hasPermission("probending.clock.start")) {
-							s.sendMessage(Prefix + noPermission);
-							return true;
-						}
-						if (args.length != 3) {
-							s.sendMessage("§cProper Usage: §3/pb clock start [Seconds]");
-							return true;
-						}
-						if (Bukkit.getServer().getScheduler().isCurrentlyRunning(clockTask)) {
-							s.sendMessage(Prefix + ClockAlreadyRunning);
-							return true;
-						}
-						if (clockRunning) {
-							s.sendMessage(Prefix + ClockAlreadyRunning);
-							return true;
-						}
-						int desiredTime = Integer.parseInt(args[2]);
-						currentNumber = desiredTime * 20;
-						startingNumber = desiredTime * 20;
-						clockSender = (Player) s;
-
-						clockTask = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-							public void run() {
-								clockRunning = true;
-								currentNumber--;
-
-								if (currentNumber == startingNumber - 1) {
-									Methods.sendPBChat(RoundStarted.replace("%seconds", String.valueOf(startingNumber / 20)));
-								}
-								if (currentNumber == 1200) {
-									Methods.sendPBChat(Prefix + OneMinuteRemaining);
-								}
-								if (currentNumber == 0) {
-									Methods.sendPBChat(RoundComplete);
-									clockRunning = false;
-									Bukkit.getServer().getScheduler().cancelTask(clockTask);
-								}
-
-							}
-						}, 0L, 1L);
-
-					}
-				}
 				if (args[0].equalsIgnoreCase("chat")) {
 					if (!s.hasPermission("probending.chat")) {
 						s.sendMessage(Prefix + noPermission);

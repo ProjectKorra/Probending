@@ -74,15 +74,9 @@ public class Probending extends JavaPlugin {
 		Commands.TeamAlreadyNamedThat = Methods.colorize(getConfig().getString("messages.TeamAlreadyNamedThat"));
 		Commands.ChatEnabled = Methods.colorize(getConfig().getString("messages.ChatEnabled"));
 		Commands.ChatDisabled = Methods.colorize(getConfig().getString("messages.ChatDisabled"));
-		Commands.OneMinuteRemaining = Methods.colorize(getConfig().getString("messages.OneMinuteRemaining"));
-		Commands.RoundComplete = Methods.colorize(getConfig().getString("messages.RoundComplete"));
-		Commands.ClockAlreadyRunning = Methods.colorize(getConfig().getString("messages.ClockAlreadyRunning"));
-		Commands.RoundStarted = Methods.colorize(getConfig().getString("messages.RoundStarted"));
-		Commands.ClockNotRunning = Methods.colorize(getConfig().getString("messages.ClockNotRunning"));
-		Commands.ClockPaused = Methods.colorize(getConfig().getString("messages.ClockPaused"));
-		Commands.ClockNotPaused = Methods.colorize(getConfig().getString("messages.ClockNotPaused"));
-		Commands.ClockResumed = Methods.colorize(getConfig().getString("messages.ClockResumed"));
-		Commands.ClockStopped = Methods.colorize(getConfig().getString("messages.ClockStopped"));
+		Commands.OneMinuteRemaining = Methods.colorize(getConfig().getString("messages.round.OneMinuteRemaining"));
+		Commands.RoundComplete = Methods.colorize(getConfig().getString("messages.round.RoundComplete"));
+		Commands.RoundStarted = Methods.colorize(getConfig().getString("messages.round.RoundStarted"));
 		Commands.NoArenaPermissions = Methods.colorize(getConfig().getString("messages.NoArenaPermissions"));
 		Commands.NoTeamPermissions = Methods.colorize(getConfig().getString("messages.NoTeamPermissions"));
 		Commands.NoClockPermissions = Methods.colorize(getConfig().getString("messages.NoClockPermissions"));
@@ -92,8 +86,6 @@ public class Probending extends JavaPlugin {
 		Commands.MatchAlreadyGoing = Methods.colorize(getConfig().getString("messages.match.MatchAlreadyGoing"));
 		Commands.InvalidTeamSize = Methods.colorize(getConfig().getString("messages.match.InvalidTeamSize"));
 		Commands.MatchStarted = Methods.colorize(getConfig().getString("messages.match.MatchStarted"));
-		Commands.MatchStopped = Methods.colorize(getConfig().getString("messages.match.MatchStopped"));
-		Commands.NoOngoingMatch = Methods.colorize(getConfig().getString("messages.match.NoOngoingMatch"));
 		PlayerListener.PlayerFouled = Methods.colorize(getConfig().getString("messages.match.PlayerFouled"));
 		PlayerListener.PlayerEliminated = Methods.colorize(getConfig().getString("messages.match.PlayerEliminated"));
 		PlayerListener.CantEnterField = Methods.colorize(getConfig().getString("messages.match.CantEnterField"));
@@ -217,17 +209,17 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("messages.WinAddedToTeam", "&aAdded one win to &3%team&a.");
 		
 		// Match Messages
-		getConfig().addDefault("messages.match.MatchAlreadyGoing", "&cThere is already a match going.");
-		getConfig().addDefault("messages.match.InvalidTeamSize", "&cThe team size of the team is invalid.");
-		getConfig().addDefault("messages.match.MatchStarted", "&cA match has been started between &e%team1 &cand &e%team2&c.");
-		getConfig().addDefault("messages.match.NoOngoingMatch", "&cThere is no ongoing match.");
-		getConfig().addDefault("messages.match.MatchStopped", "&cThe ongoing match has been stopped.");
-		getConfig().addDefault("messages.match.CantEnterField", "&cYou cant enter the Probending Field during a match.");
-		getConfig().addDefault("messages.match.PlayerEliminated", "&4&l%player &r&chas been eliminated.");
-		getConfig().addDefault("messages.match.PlayerFouled", "&4&lFOUL: &r&e%player &cmust move back one zone.");
-		getConfig().addDefault("messages.match.MatchEnded", "&cThis probending match has ended.");
-		getConfig().addDefault("messages.match.TeamWon", "&e%team &chas won this match.");
-		getConfig().addDefault("messages.match.MoveUpOneZone", "&aYou may move up one zone.");
+		getConfig().addDefault("messages.round.MatchAlreadyGoing", "&cThere is already a match going.");
+		getConfig().addDefault("messages.round.InvalidTeamSize", "&cThe team size of the team is invalid.");
+		getConfig().addDefault("messages.round.MatchStarted", "&cA match has been started between &e%team1 &cand &e%team2&c.");
+		getConfig().addDefault("messages.round.NoOngoingMatch", "&cThere is no ongoing match.");
+		getConfig().addDefault("messages.round.MatchStopped", "&cThe ongoing match has been stopped.");
+		getConfig().addDefault("messages.round.CantEnterField", "&cYou cant enter the Probending Field during a match.");
+		getConfig().addDefault("messages.round.PlayerEliminated", "&4&l%player &r&chas been eliminated.");
+		getConfig().addDefault("messages.round.PlayerFouled", "&4&lFOUL: &r&e%player &cmust move back one zone.");
+		getConfig().addDefault("messages.round.MatchEnded", "&cThis probending match has ended.");
+		getConfig().addDefault("messages.round.TeamWon", "&e%team &chas won this match.");
+		getConfig().addDefault("messages.round.MoveUpOneZone", "&aYou may move up one zone.");
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 	}
