@@ -55,14 +55,17 @@ public class Methods {
 	public static String t2z3 = Probending.plugin.getConfig().getString("WorldGuard.TeamTwoZoneThree").toLowerCase();
 
 	// Ends a Match
-	public static void endMatch(String winner) {
-		Methods.sendPBChat(Strings.RoundStopped);
-		Methods.sendPBChat(Strings.TeamWon.replace("%team", winner));
-		matchStarted = false;
-		playingTeams.clear();
-		TeamOne = null;
-		TeamTwo = null;
-		allowedZone.clear();
+	public static void restoreArmor() {
+		for (Player player: Bukkit.getOnlinePlayers()) {
+			if (Commands.tmpArmor.containsKey(player)) {
+				if (player.getInventory().getArmorContents() != null) {
+					player.getInventory().setArmorContents(null);
+				}
+				player.getInventory().setArmorContents(Commands.tmpArmor.get(player));
+				Commands.tmpArmor.remove(player);
+			}
+		}
+		
 	}
 	
 	public static Set<String> colors = new HashSet<String>();

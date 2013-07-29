@@ -86,6 +86,9 @@ public class Probending extends JavaPlugin {
 		Strings.PlayerFouled = Methods.colorize(getConfig().getString("messages.round.PlayerFouled"));
 		Strings.TeamWon = Methods.colorize(getConfig().getString("messages.round.TeamWon"));
 		Strings.MoveUpOneZone = Methods.colorize(getConfig().getString("messages.round.MoveUpOneZone"));
+		Strings.RoundPaused = Methods.colorize(getConfig().getString("messages.round.RoundPaused"));
+		Strings.RoundResumed = Methods.colorize(getConfig().getString("messages.round.RoundResumed"));
+		Strings.CantEnterField = Methods.colorize(getConfig().getString("messages.round.CantEnterField"));
 		
 		// Misc Strings
 		Strings.ChatEnabled = Methods.colorize(getConfig().getString("messages.misc.ChatEnabled"));
@@ -200,15 +203,16 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("messages.round.RoundComplete", "&cThis round is now complete.");
 		getConfig().addDefault("messages.round.RoundAlreadyGoing", "&cThere is already a round going on.");
 		getConfig().addDefault("messages.round.InvalidTeamSize", "&cThe size of the team is invalid.");
-		getConfig().addDefault("messages.round.RoundStarted", "&cA round has been started between &e%team1 &cand &e%team2&c.");
+		getConfig().addDefault("messages.round.RoundStarted", "&cA round has been started between &e%team1 &cand &e%team2&c for &e%seconds seconds&c.");
 		getConfig().addDefault("messages.round.RoundStopped", "&cThe ongoing round has ended.");
-		getConfig().addDefault("messages.round.NoongoingRound", "&cThere is no ongoing round.");
+		getConfig().addDefault("messages.round.NoOngoingRound", "&cThere is no ongoing round.");
 		getConfig().addDefault("messages.round.PlayerEliminated", "&4&l%player &r&chas been eliminated.");
 		getConfig().addDefault("messages.round.PlayerFouled", "&4&lFOUL: &r&e%player &cmust move back one zone.");
 		getConfig().addDefault("messages.round.RoundEnded", "&cThis probending round has ended.");
 		getConfig().addDefault("messages.round.TeamWon", "&e%team &chas won this round.");
 		getConfig().addDefault("messages.round.MoveUpOneZone", "&aYou may move up one zone.");
-		
+		getConfig().addDefault("messages.round.RoundPaused", "&cThe ongoing round has been paused with &e%seconds seconds &3left.");
+		getConfig().addDefault("messages.round.CantEnterField", "&cYou are not allowed to enter the field during a match.");
 		// Misc Messages
 		getConfig().addDefault("messages.misc.ChatEnabled", "&aYou have enabled Probending Chat. To disable it, run the command again.");
 		getConfig().addDefault("messages.misc.ChatDisabled", "&cYou have disabled Probending Chat.");

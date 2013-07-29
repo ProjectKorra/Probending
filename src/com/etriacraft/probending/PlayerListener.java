@@ -2,6 +2,7 @@ package com.etriacraft.probending;
 
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,235 +36,268 @@ public class PlayerListener implements Listener {
 		Set<String> fromRegions = Methods.RegionsAtLocation(from);
 		Set<String> toRegions = Methods.RegionsAtLocation(to);
 		String teamSide = null;
+		if (Methods.allowedZone.containsKey(p.getName())) { 
 
-		if (Methods.matchStarted && Methods.getWorldGuard() != null && Methods.AutomateMatches) {
-			if (Methods.getPlayerTeam(p.getName()) != null) {
-				if (Methods.getPlayerTeam(p.getName()).equalsIgnoreCase(Methods.TeamOne)) teamSide = Methods.TeamOne;
-				if (Methods.getPlayerTeam(p.getName()).equalsIgnoreCase(Methods.TeamTwo))teamSide = Methods.TeamTwo; 
-			}
-
-			if (!Methods.allowedZone.containsKey(p.getName())) return;
-
-
-			if (Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t2z3)&& !toRegions.contains(Methods.t2z3)) {
-				if (fromRegions.contains(Methods.t2z3)) {
-					Methods.allowedZone.remove(p.getName());
-					Methods.sendPBChat(Strings.PlayerEliminated.replace("%player", p.getName()));
-					p.getInventory().setArmorContents(null);
-					p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
-					Commands.tmpArmor.remove(p);
-					if (Methods.playersInZone(Methods.t2z3).size() == 0) {
-						Methods.endMatch(Methods.TeamOne);
-					}
+			if (Methods.matchStarted && Methods.getWorldGuard() != null && Methods.AutomateMatches) {
+				if (Methods.getPlayerTeam(p.getName()) != null) {
+					if (Methods.getPlayerTeam(p.getName()).equalsIgnoreCase(Methods.TeamOne)) teamSide = Methods.TeamOne;
+					if (Methods.getPlayerTeam(p.getName()).equalsIgnoreCase(Methods.TeamTwo))teamSide = Methods.TeamTwo; 
 				}
-				return;
-			}
-			if (Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z3) && !toRegions.contains(Methods.t1z3)) {
-				if (fromRegions.contains(Methods.t1z3)) {
-					Methods.allowedZone.remove(p.getName());
-					Methods.sendPBChat(Strings.PlayerEliminated.replace("%player", p.getName()));
-					p.getInventory().setArmorContents(null);
-					p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
-					Commands.tmpArmor.remove(p);
-					if (Methods.playersInZone(Methods.t1z3).size() == 0) {
-						Methods.endMatch(Methods.TeamTwo);
-					}
-				}
-				return;
-			}
-			if (toRegions.contains(Methods.t2z3)) {
-				if (!Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t2z3)) {
-					// Check Team Two Zone 2
-					if (fromRegions.contains(Methods.t2z2) && Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t2z2)) {
-						if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
-							Methods.allowedZone.put(p.getName(), Methods.t2z1);
-							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
-							if (Methods.playersInZone(Methods.t2z2).size() == 0) {
-								Methods.MovePlayersUp(Methods.TeamTwo, "Two");
-							}
-						}
 
-						if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
-							Methods.allowedZone.put(p.getName(), Methods.t2z3);
-							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
-							if (Methods.playersInZone(Methods.t2z2).size() == 0) {
-								Methods.MovePlayersUp(Methods.TeamOne, "One");
-							}
+
+
+				if (Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t2z3)&& !toRegions.contains(Methods.t2z3)) {
+					if (fromRegions.contains(Methods.t2z3)) {
+						Methods.allowedZone.remove(p.getName());
+						Methods.sendPBChat(Strings.PlayerEliminated.replace("%player", p.getName()));
+						p.getInventory().setArmorContents(null);
+						p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
+						Commands.tmpArmor.remove(p);
+						if (Methods.playersInZone(Methods.t2z3).size() == 0) {
+							Methods.sendPBChat(Strings.RoundStopped);
+							Methods.sendPBChat(Strings.TeamWon.replace("%team", Methods.TeamOne));
+							Bukkit.getServer().getScheduler().cancelTask(Commands.clockTask);
+							Methods.matchStarted = false;
+							Methods.playingTeams.clear();
+							Methods.TeamOne = null;
+							Methods.TeamTwo = null;
+							Methods.allowedZone.clear();
+							Methods.restoreArmor();
 						}
 					}
+					return;
 				}
-			}
-			if (toRegions.contains(Methods.t1z3)) {
-				if (!Methods.allowedZone.containsKey(p.getName())) return;
-
-				if (!Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z3)) {
-					// Check Team One Zone 2
-					if (fromRegions.contains(Methods.t1z2) && Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z2)) {
-						if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
-							Methods.allowedZone.put(p.getName(), Methods.t1z3);
-							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
-							if (Methods.playersInZone(Methods.t1z2).size() == 0) {
-								Methods.MovePlayersUp(Methods.TeamTwo, "Two");
-							}
+				if (Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z3) && !toRegions.contains(Methods.t1z3)) {
+					if (fromRegions.contains(Methods.t1z3)) {
+						Methods.allowedZone.remove(p.getName());
+						Methods.sendPBChat(Strings.PlayerEliminated.replace("%player", p.getName()));
+						p.getInventory().setArmorContents(null);
+						p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
+						Commands.tmpArmor.remove(p);
+						if (Methods.playersInZone(Methods.t1z3).size() == 0) {
+							Methods.sendPBChat(Strings.RoundStopped);
+							Methods.sendPBChat(Strings.TeamWon.replace("%team", Methods.TeamTwo));
+							Bukkit.getServer().getScheduler().cancelTask(Commands.clockTask);
+							Methods.matchStarted = false;
+							Methods.playingTeams.clear();
+							Methods.TeamOne = null;
+							Methods.TeamTwo = null;
+							Methods.allowedZone.clear();
+							Methods.restoreArmor();
 						}
+					}
+					return;
+				}
+				if (toRegions.contains(Methods.t2z3)) {
+					if (!Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t2z3)) {
+						// Check Team Two Zone 2
+						if (fromRegions.contains(Methods.t2z2) && Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t2z2)) {
+							if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
+								Methods.allowedZone.put(p.getName(), Methods.t2z1);
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								if (Methods.playersInZone(Methods.t2z2).size() == 0) {
+									Methods.MovePlayersUp(Methods.TeamTwo, "Two");
+								}
+							}
 
-						if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
-							Methods.allowedZone.put(p.getName(), Methods.t1z1);
-							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
-							if (Methods.playersInZone(Methods.t1z2).size() == 0) {
-								Methods.MovePlayersUp(Methods.TeamOne, "One");
+							if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
+								Methods.allowedZone.put(p.getName(), Methods.t2z3);
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								if (Methods.playersInZone(Methods.t2z2).size() == 0) {
+									Methods.MovePlayersUp(Methods.TeamOne, "One");
+								}
 							}
 						}
 					}
 				}
-			}
+				if (toRegions.contains(Methods.t1z3)) {
+					if (!Methods.allowedZone.containsKey(p.getName())) return;
 
-			if (toRegions.contains(Methods.t1z2)) {
-				if (!Methods.allowedZone.containsKey(p.getName())) return;
-				if (!Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z2)) {
-					// Check Team One Zone One
-					if (fromRegions.contains(Methods.t1z1) && Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z1)) {
-						if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
-							Methods.allowedZone.put(p.getName(), Methods.t1z2);
-							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
-							if (Methods.playersInZone(Methods.t1z1).size() == 0) {
-								Methods.MovePlayersUp(Methods.TeamTwo, "Two");
+					if (!Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z3)) {
+						// Check Team One Zone 2
+						if (fromRegions.contains(Methods.t1z2) && Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z2)) {
+							if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
+								Methods.allowedZone.put(p.getName(), Methods.t1z3);
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								if (Methods.playersInZone(Methods.t1z2).size() == 0) {
+									Methods.MovePlayersUp(Methods.TeamTwo, "Two");
+								}
 							}
-						}
-						if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
-							Methods.allowedZone.put(p.getName(), Methods.t2z1);
-							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
-							if (Methods.playersInZone(Methods.t1z1).size() == 0) {
-								Methods.MovePlayersUp(Methods.TeamOne, "One");
-							}
-						}
-					}
-					// Check Team One Zone Three
-					if (fromRegions.contains(Methods.t1z3) && Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z3)) {
-						if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
-							Methods.allowedZone.remove(p.getName());
-							Methods.sendPBChat(Strings.PlayerEliminated.replace("%player", p.getName()));
-							p.getInventory().setArmorContents(null);
-							p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
-							Commands.tmpArmor.remove(p);
-							if (Methods.playersInZone(Methods.t1z3).size() == 0) {
-								Methods.endMatch(Methods.TeamTwo);
-							}
-						}
-					}
 
-				}
-			}
-			if (toRegions.contains(Methods.t2z2)) {
-				if (!Methods.allowedZone.containsKey(p.getName())) return;
-				if (!Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t2z2)) {
-					// Check TeamTwoZoneOne
-					if (fromRegions.contains(Methods.t2z1)&& Methods.allowedZone.get(p.getName()).equals(Methods.t2z1)) {
-						if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
-							Methods.allowedZone.put(p.getName(), Methods.t2z2);
-							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
-							if (Methods.playersInZone(Methods.t2z1).size() == 0) {
-								Methods.MovePlayersUp(Methods.TeamOne, "One");
-							}
-						}
-						if (teamSide.equalsIgnoreCase(Methods.TeamOne)){
-							Methods.allowedZone.put(p.getName(), Methods.t1z1);
-							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
-							if (Methods.playersInZone(Methods.t2z1).size() == 0) {
-								Methods.MovePlayersUp(Methods.TeamTwo, "Two");
-							}
-						}
-					}
-					// Check TeamTwoZoneThree
-					if (fromRegions.contains(Methods.t2z3) && Methods.allowedZone.get(p.getName()).equals(Methods.t2z3)) {
-						if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
-							Methods.allowedZone.remove(p.getName());
-							Methods.sendPBChat(Strings.PlayerEliminated.replace("%player", p.getName()));
-							p.getInventory().setArmorContents(null);
-							p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
-							Commands.tmpArmor.remove(p);
-							if (Methods.playersInZone(Methods.t1z3).size() == 0) {
-								Methods.endMatch(Methods.TeamTwo);
+							if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
+								Methods.allowedZone.put(p.getName(), Methods.t1z1);
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								if (Methods.playersInZone(Methods.t1z2).size() == 0) {
+									Methods.MovePlayersUp(Methods.TeamOne, "One");
+								}
 							}
 						}
 					}
 				}
-			}
-			if (toRegions.contains(Methods.t2z1)) {
-				if (!Methods.allowedZone.containsKey(p.getName())) return;
-				if (!Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t2z1)) {
-					// Check Team Two Zone Two
-					if (fromRegions.contains(Methods.t2z2) && Methods.allowedZone.get(p.getName()).equals(Methods.t2z2)) {
-						if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
-							p.teleport(from);
-							Methods.allowedZone.put(p.getName(), Methods.t2z3); 
-							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
-							if (Methods.playersInZone(Methods.t2z2).size() == 0) {
-								Methods.MovePlayersUp(Methods.TeamOne, "One");
+
+				if (toRegions.contains(Methods.t1z2)) {
+					if (!Methods.allowedZone.containsKey(p.getName())) return;
+					if (!Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z2)) {
+						// Check Team One Zone One
+						if (fromRegions.contains(Methods.t1z1) && Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z1)) {
+							if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
+								Methods.allowedZone.put(p.getName(), Methods.t1z2);
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								if (Methods.playersInZone(Methods.t1z1).size() == 0) {
+									Methods.MovePlayersUp(Methods.TeamTwo, "Two");
+								}
+							}
+							if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
+								Methods.allowedZone.put(p.getName(), Methods.t2z1);
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								if (Methods.playersInZone(Methods.t1z1).size() == 0) {
+									Methods.MovePlayersUp(Methods.TeamOne, "One");
+								}
 							}
 						}
-						if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
-							Methods.allowedZone.put(p.getName(), Methods.t2z1);
-							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
-							if (Methods.playersInZone(Methods.t2z2).size() == 0) {
-								Methods.MovePlayersUp(Methods.TeamTwo, "Two");
+						// Check Team One Zone Three
+						if (fromRegions.contains(Methods.t1z3) && Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z3)) {
+							if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
+								Methods.allowedZone.remove(p.getName());
+								Methods.sendPBChat(Strings.PlayerEliminated.replace("%player", p.getName()));
+								p.getInventory().setArmorContents(null);
+								p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
+								Commands.tmpArmor.remove(p);
+								if (Methods.playersInZone(Methods.t1z3).size() == 0) {
+									Methods.sendPBChat(Strings.RoundStopped);
+									Methods.sendPBChat(Strings.TeamWon.replace("%team", Methods.TeamTwo));
+									Methods.matchStarted = false;
+									Bukkit.getServer().getScheduler().cancelTask(Commands.clockTask);
+									Methods.playingTeams.clear();
+									Methods.TeamOne = null;
+									Methods.TeamTwo = null;
+									Methods.allowedZone.clear();
+									Methods.restoreArmor();
+								}
 							}
 						}
+
 					}
-					// Check Team One Zone One
-					if (fromRegions.contains(Methods.t1z1) && Methods.allowedZone.get(p.getName()).equals(Methods.t1z1)) { // They are coming from Team One Zone One
-						if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
-							Methods.allowedZone.put(p.getName(), Methods.t1z2);
-							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
-							if (Methods.playersInZone(Methods.t1z1).size() == 0) {
-								Methods.MovePlayersUp(Methods.TeamTwo, "Two");
+				}
+				if (toRegions.contains(Methods.t2z2)) {
+					if (!Methods.allowedZone.containsKey(p.getName())) return;
+					if (!Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t2z2)) {
+						// Check TeamTwoZoneOne
+						if (fromRegions.contains(Methods.t2z1)&& Methods.allowedZone.get(p.getName()).equals(Methods.t2z1)) {
+							if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
+								Methods.allowedZone.put(p.getName(), Methods.t2z2);
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								if (Methods.playersInZone(Methods.t2z1).size() == 0) {
+									Methods.MovePlayersUp(Methods.TeamOne, "One");
+								}
+							}
+							if (teamSide.equalsIgnoreCase(Methods.TeamOne)){
+								Methods.allowedZone.put(p.getName(), Methods.t1z1);
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								if (Methods.playersInZone(Methods.t2z1).size() == 0) {
+									Methods.MovePlayersUp(Methods.TeamTwo, "Two");
+								}
 							}
 						}
-						if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
-							Methods.allowedZone.put(p.getName(), Methods.t2z1);
-							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
-							if (Methods.playersInZone(Methods.t1z1).size() == 0) {
-								Methods.MovePlayersUp(Methods.TeamOne, "One");
+						// Check TeamTwoZoneThree
+						if (fromRegions.contains(Methods.t2z3) && Methods.allowedZone.get(p.getName()).equals(Methods.t2z3)) {
+							if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
+								Methods.allowedZone.remove(p.getName());
+								Methods.sendPBChat(Strings.PlayerEliminated.replace("%player", p.getName()));
+								p.getInventory().setArmorContents(null);
+								p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
+								Commands.tmpArmor.remove(p);
+								if (Methods.playersInZone(Methods.t1z3).size() == 0) {
+									Methods.sendPBChat(Strings.RoundStopped);
+									Methods.sendPBChat(Strings.TeamWon.replace("%team", Methods.TeamOne));
+									Methods.matchStarted = false;
+									Bukkit.getServer().getScheduler().cancelTask(Commands.clockTask);
+									Methods.playingTeams.clear();
+									Methods.TeamOne = null;
+									Methods.TeamTwo = null;
+									Methods.allowedZone.clear();
+									Methods.restoreArmor();
+								}
 							}
 						}
 					}
 				}
-			}
-			if (toRegions.contains(Methods.t1z1)) {
-				if (!Methods.allowedZone.containsKey(p.getName())) return;
-				if (!Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z1)) {
-					//Check Team One Zone Two
-					if (fromRegions.contains(Methods.t1z2) && Methods.allowedZone.get(p.getName()).equals(Methods.t1z2)) { // They are coming from Team One's Second Zone.
-						if (teamSide.equalsIgnoreCase(Methods.TeamOne)) { // They are on Team One
-							p.teleport(from); // Sends them back to Zone 2.
-							Methods.allowedZone.put(p.getName(), Methods.t1z3); // They were fouled back to Zone 3.
-							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName())); // Notify Probending Chat.
-							if (Methods.playersInZone(Methods.t1z2).size() == 0) {
-								Methods.MovePlayersUp(Methods.TeamTwo, "Two");
+				if (toRegions.contains(Methods.t2z1)) {
+					if (!Methods.allowedZone.containsKey(p.getName())) return;
+					if (!Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t2z1)) {
+						// Check Team Two Zone Two
+						if (fromRegions.contains(Methods.t2z2) && Methods.allowedZone.get(p.getName()).equals(Methods.t2z2)) {
+							if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
+								p.teleport(from);
+								Methods.allowedZone.put(p.getName(), Methods.t2z3); 
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								if (Methods.playersInZone(Methods.t2z2).size() == 0) {
+									Methods.MovePlayersUp(Methods.TeamOne, "One");
+								}
+							}
+							if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
+								Methods.allowedZone.put(p.getName(), Methods.t2z1);
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								if (Methods.playersInZone(Methods.t2z2).size() == 0) {
+									Methods.MovePlayersUp(Methods.TeamTwo, "Two");
+								}
 							}
 						}
-						if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) { // They are on Team Two
-							Methods.allowedZone.put(p.getName(), Methods.t1z1); // Send them back to Team One Zone 1.
-							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName())); // Notify Probending Chat.
-							if (Methods.playersInZone(Methods.t1z2).size() == 0) {
-								Methods.MovePlayersUp(Methods.TeamOne, "One");
+						// Check Team One Zone One
+						if (fromRegions.contains(Methods.t1z1) && Methods.allowedZone.get(p.getName()).equals(Methods.t1z1)) { // They are coming from Team One Zone One
+							if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
+								Methods.allowedZone.put(p.getName(), Methods.t1z2);
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								if (Methods.playersInZone(Methods.t1z1).size() == 0) {
+									Methods.MovePlayersUp(Methods.TeamTwo, "Two");
+								}
+							}
+							if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
+								Methods.allowedZone.put(p.getName(), Methods.t2z1);
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								if (Methods.playersInZone(Methods.t1z1).size() == 0) {
+									Methods.MovePlayersUp(Methods.TeamOne, "One");
+								}
 							}
 						}
 					}
-					// Check Team Two Zone One
-					if (fromRegions.contains(Methods.t2z1) && Methods.allowedZone.get(p.getName()).equals(Methods.t2z1)) { // They are coming from Team Two's First Zone.
-						if (teamSide.equalsIgnoreCase(Methods.TeamOne)) { // Team One Player
-							Methods.allowedZone.put(p.getName(),  Methods.t1z1); // Stick them to Zone One on Team One's Side.
-							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName())); // Notify PB Chat.
-							if (Methods.playersInZone(Methods.t2z1).size() == 0) {
-								Methods.MovePlayersUp(Methods.TeamTwo, "Two");
+				}
+				if (toRegions.contains(Methods.t1z1)) {
+					if (!Methods.allowedZone.containsKey(p.getName())) return;
+					if (!Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z1)) {
+						//Check Team One Zone Two
+						if (fromRegions.contains(Methods.t1z2) && Methods.allowedZone.get(p.getName()).equals(Methods.t1z2)) { // They are coming from Team One's Second Zone.
+							if (teamSide.equalsIgnoreCase(Methods.TeamOne)) { // They are on Team One
+								p.teleport(from); // Sends them back to Zone 2.
+								Methods.allowedZone.put(p.getName(), Methods.t1z3); // They were fouled back to Zone 3.
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName())); // Notify Probending Chat.
+								if (Methods.playersInZone(Methods.t1z2).size() == 0) {
+									Methods.MovePlayersUp(Methods.TeamTwo, "Two");
+								}
+							}
+							if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) { // They are on Team Two
+								Methods.allowedZone.put(p.getName(), Methods.t1z1); // Send them back to Team One Zone 1.
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName())); // Notify Probending Chat.
+								if (Methods.playersInZone(Methods.t1z2).size() == 0) {
+									Methods.MovePlayersUp(Methods.TeamOne, "One");
+								}
 							}
 						}
-						if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
-							Methods.allowedZone.put(p.getName(), Methods.t2z2);
-							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
-							if (Methods.playersInZone(Methods.t2z1).size() == 0) {
-								Methods.MovePlayersUp(Methods.TeamOne, "One");
+						// Check Team Two Zone One
+						if (fromRegions.contains(Methods.t2z1) && Methods.allowedZone.get(p.getName()).equals(Methods.t2z1)) { // They are coming from Team Two's First Zone.
+							if (teamSide.equalsIgnoreCase(Methods.TeamOne)) { // Team One Player
+								Methods.allowedZone.put(p.getName(),  Methods.t1z1); // Stick them to Zone One on Team One's Side.
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName())); // Notify PB Chat.
+								if (Methods.playersInZone(Methods.t2z1).size() == 0) {
+									Methods.MovePlayersUp(Methods.TeamTwo, "Two");
+								}
+							}
+							if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
+								Methods.allowedZone.put(p.getName(), Methods.t2z2);
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								if (Methods.playersInZone(Methods.t2z1).size() == 0) {
+									Methods.MovePlayersUp(Methods.TeamOne, "One");
+								}
 							}
 						}
 					}

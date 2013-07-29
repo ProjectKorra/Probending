@@ -240,7 +240,7 @@ public class Commands {
 								currentNumber--;
 
 								if (currentNumber == startingNumber - 1) {
-									Methods.sendPBChat(Strings.RoundStarted.replace("%seconds", String.valueOf(startingNumber / 20).replace("%team1", Methods.TeamOne).replace("%team2", Methods.TeamTwo)));
+									Methods.sendPBChat(Strings.RoundStarted.replace("%seconds", String.valueOf(startingNumber / 20)).replace("%team1", Methods.TeamOne).replace("%team2", Methods.TeamTwo));
 								}
 								if (currentNumber == 1200) {
 									Methods.sendPBChat(Strings.Prefix + Strings.OneMinuteRemaining);
