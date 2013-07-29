@@ -3,22 +3,14 @@ package com.etriacraft.probending;
 import java.util.Set;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.inventory.ItemStack;
-
 import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -55,35 +47,39 @@ public class PlayerListener implements Listener {
 		Set<String> fromRegions = Methods.RegionsAtLocation(from);
 		Set<String> toRegions = Methods.RegionsAtLocation(to);
 		String teamSide = null;
-		
+
 		if (Methods.matchStarted && Methods.getWorldGuard() != null && Methods.AutomateMatches) {
 			if (Methods.getPlayerTeam(p.getName()) != null) {
 				if (Methods.getPlayerTeam(p.getName()).equalsIgnoreCase(Methods.TeamOne)) teamSide = Methods.TeamOne;
 				if (Methods.getPlayerTeam(p.getName()).equalsIgnoreCase(Methods.TeamTwo))teamSide = Methods.TeamTwo; 
 			}
-			
+
 			if (!Methods.allowedZone.containsKey(p.getName())) return;
 
-			
+
 			if (Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t2z3)&& !toRegions.contains(Methods.t2z3)) {
-				Methods.allowedZone.remove(p.getName());
-				Methods.sendPBChat(PlayerEliminated.replace("%player", p.getName()));
-				p.getInventory().setArmorContents(null);
-				p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
-				Commands.tmpArmor.remove(p);
-				if (Methods.playersInZone(Methods.t2z3).size() == 0) {
-					Methods.endMatch(Methods.TeamOne);
+				if (fromRegions.contains(Methods.t2z3)) {
+					Methods.allowedZone.remove(p.getName());
+					Methods.sendPBChat(PlayerEliminated.replace("%player", p.getName()));
+					p.getInventory().setArmorContents(null);
+					p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
+					Commands.tmpArmor.remove(p);
+					if (Methods.playersInZone(Methods.t2z3).size() == 0) {
+						Methods.endMatch(Methods.TeamOne);
+					}
 				}
 				return;
 			}
 			if (Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z3) && !toRegions.contains(Methods.t1z3)) {
-				Methods.allowedZone.remove(p.getName());
-				Methods.sendPBChat(PlayerEliminated.replace("%player", p.getName()));
-				p.getInventory().setArmorContents(null);
-				p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
-				Commands.tmpArmor.remove(p);
-				if (Methods.playersInZone(Methods.t1z3).size() == 0) {
-					Methods.endMatch(Methods.TeamTwo);
+				if (fromRegions.contains(Methods.t1z3)) {
+					Methods.allowedZone.remove(p.getName());
+					Methods.sendPBChat(PlayerEliminated.replace("%player", p.getName()));
+					p.getInventory().setArmorContents(null);
+					p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
+					Commands.tmpArmor.remove(p);
+					if (Methods.playersInZone(Methods.t1z3).size() == 0) {
+						Methods.endMatch(Methods.TeamTwo);
+					}
 				}
 				return;
 			}
@@ -98,7 +94,7 @@ public class PlayerListener implements Listener {
 								Methods.MovePlayersUp(Methods.TeamTwo, "Two");
 							}
 						}
-						
+
 						if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
 							Methods.allowedZone.put(p.getName(), Methods.t2z3);
 							Methods.sendPBChat(PlayerFouled.replace("%player", p.getName()));
@@ -111,7 +107,7 @@ public class PlayerListener implements Listener {
 			}
 			if (toRegions.contains(Methods.t1z3)) {
 				if (!Methods.allowedZone.containsKey(p.getName())) return;
-				
+
 				if (!Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z3)) {
 					// Check Team One Zone 2
 					if (fromRegions.contains(Methods.t1z2) && Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z2)) {
@@ -122,7 +118,7 @@ public class PlayerListener implements Listener {
 								Methods.MovePlayersUp(Methods.TeamTwo, "Two");
 							}
 						}
-						
+
 						if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
 							Methods.allowedZone.put(p.getName(), Methods.t1z1);
 							Methods.sendPBChat(PlayerFouled.replace("%player", p.getName()));
@@ -167,7 +163,7 @@ public class PlayerListener implements Listener {
 							}
 						}
 					}
-					
+
 				}
 			}
 			if (toRegions.contains(Methods.t2z2)) {
