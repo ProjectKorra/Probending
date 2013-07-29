@@ -30,3 +30,15 @@ permissions:
       probending.round.resume: true
       probending.round.pause: true
       probending.worldguard.buildonfield: true
+  probending.user:
+    default: false
+    children:
+      probending.team.create: true
+      probending.team.invite: true
+      probending.team.info: true
+      probending.team.join: true
+      probending.team.kick: true
+      probending.team.quit: true
+      probending.team.list: true
+      probending.team.rename: true
+      probending.chat: true
