@@ -25,6 +25,8 @@ TeamSettings:
   AllowChi: false
   MaxTeamSize: 4
   MinTeamSize: 2
+  TeamOneColor: Red
+  TeamTwoColor: Cyan
 Economy:
   Enabled: false
   ServerAccount: Server
@@ -84,9 +86,6 @@ messages:
   NoTeamPermissions: '&cYou dont have permission for any team commands.'
   NoClockPermissions: '&cYou dont have permission for any clock commands.'
   NoArenaPermissions: '&cYou dont have permission for any arena commands.'
-  InvalidSign: '&cThat is not a valid Probending sign.'
-  TeamSignCreated: '&cCreated a team sign for the %color team'
-  SetTeamColor: '&cYour team color has been set to %color.'
   WinAddedToTeam: '&aAdded one win to &3%team&a.'
   LossAddedToTeam: '&aAdded one loss to &3%team&a.'
   match:

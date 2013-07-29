@@ -7,12 +7,16 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
 import tools.Tools;
 
 public class Commands {
@@ -116,6 +120,7 @@ public class Commands {
 	public static Set<Player> pbChat = new HashSet<Player>();
 	public static HashMap<String, LinkedList<String>> teamInvites = new HashMap<String, LinkedList<String>>();
 	public static HashMap<String, LinkedList<String>> teamChallenges = new HashMap<String, LinkedList<String>>();
+	public static HashMap<Player, ItemStack[]> tmpArmor = new HashMap<Player, ItemStack[]>();
 
 	private void init() {
 		PluginCommand probending = plugin.getCommand("probending");
@@ -169,6 +174,15 @@ public class Commands {
 							s.sendMessage(Prefix + NoOngoingMatch);
 							return true;
 						}
+						for (Player player: Bukkit.getOnlinePlayers()) {
+							if (tmpArmor.containsKey(player)) {
+								if (player.getInventory().getArmorContents() != null) {
+									player.getInventory().setArmorContents(null);
+								}
+								player.getInventory().setArmorContents(tmpArmor.get(player));
+								tmpArmor.remove(player);
+							}
+						}
 						Methods.playingTeams.clear();
 						Methods.matchStarted = false;
 						Methods.sendPBChat(MatchStopped);
@@ -216,6 +230,26 @@ public class Commands {
 						Methods.TeamOne = team1.toLowerCase();
 						Methods.TeamTwo = team2.toLowerCase();
 
+						for (Player player: Bukkit.getOnlinePlayers()) {
+							String playerTeam = Methods.getPlayerTeam(player.getName());
+							Color teamColor = null;
+							if (playerTeam != null) {
+								if (playerTeam.equalsIgnoreCase(team1)) teamColor = Methods.getColorFromString(plugin.getConfig().getString("TeamSettings.TeamOneColor"));
+								if (playerTeam.equalsIgnoreCase(team2)) teamColor = Methods.getColorFromString(plugin.getConfig().getString("TeamSettings.TeamTwoColor"));
+								if (player.getInventory().getArmorContents() != null) {
+									tmpArmor.put(player, player.getInventory().getArmorContents()); // Backs up their armor.
+									ItemStack armor1 = Methods.createColorArmor(new ItemStack(Material.LEATHER_HELMET), teamColor);
+									ItemStack armor2 = Methods.createColorArmor(new ItemStack(Material.LEATHER_CHESTPLATE), teamColor);
+									ItemStack armor3 = Methods.createColorArmor(new ItemStack(Material.LEATHER_LEGGINGS), teamColor);
+									ItemStack armor4 = Methods.createColorArmor(new ItemStack(Material.LEATHER_BOOTS), teamColor);
+									player.getInventory().setHelmet(armor1);
+									player.getInventory().setChestplate(armor2);
+									player.getInventory().setLeggings(armor3);
+									player.getInventory().setBoots(armor4);
+								}
+							}
+						}
+
 						if (Methods.WGSupportEnabled) {
 							if (Methods.getWorldGuard() != null) {
 								for (Player player: Bukkit.getOnlinePlayers()) {
@@ -233,9 +267,11 @@ public class Commands {
 						}
 
 						Methods.sendPBChat(MatchStarted.replace("%team1", team1).replace("%team2", team2));
-					}
 
+					}
 				}
+
+
 
 				if (args[0].equalsIgnoreCase("import")) {
 					if (!s.hasPermission("probending.import")) {
@@ -321,7 +357,7 @@ public class Commands {
 						}
 						clockPaused = false;
 						Methods.sendPBChat(ClockResumed.replace("%seconds", String.valueOf(currentNumber / 20)));
-			
+
 						clockTask = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 							public void run() {
 								clockRunning = true;
@@ -354,7 +390,7 @@ public class Commands {
 						Bukkit.getServer().getScheduler().cancelTask(clockTask);
 						clockPaused = true;
 						Methods.sendPBChat(ClockPaused.replace("%seconds", String.valueOf(currentNumber / 20)));
-						
+
 						return true;
 					}
 					if (args[1].equalsIgnoreCase("start")) {
@@ -383,7 +419,7 @@ public class Commands {
 							public void run() {
 								clockRunning = true;
 								currentNumber--;
-								
+
 								if (currentNumber == startingNumber - 1) {
 									Methods.sendPBChat(RoundStarted.replace("%seconds", String.valueOf(startingNumber / 20)));
 								}

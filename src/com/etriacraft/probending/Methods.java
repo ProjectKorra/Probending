@@ -63,6 +63,8 @@ public class Methods {
 		TeamTwo = null;
 		allowedZone.clear();
 	}
+	
+	public static Set<String> colors = new HashSet<String>();
 	// Moves players up
 	public static void MovePlayersUp(String team, String Side) {
 		for (Player player: Bukkit.getOnlinePlayers()) {
@@ -148,23 +150,23 @@ public class Methods {
 
 	// Populates list of colors.
 	public static void populateColors() {
-		SignListener.colors.add("Cyan");
-		SignListener.colors.add("Black");
-		SignListener.colors.add("Blue");
-		SignListener.colors.add("Magenta");
-		SignListener.colors.add("Gray");
-		SignListener.colors.add("Green");
-		SignListener.colors.add("LightGreen");
-		SignListener.colors.add("DarkRed");
-		SignListener.colors.add("DarkBlue");
-		SignListener.colors.add("Olive");
-		SignListener.colors.add("Orange");
-		SignListener.colors.add("Purple");
-		SignListener.colors.add("Red");
-		SignListener.colors.add("Gray");
-		SignListener.colors.add("Teal"); 
-		SignListener.colors.add("White");
-		SignListener.colors.add("Yellow");
+		colors.add("Cyan");
+		colors.add("Black");
+		colors.add("Blue");
+		colors.add("Magenta");
+		colors.add("Gray");
+		colors.add("Green");
+		colors.add("LightGreen");
+		colors.add("DarkRed");
+		colors.add("DarkBlue");
+		colors.add("Olive");
+		colors.add("Orange");
+		colors.add("Purple");
+		colors.add("Red");
+		colors.add("Gray");
+		colors.add("Teal"); 
+		colors.add("White");
+		colors.add("Yellow");
 
 	}
 

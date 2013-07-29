@@ -86,8 +86,6 @@ public class Probending extends JavaPlugin {
 		Commands.NoArenaPermissions = Methods.colorize(getConfig().getString("messages.NoArenaPermissions"));
 		Commands.NoTeamPermissions = Methods.colorize(getConfig().getString("messages.NoTeamPermissions"));
 		Commands.NoClockPermissions = Methods.colorize(getConfig().getString("messages.NoClockPermissions"));
-		SignListener.InvalidSign = Methods.colorize(getConfig().getString("messages.InvalidSign"));
-		SignListener.TeamSignCreated = Methods.colorize(getConfig().getString("messages.TeamSignCreated"));
 		PlayerListener.SetTeamColor = Methods.colorize(getConfig().getString("messages.SetTeamColor"));
 		Commands.WinAddedToTeam = Methods.colorize(getConfig().getString("messages.WinAddedToTeam"));
 		Commands.LossAddedToTeam = Methods.colorize(getConfig().getString("messages.LossAddedToTeam"));
@@ -110,7 +108,6 @@ public class Probending extends JavaPlugin {
 		}
 		
 		getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
-		getServer().getPluginManager().registerEvents(new SignListener(this), this);
 		
 		if (getConfig().getBoolean("Economy.Enabled")) {
 			Methods.setupEconomy();
@@ -144,6 +141,8 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("TeamSettings.AllowChi", false);
 		getConfig().addDefault("TeamSettings.MaxTeamSize", 4);
 		getConfig().addDefault("TeamSettings.MinTeamSize", 2);
+		getConfig().addDefault("TeamSettings.TeamOneColor", "Red");
+		getConfig().addDefault("TeamSettings.TeamTwoColor", "Cyan");
 		// Set WorldGuard Settings
 		getConfig().addDefault("WorldGuard.EnableSupport", false);
 		getConfig().addDefault("WorldGuard.ProbendingField", "ProbendingField");
@@ -214,9 +213,6 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("messages.NoArenaPermissions", "&cYou dont have permission for any arena commands.");
 		getConfig().addDefault("messages.NoClockPermissions", "&cYou dont have permission for any clock commands.");
 		getConfig().addDefault("messages.NoTeamPermissions", "&cYou dont have permission for any team commands.");
-		getConfig().addDefault("messages.InvalidSign", "&cThat is not a valid Probending sign.");
-		getConfig().addDefault("messages.TeamSignCreated", "&cCreated a team sign for the %color team.");
-		getConfig().addDefault("messages.SetTeamColor", "&cYour team color has been set to %color.");
 		getConfig().addDefault("messages.LossAddedToTeam", "&aAdded one loss to &e%team&a.");
 		getConfig().addDefault("messages.WinAddedToTeam", "&aAdded one win to &3%team&a.");
 		
