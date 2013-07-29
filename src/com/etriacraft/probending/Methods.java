@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import net.milkbowl.vault.economy.Economy;
@@ -12,13 +13,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import tools.BendingType;
 import tools.Tools;
@@ -34,18 +40,101 @@ public class Methods {
 	// Probending Match Stuff
 	public static boolean matchStarted = false;
 	public static Set<String> playingTeams = new HashSet<String>();
+	public static String TeamOne = null;
+	public static String TeamTwo = null;
+	public static HashMap<String, String> allowedZone = new HashMap<String, String>();
 
 	// WorldGuard Stuffs
 	public static boolean WGSupportEnabled = Probending.plugin.getConfig().getBoolean("WorldGuard.EnableSupport");
 	public static boolean buildDisabled = Probending.plugin.getConfig().getBoolean("WorldGuard.DisableBuildOnField");
 	public static String ProbendingField = Probending.plugin.getConfig().getString("WorldGuard.ProbendingField");
-	public static String t1z1 = Probending.plugin.getConfig().getString("WorldGuard.TeamOneZoneOne");
-	public static String t1z2 = Probending.plugin.getConfig().getString("WorldGuard.TeamOneZoneTwo");
-	public static String t1z3 = Probending.plugin.getConfig().getString("WorldGuard.TeamOneZoneThree");
-	public static String t2z1 = Probending.plugin.getConfig().getString("WorldGuard.TeamTwoZoneOne");
-	public static String t2z2 = Probending.plugin.getConfig().getString("WorldGuard.TeamTwoZoneTwo");
-	public static String t2z3 = Probending.plugin.getConfig().getString("WorldGuard.TeamTwoZoneThree");
-	
+	public static boolean AutomateMatches = Probending.plugin.getConfig().getBoolean("WorldGuard.AutomateMatches");
+	public static String t1z1 = Probending.plugin.getConfig().getString("WorldGuard.TeamOneZoneOne").toLowerCase();
+	public static String t1z2 = Probending.plugin.getConfig().getString("WorldGuard.TeamOneZoneTwo").toLowerCase();
+	public static String t1z3 = Probending.plugin.getConfig().getString("WorldGuard.TeamOneZoneThree").toLowerCase();
+	public static String t2z1 = Probending.plugin.getConfig().getString("WorldGuard.TeamTwoZoneOne").toLowerCase();
+	public static String t2z2 = Probending.plugin.getConfig().getString("WorldGuard.TeamTwoZoneTwo").toLowerCase();
+	public static String t2z3 = Probending.plugin.getConfig().getString("WorldGuard.TeamTwoZoneThree").toLowerCase();
+
+	// Ends a Match
+	public static void endMatch(String winner) {
+		Methods.sendPBChat(PlayerListener.MatchEnded);
+		Methods.sendPBChat(PlayerListener.TeamWon.replace("%team", winner));
+		matchStarted = false;
+		playingTeams.clear();
+		TeamOne = null;
+		TeamTwo = null;
+		allowedZone.clear();
+	}
+	// Moves players up
+	public static void MovePlayersUp(String team, String Side) {
+		for (Player player: Bukkit.getOnlinePlayers()) {
+			if (getPlayerTeam(player.getName()) != null) {
+				if (getPlayerTeam(player.getName()).equalsIgnoreCase(team)) {
+					String playerZone = allowedZone.get(player.getName());
+						if (playerZone != null) {
+							if (Side.equalsIgnoreCase("One")) {
+								if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z1)) {
+									allowedZone.put(player.getName(), t2z1); // Moves them up to Team Two Zone One
+									player.sendMessage(Commands.Prefix + PlayerListener.MoveUpOneZone);
+									return;
+								}
+								if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z1)) {
+									allowedZone.put(player.getName(), t2z2);
+									player.sendMessage(Commands.Prefix + PlayerListener.MoveUpOneZone);
+									return;
+								}
+								if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z2)) {
+									allowedZone.put(player.getName(), t1z1);
+									player.sendMessage(Commands.Prefix + PlayerListener.MoveUpOneZone);
+									return;
+								}
+								if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z3)) {
+									allowedZone.put(player.getName(), t1z2);
+									player.sendMessage(Commands.Prefix + PlayerListener.MoveUpOneZone);
+									return;
+								}
+							}
+							if (Side.equalsIgnoreCase("Two")) {
+								if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z1)) {
+									allowedZone.put(player.getName(), t1z1);
+									player.sendMessage(Commands.Prefix + PlayerListener.MoveUpOneZone);
+									return;
+								}
+								if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z2)) {
+									allowedZone.put(player.getName(), t2z1);
+									player.sendMessage(Commands.Prefix + PlayerListener.MoveUpOneZone);
+									return;
+								}
+								if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z3)) {
+									allowedZone.put(player.getName(), t2z2);
+									player.sendMessage(Commands.Prefix + PlayerListener.MoveUpOneZone);
+									return;
+								}
+								if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z1)) {
+									allowedZone.put(player.getName(), t1z2);
+									player.sendMessage(Commands.Prefix + PlayerListener.MoveUpOneZone);
+									return;
+								}
+							}
+							
+					}
+				}
+			}
+		}
+	}
+	//Returns a set of players allowed in a zone.
+	public static Set<String> playersInZone(String zone) {
+		Set<String> playersInZone = new HashSet<String>();
+		for (Player p: Bukkit.getOnlinePlayers()) {
+			if (allowedZone.containsKey(p.getName())) {
+				if (allowedZone.get(p.getName()).equalsIgnoreCase(zone)) {
+					playersInZone.add(p.getName());
+				}
+			}
+		}
+		return playersInZone;
+	}
 	// Storage Data
 	public static Set<String> teams = new HashSet<String>();
 	public static HashMap<String, String> players = new HashMap<String, String>();
@@ -81,16 +170,38 @@ public class Methods {
 		SignListener.colors.add("Yellow");
 
 	}
+
 	// Checks if WorldGuard is enabled.
 	public static WorldGuardPlugin getWorldGuard() {
-	    Plugin plugin = Probending.plugin.getServer().getPluginManager().getPlugin("WorldGuard");
-	 
-	    // WorldGuard may not be loaded
-	    if (plugin == null || !(plugin instanceof WorldGuardPlugin)) {
-	        return null; // Maybe you want throw an exception instead
-	    }
-	 
-	    return (WorldGuardPlugin) plugin;
+		Plugin plugin = Probending.plugin.getServer().getPluginManager().getPlugin("WorldGuard");
+
+		// WorldGuard may not be loaded
+		if (plugin == null || !(plugin instanceof WorldGuardPlugin)) {
+			return null; // Maybe you want throw an exception instead
+		}
+
+		return (WorldGuardPlugin) plugin;
+	}
+	// Gets region player is in
+	public static Set<String> RegionsAtLocation(Location loc) {
+		
+		ApplicableRegionSet set = WGBukkit.getRegionManager(loc.getWorld()).getApplicableRegions(loc);
+		Set<String> regions = new HashSet<String>();
+		for (ProtectedRegion region: set) {
+			regions.add(region.getId());
+		}
+		
+		return regions;
+		
+	}
+
+	// Sends a message in Probending Chat
+	public static void sendPBChat(String message) {
+		for (Player player: Bukkit.getOnlinePlayers()) {
+			if (Commands.pbChat.contains(player)) {
+				player.sendMessage(Commands.Prefix + message);
+			}
+		}
 	}
 	// Gets a color from a string.
 	public static Color getColorFromString (String pretendColor) {
@@ -174,7 +285,7 @@ public class Methods {
 			teams = Probending.plugin.getConfig().getConfigurationSection("TeamInfo").getKeys(false);
 		}
 	}
-	
+
 	// Load Players on Starup
 	public static void loadPlayers() {
 		if (storage.equalsIgnoreCase("mysql")) {
@@ -256,26 +367,26 @@ public class Methods {
 			return true;
 		}
 		return false;
-//		if (storage.equalsIgnoreCase("mysql")) {
-//			ResultSet rs2 = DBConnection.sql.readQuery("SELECT * FROM probending_players WHERE player = '" + playerName + "'");
-//			try {
-//				if (rs2.next()) {
-//					return true;
-//				} else {
-//					return false;
-//				}
-//			} catch (SQLException ex) {
-//				ex.printStackTrace();
-//			}
-//		}
-//		if (storage.equalsIgnoreCase("flatfile")) {
-//			if (Probending.plugin.getConfig().get("players." + playerName) == (null)) {
-//				return false;
-//			} else {
-//				return true;
-//			}
-//		}
-//		return false;
+		//		if (storage.equalsIgnoreCase("mysql")) {
+		//			ResultSet rs2 = DBConnection.sql.readQuery("SELECT * FROM probending_players WHERE player = '" + playerName + "'");
+		//			try {
+		//				if (rs2.next()) {
+		//					return true;
+		//				} else {
+		//					return false;
+		//				}
+		//			} catch (SQLException ex) {
+		//				ex.printStackTrace();
+		//			}
+		//		}
+		//		if (storage.equalsIgnoreCase("flatfile")) {
+		//			if (Probending.plugin.getConfig().get("players." + playerName) == (null)) {
+		//				return false;
+		//			} else {
+		//				return true;
+		//			}
+		//		}
+		//		return false;
 	}
 
 	// Checks the player's element in the team. (Regardless of if they've changed)
@@ -326,20 +437,20 @@ public class Methods {
 	// Returns the name of the player's team.
 	public static String getPlayerTeam(String player) {
 		return players.get(player);
-//		if (storage.equalsIgnoreCase("mysql")) {
-//			ResultSet rs2 = DBConnection.sql.readQuery("SELECT * FROM probending_players WHERE player = '" + player + "'");
-//			try {
-//				if (rs2.next()) {
-//					return rs2.getString("team");
-//				}
-//			} catch (SQLException ex) {
-//				ex.printStackTrace();
-//			}
-//		}
-//		if (storage.equalsIgnoreCase("flatfile")) {
-//			return Probending.plugin.getConfig().getString("players." + player);
-//		}
-//		return null;
+		//		if (storage.equalsIgnoreCase("mysql")) {
+		//			ResultSet rs2 = DBConnection.sql.readQuery("SELECT * FROM probending_players WHERE player = '" + player + "'");
+		//			try {
+		//				if (rs2.next()) {
+		//					return rs2.getString("team");
+		//				}
+		//			} catch (SQLException ex) {
+		//				ex.printStackTrace();
+		//			}
+		//		}
+		//		if (storage.equalsIgnoreCase("flatfile")) {
+		//			return Probending.plugin.getConfig().getString("players." + player);
+		//		}
+		//		return null;
 	}
 
 	// Returns the amount of players in a team.
@@ -698,7 +809,7 @@ public class Methods {
 		Probending.econ = economyProvider.getProvider();
 		return (Probending.econ != null);
 	}
-	
+
 	public static void setWins(int wins, String teamName) {
 		if (storage.equalsIgnoreCase("mysql")) {
 			DBConnection.sql.modifyQuery("UPDATE probending_teams SET wins = " + wins + " WHERE team = '" + teamName + "'");
@@ -708,7 +819,7 @@ public class Methods {
 			Probending.plugin.saveConfig();
 		}
 	}
-	
+
 	public static void setLosses(int losses, String teamName) {
 		if (storage.equalsIgnoreCase("mysql")) {
 			DBConnection.sql.modifyQuery("UPDATE probending_teams SET losses = " + losses + " WHERE team = '" + teamName + "'");
@@ -718,7 +829,7 @@ public class Methods {
 			Probending.plugin.saveConfig();
 		}
 	}
-	
+
 	public static int getWins(String teamName) {
 		int wins = 0;
 		if (storage.equalsIgnoreCase("mysql")) {
@@ -736,7 +847,7 @@ public class Methods {
 		}
 		return wins;
 	}
-	
+
 	public static int getLosses(String teamName) {
 		int losses = 0;
 		if (storage.equalsIgnoreCase("mysql")) {
@@ -754,7 +865,7 @@ public class Methods {
 		}
 		return losses;
 	}
-	
+
 	public static void addWin(String teamName) {
 		int currentWins = getWins(teamName);
 		int newWins = currentWins + 1;
@@ -766,7 +877,7 @@ public class Methods {
 			Probending.plugin.saveConfig();
 		}
 	}
-	
+
 	public static void addLoss(String teamName) {
 		int currentLosses = getLosses(teamName);
 		int newLosses = currentLosses + 1;
@@ -778,7 +889,7 @@ public class Methods {
 			Probending.plugin.saveConfig();
 		}
 	}
-	
+
 	public static int getOnlineTeamSize(String teamName) {
 		int o = 0;
 		for (Player player: Bukkit.getOnlinePlayers()) {
@@ -792,7 +903,7 @@ public class Methods {
 			}
 		}
 		return o;
-		
+
 	}
 	public static void importTeams() {
 		Set<String> yamlTeams = Probending.plugin.getConfig().getConfigurationSection("TeamInfo").getKeys(false);
@@ -805,7 +916,7 @@ public class Methods {
 			String chiblocker = Probending.plugin.getConfig().getString("TeamInfo." + team + ".Chi");
 			Integer wins = Probending.plugin.getConfig().getInt("TeamInfo." + team + ".Wins");
 			Integer losses = Probending.plugin.getConfig().getInt("TeamInfo." + team + ".Losses");
-			
+
 			Methods.createTeam(team, owner);
 			if (airbender != null) {
 				Methods.addPlayerToTeam(team, airbender, "Air");
@@ -822,19 +933,19 @@ public class Methods {
 			if (chiblocker != null) {
 				Methods.addPlayerToTeam(team, chiblocker, "Chi");
 			}
-			
+
 			if (wins == null) {
 				Methods.setWins(0, team);
 			} else {
 				Methods.setWins(wins, team);
 			}
-			
+
 			if (losses == null) {
 				Methods.setLosses(0, team);
 			} else {
 				Methods.setLosses(losses, team);
 			}
-			
+
 		}
 	}
 

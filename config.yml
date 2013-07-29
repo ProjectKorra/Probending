@@ -9,6 +9,7 @@ MySQL:
 WorldGuard:
   EnableSupport: false
   ProbendingField: ProbendingField
+  AutomateMatches: false
   DisableBuildOnField: true
   TeamOneZoneOne: RedZone1
   TeamOneZoneTwo: RedZone2
@@ -94,3 +95,8 @@ messages:
     MatchStarted: '&cA match has been started between &e%team1 &cand &e%team2&c.'
     MatchStopped: '&cThe ongoing match has been stopped.'
     NoOngoingMatch: '&cThere is no ongoing match.'
+    PlayerEliminated: '&4&l%player &r&chas been eliminated.'
+    PlayerFouled: '&4&lFOUL: &r&e%player &cmust move back one zone.'
+    MatchEnded: '&cThis probending match has ended.'
+    TeamWon: '&e%team &chas won this match.'
+    MoveUpOneZone: '&aYou may move up one zone.'

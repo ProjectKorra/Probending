@@ -97,12 +97,12 @@ public class Commands {
 
 	public static String WinAddedToTeam;
 	public static String LossAddedToTeam;
-	
+
 	// Match Messages
 	public static String MatchAlreadyGoing;
 	public static String InvalidTeamSize;
 	public static String MatchStarted;
-	
+
 	public static String NoOngoingMatch;
 	public static String MatchStopped;
 
@@ -159,12 +159,12 @@ public class Commands {
 							s.sendMessage(Prefix + noPermission);
 							return true;
 						}
-						
+
 						if (args.length != 2) {
 							s.sendMessage(Prefix + "§cProper Usage: §3/pb match stop");
 							return true;
 						}
-						
+
 						if (!Methods.matchStarted) {
 							s.sendMessage(Prefix + NoOngoingMatch);
 							return true;
@@ -173,7 +173,7 @@ public class Commands {
 						Methods.matchStarted = false;
 						for (Player player: Bukkit.getOnlinePlayers()) {
 							if (pbChat.contains(player)) {
-								s.sendMessage(Prefix + MatchStopped);
+								player.sendMessage(Prefix + MatchStopped);
 							}
 						}
 					}
@@ -183,30 +183,30 @@ public class Commands {
 							s.sendMessage(Prefix + noPermission);
 							return true;
 						}
-						
+
 						// Makes sure the command has enough arguments.
 						if (args.length != 4) {
 							s.sendMessage(Prefix + "§cProper Usage: §3/pb match start [Team1] [Team2]");
 							return true;
 						}
-						
+
 						// Just so we dont start another match if one is already going.
 						if (Methods.matchStarted) {
 							s.sendMessage(Prefix + MatchAlreadyGoing);
 							return true;
 						}
-						
+
 						String team1 = args[2]; // Team 1
 						String team2 = args[3]; // Team 2
-						
+
 						// Checks to make sure both teams exist.
 						if (!Methods.teamExists(team1) || !Methods.teamExists(team2)) {
 							s.sendMessage(Prefix + TeamDoesNotExist);
 							return true;
 						}
-						
+
 						int minSize = plugin.getConfig().getInt("TeamSettings.MinTeamSize");
-						
+
 						// Checks to make sure the team has enough players.
 						if (Methods.getOnlineTeamSize(team1) < minSize || Methods.getOnlineTeamSize(team2) < minSize) {
 							s.sendMessage(Prefix + InvalidTeamSize);
@@ -217,10 +217,28 @@ public class Commands {
 						Methods.matchStarted = true;
 						Methods.playingTeams.add(team1.toLowerCase());
 						Methods.playingTeams.add(team2.toLowerCase());
-						
+						Methods.TeamOne = team1.toLowerCase();
+						Methods.TeamTwo = team2.toLowerCase();
+
+						if (Methods.WGSupportEnabled) {
+							if (Methods.getWorldGuard() != null) {
+								for (Player player: Bukkit.getOnlinePlayers()) {
+									String teamName = Methods.getPlayerTeam(player.getName());
+									if (teamName != null) {
+										if (teamName.equalsIgnoreCase(team1)) {
+											Methods.allowedZone.put(player.getName(), Methods.t1z1);
+										}
+										if (teamName.equalsIgnoreCase(team2)) {
+											Methods.allowedZone.put(player.getName(), Methods.t2z1);
+										}
+									}
+								}
+							}
+						}
+
 						for (Player player: Bukkit.getOnlinePlayers()) {
 							if (pbChat.contains(player)) {
-								s.sendMessage(Prefix + MatchStarted.replace("%team1", team1).replace("%team2", team2));
+								player.sendMessage(Prefix + MatchStarted.replace("%team1", team1).replace("%team2", team2));
 							}
 						}
 					}

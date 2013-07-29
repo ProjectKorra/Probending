@@ -96,8 +96,12 @@ public class Probending extends JavaPlugin {
 		Commands.MatchStarted = Methods.colorize(getConfig().getString("messages.match.MatchStarted"));
 		Commands.MatchStopped = Methods.colorize(getConfig().getString("messages.match.MatchStopped"));
 		Commands.NoOngoingMatch = Methods.colorize(getConfig().getString("messages.match.NoOngoingMatch"));
-		
+		PlayerListener.PlayerFouled = Methods.colorize(getConfig().getString("messages.match.PlayerFouled"));
+		PlayerListener.PlayerEliminated = Methods.colorize(getConfig().getString("messages.match.PlayerEliminated"));
 		PlayerListener.CantEnterField = Methods.colorize(getConfig().getString("messages.match.CantEnterField"));
+		PlayerListener.MatchEnded =  Methods.colorize(getConfig().getString("messages.match.MatchEnded"));
+		PlayerListener.TeamWon = Methods.colorize(getConfig().getString("messages.match.TeamWon"));
+		PlayerListener.MoveUpOneZone = Methods.colorize(getConfig().getString("messages.match.MoveUpOneZone"));
 		try {
 		    MetricsLite metrics = new MetricsLite(this);
 		    metrics.start();
@@ -143,6 +147,7 @@ public class Probending extends JavaPlugin {
 		// Set WorldGuard Settings
 		getConfig().addDefault("WorldGuard.EnableSupport", false);
 		getConfig().addDefault("WorldGuard.ProbendingField", "ProbendingField");
+		getConfig().addDefault("WorldGuard.AutomateMatches", false);
 		getConfig().addDefault("WorldGuard.DisableBuildDuringMatches", true);
 		getConfig().addDefault("WorldGuard.TeamOneZoneOne", "RedZone1");
 		getConfig().addDefault("WorldGuard.TeamOneZoneTwo", "RedZone2");
@@ -222,7 +227,11 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("messages.match.NoOngoingMatch", "&cThere is no ongoing match.");
 		getConfig().addDefault("messages.match.MatchStopped", "&cThe ongoing match has been stopped.");
 		getConfig().addDefault("messages.match.CantEnterField", "&cYou cant enter the Probending Field during a match.");
-		
+		getConfig().addDefault("messages.match.PlayerEliminated", "&4&l%player &r&chas been eliminated.");
+		getConfig().addDefault("messages.match.PlayerFouled", "&4&lFOUL: &r&e%player &cmust move back one zone.");
+		getConfig().addDefault("messages.match.MatchEnded", "&cThis probending match has ended.");
+		getConfig().addDefault("messages.match.TeamWon", "&e%team &chas won this match.");
+		getConfig().addDefault("messages.match.MoveUpOneZone", "&aYou may move up one zone.");
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 	}
