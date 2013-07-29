@@ -56,8 +56,8 @@ public class Methods {
 
 	// Ends a Match
 	public static void endMatch(String winner) {
-		Methods.sendPBChat(PlayerListener.MatchEnded);
-		Methods.sendPBChat(PlayerListener.TeamWon.replace("%team", winner));
+		Methods.sendPBChat(Strings.RoundStopped);
+		Methods.sendPBChat(Strings.TeamWon.replace("%team", winner));
 		matchStarted = false;
 		playingTeams.clear();
 		TeamOne = null;
@@ -76,44 +76,44 @@ public class Methods {
 							if (Side.equalsIgnoreCase("One")) {
 								if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z1)) {
 									allowedZone.put(player.getName(), t2z1); // Moves them up to Team Two Zone One
-									player.sendMessage(Commands.Prefix + PlayerListener.MoveUpOneZone);
+									player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
 									return;
 								}
 								if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z1)) {
 									allowedZone.put(player.getName(), t2z2);
-									player.sendMessage(Commands.Prefix + PlayerListener.MoveUpOneZone);
+									player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
 									return;
 								}
 								if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z2)) {
 									allowedZone.put(player.getName(), t1z1);
-									player.sendMessage(Commands.Prefix + PlayerListener.MoveUpOneZone);
+									player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
 									return;
 								}
 								if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z3)) {
 									allowedZone.put(player.getName(), t1z2);
-									player.sendMessage(Commands.Prefix + PlayerListener.MoveUpOneZone);
+									player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
 									return;
 								}
 							}
 							if (Side.equalsIgnoreCase("Two")) {
 								if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z1)) {
 									allowedZone.put(player.getName(), t1z1);
-									player.sendMessage(Commands.Prefix + PlayerListener.MoveUpOneZone);
+									player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
 									return;
 								}
 								if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z2)) {
 									allowedZone.put(player.getName(), t2z1);
-									player.sendMessage(Commands.Prefix + PlayerListener.MoveUpOneZone);
+									player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
 									return;
 								}
 								if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z3)) {
 									allowedZone.put(player.getName(), t2z2);
-									player.sendMessage(Commands.Prefix + PlayerListener.MoveUpOneZone);
+									player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
 									return;
 								}
 								if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z1)) {
 									allowedZone.put(player.getName(), t1z2);
-									player.sendMessage(Commands.Prefix + PlayerListener.MoveUpOneZone);
+									player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
 									return;
 								}
 							}
@@ -199,7 +199,7 @@ public class Methods {
 	public static void sendPBChat(String message) {
 		for (Player player: Bukkit.getOnlinePlayers()) {
 			if (Commands.pbChat.contains(player)) {
-				player.sendMessage(Commands.Prefix + message);
+				player.sendMessage(Strings.Prefix + message);
 			}
 		}
 	}

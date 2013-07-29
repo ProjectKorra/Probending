@@ -26,18 +26,6 @@ public class PlayerListener implements Listener {
 		this.plugin = plugin;
 	}
 
-	public static String RemovedFromTeamBecauseDifferentElement;
-	public static String SetTeamColor;
-
-	// Match Stuff
-	public static String CantEnterField;
-	public static String PlayerEliminated;
-	public static String PlayerFouled;
-
-	public static String MatchEnded;
-	public static String TeamWon;
-	public static String MoveUpOneZone;
-
 
 	@EventHandler
 	public void onPlayerMoveEvent(PlayerMoveEvent e) {
@@ -60,7 +48,7 @@ public class PlayerListener implements Listener {
 			if (Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t2z3)&& !toRegions.contains(Methods.t2z3)) {
 				if (fromRegions.contains(Methods.t2z3)) {
 					Methods.allowedZone.remove(p.getName());
-					Methods.sendPBChat(PlayerEliminated.replace("%player", p.getName()));
+					Methods.sendPBChat(Strings.PlayerEliminated.replace("%player", p.getName()));
 					p.getInventory().setArmorContents(null);
 					p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
 					Commands.tmpArmor.remove(p);
@@ -73,7 +61,7 @@ public class PlayerListener implements Listener {
 			if (Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z3) && !toRegions.contains(Methods.t1z3)) {
 				if (fromRegions.contains(Methods.t1z3)) {
 					Methods.allowedZone.remove(p.getName());
-					Methods.sendPBChat(PlayerEliminated.replace("%player", p.getName()));
+					Methods.sendPBChat(Strings.PlayerEliminated.replace("%player", p.getName()));
 					p.getInventory().setArmorContents(null);
 					p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
 					Commands.tmpArmor.remove(p);
@@ -89,7 +77,7 @@ public class PlayerListener implements Listener {
 					if (fromRegions.contains(Methods.t2z2) && Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t2z2)) {
 						if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
 							Methods.allowedZone.put(p.getName(), Methods.t2z1);
-							Methods.sendPBChat(PlayerFouled.replace("%player", p.getName()));
+							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
 							if (Methods.playersInZone(Methods.t2z2).size() == 0) {
 								Methods.MovePlayersUp(Methods.TeamTwo, "Two");
 							}
@@ -97,7 +85,7 @@ public class PlayerListener implements Listener {
 
 						if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
 							Methods.allowedZone.put(p.getName(), Methods.t2z3);
-							Methods.sendPBChat(PlayerFouled.replace("%player", p.getName()));
+							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
 							if (Methods.playersInZone(Methods.t2z2).size() == 0) {
 								Methods.MovePlayersUp(Methods.TeamOne, "One");
 							}
@@ -113,7 +101,7 @@ public class PlayerListener implements Listener {
 					if (fromRegions.contains(Methods.t1z2) && Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z2)) {
 						if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
 							Methods.allowedZone.put(p.getName(), Methods.t1z3);
-							Methods.sendPBChat(PlayerFouled.replace("%player", p.getName()));
+							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
 							if (Methods.playersInZone(Methods.t1z2).size() == 0) {
 								Methods.MovePlayersUp(Methods.TeamTwo, "Two");
 							}
@@ -121,7 +109,7 @@ public class PlayerListener implements Listener {
 
 						if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
 							Methods.allowedZone.put(p.getName(), Methods.t1z1);
-							Methods.sendPBChat(PlayerFouled.replace("%player", p.getName()));
+							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
 							if (Methods.playersInZone(Methods.t1z2).size() == 0) {
 								Methods.MovePlayersUp(Methods.TeamOne, "One");
 							}
@@ -137,14 +125,14 @@ public class PlayerListener implements Listener {
 					if (fromRegions.contains(Methods.t1z1) && Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z1)) {
 						if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
 							Methods.allowedZone.put(p.getName(), Methods.t1z2);
-							Methods.sendPBChat(PlayerFouled.replace("%player", p.getName()));
+							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
 							if (Methods.playersInZone(Methods.t1z1).size() == 0) {
 								Methods.MovePlayersUp(Methods.TeamTwo, "Two");
 							}
 						}
 						if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
 							Methods.allowedZone.put(p.getName(), Methods.t2z1);
-							Methods.sendPBChat(PlayerFouled.replace("%player", p.getName()));
+							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
 							if (Methods.playersInZone(Methods.t1z1).size() == 0) {
 								Methods.MovePlayersUp(Methods.TeamOne, "One");
 							}
@@ -154,7 +142,7 @@ public class PlayerListener implements Listener {
 					if (fromRegions.contains(Methods.t1z3) && Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z3)) {
 						if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
 							Methods.allowedZone.remove(p.getName());
-							Methods.sendPBChat(PlayerEliminated.replace("%player", p.getName()));
+							Methods.sendPBChat(Strings.PlayerEliminated.replace("%player", p.getName()));
 							p.getInventory().setArmorContents(null);
 							p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
 							Commands.tmpArmor.remove(p);
@@ -173,14 +161,14 @@ public class PlayerListener implements Listener {
 					if (fromRegions.contains(Methods.t2z1)&& Methods.allowedZone.get(p.getName()).equals(Methods.t2z1)) {
 						if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
 							Methods.allowedZone.put(p.getName(), Methods.t2z2);
-							Methods.sendPBChat(PlayerFouled.replace("%player", p.getName()));
+							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
 							if (Methods.playersInZone(Methods.t2z1).size() == 0) {
 								Methods.MovePlayersUp(Methods.TeamOne, "One");
 							}
 						}
 						if (teamSide.equalsIgnoreCase(Methods.TeamOne)){
 							Methods.allowedZone.put(p.getName(), Methods.t1z1);
-							Methods.sendPBChat(PlayerFouled.replace("%player", p.getName()));
+							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
 							if (Methods.playersInZone(Methods.t2z1).size() == 0) {
 								Methods.MovePlayersUp(Methods.TeamTwo, "Two");
 							}
@@ -190,7 +178,7 @@ public class PlayerListener implements Listener {
 					if (fromRegions.contains(Methods.t2z3) && Methods.allowedZone.get(p.getName()).equals(Methods.t2z3)) {
 						if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
 							Methods.allowedZone.remove(p.getName());
-							Methods.sendPBChat(PlayerEliminated.replace("%player", p.getName()));
+							Methods.sendPBChat(Strings.PlayerEliminated.replace("%player", p.getName()));
 							p.getInventory().setArmorContents(null);
 							p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
 							Commands.tmpArmor.remove(p);
@@ -209,14 +197,14 @@ public class PlayerListener implements Listener {
 						if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
 							p.teleport(from);
 							Methods.allowedZone.put(p.getName(), Methods.t2z3); 
-							Methods.sendPBChat(PlayerFouled.replace("%player", p.getName()));
+							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
 							if (Methods.playersInZone(Methods.t2z2).size() == 0) {
 								Methods.MovePlayersUp(Methods.TeamOne, "One");
 							}
 						}
 						if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
 							Methods.allowedZone.put(p.getName(), Methods.t2z1);
-							Methods.sendPBChat(PlayerFouled.replace("%player", p.getName()));
+							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
 							if (Methods.playersInZone(Methods.t2z2).size() == 0) {
 								Methods.MovePlayersUp(Methods.TeamTwo, "Two");
 							}
@@ -226,14 +214,14 @@ public class PlayerListener implements Listener {
 					if (fromRegions.contains(Methods.t1z1) && Methods.allowedZone.get(p.getName()).equals(Methods.t1z1)) { // They are coming from Team One Zone One
 						if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
 							Methods.allowedZone.put(p.getName(), Methods.t1z2);
-							Methods.sendPBChat(PlayerFouled.replace("%player", p.getName()));
+							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
 							if (Methods.playersInZone(Methods.t1z1).size() == 0) {
 								Methods.MovePlayersUp(Methods.TeamTwo, "Two");
 							}
 						}
 						if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
 							Methods.allowedZone.put(p.getName(), Methods.t2z1);
-							Methods.sendPBChat(PlayerFouled.replace("%player", p.getName()));
+							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
 							if (Methods.playersInZone(Methods.t1z1).size() == 0) {
 								Methods.MovePlayersUp(Methods.TeamOne, "One");
 							}
@@ -249,14 +237,14 @@ public class PlayerListener implements Listener {
 						if (teamSide.equalsIgnoreCase(Methods.TeamOne)) { // They are on Team One
 							p.teleport(from); // Sends them back to Zone 2.
 							Methods.allowedZone.put(p.getName(), Methods.t1z3); // They were fouled back to Zone 3.
-							Methods.sendPBChat(PlayerFouled.replace("%player", p.getName())); // Notify Probending Chat.
+							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName())); // Notify Probending Chat.
 							if (Methods.playersInZone(Methods.t1z2).size() == 0) {
 								Methods.MovePlayersUp(Methods.TeamTwo, "Two");
 							}
 						}
 						if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) { // They are on Team Two
 							Methods.allowedZone.put(p.getName(), Methods.t1z1); // Send them back to Team One Zone 1.
-							Methods.sendPBChat(PlayerFouled.replace("%player", p.getName())); // Notify Probending Chat.
+							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName())); // Notify Probending Chat.
 							if (Methods.playersInZone(Methods.t1z2).size() == 0) {
 								Methods.MovePlayersUp(Methods.TeamOne, "One");
 							}
@@ -266,14 +254,14 @@ public class PlayerListener implements Listener {
 					if (fromRegions.contains(Methods.t2z1) && Methods.allowedZone.get(p.getName()).equals(Methods.t2z1)) { // They are coming from Team Two's First Zone.
 						if (teamSide.equalsIgnoreCase(Methods.TeamOne)) { // Team One Player
 							Methods.allowedZone.put(p.getName(),  Methods.t1z1); // Stick them to Zone One on Team One's Side.
-							Methods.sendPBChat(PlayerFouled.replace("%player", p.getName())); // Notify PB Chat.
+							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName())); // Notify PB Chat.
 							if (Methods.playersInZone(Methods.t2z1).size() == 0) {
 								Methods.MovePlayersUp(Methods.TeamTwo, "Two");
 							}
 						}
 						if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
 							Methods.allowedZone.put(p.getName(), Methods.t2z2);
-							Methods.sendPBChat(PlayerFouled.replace("%player", p.getName()));
+							Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
 							if (Methods.playersInZone(Methods.t2z1).size() == 0) {
 								Methods.MovePlayersUp(Methods.TeamOne, "One");
 							}
@@ -341,13 +329,13 @@ public class PlayerListener implements Listener {
 								String teamName = Methods.getPlayerTeam(player.getName());
 								if (teamName != null) {
 									if (!Methods.playingTeams.contains(teamName.toLowerCase())) {
-										player.sendMessage(Commands.Prefix + CantEnterField);
+										player.sendMessage(Strings.Prefix + Strings.CantEnterField);
 										player.teleport(locFrom);
 										e.setCancelled(true);
 									}
 								}
 								if (teamName == null) {
-									player.sendMessage(Commands.Prefix + CantEnterField);
+									player.sendMessage(Strings.Prefix + Strings.CantEnterField);
 									player.teleport(locFrom);
 									e.setCancelled(true);
 								}
@@ -388,7 +376,7 @@ public class PlayerListener implements Listener {
 				String playerElementInTeam = Methods.getPlayerElementInTeam(player.getName(), team);
 				if (playerElementInTeam != null) {
 					if (!playerElementInTeam.equals(playerElement)) {
-						player.sendMessage(Commands.Prefix + RemovedFromTeamBecauseDifferentElement);
+						player.sendMessage(Strings.Prefix + Strings.RemovedFromTeamBecauseDifferentElement);
 						Methods.removePlayerFromTeam(team, player.getName(), playerElementInTeam);
 						Set<String> teamElements = Methods.getTeamElements(team);
 						if (teamElements.contains("Air")) {
