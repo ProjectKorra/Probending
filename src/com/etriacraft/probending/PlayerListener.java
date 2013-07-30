@@ -328,14 +328,14 @@ public class PlayerListener implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onInventoryClickEvent(InventoryClickEvent e) {
 		Entity entity = e.getWhoClicked();
-		
+
 		if (entity instanceof Player) {
 			Player p = (Player) entity;
-			
+
 			if (Commands.tmpArmor.containsKey(p)) { // Don't let them throw away out armor if we're storing theirs!
 				e.setCancelled(true);
 			}
@@ -397,67 +397,75 @@ public class PlayerListener implements Listener {
 	}
 	@EventHandler
 	public static void onPlayerChat(AsyncPlayerChatEvent e) {
-		Methods.sendPBChat(e.getMessage());
-	}
+		if (Commands.pbChat.contains(e.getPlayer())) {
+			e.getRecipients().clear();
+			for (Player player: Bukkit.getOnlinePlayers()) {
+				if (Commands.pbChat.contains(player)) {
+					e.getRecipients().add(player);
+				}
+			}
+			e.setFormat(Strings..Prefix + e.getFormat());
+		}
+	} 
 
-	@EventHandler
-	public static void onPlayerJoin(PlayerJoinEvent e) {
-		Player player = e.getPlayer();
-		if (!(Tools.getBendingTypes(player).size() > 1)) {
-			String team = Methods.getPlayerTeam(player.getName());
-			if (team != null) {
-				String playerElement = null;
-				if (Tools.isBender(player.getName(), BendingType.Air)) {
-					playerElement = "Air";
-				}
-				if (Tools.isBender(player.getName(), BendingType.Water)) {
-					playerElement = "Water";
-				}
-				if (Tools.isBender(player.getName(), BendingType.Earth)) {
-					playerElement = "Earth";
-				}
-				if (Tools.isBender(player.getName(), BendingType.Fire)) {
-					playerElement = "Fire";
-				}
-				if (Tools.isBender(player.getName(), BendingType.ChiBlocker)) {
-					playerElement = "Chi";
-				}
-				String playerElementInTeam = Methods.getPlayerElementInTeam(player.getName(), team);
-				if (playerElementInTeam != null) {
-					if (!playerElementInTeam.equals(playerElement)) {
-						player.sendMessage(Strings.Prefix + Strings.RemovedFromTeamBecauseDifferentElement);
-						Methods.removePlayerFromTeam(team, player.getName(), playerElementInTeam);
-						Set<String> teamElements = Methods.getTeamElements(team);
-						if (teamElements.contains("Air")) {
-							String airbender = Methods.getTeamAirbender(team);
-							Methods.setOwner(airbender, team);
-							return;
-						}
-						if (teamElements.contains("Water")) {
-							String bender = Methods.getTeamWaterbender(team);
-							Methods.setOwner(bender, team);
-							return;
-						}
-						if (teamElements.contains("Earth")) {
-							String bender = Methods.getTeamEarthbender(team);
-							Methods.setOwner(bender, team);
-							return;
-						}
-						if (teamElements.contains("Fire")) {
-							String bender = Methods.getTeamFirebender(team);
-							Methods.setOwner(bender, team);
-							return;
-						}
-						if (teamElements.contains("Chi")) {
-							String bender = Methods.getTeamChiblocker(team);
-							Methods.setOwner(bender, team);
-							return;
-						} else {
-							Methods.deleteTeam(team);
-						}
+@EventHandler
+public static void onPlayerJoin(PlayerJoinEvent e) {
+	Player player = e.getPlayer();
+	if (!(Tools.getBendingTypes(player).size() > 1)) {
+		String team = Methods.getPlayerTeam(player.getName());
+		if (team != null) {
+			String playerElement = null;
+			if (Tools.isBender(player.getName(), BendingType.Air)) {
+				playerElement = "Air";
+			}
+			if (Tools.isBender(player.getName(), BendingType.Water)) {
+				playerElement = "Water";
+			}
+			if (Tools.isBender(player.getName(), BendingType.Earth)) {
+				playerElement = "Earth";
+			}
+			if (Tools.isBender(player.getName(), BendingType.Fire)) {
+				playerElement = "Fire";
+			}
+			if (Tools.isBender(player.getName(), BendingType.ChiBlocker)) {
+				playerElement = "Chi";
+			}
+			String playerElementInTeam = Methods.getPlayerElementInTeam(player.getName(), team);
+			if (playerElementInTeam != null) {
+				if (!playerElementInTeam.equals(playerElement)) {
+					player.sendMessage(Strings.Prefix + Strings.RemovedFromTeamBecauseDifferentElement);
+					Methods.removePlayerFromTeam(team, player.getName(), playerElementInTeam);
+					Set<String> teamElements = Methods.getTeamElements(team);
+					if (teamElements.contains("Air")) {
+						String airbender = Methods.getTeamAirbender(team);
+						Methods.setOwner(airbender, team);
+						return;
+					}
+					if (teamElements.contains("Water")) {
+						String bender = Methods.getTeamWaterbender(team);
+						Methods.setOwner(bender, team);
+						return;
+					}
+					if (teamElements.contains("Earth")) {
+						String bender = Methods.getTeamEarthbender(team);
+						Methods.setOwner(bender, team);
+						return;
+					}
+					if (teamElements.contains("Fire")) {
+						String bender = Methods.getTeamFirebender(team);
+						Methods.setOwner(bender, team);
+						return;
+					}
+					if (teamElements.contains("Chi")) {
+						String bender = Methods.getTeamChiblocker(team);
+						Methods.setOwner(bender, team);
+						return;
+					} else {
+						Methods.deleteTeam(team);
 					}
 				}
 			}
 		}
 	}
+}
 }
