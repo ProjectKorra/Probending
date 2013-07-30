@@ -872,19 +872,6 @@ public class Commands {
 						String serverAccount = plugin.getConfig().getString("Economy.ServerAccount");
 						boolean econEnabled = plugin.getConfig().getBoolean("Economy.Enabled");
 
-
-						if (econEnabled) {
-							String currencyName = Probending.econ.currencyNamePlural();
-							Double playerBalance = Probending.econ.getBalance(s.getName());
-							if (playerBalance < creationCost) {
-								s.sendMessage(Strings.Prefix + Strings.NotEnoughMoney.replace("%currency", currencyName));
-								return true;
-							}
-							Probending.econ.withdrawPlayer(s.getName(), creationCost);
-							Probending.econ.depositPlayer(serverAccount, creationCost);
-							s.sendMessage(Strings.Prefix + Strings.MoneyWithdrawn.replace("%amount", creationCost.toString()).replace("%currency", currencyName));
-						}
-
 						String playerElement = Methods.getPlayerElementAsString(s.getName());
 
 						if (!Methods.getAirAllowed()) {
@@ -917,6 +904,20 @@ public class Commands {
 								return true;
 							}
 						}
+
+						if (econEnabled) {
+							String currencyName = Probending.econ.currencyNamePlural();
+							Double playerBalance = Probending.econ.getBalance(s.getName());
+							if (playerBalance < creationCost) {
+								s.sendMessage(Strings.Prefix + Strings.NotEnoughMoney.replace("%currency", currencyName));
+								return true;
+							}
+							Probending.econ.withdrawPlayer(s.getName(), creationCost);
+							Probending.econ.depositPlayer(serverAccount, creationCost);
+							s.sendMessage(Strings.Prefix + Strings.MoneyWithdrawn.replace("%amount", creationCost.toString()).replace("%currency", currencyName));
+						}
+
+						
 						Methods.createTeam(teamName, s.getName());
 						Methods.addPlayerToTeam(teamName, s.getName(), playerElement);
 						s.sendMessage(Strings.Prefix + Strings.TeamCreated.replace("%team", teamName));
