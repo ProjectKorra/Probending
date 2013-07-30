@@ -11,6 +11,7 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -53,6 +54,46 @@ public class Methods {
 	public static String t2z2 = Probending.plugin.getConfig().getString("WorldGuard.TeamTwoZoneTwo").toLowerCase();
 	public static String t2z3 = Probending.plugin.getConfig().getString("WorldGuard.TeamTwoZoneThree").toLowerCase();
 
+	// Sets Spawn for TeamOne
+	public static void setTeamOneSpawn(Location loc) {
+		Probending.plugin.getConfig().set("TeamSettings.TeamOneSpawn.World", loc.getWorld().getName());
+		Probending.plugin.getConfig().set("TeamSettings.TeamOneSpawn.x", loc.getX());
+		Probending.plugin.getConfig().set("TeamSettings.TeamOneSpawn.y", loc.getY());
+		Probending.plugin.getConfig().set("TeamSettings.TeamOneSpawn.z", loc.getZ());
+		Probending.plugin.saveConfig();
+	}
+	// Sets Spawn for TeamOne
+	public static void setTeamTwoSpawn(Location loc) {
+		Probending.plugin.getConfig().set("TeamSettings.TeamTwoSpawn.World", loc.getWorld().getName());
+		Probending.plugin.getConfig().set("TeamSettings.TeamTwoSpawn.x", loc.getX());
+		Probending.plugin.getConfig().set("TeamSettings.TeamTwoSpawn.y", loc.getY());
+		Probending.plugin.getConfig().set("TeamSettings.TeamTwoSpawn.z", loc.getZ());
+		Probending.plugin.saveConfig();
+	}
+	
+	// Returns Team One Spawn
+	public static Location getTeamOneSpawn() {
+		String worldS = Probending.plugin.getConfig().getString("TeamSettings.TeamOneSpawn.World");
+		World world = Bukkit.getWorld(worldS);
+		Double x = Probending.plugin.getConfig().getDouble("TeamSettings.TeamOneSpawn.x");
+		Double y = Probending.plugin.getConfig().getDouble("TeamSettings.TeamOneSpawn.y");
+		Double z = Probending.plugin.getConfig().getDouble("TeamSettings.TeamOneSpawn.z");
+		Location loc = new Location(world,x,y,z);
+		return loc;
+	}
+	
+	// Returns Team Two Spawn
+	public static Location getTeamTwoSpawn() {
+		String worldS = Probending.plugin.getConfig().getString("TeamSettings.TeamTwoSpawn.World");
+		World world = Bukkit.getWorld(worldS);
+		Double x = Probending.plugin.getConfig().getDouble("TeamSettings.TeamTwoSpawn.x");
+		Double y = Probending.plugin.getConfig().getDouble("TeamSettings.TeamTwoSpawn.y");
+		Double z = Probending.plugin.getConfig().getDouble("TeamSettings.TeamTwoSpawn.z");
+		Location loc = new Location(world,x,y,z);
+		return loc;
+	}
+	
+	
 	// Ends a Match
 	public static void restoreArmor() {
 		for (Player player: Bukkit.getOnlinePlayers()) {
@@ -64,9 +105,9 @@ public class Methods {
 				Commands.tmpArmor.remove(player);
 			}
 		}
-		
+
 	}
-	
+
 	public static Set<String> colors = new HashSet<String>();
 	// Moves players up
 	public static void MovePlayersUp(String team, String Side) {
@@ -74,52 +115,52 @@ public class Methods {
 			if (getPlayerTeam(player.getName()) != null) {
 				if (getPlayerTeam(player.getName()).equalsIgnoreCase(team)) {
 					String playerZone = allowedZone.get(player.getName());
-						if (playerZone != null) {
-							if (Side.equalsIgnoreCase("One")) {
-								if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z1)) {
-									allowedZone.put(player.getName(), t2z1); // Moves them up to Team Two Zone One
-									player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
-									return;
-								}
-								if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z1)) {
-									allowedZone.put(player.getName(), t2z2);
-									player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
-									return;
-								}
-								if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z2)) {
-									allowedZone.put(player.getName(), t1z1);
-									player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
-									return;
-								}
-								if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z3)) {
-									allowedZone.put(player.getName(), t1z2);
-									player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
-									return;
-								}
+					if (playerZone != null) {
+						if (Side.equalsIgnoreCase("One")) {
+							if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z1)) {
+								allowedZone.put(player.getName(), t2z1); // Moves them up to Team Two Zone One
+								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
+								return;
 							}
-							if (Side.equalsIgnoreCase("Two")) {
-								if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z1)) {
-									allowedZone.put(player.getName(), t1z1);
-									player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
-									return;
-								}
-								if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z2)) {
-									allowedZone.put(player.getName(), t2z1);
-									player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
-									return;
-								}
-								if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z3)) {
-									allowedZone.put(player.getName(), t2z2);
-									player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
-									return;
-								}
-								if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z1)) {
-									allowedZone.put(player.getName(), t1z2);
-									player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
-									return;
-								}
+							if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z1)) {
+								allowedZone.put(player.getName(), t2z2);
+								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
+								return;
 							}
-							
+							if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z2)) {
+								allowedZone.put(player.getName(), t1z1);
+								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
+								return;
+							}
+							if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z3)) {
+								allowedZone.put(player.getName(), t1z2);
+								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
+								return;
+							}
+						}
+						if (Side.equalsIgnoreCase("Two")) {
+							if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z1)) {
+								allowedZone.put(player.getName(), t1z1);
+								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
+								return;
+							}
+							if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z2)) {
+								allowedZone.put(player.getName(), t2z1);
+								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
+								return;
+							}
+							if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z3)) {
+								allowedZone.put(player.getName(), t2z2);
+								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
+								return;
+							}
+							if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z1)) {
+								allowedZone.put(player.getName(), t1z2);
+								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
+								return;
+							}
+						}
+
 					}
 				}
 			}
@@ -186,15 +227,15 @@ public class Methods {
 	}
 	// Gets region player is in
 	public static Set<String> RegionsAtLocation(Location loc) {
-		
+
 		ApplicableRegionSet set = WGBukkit.getRegionManager(loc.getWorld()).getApplicableRegions(loc);
 		Set<String> regions = new HashSet<String>();
 		for (ProtectedRegion region: set) {
 			regions.add(region.getId());
 		}
-		
+
 		return regions;
-		
+
 	}
 
 	// Sends a message in Probending Chat
@@ -732,7 +773,7 @@ public class Methods {
 		return message.replaceAll("(?i)&([a-fk-or0-9])", "\u00A7$1");
 	}
 
-	
+
 	// Returns a Set (List) of Strings.
 	public static Set<String> getTeams() {
 		return teams;
@@ -879,7 +920,7 @@ public class Methods {
 			} else {
 				Methods.setLosses(losses, team);
 			}
-			
+
 			Probending.plugin.getConfig().set("TeamInfo." + team, null);
 
 		}

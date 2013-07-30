@@ -93,3 +93,4 @@ messages:
     ChatDisabled: '&cYou have disabled Probending Chat.'
     WinAddedToTeam: '&aAdded one win to &3%team&a.'
     LossAddedToTeam: '&aAdded one loss to &3%team&a.'
+    TeamSpawnSet: '&aSet spawn for &e%team&a.'

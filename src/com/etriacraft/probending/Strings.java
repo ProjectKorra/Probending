@@ -2,6 +2,7 @@ package com.etriacraft.probending;
 
 public class Strings {
 
+	public static String TeamSpawnSet;
 	public static String Prefix;
 	public static String teamAlreadyExists;
 	public static String noBendingType;

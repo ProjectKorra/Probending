@@ -27,7 +27,7 @@ public class Commands {
 	// Booleans
 	public static Boolean arenainuse;
 	// Strings
-	
+
 
 	Probending plugin;
 
@@ -51,13 +51,15 @@ public class Commands {
 				if (args.length == 0) {
 					s.sendMessage("-----§6Probending Commands§f-----");
 					s.sendMessage("§3/probending team§f - View team commands.");
-					s.sendMessage("§3/probending arena§f - View arena commands.");
-					s.sendMessage("§3/probending round§f - View Match Commands");
+					s.sendMessage("§3/probending round§f - View round Commands");
 					if (s.hasPermission("probending.chat")) {
 						s.sendMessage("§3/probending chat§f - Turn on Probending Chat.");
 					}
 					if (s.hasPermission("probending.reload")) {
 						s.sendMessage("§3/probending reload§f - Reload Configuration.");
+					}
+					if (s.hasPermission("probending.setspawn")) {
+						s.sendMessage("§3/probending setspawn [TeamOne|TeamTwo]");
 					}
 					if (s.hasPermission("probending.import")) {
 						s.sendMessage("§4/probending import§f - Import data into MySQL Database.");
@@ -65,6 +67,33 @@ public class Commands {
 					return true;
 				}
 
+				if (args[0].equalsIgnoreCase("setspawn")) {
+					if (!s.hasPermission("probending.setspawn")) {
+						s.sendMessage(Strings.Prefix + Strings.noPermission);
+						return true;
+					}
+
+					if (args.length != 2) {
+						s.sendMessage(Strings.Prefix + "§cProper Usage: §3/pb setspawn [TeamOne|TeamTwo]");
+						return true;
+					}
+
+					if (!args[1].equalsIgnoreCase("teamone") && !args[1].equalsIgnoreCase("teamtwo")) {
+						s.sendMessage(Strings.Prefix + "§cProper Usage:  §3/pb setspawn [TeamOne|TeamTwo]");
+						return true;
+					}
+					if (args[1].equalsIgnoreCase("teamone")) {
+						Methods.setTeamOneSpawn(((Player) s).getLocation());
+						s.sendMessage(Strings.Prefix + Strings.TeamSpawnSet.replace("%team", "TeamOne"));
+						return true;
+					}
+					if (args[1].equalsIgnoreCase("teamtwo")) {
+						Methods.setTeamTwoSpawn(((Player) s).getLocation());
+						s.sendMessage(Strings.Prefix + Strings.TeamSpawnSet.replace("%team", "TeamTwo"));
+						return true;
+					}
+
+				}
 				if (args[0].equalsIgnoreCase("round")) {
 					if (args.length == 1) {
 						s.sendMessage("-----§6Probending Round Commands§f-----");
@@ -156,7 +185,7 @@ public class Commands {
 						Methods.restoreArmor();
 
 						Bukkit.getServer().getScheduler().cancelTask(clockTask);
-						
+
 						Methods.matchPaused = false;
 						Methods.playingTeams.clear();
 						Methods.matchStarted = false;
@@ -210,17 +239,22 @@ public class Commands {
 							if (playerTeam != null) {
 								if (playerTeam.equalsIgnoreCase(team1)) teamColor = Methods.getColorFromString(plugin.getConfig().getString("TeamSettings.TeamOneColor"));
 								if (playerTeam.equalsIgnoreCase(team2)) teamColor = Methods.getColorFromString(plugin.getConfig().getString("TeamSettings.TeamTwoColor"));
-								if (player.getInventory().getArmorContents() != null) {
-									tmpArmor.put(player, player.getInventory().getArmorContents()); // Backs up their armor.
-									ItemStack armor1 = Methods.createColorArmor(new ItemStack(Material.LEATHER_HELMET), teamColor);
-									ItemStack armor2 = Methods.createColorArmor(new ItemStack(Material.LEATHER_CHESTPLATE), teamColor);
-									ItemStack armor3 = Methods.createColorArmor(new ItemStack(Material.LEATHER_LEGGINGS), teamColor);
-									ItemStack armor4 = Methods.createColorArmor(new ItemStack(Material.LEATHER_BOOTS), teamColor);
-									player.getInventory().setHelmet(armor1);
-									player.getInventory().setChestplate(armor2);
-									player.getInventory().setLeggings(armor3);
-									player.getInventory().setBoots(armor4);
+								if (playerTeam.equalsIgnoreCase(Methods.TeamOne)) {
+									player.teleport(Methods.getTeamOneSpawn());
 								}
+								if (playerTeam.equalsIgnoreCase(Methods.TeamTwo)) {
+									player.teleport(Methods.getTeamTwoSpawn());
+								}
+								tmpArmor.put(player, player.getInventory().getArmorContents()); // Backs up their armor.
+								ItemStack armor1 = Methods.createColorArmor(new ItemStack(Material.LEATHER_HELMET), teamColor);
+								ItemStack armor2 = Methods.createColorArmor(new ItemStack(Material.LEATHER_CHESTPLATE), teamColor);
+								ItemStack armor3 = Methods.createColorArmor(new ItemStack(Material.LEATHER_LEGGINGS), teamColor);
+								ItemStack armor4 = Methods.createColorArmor(new ItemStack(Material.LEATHER_BOOTS), teamColor);
+								player.getInventory().setHelmet(armor1);
+								player.getInventory().setChestplate(armor2);
+								player.getInventory().setLeggings(armor3);
+								player.getInventory().setBoots(armor4);
+
 							}
 						}
 
@@ -917,7 +951,7 @@ public class Commands {
 							s.sendMessage(Strings.Prefix + Strings.MoneyWithdrawn.replace("%amount", creationCost.toString()).replace("%currency", currencyName));
 						}
 
-						
+
 						Methods.createTeam(teamName, s.getName());
 						Methods.addPlayerToTeam(teamName, s.getName(), playerElement);
 						s.sendMessage(Strings.Prefix + Strings.TeamCreated.replace("%team", teamName));

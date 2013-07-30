@@ -95,6 +95,7 @@ public class Probending extends JavaPlugin {
 		Strings.ChatDisabled = Methods.colorize(getConfig().getString("messages.misc.ChatDisabled"));
 		Strings.WinAddedToTeam = Methods.colorize(getConfig().getString("messages.misc.WinAddedToTeam"));
 		Strings.LossAddedToTeam = Methods.colorize(getConfig().getString("messages.misc.LossAddedToTeam"));
+		Strings.TeamSpawnSet = Methods.colorize(getConfig().getString("messages.misc.TeamSpawnSet"));
 		
 		try {
 		    MetricsLite metrics = new MetricsLite(this);
@@ -218,6 +219,7 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("messages.misc.ChatDisabled", "&cYou have disabled Probending Chat.");
 		getConfig().addDefault("messages.misc.WinAddedToTeam", "&aAdded one win to &3%team&a.");
 		getConfig().addDefault("messages.misc.LossAddedToTeam", "&aAdded one loss to &3%team&a.");
+		getConfig().addDefault("messages.misc.TeamSpawnSet", "&aSet spawn for &e%team&a.");
 		
 		// Finalize stuff
 		getConfig().options().copyDefaults(true);
