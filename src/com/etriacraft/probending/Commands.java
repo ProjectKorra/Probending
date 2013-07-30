@@ -355,6 +355,7 @@ public class Commands {
 						return true;
 					}
 					plugin.reloadConfig();
+					s.sendMessage(Strings.Prefix + "§cVersion: " + plugin.getDescription().getVersion());
 					s.sendMessage(Strings.Prefix + Strings.configReloaded);
 				}
 				if (args[0].equalsIgnoreCase("team")) {
