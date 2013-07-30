@@ -56,7 +56,6 @@ public class Commands {
 					if (s.hasPermission("probending.chat")) {
 						s.sendMessage("§3/probending chat§f - Turn on Probending Chat.");
 					}
-					s.sendMessage("§3/probending clock§f - View all clock commands.");
 					if (s.hasPermission("probending.reload")) {
 						s.sendMessage("§3/probending reload§f - Reload Configuration.");
 					}
@@ -77,6 +76,9 @@ public class Commands {
 						}
 						if (s.hasPermission("probending.round.pause")) {
 							s.sendMessage("§3/pb round pause§f - Pauses Round.");
+						}
+						if (s.hasPermission("probending.round.resume")) {
+							s.sendMessage("§3/pb round resume§f - Round Resumed.");
 						}
 						return true;
 					}
@@ -112,6 +114,7 @@ public class Commands {
 										Methods.sendPBChat(Strings.RoundComplete);
 										Methods.matchStarted = false;
 										Bukkit.getServer().getScheduler().cancelTask(clockTask);
+										Methods.restoreArmor();
 									}
 								}
 							}, 0L, 1L);
@@ -150,15 +153,7 @@ public class Commands {
 							s.sendMessage(Strings.Prefix + Strings.NoOngoingRound);
 							return true;
 						}
-						for (Player player: Bukkit.getOnlinePlayers()) {
-							if (tmpArmor.containsKey(player)) {
-								if (player.getInventory().getArmorContents() != null) {
-									player.getInventory().setArmorContents(null);
-								}
-								player.getInventory().setArmorContents(tmpArmor.get(player));
-								tmpArmor.remove(player);
-							}
-						}
+						Methods.restoreArmor();
 
 						Bukkit.getServer().getScheduler().cancelTask(clockTask);
 						
@@ -248,6 +243,7 @@ public class Commands {
 									Methods.sendPBChat(Strings.RoundComplete);
 									Methods.matchStarted = false;
 									Bukkit.getServer().getScheduler().cancelTask(clockTask);
+									Methods.restoreArmor();
 								}
 
 							}

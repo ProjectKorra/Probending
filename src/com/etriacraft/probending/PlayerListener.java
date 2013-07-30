@@ -404,7 +404,7 @@ public class PlayerListener implements Listener {
 					e.getRecipients().add(player);
 				}
 			}
-			e.setFormat(Strings..Prefix + e.getFormat());
+			e.setFormat(Strings.Prefix + e.getFormat());
 		}
 	} 
 
