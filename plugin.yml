@@ -30,6 +30,7 @@ permissions:
       probending.round.resume: true
       probending.round.pause: true
       probending.worldguard.buildonfield: true
+      probending.setspawn: true
   probending.user:
     default: false
     children:

@@ -70,7 +70,7 @@ public class Methods {
 		Probending.plugin.getConfig().set("TeamSettings.TeamTwoSpawn.z", loc.getZ());
 		Probending.plugin.saveConfig();
 	}
-	
+
 	// Returns Team One Spawn
 	public static Location getTeamOneSpawn() {
 		String worldS = Probending.plugin.getConfig().getString("TeamSettings.TeamOneSpawn.World");
@@ -81,7 +81,7 @@ public class Methods {
 		Location loc = new Location(world,x,y,z);
 		return loc;
 	}
-	
+
 	// Returns Team Two Spawn
 	public static Location getTeamTwoSpawn() {
 		String worldS = Probending.plugin.getConfig().getString("TeamSettings.TeamTwoSpawn.World");
@@ -92,8 +92,8 @@ public class Methods {
 		Location loc = new Location(world,x,y,z);
 		return loc;
 	}
-	
-	
+
+
 	// Ends a Match
 	public static void restoreArmor() {
 		for (Player player: Bukkit.getOnlinePlayers()) {
@@ -325,7 +325,9 @@ public class Methods {
 			}
 		}
 		if (storage.equalsIgnoreCase("flatfile")) {
-			teams = Probending.plugin.getConfig().getConfigurationSection("TeamInfo").getKeys(false);
+			if (Probending.plugin.getConfig().get("TeamInfo") != null) {
+				teams = Probending.plugin.getConfig().getConfigurationSection("TeamInfo").getKeys(false);
+			}
 		}
 	}
 
@@ -343,7 +345,9 @@ public class Methods {
 		}
 		if (storage.equalsIgnoreCase("flatfile")) {
 			Set<String> tmpPlayers = new HashSet<String>();
-			tmpPlayers.addAll(Probending.plugin.getConfig().getConfigurationSection("players").getKeys(false));
+			if (Probending.plugin.getConfig().get("players") != null) {
+				tmpPlayers.addAll(Probending.plugin.getConfig().getConfigurationSection("players").getKeys(false));
+			}
 			for (String player: tmpPlayers) {
 				if (Probending.plugin.getConfig().getString("players." + player) != null) {
 					String teamName = Probending.plugin.getConfig().getString("players." + player);
