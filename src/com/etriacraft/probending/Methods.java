@@ -879,6 +879,8 @@ public class Methods {
 			} else {
 				Methods.setLosses(losses, team);
 			}
+			
+			Probending.plugin.getConfig().set("TeamInfo." + team, null);
 
 		}
 	}
