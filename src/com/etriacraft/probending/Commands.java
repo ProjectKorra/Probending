@@ -708,7 +708,7 @@ public class Commands {
 								String teamName2 = Methods.getPlayerTeam(player.getName());
 								if (teamName2 != null) {
 									if (Methods.getPlayerTeam(player.getName()).equals(teamName)) {
-										player.sendMessage(Strings.Prefix + Strings.PlayerJoinedTeam.replace("%player", player.getName()).replace("%team", teamName));
+										player.sendMessage(Strings.Prefix + Strings.PlayerJoinedTeam.replace("%player", s.getName()).replace("%team", teamName));
 									}
 								}
 							}
