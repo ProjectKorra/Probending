@@ -41,6 +41,9 @@ public class Methods {
 	public static String TeamOne = null;
 	public static String TeamTwo = null;
 	public static HashMap<String, String> allowedZone = new HashMap<String, String>();
+	
+	public static Set<String> teamOnePlayers = new HashSet<String>();
+	public static Set<String> teamTwoPlayers = new HashSet<String>();
 
 	// WorldGuard Stuffs
 	public static boolean WGSupportEnabled = Probending.plugin.getConfig().getBoolean("WorldGuard.EnableSupport");

@@ -54,7 +54,8 @@ public class PlayerListener implements Listener {
 							p.getInventory().setArmorContents(null);
 							p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
 							Commands.tmpArmor.remove(p);
-							if (Methods.playersInZone(Methods.t2z3).size() == 0) {
+							Methods.teamOnePlayers.remove(p.getName());
+							if (Methods.teamOnePlayers.isEmpty()) {
 								Methods.sendPBChat(Strings.RoundStopped);
 								Methods.sendPBChat(Strings.TeamWon.replace("%team", Methods.TeamOne));
 								Bukkit.getServer().getScheduler().cancelTask(Commands.clockTask);
@@ -77,7 +78,8 @@ public class PlayerListener implements Listener {
 							p.getInventory().setArmorContents(null);
 							p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
 							Commands.tmpArmor.remove(p);
-							if (Methods.playersInZone(Methods.t1z3).size() == 0) {
+							Methods.teamTwoPlayers.remove(p.getName());
+							if (Methods.teamTwoPlayers.isEmpty()) {
 								Methods.sendPBChat(Strings.RoundStopped);
 								Methods.sendPBChat(Strings.TeamWon.replace("%team", Methods.TeamTwo));
 								Bukkit.getServer().getScheduler().cancelTask(Commands.clockTask);
@@ -166,7 +168,8 @@ public class PlayerListener implements Listener {
 								p.getInventory().setArmorContents(null);
 								p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
 								Commands.tmpArmor.remove(p);
-								if (Methods.playersInZone(Methods.t1z3).size() == 0) {
+								Methods.teamOnePlayers.remove(p.getName());
+								if (Methods.teamOnePlayers.isEmpty()) {
 									Methods.sendPBChat(Strings.RoundStopped);
 									Methods.sendPBChat(Strings.TeamWon.replace("%team", Methods.TeamTwo));
 									Methods.matchStarted = false;
@@ -210,7 +213,8 @@ public class PlayerListener implements Listener {
 								p.getInventory().setArmorContents(null);
 								p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
 								Commands.tmpArmor.remove(p);
-								if (Methods.playersInZone(Methods.t1z3).size() == 0) {
+								Methods.teamTwoPlayers.remove(p.getName());
+								if (Methods.teamTwoPlayers.isEmpty()) {
 									Methods.sendPBChat(Strings.RoundStopped);
 									Methods.sendPBChat(Strings.TeamWon.replace("%team", Methods.TeamOne));
 									Methods.matchStarted = false;

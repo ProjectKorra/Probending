@@ -240,10 +240,12 @@ public class Commands {
 								if (playerTeam.equalsIgnoreCase(team1)) teamColor = Methods.getColorFromString(plugin.getConfig().getString("TeamSettings.TeamOneColor"));
 								if (playerTeam.equalsIgnoreCase(team2)) teamColor = Methods.getColorFromString(plugin.getConfig().getString("TeamSettings.TeamTwoColor"));
 								if (playerTeam.equalsIgnoreCase(Methods.TeamOne)) {
+									Methods.teamOnePlayers.add(player.getName());
 									player.teleport(Methods.getTeamOneSpawn());
 								}
 								if (playerTeam.equalsIgnoreCase(Methods.TeamTwo)) {
 									player.teleport(Methods.getTeamTwoSpawn());
+									Methods.teamTwoPlayers.add(player.getName());
 								}
 								tmpArmor.put(player, player.getInventory().getArmorContents()); // Backs up their armor.
 								ItemStack armor1 = Methods.createColorArmor(new ItemStack(Material.LEATHER_HELMET), teamColor);
