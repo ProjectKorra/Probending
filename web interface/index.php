@@ -44,6 +44,9 @@ if ($ShowWins != false) {
 if ($ShowLosses != false) {
 	echo "<th>Losses</th>";
 }
+if ($ShowPoints != false) {
+	echo "<th>Points</th>";
+}
 
 // Rows per page
 $page_rows = 10;
@@ -59,7 +62,7 @@ if ($pagenum < 1) {
 
 $max = 'limit ' .($pagenum - 1) * $page_rows .',' .$page_rows;
 
-$data_p = mysql_query("SELECT * FROM probending_teams ORDER BY wins DESC $max") or die (mysql_error());
+$data_p = mysql_query("SELECT * FROM probending_teams ORDER BY points DESC $max") or die (mysql_error());
 
 while ($info = mysql_fetch_array($data_p)) {
 	echo '<tr>';
@@ -85,6 +88,9 @@ while ($info = mysql_fetch_array($data_p)) {
 	}
 	if ($ShowLosses != false) {
 	echo '<td>'.$info["losses"].'</td>';
+	}
+	if ($ShowPoints != false) {
+	echo '<td>'.$info["points"].'</td>';
 	}
 	echo '</tr>';
 }

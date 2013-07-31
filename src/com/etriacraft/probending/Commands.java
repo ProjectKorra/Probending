@@ -790,7 +790,7 @@ public class Commands {
 						}
 						s.sendMessage("§3Wins: §e" + wins);
 						s.sendMessage("§3Losses: §e" + losses);
-						s.sendMessage("§3Poitns: §e" + points);
+						s.sendMessage("§3Points: §e" + points);
 
 					}
 					if (args[1].equalsIgnoreCase("invite")) {
