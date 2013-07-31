@@ -91,7 +91,7 @@ while ($info = mysql_fetch_array($data_p)) {
 	}
 	if ($ShowPoints != false) {
 	echo '<td>'.$info["points"].'</td>';
-	}
+	
 	echo '</tr>';
 }
 echo "</table>";
