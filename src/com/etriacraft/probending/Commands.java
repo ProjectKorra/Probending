@@ -490,6 +490,10 @@ public class Commands {
 							Probending.econ.depositPlayer(serverAccount, renameFee);
 							s.sendMessage(Strings.Prefix + Strings.MoneyWithdrawn.replace("%amount", renameFee.toString()).replace("%currency", currency));
 						}
+						
+						int Wins = Methods.getWins(teamName);
+						int Losses = Methods.getLosses(teamName);
+						
 						Methods.createTeam(newName, s.getName());
 						String airbender = Methods.getTeamAirbender(teamName);
 						String waterbender = Methods.getTeamWaterbender(teamName);
@@ -517,6 +521,9 @@ public class Commands {
 							Methods.removePlayerFromTeam(teamName, chiblocker, "Chi");
 							Methods.addPlayerToTeam(newName, chiblocker, "Chi");
 						}
+						
+						Methods.setLosses(Losses, newName);
+						Methods.setWins(Wins, newName);
 
 						s.sendMessage(Strings.Prefix + Strings.TeamRenamed.replace("%newname", newName));
 						Methods.setOwner(s.getName(), newName);
