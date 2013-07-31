@@ -132,6 +132,8 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("MySQL.pass", "");
 		// Set Round Settings
 		getConfig().addDefault("RoundSettings.Time", 180);
+		getConfig().addDefault("RoundSettings.WinValue", 2);
+		getConfig().addDefault("RoundSettings.LossValue", 1);
 		// Set Team Settings
 		getConfig().addDefault("TeamSettings.AllowFire", true);
 		getConfig().addDefault("TeamSettings.AllowAir", false);

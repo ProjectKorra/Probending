@@ -761,6 +761,7 @@ public class Commands {
 
 						int wins = Methods.getWins(teamName);
 						int losses = Methods.getLosses(teamName);
+						int points = Methods.getPoints(teamName);
 
 						if (Methods.getAirAllowed()) {
 							if (air != null) {
@@ -789,6 +790,7 @@ public class Commands {
 						}
 						s.sendMessage("§3Wins: §e" + wins);
 						s.sendMessage("§3Losses: §e" + losses);
+						s.sendMessage("§3Poitns: §e" + points);
 
 					}
 					if (args[1].equalsIgnoreCase("invite")) {

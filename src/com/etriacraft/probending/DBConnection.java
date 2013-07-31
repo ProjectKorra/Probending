@@ -1,7 +1,11 @@
 package com.etriacraft.probending;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import com.etriacraft.probending.mysql.Database;
 import com.etriacraft.probending.mysql.MySQLConnection;
+import java.sql.DatabaseMetaData;
 
 public final class DBConnection {
 
@@ -45,6 +49,18 @@ public final class DBConnection {
 						+ "`losses` int(32),"
 						+ " PRIMARY KEY (id));";
 				sql.modifyQuery(query);
+			}
+			
+			DatabaseMetaData md;
+			try {
+				md = sql.getConnection().getMetaData();
+				ResultSet rs = md.getColumns(null, null, "probending_teams", "points");
+				if (!rs.next()) {
+					sql.modifyQuery("ALTER TABLE probending_players ADD points int(32)");
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 
 		}

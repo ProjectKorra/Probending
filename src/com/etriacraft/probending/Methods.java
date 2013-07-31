@@ -812,6 +812,23 @@ public class Methods {
 		}
 	}
 
+	public static int getPoints(String teamName) {
+		int points = 0;
+		if (storage.equalsIgnoreCase("mysql")) {
+			ResultSet rs2 = DBConnection.sql.readQuery("SELECT points FROM probending_teams WHERE team = '" + teamName + "'");
+			try {
+				if (rs2.next()) {
+					points = rs2.getInt("wins");
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if (storage.equalsIgnoreCase("flatfile")) {
+			points = Probending.plugin.getConfig().getInt("TeamInfo." + teamName + ".Points");
+		}
+		return points;
+	}
 	public static int getWins(String teamName) {
 		int wins = 0;
 		if (storage.equalsIgnoreCase("mysql")) {
@@ -851,11 +868,16 @@ public class Methods {
 	public static void addWin(String teamName) {
 		int currentWins = getWins(teamName);
 		int newWins = currentWins + 1;
+		int pointvalue = Probending.plugin.getConfig().getInt("RoundSettings.WinValue");
+		int points = getPoints(teamName);
+		int newPoints = points + pointvalue;
 		if (storage.equalsIgnoreCase("mysql")) {
 			DBConnection.sql.modifyQuery("UPDATE probending_teams SET wins = " + newWins + " WHERE team = '" + teamName + "'");
+			DBConnection.sql.modifyQuery("UPDATE probending_teams SET points = " + newPoints + " WHERE team = '" + teamName + "'");
 		}
 		if (storage.equalsIgnoreCase("flatfile")) {
 			Probending.plugin.getConfig().set("TeamInfo." + teamName + ".Wins", newWins);
+			Probending.plugin.getConfig().set("TeamInfo." + teamName + ".Points", newPoints);
 			Probending.plugin.saveConfig();
 		}
 	}
@@ -863,11 +885,16 @@ public class Methods {
 	public static void addLoss(String teamName) {
 		int currentLosses = getLosses(teamName);
 		int newLosses = currentLosses + 1;
+		int pointvalue = Probending.plugin.getConfig().getInt("RoundSettings.LossValue");
+		int points = getPoints(teamName);
+		int newPoints = pointvalue + points;
 		if (storage.equalsIgnoreCase("mysql")) {
 			DBConnection.sql.modifyQuery("UPDATE probending_teams SET losses = " + newLosses + " WHERE team = '" + teamName + "'");
+			DBConnection.sql.modifyQuery("UPDATE probending_teams SET points = " + newPoints + " WHERE team = '" + teamName + "'");
 		}
 		if (storage.equalsIgnoreCase("flatfile")) {
 			Probending.plugin.getConfig().set("TeamInfo." + teamName + ".Losses", newLosses);
+			Probending.plugin.getConfig().set("TeamInfo." + teamName + ".Points", newPoints);
 			Probending.plugin.saveConfig();
 		}
 	}

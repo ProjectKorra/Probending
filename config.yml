@@ -8,6 +8,8 @@ MySQL:
   db: minecraft
 RoundSettings:
   Time: 180
+  WinValue: 2
+  LossValue: 1
 WorldGuard:
   EnableSupport: false
   ProbendingField: ProbendingField
