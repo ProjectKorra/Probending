@@ -818,7 +818,7 @@ public class Methods {
 			ResultSet rs2 = DBConnection.sql.readQuery("SELECT points FROM probending_teams WHERE team = '" + teamName + "'");
 			try {
 				if (rs2.next()) {
-					points = rs2.getInt("wins");
+					points = rs2.getInt("points");
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();

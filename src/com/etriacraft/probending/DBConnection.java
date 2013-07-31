@@ -56,7 +56,7 @@ public final class DBConnection {
 				md = sql.getConnection().getMetaData();
 				ResultSet rs = md.getColumns(null, null, "probending_teams", "points");
 				if (!rs.next()) {
-					sql.modifyQuery("ALTER TABLE probending_players ADD points int(32)");
+					sql.modifyQuery("ALTER TABLE probending_teams ADD points int(32)");
 				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
