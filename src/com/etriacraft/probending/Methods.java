@@ -41,7 +41,7 @@ public class Methods {
 	public static String TeamOne = null;
 	public static String TeamTwo = null;
 	public static HashMap<String, String> allowedZone = new HashMap<String, String>();
-	
+
 	public static Set<String> teamOnePlayers = new HashSet<String>();
 	public static Set<String> teamTwoPlayers = new HashSet<String>();
 
@@ -111,6 +111,23 @@ public class Methods {
 
 	}
 
+	public static boolean isZoneEmpty(String teamName, String zone) {
+		if (teamName.equalsIgnoreCase(Methods.TeamOne)) { 
+			for (String player: teamOnePlayers) {
+				if (allowedZone.get(player).contains(zone)) {
+					return false;
+				}
+			}
+		}
+		if (teamName.equalsIgnoreCase(Methods.TeamTwo)) {
+			for (String player: teamTwoPlayers) {
+				if (allowedZone.get(player).contains(zone)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 	public static Set<String> colors = new HashSet<String>();
 	// Moves players up
 	public static void MovePlayersUp(String team, String Side) {
