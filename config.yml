@@ -90,6 +90,7 @@ messages:
     TeamWon: '&e%team &chas won this round.'
     MoveUpOneZone: '&aYou may move up one zone.'
     CantEnterField: '&cYou are not allowed to enter the field during a match.'
+    CantTeleportDuringMatch: '&cYou are not allowed to teleport during a match.'
   misc:
     ChatEnabled: '&aYou have enabled Probending Chat. To disable it, run the command again.'
     ChatDisabled: '&cYou have disabled Probending Chat.'

@@ -89,6 +89,7 @@ public class Probending extends JavaPlugin {
 		Strings.RoundPaused = Methods.colorize(getConfig().getString("messages.round.RoundPaused"));
 		Strings.RoundResumed = Methods.colorize(getConfig().getString("messages.round.RoundResumed"));
 		Strings.CantEnterField = Methods.colorize(getConfig().getString("messages.round.CantEnterField"));
+		Strings.CantTeleportDuringMatch = Methods.colorize(getConfig().getString("messages.round.CantTeleportDuringMatch"));
 		
 		// Misc Strings
 		Strings.ChatEnabled = Methods.colorize(getConfig().getString("messages.misc.ChatEnabled"));
@@ -216,6 +217,7 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("messages.round.MoveUpOneZone", "&aYou may move up one zone.");
 		getConfig().addDefault("messages.round.RoundPaused", "&cThe ongoing round has been paused with &e%seconds seconds &3left.");
 		getConfig().addDefault("messages.round.CantEnterField", "&cYou are not allowed to enter the field during a match.");
+		getConfig().addDefault("messages.round.CantTeleportDuringMatch", "&cYou are not allowed to teleport during a match.");
 		// Misc Messages
 		getConfig().addDefault("messages.misc.ChatEnabled", "&aYou have enabled Probending Chat. To disable it, run the command again.");
 		getConfig().addDefault("messages.misc.ChatDisabled", "&cYou have disabled Probending Chat.");

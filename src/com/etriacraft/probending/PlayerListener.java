@@ -14,6 +14,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+
 import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -29,6 +31,27 @@ public class PlayerListener implements Listener {
 		this.plugin = plugin;
 	}
 
+	
+	@EventHandler
+	public void onPlayerTeleport(PlayerTeleportEvent e) {
+		Player p = e.getPlayer();
+
+		if (Methods.allowedZone.containsKey(p.getName())) {
+			if (Methods.matchStarted && Methods.getWorldGuard() != null && Methods.AutomateMatches) {
+				String teamSide = null;
+				
+				if (Methods.getPlayerTeam(p.getName()) != null) {
+					if (Methods.getPlayerTeam(p.getName()).equalsIgnoreCase(Methods.TeamOne)) teamSide = Methods.TeamOne;
+					if (Methods.getPlayerTeam(p.getName()).equalsIgnoreCase(Methods.TeamTwo)) teamSide = Methods.TeamTwo; 
+				}
+				
+				if (teamSide != null) { // Player is in a match.
+					p.sendMessage(Strings.Prefix + Strings.CantTeleportDuringMatch);
+					e.setCancelled(true);
+				}
+			}
+		}
+	}
 
 	@EventHandler
 	public void onPlayerMoveEvent(PlayerMoveEvent e) {
