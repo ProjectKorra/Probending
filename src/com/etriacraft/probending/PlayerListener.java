@@ -14,6 +14,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import com.sk89q.worldguard.bukkit.WGBukkit;
@@ -53,6 +54,57 @@ public class PlayerListener implements Listener {
 		}
 	}
 
+	
+	@EventHandler
+	public void onPlayerQuit(PlayerQuitEvent e) {
+		Player p = e.getPlayer();
+		if (Methods.allowedZone.containsKey(p.getName())) {
+			if (Methods.matchStarted && Methods.getWorldGuard() != null && Methods.AutomateMatches) {
+				String teamSide = null;
+				if (Methods.getPlayerTeam(p.getName()) != null) {
+					if (Methods.getPlayerTeam(p.getName()).equalsIgnoreCase(Methods.TeamOne)) teamSide = Methods.TeamOne;
+					if (Methods.getPlayerTeam(p.getName()).equalsIgnoreCase(Methods.TeamTwo)) teamSide = Methods.TeamTwo;
+				}
+				
+				if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
+					Methods.sendPBChat(Strings.PlayerEliminated.replace("%player", p.getName()));
+					Methods.allowedZone.remove(p.getName());
+					p.getInventory().setArmorContents(null);
+					p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
+					Commands.tmpArmor.remove(p);
+					if (Methods.teamOnePlayers.isEmpty()) {
+						Methods.sendPBChat(Strings.RoundStopped);
+						Methods.sendPBChat(Strings.TeamWon.replace("%team", Methods.TeamTwo));
+						Bukkit.getServer().getScheduler().cancelTask(Commands.clockTask);
+						Methods.matchStarted = false;
+						Methods.playingTeams.clear();
+						Methods.TeamOne = null;
+						Methods.TeamTwo = null;
+						Methods.allowedZone.clear();
+						Methods.restoreArmor();
+					}
+				}
+				if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
+					Methods.sendPBChat(Strings.PlayerEliminated.replace("%player", p.getName()));
+					Methods.allowedZone.remove(p.getName());
+					p.getInventory().setArmorContents(null);
+					p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
+					Commands.tmpArmor.remove(p);
+					if (Methods.teamTwoPlayers.isEmpty()) {
+						Methods.sendPBChat(Strings.RoundStopped);
+						Methods.sendPBChat(Strings.TeamWon.replace("%team", Methods.TeamOne));
+						Bukkit.getServer().getScheduler().cancelTask(Commands.clockTask);
+						Methods.matchStarted = false;
+						Methods.playingTeams.clear();
+						Methods.TeamOne = null;
+						Methods.TeamTwo = null;
+						Methods.allowedZone.clear();
+						Methods.restoreArmor();
+					}
+				}
+			}
+		}
+	}
 	@EventHandler
 	public void onPlayerMoveEvent(PlayerMoveEvent e) {
 		Player p = e.getPlayer();
