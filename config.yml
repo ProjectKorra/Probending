@@ -85,10 +85,10 @@ messages:
     RoundResumed: '&cThe ongoing round has been resumed with &3%seconds seconds &cleft.'
     NoOngoingRound: '&cThere is no ongoing round.'
     PlayerEliminated: '&4&l%player &r&chas been eliminated.'
-    PlayerFouled: '&4&lFOUL: &r&e%player &cmust move back one zone.'
+    PlayerFouled: '&4&lFOUL: &r&e%player &cmust move back to &3%zone&c.'
     RoundEnded: '&cThis probending round has ended.'
     TeamWon: '&e%team &chas won this round.'
-    MoveUpOneZone: '&aYou may move up one zone.'
+    MoveUpOneZone: '&aYou may move up to %zone.'
     CantEnterField: '&cYou are not allowed to enter the field during a match.'
     CantTeleportDuringMatch: '&cYou are not allowed to teleport during a match.'
   misc:

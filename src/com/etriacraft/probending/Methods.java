@@ -139,44 +139,44 @@ public class Methods {
 						if (Side.equalsIgnoreCase("One")) {
 							if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z1)) {
 								allowedZone.put(player.getName(), t2z1); // Moves them up to Team Two Zone One
-								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
+								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
 								return;
 							}
 							if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z1)) {
 								allowedZone.put(player.getName(), t2z2);
-								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
+								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
 								return;
 							}
 							if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z2)) {
 								allowedZone.put(player.getName(), t1z1);
-								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
+								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
 								return;
 							}
 							if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z3)) {
 								allowedZone.put(player.getName(), t1z2);
-								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
+								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
 								return;
 							}
 						}
 						if (Side.equalsIgnoreCase("Two")) {
 							if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z1)) {
 								allowedZone.put(player.getName(), t1z1);
-								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
+								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
 								return;
 							}
 							if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z2)) {
 								allowedZone.put(player.getName(), t2z1);
-								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
+								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
 								return;
 							}
 							if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z3)) {
 								allowedZone.put(player.getName(), t2z2);
-								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
+								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
 								return;
 							}
 							if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z1)) {
 								allowedZone.put(player.getName(), t1z2);
-								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone);
+								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
 								return;
 							}
 						}

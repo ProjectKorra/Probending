@@ -175,7 +175,7 @@ public class PlayerListener implements Listener {
 						if (fromRegions.contains(Methods.t2z2) && Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t2z2)) {
 							if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
 								Methods.allowedZone.put(p.getName(), Methods.t2z1);
-								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", Methods.allowedZone.get(p.getName())));
 								if (Methods.isZoneEmpty(Methods.TeamOne, Methods.t2z2)) {
 									Methods.MovePlayersUp(Methods.TeamTwo, "Two");
 								}
@@ -183,7 +183,7 @@ public class PlayerListener implements Listener {
 
 							if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
 								Methods.allowedZone.put(p.getName(), Methods.t2z3);
-								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", Methods.allowedZone.get(p.getName())));
 								if (Methods.isZoneEmpty(Methods.TeamTwo, Methods.t2z2)) { 
 									Methods.MovePlayersUp(Methods.TeamOne, "One");
 								}
@@ -198,7 +198,7 @@ public class PlayerListener implements Listener {
 						if (fromRegions.contains(Methods.t1z2) && Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z2)) {
 							if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
 								Methods.allowedZone.put(p.getName(), Methods.t1z3);
-								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", Methods.allowedZone.get(p.getName())));
 								if (Methods.isZoneEmpty(Methods.TeamOne, Methods.t1z2)) {
 									Methods.MovePlayersUp(Methods.TeamTwo, "Two");
 								}
@@ -206,7 +206,7 @@ public class PlayerListener implements Listener {
 
 							if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
 								Methods.allowedZone.put(p.getName(), Methods.t1z1);
-								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", Methods.allowedZone.get(p.getName())));
 								if (Methods.isZoneEmpty(Methods.TeamTwo, Methods.t1z2)) { 
 									Methods.MovePlayersUp(Methods.TeamOne, "One");
 								}
@@ -222,14 +222,14 @@ public class PlayerListener implements Listener {
 						if (fromRegions.contains(Methods.t1z1) && Methods.allowedZone.get(p.getName()).equalsIgnoreCase(Methods.t1z1)) {
 							if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
 								Methods.allowedZone.put(p.getName(), Methods.t1z2);
-								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", Methods.allowedZone.get(p.getName())));
 								if (Methods.isZoneEmpty(Methods.TeamOne, Methods.t1z1)) { 
 									Methods.MovePlayersUp(Methods.TeamTwo, "Two");
 								}
 							}
 							if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
 								Methods.allowedZone.put(p.getName(), Methods.t2z1);
-								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", Methods.allowedZone.get(p.getName())));
 								if (Methods.isZoneEmpty(Methods.TeamTwo, Methods.t1z1)) {
 									Methods.MovePlayersUp(Methods.TeamOne, "One");
 								}
@@ -267,14 +267,14 @@ public class PlayerListener implements Listener {
 						if (fromRegions.contains(Methods.t2z1)&& Methods.allowedZone.get(p.getName()).equals(Methods.t2z1)) {
 							if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
 								Methods.allowedZone.put(p.getName(), Methods.t2z2);
-								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", Methods.allowedZone.get(p.getName())));
 								if (Methods.isZoneEmpty(Methods.TeamTwo, Methods.t2z1)) {
 									Methods.MovePlayersUp(Methods.TeamOne, "One");
 								}
 							}
 							if (teamSide.equalsIgnoreCase(Methods.TeamOne)){
 								Methods.allowedZone.put(p.getName(), Methods.t1z1);
-								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", Methods.allowedZone.get(p.getName())));
 								if (Methods.isZoneEmpty(Methods.TeamOne, Methods.t2z1)) { 
 									Methods.MovePlayersUp(Methods.TeamTwo, "Two");
 								}
@@ -312,14 +312,14 @@ public class PlayerListener implements Listener {
 							if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
 								p.teleport(from);
 								Methods.allowedZone.put(p.getName(), Methods.t2z3); 
-								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", Methods.allowedZone.get(p.getName())));
 								if (Methods.isZoneEmpty(Methods.TeamTwo, Methods.t2z2)) {
 									Methods.MovePlayersUp(Methods.TeamOne, "One");
 								}
 							}
 							if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
 								Methods.allowedZone.put(p.getName(), Methods.t2z1);
-								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", Methods.allowedZone.get(p.getName())));
 								if (Methods.isZoneEmpty(Methods.TeamOne, Methods.t2z2)) {
 									Methods.MovePlayersUp(Methods.TeamTwo, "Two");
 								}
@@ -329,14 +329,14 @@ public class PlayerListener implements Listener {
 						if (fromRegions.contains(Methods.t1z1) && Methods.allowedZone.get(p.getName()).equals(Methods.t1z1)) { // They are coming from Team One Zone One
 							if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
 								Methods.allowedZone.put(p.getName(), Methods.t1z2);
-								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", Methods.allowedZone.get(p.getName())));
 								if (Methods.isZoneEmpty(Methods.TeamOne, Methods.t1z1)) {
 									Methods.MovePlayersUp(Methods.TeamTwo, "Two");
 								}
 							}
 							if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
 								Methods.allowedZone.put(p.getName(), Methods.t2z1);
-								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", Methods.allowedZone.get(p.getName())));
 								if (Methods.isZoneEmpty(Methods.TeamTwo, Methods.t1z1)) {
 									Methods.MovePlayersUp(Methods.TeamOne, "One");
 								}
@@ -352,14 +352,14 @@ public class PlayerListener implements Listener {
 							if (teamSide.equalsIgnoreCase(Methods.TeamOne)) { // They are on Team One
 								p.teleport(from); // Sends them back to Zone 2.
 								Methods.allowedZone.put(p.getName(), Methods.t1z3); // They were fouled back to Zone 3.
-								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName())); // Notify Probending Chat.
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", Methods.allowedZone.get(p.getName())));
 								if (Methods.isZoneEmpty(Methods.TeamOne, Methods.t1z2)) { 
 									Methods.MovePlayersUp(Methods.TeamTwo, "Two");
 								}
 							}
 							if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) { // They are on Team Two
 								Methods.allowedZone.put(p.getName(), Methods.t1z1); // Send them back to Team One Zone 1.
-								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName())); // Notify Probending Chat.
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", Methods.allowedZone.get(p.getName())));
 								if (Methods.isZoneEmpty(Methods.TeamTwo, Methods.t1z2)) {
 									Methods.MovePlayersUp(Methods.TeamOne, "One");
 								}
@@ -369,14 +369,14 @@ public class PlayerListener implements Listener {
 						if (fromRegions.contains(Methods.t2z1) && Methods.allowedZone.get(p.getName()).equals(Methods.t2z1)) { // They are coming from Team Two's First Zone.
 							if (teamSide.equalsIgnoreCase(Methods.TeamOne)) { // Team One Player
 								Methods.allowedZone.put(p.getName(),  Methods.t1z1); // Stick them to Zone One on Team One's Side.
-								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName())); // Notify PB Chat.
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", Methods.allowedZone.get(p.getName())));
 								if (Methods.isZoneEmpty(Methods.TeamOne, Methods.t2z1)) { 
 									Methods.MovePlayersUp(Methods.TeamTwo, "Two");
 								}
 							}
 							if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
 								Methods.allowedZone.put(p.getName(), Methods.t2z2);
-								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()));
+								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", Methods.allowedZone.get(p.getName())));
 								if (Methods.isZoneEmpty(Methods.TeamTwo, Methods.t2z1)) {
 									Methods.MovePlayersUp(Methods.TeamOne, "One");
 								}

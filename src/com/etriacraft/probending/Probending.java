@@ -211,10 +211,10 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("messages.round.RoundStopped", "&cThe ongoing round has ended.");
 		getConfig().addDefault("messages.round.NoOngoingRound", "&cThere is no ongoing round.");
 		getConfig().addDefault("messages.round.PlayerEliminated", "&4&l%player &r&chas been eliminated.");
-		getConfig().addDefault("messages.round.PlayerFouled", "&4&lFOUL: &r&e%player &cmust move back one zone.");
+		getConfig().addDefault("messages.round.PlayerFouled", "&4&lFOUL: &r&e%player &cmust move back to &3%zone&c.");
 		getConfig().addDefault("messages.round.RoundEnded", "&cThis probending round has ended.");
 		getConfig().addDefault("messages.round.TeamWon", "&e%team &chas won this round.");
-		getConfig().addDefault("messages.round.MoveUpOneZone", "&aYou may move up one zone.");
+		getConfig().addDefault("messages.round.MoveUpOneZone", "&aYou may move up to %zone");
 		getConfig().addDefault("messages.round.RoundPaused", "&cThe ongoing round has been paused with &e%seconds seconds &3left.");
 		getConfig().addDefault("messages.round.CantEnterField", "&cYou are not allowed to enter the field during a match.");
 		getConfig().addDefault("messages.round.CantTeleportDuringMatch", "&cYou are not allowed to teleport during a match.");
