@@ -76,4 +76,9 @@ public class Strings {
 	public static String MoveUpOneZone;
 	
 	public static String CantTeleportDuringMatch;
+	
+	public static String ChallengeSent;
+	public static String ChallengeReceived;
+	public static String NoChallengeFromTeam;
+	public static String OwnerNotOnline;
 }

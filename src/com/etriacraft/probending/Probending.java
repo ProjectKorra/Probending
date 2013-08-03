@@ -68,7 +68,7 @@ public class Probending extends JavaPlugin {
 		Strings.NameTooLong = Methods.colorize(getConfig().getString("messages.team.NameTooLong"));
 		Strings.TeamRenamed = Methods.colorize(getConfig().getString("messages.team.TeamRenamed"));
 		Strings.TeamAlreadyNamedThat = Methods.colorize(getConfig().getString("messages.team.TeamAlreadyNamedThat"));
-		
+		Strings.OwnerNotOnline = Methods.colorize(getConfig().getString("messages.team.OwnerNotOnline"));
 		// Economy Strings
 		Strings.NotEnoughMoney = Methods.colorize(getConfig().getString("messages.economy.NotEnoughMoney"));
 		Strings.MoneyWithdrawn = Methods.colorize(getConfig().getString("messages.economy.MoneyWithdrawn"));
@@ -90,7 +90,9 @@ public class Probending extends JavaPlugin {
 		Strings.RoundResumed = Methods.colorize(getConfig().getString("messages.round.RoundResumed"));
 		Strings.CantEnterField = Methods.colorize(getConfig().getString("messages.round.CantEnterField"));
 		Strings.CantTeleportDuringMatch = Methods.colorize(getConfig().getString("messages.round.CantTeleportDuringMatch"));
-		
+		Strings.ChallengeSent = Methods.colorize(getConfig().getString("messages.round.ChallengeSent"));
+		Strings.ChallengeReceived = Methods.colorize(getConfig().getString("messages.round.ChallengeReceived"));
+		Strings.NoChallengeFromTeam = Methods.colorize(getConfig().getString("messages.round.NoChallengeFromTeam"));
 		// Misc Strings
 		Strings.ChatEnabled = Methods.colorize(getConfig().getString("messages.misc.ChatEnabled"));
 		Strings.ChatDisabled = Methods.colorize(getConfig().getString("messages.misc.ChatDisabled"));
@@ -197,7 +199,7 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("messages.team.NameTooLong", "&cTeam names cant be more than 15 characters long.");
 		getConfig().addDefault("messages.team.TeamRenamed", "&aYour team has been renamed to &e%newname&a.");
 		getConfig().addDefault("messages.team.TeamAlreadyNamedThat", "&aYour team is already named that.");
-		
+		getConfig().addDefault("messages.team.OwnerNotOnline", "&aThe owner of that team is not online.");
 		// Economy Messages
 		getConfig().addDefault("messages.economy.NotEnoughMoney", "&cYou do not have the &e%amount %currency &crequired to do that.");
 		getConfig().addDefault("messages.economy.MoneyWithdrawn", "&e%amount currency &2withdrawn from your account.");
@@ -218,13 +220,18 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("messages.round.RoundPaused", "&cThe ongoing round has been paused with &e%seconds seconds &3left.");
 		getConfig().addDefault("messages.round.CantEnterField", "&cYou are not allowed to enter the field during a match.");
 		getConfig().addDefault("messages.round.CantTeleportDuringMatch", "&cYou are not allowed to teleport during a match.");
+		getConfig().addDefault("messages.round.RoundResumed", "&cThe ongoing round has been resumed with &3%seconds seconds &cleft.");
+		getConfig().addDefault("messages.round.ChallengeSent", "&aYou have sent a challenge to &e%team&a.");
+		getConfig().addDefault("messages.round.ChallengeReceived", "&aYou have received a challenge from &e%team&a. Use &3/pb challenge accept [Team] &ato accept.");
+	    getConfig().addDefault("messages.round.NoChallengeFromTeam", "&cYou dont have a challenge from that team.");
 		// Misc Messages
 		getConfig().addDefault("messages.misc.ChatEnabled", "&aYou have enabled Probending Chat. To disable it, run the command again.");
 		getConfig().addDefault("messages.misc.ChatDisabled", "&cYou have disabled Probending Chat.");
 		getConfig().addDefault("messages.misc.WinAddedToTeam", "&aAdded one win to &3%team&a.");
 		getConfig().addDefault("messages.misc.LossAddedToTeam", "&aAdded one loss to &3%team&a.");
 		getConfig().addDefault("messages.misc.TeamSpawnSet", "&aSet spawn for &e%team&a.");
-		
+	
+
 		// Finalize stuff
 		getConfig().options().copyDefaults(true);
 		saveConfig();

@@ -67,6 +67,218 @@ public class Commands {
 					return true;
 				}
 
+				if (args[0].equalsIgnoreCase("challenge")) {
+					if (!s.hasPermission("probending.challenge")) {
+						s.sendMessage(Strings.Prefix + Strings.noPermission);
+						return true;
+					}
+
+					if (args[1].equalsIgnoreCase("accept")) {
+						if (!s.hasPermission("probending.challenge.accept")) {
+							s.sendMessage(Strings.Prefix + Strings.noPermission);
+							return true;
+						}
+						if (args.length != 3) {
+							s.sendMessage(Strings.Prefix + "§cProper Usage: §3/pb challenge accept [Team]");
+							return true;
+						}
+						if (Methods.getPlayerTeam(s.getName()) == null) {
+							s.sendMessage(Strings.Prefix + Strings.PlayerNotInTeam);
+							return true;
+						}
+
+
+
+						Set<String> teams = Methods.getTeams();
+						String teamName = null;
+						for (String team: teams) {
+							if (team.equalsIgnoreCase(args[2])) {
+								teamName = team;
+							}
+						}
+
+						if (teamName == null) {
+							s.sendMessage(Strings.Prefix + Strings.TeamDoesNotExist);
+							return true;
+						}
+
+						if (!teamChallenges.containsKey(Methods.getPlayerTeam(s.getName()))) {
+							s.sendMessage(Strings.Prefix + Strings.NoChallengeFromTeam);
+							return true;
+						}
+
+						if (teamChallenges.get(Methods.getPlayerTeam(s.getName())) != null) {
+							if (!teamChallenges.get(Methods.getPlayerTeam(s.getName())).contains(teamName)) {
+								s.sendMessage(Strings.Prefix + Strings.NoChallengeFromTeam);
+								return true;
+							}
+						}
+
+						int yourTeamSize = Methods.getOnlineTeamSize(Methods.getPlayerTeam(s.getName()));
+						int opponentTeamSize = Methods.getOnlineTeamSize(teamName);
+						int minTeamSize = plugin.getConfig().getInt("TeamSettings.MinTeamSize");
+						int maxTeamSize = plugin.getConfig().getInt("TeamSettings.MaxTeamSize");
+
+						if (yourTeamSize < minTeamSize || opponentTeamSize < minTeamSize || yourTeamSize > maxTeamSize || opponentTeamSize > maxTeamSize || opponentTeamSize != yourTeamSize) {
+							s.sendMessage(Strings.Prefix + Strings.InvalidTeamSize);
+							return true;
+						}
+
+						Player otherOwner = Bukkit.getPlayer(Methods.getOwner(teamName));
+						if (otherOwner == null) {
+							s.sendMessage(Strings.Prefix + Strings.OwnerNotOnline);
+							return true;
+						}
+
+						if (Methods.matchStarted) {
+							s.sendMessage(Strings.Prefix + Strings.RoundAlreadyGoing);
+							return true;
+						}
+
+						// We've checked everything, now to actually start the match if everything is in place :)
+
+						String team1 = Methods.getPlayerTeam(s.getName()); // Team 1
+						String team2 = teamName; // Team 2
+
+
+						// Add players to list of playing teams and send a message confirming it.
+						Methods.playingTeams.add(team1.toLowerCase());
+						Methods.playingTeams.add(team2.toLowerCase());
+						Methods.TeamOne = team1.toLowerCase();
+						Methods.TeamTwo = team2.toLowerCase();
+
+						for (Player player: Bukkit.getOnlinePlayers()) {
+							String playerTeam = Methods.getPlayerTeam(player.getName());
+							Color teamColor = null;
+							if (playerTeam != null) {
+								if (playerTeam.equalsIgnoreCase(team1)) teamColor = Methods.getColorFromString(plugin.getConfig().getString("TeamSettings.TeamOneColor"));
+								if (playerTeam.equalsIgnoreCase(team2)) teamColor = Methods.getColorFromString(plugin.getConfig().getString("TeamSettings.TeamTwoColor"));
+								if (playerTeam.equalsIgnoreCase(Methods.TeamOne)) {
+									Methods.teamOnePlayers.add(player.getName());
+									player.teleport(Methods.getTeamOneSpawn());
+								}
+								if (playerTeam.equalsIgnoreCase(Methods.TeamTwo)) {
+									Methods.teamTwoPlayers.add(player.getName());
+									player.teleport(Methods.getTeamTwoSpawn());
+								}
+								if (playerTeam.equalsIgnoreCase(Methods.TeamOne) || playerTeam.equalsIgnoreCase(Methods.TeamTwo)) {
+									tmpArmor.put(player, player.getInventory().getArmorContents()); // Backs up their armor.
+									ItemStack armor1 = Methods.createColorArmor(new ItemStack(Material.LEATHER_HELMET), teamColor);
+									ItemStack armor2 = Methods.createColorArmor(new ItemStack(Material.LEATHER_CHESTPLATE), teamColor);
+									ItemStack armor3 = Methods.createColorArmor(new ItemStack(Material.LEATHER_LEGGINGS), teamColor);
+									ItemStack armor4 = Methods.createColorArmor(new ItemStack(Material.LEATHER_BOOTS), teamColor);
+									player.getInventory().setHelmet(armor1);
+									player.getInventory().setChestplate(armor2);
+									player.getInventory().setLeggings(armor3);
+									player.getInventory().setBoots(armor4);
+								} else {
+									if (Methods.RegionsAtLocation(player.getLocation()) != null && Methods.RegionsAtLocation(player.getLocation()).contains(Methods.ProbendingField)) {
+										player.teleport(Methods.getSpectatorSpawn());
+									}
+								}
+							}
+						}
+
+
+						int roundTime = plugin.getConfig().getInt("RoundSettings.Time");
+						currentNumber = roundTime * 20;
+						startingNumber = roundTime * 20;
+
+						clockTask = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+							public void run() {
+								Methods.matchStarted = true;
+								currentNumber--;
+
+								if (currentNumber == startingNumber - 1) {
+									Methods.sendPBChat(Strings.RoundStarted.replace("%seconds", String.valueOf(startingNumber / 20)).replace("%team1", Methods.TeamOne).replace("%team2", Methods.TeamTwo));
+								}
+								if (currentNumber == 1200) {
+									Methods.sendPBChat(Strings.Prefix + Strings.OneMinuteRemaining);
+								}
+								if (currentNumber == 0) {
+									Methods.sendPBChat(Strings.RoundComplete);
+									Methods.matchStarted = false;
+									Bukkit.getServer().getScheduler().cancelTask(clockTask);
+									Methods.restoreArmor();
+								}
+
+							}
+						}, 0L, 1L);
+
+						if (Methods.WGSupportEnabled) {
+							if (Methods.getWorldGuard() != null) {
+								
+								for (Player player: Bukkit.getOnlinePlayers()) {
+									String playerTeam = Methods.getPlayerTeam(player.getName());
+
+									if (playerTeam != null) {
+										if (playerTeam.equalsIgnoreCase(team1)) {
+											player.sendMessage("Allowed Zone: " + Methods.allowedZone.get(player.getName()));
+										}
+										if (playerTeam.equalsIgnoreCase(team2)) {
+											player.sendMessage("Allowed Zone: " + Methods.allowedZone.get(player.getName()));
+										}
+									}
+								}
+							}
+						}
+						teamChallenges.get(Methods.getPlayerTeam(s.getName())).remove(teamName);
+						return true;
+					}
+					Set<String> teams = Methods.getTeams();
+					String teamName = null;
+					for (String team: teams) {
+						if (team.equalsIgnoreCase(args[1])) {
+							teamName = team;
+						}
+					}
+					
+					if (teamName == null) {
+						s.sendMessage(Strings.Prefix + Strings.TeamDoesNotExist);
+						return true;
+					}
+
+					if (Methods.getPlayerTeam(s.getName()) == null) {
+						s.sendMessage(Strings.Prefix + Strings.PlayerNotInTeam);
+						return true;
+					}
+
+					Player otherOwner = Bukkit.getPlayer(Methods.getOwner(teamName));
+
+					if (otherOwner == null) {
+						s.sendMessage(Strings.Prefix + Strings.OwnerNotOnline);
+						return true;
+					}
+
+					int yourTeamSize = Methods.getOnlineTeamSize(Methods.getPlayerTeam(s.getName()));
+					int opponentTeamSize = Methods.getOnlineTeamSize(teamName);
+					int minTeamSize = plugin.getConfig().getInt("TeamSettings.MinTeamSize");
+					int maxTeamSize = plugin.getConfig().getInt("TeamSettings.MaxTeamSize");
+
+					if (yourTeamSize < minTeamSize || opponentTeamSize < minTeamSize || yourTeamSize > maxTeamSize || opponentTeamSize > maxTeamSize || opponentTeamSize != yourTeamSize) {
+						s.sendMessage(Strings.Prefix + Strings.InvalidTeamSize);
+						return true;
+					}
+
+					if (!teamChallenges.containsKey(teamName)) {
+						teamChallenges.put(teamName, new LinkedList<String>());
+					}
+
+					teamChallenges.get(teamName).add(Methods.getPlayerTeam(s.getName()));
+					s.sendMessage(Strings.Prefix + Strings.ChallengeSent.replace("%team", teamName));
+					for (Player player: Bukkit.getOnlinePlayers()) {
+						if (Methods.getPlayerTeam(player.getName()) != null) {
+							if (Methods.getPlayerTeam(player.getName()).equalsIgnoreCase(teamName)) {
+								if (Methods.isPlayerOwner(player.getName(), teamName)) {
+									player.sendMessage(Strings.Prefix + Strings.ChallengeReceived.replace("%team", Methods.getPlayerTeam(s.getName())));
+								}
+							}
+						}
+					}
+
+					return true;
+
+				}
 				if (args[0].equalsIgnoreCase("setspawn")) {
 					if (!s.hasPermission("probending.setspawn")) {
 						s.sendMessage(Strings.Prefix + Strings.noPermission);
@@ -263,12 +475,12 @@ public class Commands {
 									player.getInventory().setBoots(armor4);
 								} else {
 									if (Methods.RegionsAtLocation(player.getLocation()) != null && Methods.RegionsAtLocation(player.getLocation()).contains(Methods.ProbendingField)) {
-									player.teleport(Methods.getSpectatorSpawn());
+										player.teleport(Methods.getSpectatorSpawn());
 									}
 								}
 							}
 						}
-						
+
 
 						int roundTime = plugin.getConfig().getInt("RoundSettings.Time");
 						currentNumber = roundTime * 20;

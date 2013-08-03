@@ -43,3 +43,5 @@ permissions:
       probending.team.list: true
       probending.team.rename: true
       probending.chat: true
+      probending.challenge.accept: true
+      probending.challenge: true
