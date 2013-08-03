@@ -7,11 +7,14 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerAnimationEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -32,6 +35,38 @@ public class PlayerListener implements Listener {
 		this.plugin = plugin;
 	}
 
+	@EventHandler(priority = EventPriority.LOW) 
+	public void onPlayerInteract(PlayerInteractEvent e) {
+		Player p = e.getPlayer();
+		if (Methods.allowedZone.containsKey(p.getName())) {
+			if (Methods.matchStarted && Methods.getWorldGuard() != null && Methods.AutomateMatches) {
+				Location loc = p.getLocation();
+				Set<String> regions = Methods.RegionsAtLocation(loc);
+				String allowedZone = Methods.allowedZone.get(p.getName());
+				if (regions != null && !regions.isEmpty()) {
+					if (!regions.contains(allowedZone)) {
+						e.setCancelled(true);
+					}
+				}
+			}
+		}
+	}
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerAnimation(PlayerAnimationEvent e) {
+		Player p = e.getPlayer();
+		if (Methods.allowedZone.containsKey(p.getName())) {
+			if (Methods.matchStarted && Methods.getWorldGuard() != null && Methods.AutomateMatches) {
+				Location loc = p.getLocation();
+				Set<String> regions = Methods.RegionsAtLocation(loc);
+				String allowedZone = Methods.allowedZone.get(p.getName());
+				if (regions != null && !regions.isEmpty()) {
+					if (!regions.contains(allowedZone)) {
+						e.setCancelled(true);
+					}
+				}
+			}
+		}
+	}
 	
 	@EventHandler
 	public void onPlayerTeleport(PlayerTeleportEvent e) {
