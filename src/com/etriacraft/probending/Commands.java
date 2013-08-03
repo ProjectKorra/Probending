@@ -213,10 +213,10 @@ public class Commands {
 
 									if (playerTeam != null) {
 										if (playerTeam.equalsIgnoreCase(team1)) {
-											player.sendMessage("Allowed Zone: " + Methods.allowedZone.get(player.getName()));
+											Methods.allowedZone.put(player.getName(), Methods.t1z1);
 										}
 										if (playerTeam.equalsIgnoreCase(team2)) {
-											player.sendMessage("Allowed Zone: " + Methods.allowedZone.get(player.getName()));
+											Methods.allowedZone.put(player.getName(), Methods.t2z1);
 										}
 									}
 								}
