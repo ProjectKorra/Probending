@@ -310,7 +310,6 @@ public class PlayerListener implements Listener {
 						// Check Team Two Zone Two
 						if (fromRegions.contains(Methods.t2z2) && Methods.allowedZone.get(p.getName()).equals(Methods.t2z2)) {
 							if (teamSide.equalsIgnoreCase(Methods.TeamTwo)) {
-								p.teleport(from);
 								Methods.allowedZone.put(p.getName(), Methods.t2z3); 
 								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", Methods.allowedZone.get(p.getName())));
 								if (Methods.isZoneEmpty(Methods.TeamTwo, Methods.t2z2)) {
@@ -350,7 +349,6 @@ public class PlayerListener implements Listener {
 						//Check Team One Zone Two
 						if (fromRegions.contains(Methods.t1z2) && Methods.allowedZone.get(p.getName()).equals(Methods.t1z2)) { // They are coming from Team One's Second Zone.
 							if (teamSide.equalsIgnoreCase(Methods.TeamOne)) { // They are on Team One
-								p.teleport(from); // Sends them back to Zone 2.
 								Methods.allowedZone.put(p.getName(), Methods.t1z3); // They were fouled back to Zone 3.
 								Methods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", Methods.allowedZone.get(p.getName())));
 								if (Methods.isZoneEmpty(Methods.TeamOne, Methods.t1z2)) { 
