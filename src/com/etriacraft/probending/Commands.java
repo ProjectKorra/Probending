@@ -61,6 +61,9 @@ public class Commands {
 					if (s.hasPermission("probending.setspawn")) {
 						s.sendMessage("§3/probending setspawn [TeamOne|TeamTwo]");
 					}
+					if (s.hasPermission("probending.challenge")) {
+						s.sendMessage("§3/pb challenge <accept> [Team]§f - Challenge / Accept a challenge.");
+					}
 					if (s.hasPermission("probending.import")) {
 						s.sendMessage("§4/probending import§f - Import data into MySQL Database.");
 					}
@@ -70,6 +73,11 @@ public class Commands {
 				if (args[0].equalsIgnoreCase("challenge")) {
 					if (!s.hasPermission("probending.challenge")) {
 						s.sendMessage(Strings.Prefix + Strings.noPermission);
+						return true;
+					}
+					
+					if (args.length == 0) {
+						s.sendMessage(Strings.Prefix + "§cProper Usage: §3/pb challenge <accept> [Team]");
 						return true;
 					}
 

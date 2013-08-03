@@ -94,7 +94,7 @@ messages:
     CantTeleportDuringMatch: '&cYou are not allowed to teleport during a match.'
     ChallengeSent: '&aYou have sent a challenge to &e%team&a.'
     ChallengeReceived: '&aYou have received a challenge from &e%team&a. Use &3/pb challenge accept [Team] &ato accept.'
-    NoChallengeFromTeam:' &cYou dont have a challenge from that team.'
+    NoChallengeFromTeam: '&cYou dont have a challenge from that team.'
   misc:
     ChatEnabled: '&aYou have enabled Probending Chat. To disable it, run the command again.'
     ChatDisabled: '&cYou have disabled Probending Chat.'
