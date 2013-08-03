@@ -57,6 +57,14 @@ public class Methods {
 	public static String t2z2 = Probending.plugin.getConfig().getString("WorldGuard.TeamTwoZoneTwo").toLowerCase();
 	public static String t2z3 = Probending.plugin.getConfig().getString("WorldGuard.TeamTwoZoneThree").toLowerCase();
 
+	// Sets Spectator Spawn
+	public static void setSpectatorSpawn(Location loc) {
+		Probending.plugin.getConfig().set("TeamSettings.SpectatorSpawn.World", loc.getWorld().getName());
+		Probending.plugin.getConfig().set("TeamSettings.SpectatorSpawn.x", loc.getX());
+		Probending.plugin.getConfig().set("TeamSettings.SpectatorSpawn.y", loc.getY());
+		Probending.plugin.getConfig().set("TeamSettings.SpectatorSpawn.z", loc.getZ());
+		Probending.plugin.saveConfig();
+	}
 	// Sets Spawn for TeamOne
 	public static void setTeamOneSpawn(Location loc) {
 		Probending.plugin.getConfig().set("TeamSettings.TeamOneSpawn.World", loc.getWorld().getName());
@@ -92,6 +100,17 @@ public class Methods {
 		Double x = Probending.plugin.getConfig().getDouble("TeamSettings.TeamTwoSpawn.x");
 		Double y = Probending.plugin.getConfig().getDouble("TeamSettings.TeamTwoSpawn.y");
 		Double z = Probending.plugin.getConfig().getDouble("TeamSettings.TeamTwoSpawn.z");
+		Location loc = new Location(world,x,y,z);
+		return loc;
+	}
+	
+	// Returns Spectator Spawn
+	public static Location getSpectatorSpawn() {
+		String worldS = Probending.plugin.getConfig().getString("TeamSettings.SpectatorSpawn.World");
+		World world = Bukkit.getWorld(worldS);
+		Double x = Probending.plugin.getConfig().getDouble("TeamSettings.SpectatorSpawn.x");
+		Double y = Probending.plugin.getConfig().getDouble("TeamSettings.SpectatorSpawn.y");
+		Double z = Probending.plugin.getConfig().getDouble("TeamSettings.SpectatorSpawn.z");
 		Location loc = new Location(world,x,y,z);
 		return loc;
 	}
