@@ -25,14 +25,6 @@
                     <include>*.yml</include>
                 </includes>
             </resource>
-            <resource>
-                <targetPath>.</targetPath>
-                <filtering>true</filtering>
-                <directory>${basedir}/src/com/etriacraft/probending</directory>
-                <includes>
-                    <include>*.java</include>
-                </includes>
-            </resource>
         </resources>
         
         <plugins>
