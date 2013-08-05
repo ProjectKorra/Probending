@@ -49,17 +49,20 @@
           <groupId>com.sk89q</groupId>
           <artifactId>worldguard</artifactId>
           <scope>system</scope>
+          <version>${project.version}</version>
           <systemPath>${project.basedir}/lib/WorldGuard.jar</systemPath>
         </dependency>
         <dependency>
           <groupId>com.sk89q</groupId>
           <artifactId>worldedit</artifactId>
           <scope>system</scope>
+          <version>${project.version}</version>
           <systemPath>${project.basedir}/lib/WorldEdit.jar</systemPath>
         </dependency>
         <dependency>
           <groupId>net.milkbowl</groupId>
           <artifactId>vault</artifactId>
+          <version>${project.version}</version>
           <scope>system</scope>
           <systemPath>${project.basedir}/lib/Vault.jar</systemPath>
         </dependency>
