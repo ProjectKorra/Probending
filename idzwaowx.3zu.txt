@@ -1,0 +1,18 @@
+﻿Revert "I am absolutely done with Maven"
+
+This reverts commit 54d77185f522473848ccff29b1bdeacf9a5981e8.
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is behind 'origin/master' by 14 commits, and can be fast-forwarded.
+#   (use "git pull" to update your local branch)
+#
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	new file:   economy.php
+#	modified:   src/com/etriacraft/probending/Commands.java
+#	modified:   src/com/etriacraft/probending/PlayerListener.java
+#
+
