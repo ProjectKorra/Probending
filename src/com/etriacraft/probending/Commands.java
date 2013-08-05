@@ -76,7 +76,7 @@ public class Commands {
 						return true;
 					}
 					
-					if (args.length == 0) {
+					if (args.length == 1) {
 						s.sendMessage(Strings.Prefix + "§cProper Usage: §3/pb challenge <accept> [Team]");
 						return true;
 					}
