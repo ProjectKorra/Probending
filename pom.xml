@@ -28,12 +28,13 @@
             <resource>
                 <targetPath>.</targetPath>
                 <filtering>true</filtering>
-                <directory>${basedir}/com/etriacraft/probending</directory>
+                <directory>${basedir}/src/com/etriacraft/probending</directory>
                 <includes>
                     <include>*.java</include>
                 </includes>
             </resource>
         </resources>
+        
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
