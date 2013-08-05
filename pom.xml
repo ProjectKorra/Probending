@@ -39,4 +39,29 @@
             </plugin>
         </plugins>
     </build>
+     <dependencies>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>1.6.2-R2.0</version>
+        </dependency>
+        <dependency>
+          <groupId>com.sk89q</groupId>
+          <artifactId>worldguard</artifactId>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/lib/WorldGuard.jar</systemPath>
+        </dependency>
+        <dependency>
+          <groupId>com.sk89q</groupId>
+          <artifactId>worldedit</artifactId>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/lib/WorldEdit.jar</systemPath>
+        </dependency>
+        <dependency>
+          <groupId>net.milkbowl</groupId>
+          <artifactId>vault</artifactId>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/lib/Vault.jar</systemPath>
+        </dependency>
+    </dependencies>
 </project>
