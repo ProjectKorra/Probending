@@ -1,6 +1,8 @@
 package com.etriacraft.probending;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -93,6 +95,7 @@ public class Probending extends JavaPlugin {
 		Strings.ChallengeSent = Methods.colorize(getConfig().getString("messages.round.ChallengeSent"));
 		Strings.ChallengeReceived = Methods.colorize(getConfig().getString("messages.round.ChallengeReceived"));
 		Strings.NoChallengeFromTeam = Methods.colorize(getConfig().getString("messages.round.NoChallengeFromTeam"));
+		Strings.MoveNotAllowed = Methods.colorize(getConfig().getString("messages.round.MoveNotAllowed"));
 		// Misc Strings
 		Strings.ChatEnabled = Methods.colorize(getConfig().getString("messages.misc.ChatEnabled"));
 		Strings.ChatDisabled = Methods.colorize(getConfig().getString("messages.misc.ChatDisabled"));
@@ -147,6 +150,14 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("TeamSettings.MinTeamSize", 2);
 		getConfig().addDefault("TeamSettings.TeamOneColor", "Red");
 		getConfig().addDefault("TeamSettings.TeamTwoColor", "Cyan");
+		
+		List<String> defaultAllowedMoves = new ArrayList<String>();
+		defaultAllowedMoves.add("AirSwipe");
+		defaultAllowedMoves.add("WaterManipulation");
+		defaultAllowedMoves.add("EarthBlast");
+		defaultAllowedMoves.add("FireBlast");
+		
+		getConfig().addDefault("TeamSettings.AllowedMoves", defaultAllowedMoves);
 		// Set WorldGuard Settings
 		getConfig().addDefault("WorldGuard.EnableSupport", false);
 		getConfig().addDefault("WorldGuard.ProbendingField", "ProbendingField");
@@ -224,7 +235,9 @@ public class Probending extends JavaPlugin {
 		getConfig().addDefault("messages.round.ChallengeSent", "&aYou have sent a challenge to &e%team&a.");
 		getConfig().addDefault("messages.round.ChallengeReceived", "&aYou have received a challenge from &e%team&a. Use &3/pb challenge accept [Team] &ato accept.");
 	    getConfig().addDefault("messages.round.NoChallengeFromTeam", "&cYou dont have a challenge from that team.");
-		// Misc Messages
+		getConfig().addDefault("messages.round.MoveNotAllowed", "&cYou are not allowed to use &e%ability &cduring a Probending match.");
+		
+	    // Misc Messages
 		getConfig().addDefault("messages.misc.ChatEnabled", "&aYou have enabled Probending Chat. To disable it, run the command again.");
 		getConfig().addDefault("messages.misc.ChatDisabled", "&cYou have disabled Probending Chat.");
 		getConfig().addDefault("messages.misc.WinAddedToTeam", "&aAdded one win to &3%team&a.");

@@ -10,6 +10,11 @@ RoundSettings:
   Time: 180
   WinValue: 2
   LossValue: 1
+  AllowedMoves:
+  - AirSwipe
+  - WaterManipulation
+  - EarthBlast
+  - FireBlast
 WorldGuard:
   EnableSupport: false
   ProbendingField: ProbendingField
@@ -95,6 +100,7 @@ messages:
     ChallengeSent: '&aYou have sent a challenge to &e%team&a.'
     ChallengeReceived: '&aYou have received a challenge from &e%team&a. Use &3/pb challenge accept [Team] &ato accept.'
     NoChallengeFromTeam: '&cYou dont have a challenge from that team.'
+    MoveNotAllowed: '&cYou are not allowed to use &e%ability &cduring a Probending match.'
   misc:
     ChatEnabled: '&aYou have enabled Probending Chat. To disable it, run the command again.'
     ChatDisabled: '&cYou have disabled Probending Chat.'

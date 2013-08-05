@@ -1,5 +1,6 @@
 package com.etriacraft.probending;
 
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -38,6 +39,18 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.LOW) 
 	public void onPlayerInteract(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
+		List<String> allowedMoves = Probending.plugin.getConfig().getStringList("TeamSettings.AllowedMoves");
+		String playerTeam = Methods.getPlayerTeam(p.getName());
+		if (playerTeam != null) {
+			if (playerTeam.equalsIgnoreCase(Methods.TeamOne) || playerTeam.equalsIgnoreCase(Methods.TeamTwo)) {
+				if (Methods.matchStarted) {
+					if (!allowedMoves.contains(Tools.getBendingAbility(p).toString()) && Tools.getBendingAbility(p) != null) {
+						p.sendMessage(Strings.Prefix + Strings.MoveNotAllowed.replace("%ability", Tools.getBendingAbility(p).toString()));
+						e.setCancelled(true);
+					}
+				}
+			}
+		}
 		if (Methods.allowedZone.containsKey(p.getName())) {
 			if (Methods.matchStarted && Methods.getWorldGuard() != null && Methods.AutomateMatches) {
 				Location loc = p.getLocation();
@@ -51,9 +64,21 @@ public class PlayerListener implements Listener {
 			}
 		}
 	}
+
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerAnimation(PlayerAnimationEvent e) {
 		Player p = e.getPlayer();
+		List<String> allowedMoves = Probending.plugin.getConfig().getStringList("TeamSettings.AllowedMoves");
+		String playerTeam = Methods.getPlayerTeam(p.getName());
+		if (playerTeam != null) {
+			if (playerTeam.equalsIgnoreCase(Methods.TeamOne) || playerTeam.equalsIgnoreCase(Methods.TeamTwo)) {
+				if (Methods.matchStarted) {
+					if (!allowedMoves.contains(Tools.getBendingAbility(p).toString()) && Tools.getBendingAbility(p) != null) {
+						e.setCancelled(true);
+					}
+				}
+			}
+		}
 		if (Methods.allowedZone.containsKey(p.getName())) {
 			if (Methods.matchStarted && Methods.getWorldGuard() != null && Methods.AutomateMatches) {
 				Location loc = p.getLocation();
@@ -67,7 +92,7 @@ public class PlayerListener implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onPlayerTeleport(PlayerTeleportEvent e) {
 		Player p = e.getPlayer();
@@ -75,12 +100,12 @@ public class PlayerListener implements Listener {
 		if (Methods.allowedZone.containsKey(p.getName())) {
 			if (Methods.matchStarted && Methods.getWorldGuard() != null && Methods.AutomateMatches) {
 				String teamSide = null;
-				
+
 				if (Methods.getPlayerTeam(p.getName()) != null) {
 					if (Methods.getPlayerTeam(p.getName()).equalsIgnoreCase(Methods.TeamOne)) teamSide = Methods.TeamOne;
 					if (Methods.getPlayerTeam(p.getName()).equalsIgnoreCase(Methods.TeamTwo)) teamSide = Methods.TeamTwo; 
 				}
-				
+
 				if (teamSide != null) { // Player is in a match.
 					p.sendMessage(Strings.Prefix + Strings.CantTeleportDuringMatch);
 					e.setCancelled(true);
@@ -89,7 +114,7 @@ public class PlayerListener implements Listener {
 		}
 	}
 
-	
+
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent e) {
 		Player p = e.getPlayer();
@@ -100,7 +125,7 @@ public class PlayerListener implements Listener {
 					if (Methods.getPlayerTeam(p.getName()).equalsIgnoreCase(Methods.TeamOne)) teamSide = Methods.TeamOne;
 					if (Methods.getPlayerTeam(p.getName()).equalsIgnoreCase(Methods.TeamTwo)) teamSide = Methods.TeamTwo;
 				}
-				
+
 				if (teamSide.equalsIgnoreCase(Methods.TeamOne)) {
 					Methods.sendPBChat(Strings.PlayerEliminated.replace("%player", p.getName()));
 					Methods.allowedZone.remove(p.getName());
@@ -149,7 +174,7 @@ public class PlayerListener implements Listener {
 		Set<String> toRegions = Methods.RegionsAtLocation(to);
 		String teamSide = null;
 		if (Methods.allowedZone.containsKey(p.getName())) { 
-			
+
 			if (Methods.matchStarted && Methods.getWorldGuard() != null && Methods.AutomateMatches) {
 				if (Methods.getPlayerTeam(p.getName()) != null) {
 					if (Methods.getPlayerTeam(p.getName()).equalsIgnoreCase(Methods.TeamOne)) teamSide = Methods.TeamOne;

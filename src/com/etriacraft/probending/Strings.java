@@ -81,4 +81,6 @@ public class Strings {
 	public static String ChallengeReceived;
 	public static String NoChallengeFromTeam;
 	public static String OwnerNotOnline;
+	
+	public static String MoveNotAllowed;
 }
