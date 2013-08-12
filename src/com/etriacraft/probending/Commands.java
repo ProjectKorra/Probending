@@ -775,11 +775,25 @@ public class Commands {
 							s.sendMessage(Strings.Prefix + Strings.noPermission);
 							return true;
 						}
-						if (args.length != 2) {
-							s.sendMessage(Strings.Prefix + "§cProper Usage: §3/pb team disband");
+						if (args.length > 3 || args.length < 2) {
+							s.sendMessage(Strings.Prefix + "§cProper Usage: §3/pb team disband [Team]");
 							return true;
 						}
-						String teamName = Methods.getPlayerTeam(s.getName());
+						String teamName = null;
+						if (args.length == 3) {
+							if (!s.hasPermission("probending.team.disband.other")) {
+								s.sendMessage(Strings.Prefix + Strings.noPermission);
+								return true;
+							}
+							teamName = args[2];
+						} else {
+							teamName = Methods.getPlayerTeam(s.getName());
+						}
+						
+						if (teamName == null) {
+							s.sendMessage(Strings.Prefix + Strings.TeamDoesNotExist);
+							return true;
+						}
 						if (!Methods.isPlayerOwner(s.getName(), teamName)) {
 							s.sendMessage(Strings.Prefix + Strings.NotOwnerOfTeam);
 							return true;
