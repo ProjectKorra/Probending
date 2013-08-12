@@ -59,7 +59,7 @@ public class Commands {
 						s.sendMessage("§3/probending reload§f - Reload Configuration.");
 					}
 					if (s.hasPermission("probending.setspawn")) {
-						s.sendMessage("§3/probending setspawn [TeamOne|TeamTwo]");
+						s.sendMessage("§3/probending setspawn [TeamOne|TeamTwo|Spectator]");
 					}
 					if (s.hasPermission("probending.challenge")) {
 						s.sendMessage("§3/pb challenge <accept> [Team]§f - Challenge / Accept a challenge.");
@@ -294,7 +294,7 @@ public class Commands {
 					}
 
 					if (args.length != 2) {
-						s.sendMessage(Strings.Prefix + "§cProper Usage: §3/pb setspawn [TeamOne|TeamTwo]");
+						s.sendMessage(Strings.Prefix + "§cProper Usage: §3/pb setspawn [TeamOne|TeamTwo|Spectator]");
 						return true;
 					}
 
