@@ -1,4 +1,4 @@
-package com.etriacraft.probending;
+package com.projectkorra.probending;
 
 public class Strings {
 

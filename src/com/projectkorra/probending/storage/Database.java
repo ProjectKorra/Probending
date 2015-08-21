@@ -1,4 +1,4 @@
-package com.etriacraft.probending.mysql;
+package com.projectkorra.probending.storage;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

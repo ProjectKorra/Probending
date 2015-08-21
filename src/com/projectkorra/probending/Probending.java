@@ -1,4 +1,4 @@
-package com.etriacraft.probending;
+package com.projectkorra.probending;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,15 +10,17 @@ import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.projectkorra.probending.storage.DBConnection;
+
 public class Probending extends JavaPlugin {
 	
 	public static Probending plugin;
-	protected static Logger log;
+	public static Logger log;
 	
 	public static Economy econ;
 	
 	Commands cmd;
-	Methods methods;
+	PBMethods methods;
 	public void onEnable() {
 		Probending.log = this.getLogger();
 		plugin = this;
@@ -35,73 +37,73 @@ public class Probending extends JavaPlugin {
 		DBConnection.user = getConfig().getString("MySQL.user", "root");
 		
 		// General Strings
-		Strings.Prefix = Methods.colorize(getConfig().getString("messages.general.Prefix"));
-		Strings.noPermission = Methods.colorize(getConfig().getString("messages.general.noPermission"));
-		Strings.configReloaded = Methods.colorize(getConfig().getString("messages.general.configReloaded"));
-		Strings.NoTeamPermissions = Methods.colorize(getConfig().getString("messages.general.NoTeamPermissions"));
+		Strings.Prefix = PBMethods.colorize(getConfig().getString("messages.general.Prefix"));
+		Strings.noPermission = PBMethods.colorize(getConfig().getString("messages.general.noPermission"));
+		Strings.configReloaded = PBMethods.colorize(getConfig().getString("messages.general.configReloaded"));
+		Strings.NoTeamPermissions = PBMethods.colorize(getConfig().getString("messages.general.NoTeamPermissions"));
 		
 		// Player Strings
-		Strings.noBendingType = Methods.colorize(getConfig().getString("messages.player.noBendingType"));
-		Strings.PlayerAlreadyInTeam = Methods.colorize(getConfig().getString("messages.player.PlayerAlreadyInTeam"));
-		Strings.ElementNotAllowed = Methods.colorize(getConfig().getString("messages.player.ElementNotAllowed"));
-		Strings.PlayerNotInTeam = Methods.colorize(getConfig().getString("messages.player.PlayerNotInTeam"));
-		Strings.PlayerNotOnline = Methods.colorize(getConfig().getString("messages.player.PlayerNotOnline"));
-		Strings.PlayerInviteSent = Methods.colorize(getConfig().getString("messages.player.PlayerInviteSent"));
-		Strings.PlayerInviteReceived = Methods.colorize(getConfig().getString("messages.player.PlayerInviteReceived"));
-		Strings.InviteInstructions = Methods.colorize(getConfig().getString("messages.player.InviteInstructions"));
-		Strings.NoInviteFromTeam = Methods.colorize(getConfig().getString("messages.player.NoInviteFromTeam"));
-		Strings.YouHaveBeenBooted = Methods.colorize(getConfig().getString("messages.player.YouHaveBeenBooted"));
-		Strings.YouHaveQuit = Methods.colorize(getConfig().getString("messages.player.YouHaveQuit"));
-		Strings.RemovedFromTeamBecauseDifferentElement = Methods.colorize(getConfig().getString("messages.player.RemovedFromTeamBecauseDifferentElement"));
+		Strings.noBendingType = PBMethods.colorize(getConfig().getString("messages.player.noBendingType"));
+		Strings.PlayerAlreadyInTeam = PBMethods.colorize(getConfig().getString("messages.player.PlayerAlreadyInTeam"));
+		Strings.ElementNotAllowed = PBMethods.colorize(getConfig().getString("messages.player.ElementNotAllowed"));
+		Strings.PlayerNotInTeam = PBMethods.colorize(getConfig().getString("messages.player.PlayerNotInTeam"));
+		Strings.PlayerNotOnline = PBMethods.colorize(getConfig().getString("messages.player.PlayerNotOnline"));
+		Strings.PlayerInviteSent = PBMethods.colorize(getConfig().getString("messages.player.PlayerInviteSent"));
+		Strings.PlayerInviteReceived = PBMethods.colorize(getConfig().getString("messages.player.PlayerInviteReceived"));
+		Strings.InviteInstructions = PBMethods.colorize(getConfig().getString("messages.player.InviteInstructions"));
+		Strings.NoInviteFromTeam = PBMethods.colorize(getConfig().getString("messages.player.NoInviteFromTeam"));
+		Strings.YouHaveBeenBooted = PBMethods.colorize(getConfig().getString("messages.player.YouHaveBeenBooted"));
+		Strings.YouHaveQuit = PBMethods.colorize(getConfig().getString("messages.player.YouHaveQuit"));
+		Strings.RemovedFromTeamBecauseDifferentElement = PBMethods.colorize(getConfig().getString("messages.player.RemovedFromTeamBecauseDifferentElement"));
 		
 		// Team Strings
-		Strings.teamAlreadyExists = Methods.colorize(getConfig().getString("messages.team.teamAlreadyExists"));
-		Strings.TeamCreated = Methods.colorize(getConfig().getString("messages.team.TeamCreated"));
-		Strings.NotOwnerOfTeam = Methods.colorize(getConfig().getString("messages.team.NotOwnerOfTeam"));
-		Strings.MaxSizeReached = Methods.colorize(getConfig().getString("messages.team.MaxSizeReached"));
-		Strings.TeamAlreadyHasElement = Methods.colorize(getConfig().getString("messages.team.TeamAlreadyHasElement"));
-		Strings.TeamDoesNotExist = Methods.colorize(getConfig().getString("messages.team.TeamDoesNotExist"));
-		Strings.PlayerJoinedTeam = Methods.colorize(getConfig().getString("messages.team.PlayerJoinedTeam"));
-		Strings.CantBootFromOwnTeam = Methods.colorize(getConfig().getString("messages.team.CantBootFromOwnTeam"));
-		Strings.PlayerNotOnThisTeam = Methods.colorize(getConfig().getString("messages.team.PlayerNotOnThisTeam"));
-		Strings.PlayerHasBeenBooted = Methods.colorize(getConfig().getString("messages.team.PlayerHasBeenBooted"));
-		Strings.PlayerHasQuit = Methods.colorize(getConfig().getString("messages.team.PlayerHasQuit"));
-		Strings.TeamDisbanded = Methods.colorize(getConfig().getString("messages.team.TeamDisbanded"));
-		Strings.NameTooLong = Methods.colorize(getConfig().getString("messages.team.NameTooLong"));
-		Strings.TeamRenamed = Methods.colorize(getConfig().getString("messages.team.TeamRenamed"));
-		Strings.TeamAlreadyNamedThat = Methods.colorize(getConfig().getString("messages.team.TeamAlreadyNamedThat"));
-		Strings.OwnerNotOnline = Methods.colorize(getConfig().getString("messages.team.OwnerNotOnline"));
+		Strings.teamAlreadyExists = PBMethods.colorize(getConfig().getString("messages.team.teamAlreadyExists"));
+		Strings.TeamCreated = PBMethods.colorize(getConfig().getString("messages.team.TeamCreated"));
+		Strings.NotOwnerOfTeam = PBMethods.colorize(getConfig().getString("messages.team.NotOwnerOfTeam"));
+		Strings.MaxSizeReached = PBMethods.colorize(getConfig().getString("messages.team.MaxSizeReached"));
+		Strings.TeamAlreadyHasElement = PBMethods.colorize(getConfig().getString("messages.team.TeamAlreadyHasElement"));
+		Strings.TeamDoesNotExist = PBMethods.colorize(getConfig().getString("messages.team.TeamDoesNotExist"));
+		Strings.PlayerJoinedTeam = PBMethods.colorize(getConfig().getString("messages.team.PlayerJoinedTeam"));
+		Strings.CantBootFromOwnTeam = PBMethods.colorize(getConfig().getString("messages.team.CantBootFromOwnTeam"));
+		Strings.PlayerNotOnThisTeam = PBMethods.colorize(getConfig().getString("messages.team.PlayerNotOnThisTeam"));
+		Strings.PlayerHasBeenBooted = PBMethods.colorize(getConfig().getString("messages.team.PlayerHasBeenBooted"));
+		Strings.PlayerHasQuit = PBMethods.colorize(getConfig().getString("messages.team.PlayerHasQuit"));
+		Strings.TeamDisbanded = PBMethods.colorize(getConfig().getString("messages.team.TeamDisbanded"));
+		Strings.NameTooLong = PBMethods.colorize(getConfig().getString("messages.team.NameTooLong"));
+		Strings.TeamRenamed = PBMethods.colorize(getConfig().getString("messages.team.TeamRenamed"));
+		Strings.TeamAlreadyNamedThat = PBMethods.colorize(getConfig().getString("messages.team.TeamAlreadyNamedThat"));
+		Strings.OwnerNotOnline = PBMethods.colorize(getConfig().getString("messages.team.OwnerNotOnline"));
 		// Economy Strings
-		Strings.NotEnoughMoney = Methods.colorize(getConfig().getString("messages.economy.NotEnoughMoney"));
-		Strings.MoneyWithdrawn = Methods.colorize(getConfig().getString("messages.economy.MoneyWithdrawn"));
+		Strings.NotEnoughMoney = PBMethods.colorize(getConfig().getString("messages.economy.NotEnoughMoney"));
+		Strings.MoneyWithdrawn = PBMethods.colorize(getConfig().getString("messages.economy.MoneyWithdrawn"));
 		
 		// Round Strings
-		Strings.RoundStarted = Methods.colorize(getConfig().getString("messages.round.RoundStarted"));
-		Strings.OneMinuteRemaining = Methods.colorize(getConfig().getString("messages.round.OneMinuteRemaining"));
-		Strings.RoundComplete = Methods.colorize(getConfig().getString("messages.round.RoundComplete"));
-		Strings.RoundAlreadyGoing = Methods.colorize(getConfig().getString("messages.round.RoundAlreadyGoing"));
-		Strings.InvalidTeamSize = Methods.colorize(getConfig().getString("messages.round.InvalidTeamSize"));
-		Strings.RoundStarted = Methods.colorize(getConfig().getString("messages.round.RoundStarted"));
-		Strings.RoundStopped = Methods.colorize(getConfig().getString("messages.round.RoundStopped"));
-		Strings.NoOngoingRound = Methods.colorize(getConfig().getString("messages.round.NoOngoingRound"));
-		Strings.PlayerEliminated = Methods.colorize(getConfig().getString("messages.round.PlayerEliminated"));
-		Strings.PlayerFouled = Methods.colorize(getConfig().getString("messages.round.PlayerFouled"));
-		Strings.TeamWon = Methods.colorize(getConfig().getString("messages.round.TeamWon"));
-		Strings.MoveUpOneZone = Methods.colorize(getConfig().getString("messages.round.MoveUpOneZone"));
-		Strings.RoundPaused = Methods.colorize(getConfig().getString("messages.round.RoundPaused"));
-		Strings.RoundResumed = Methods.colorize(getConfig().getString("messages.round.RoundResumed"));
-		Strings.CantEnterField = Methods.colorize(getConfig().getString("messages.round.CantEnterField"));
-		Strings.CantTeleportDuringMatch = Methods.colorize(getConfig().getString("messages.round.CantTeleportDuringMatch"));
-		Strings.ChallengeSent = Methods.colorize(getConfig().getString("messages.round.ChallengeSent"));
-		Strings.ChallengeReceived = Methods.colorize(getConfig().getString("messages.round.ChallengeReceived"));
-		Strings.NoChallengeFromTeam = Methods.colorize(getConfig().getString("messages.round.NoChallengeFromTeam"));
-		Strings.MoveNotAllowed = Methods.colorize(getConfig().getString("messages.round.MoveNotAllowed"));
+		Strings.RoundStarted = PBMethods.colorize(getConfig().getString("messages.round.RoundStarted"));
+		Strings.OneMinuteRemaining = PBMethods.colorize(getConfig().getString("messages.round.OneMinuteRemaining"));
+		Strings.RoundComplete = PBMethods.colorize(getConfig().getString("messages.round.RoundComplete"));
+		Strings.RoundAlreadyGoing = PBMethods.colorize(getConfig().getString("messages.round.RoundAlreadyGoing"));
+		Strings.InvalidTeamSize = PBMethods.colorize(getConfig().getString("messages.round.InvalidTeamSize"));
+		Strings.RoundStarted = PBMethods.colorize(getConfig().getString("messages.round.RoundStarted"));
+		Strings.RoundStopped = PBMethods.colorize(getConfig().getString("messages.round.RoundStopped"));
+		Strings.NoOngoingRound = PBMethods.colorize(getConfig().getString("messages.round.NoOngoingRound"));
+		Strings.PlayerEliminated = PBMethods.colorize(getConfig().getString("messages.round.PlayerEliminated"));
+		Strings.PlayerFouled = PBMethods.colorize(getConfig().getString("messages.round.PlayerFouled"));
+		Strings.TeamWon = PBMethods.colorize(getConfig().getString("messages.round.TeamWon"));
+		Strings.MoveUpOneZone = PBMethods.colorize(getConfig().getString("messages.round.MoveUpOneZone"));
+		Strings.RoundPaused = PBMethods.colorize(getConfig().getString("messages.round.RoundPaused"));
+		Strings.RoundResumed = PBMethods.colorize(getConfig().getString("messages.round.RoundResumed"));
+		Strings.CantEnterField = PBMethods.colorize(getConfig().getString("messages.round.CantEnterField"));
+		Strings.CantTeleportDuringMatch = PBMethods.colorize(getConfig().getString("messages.round.CantTeleportDuringMatch"));
+		Strings.ChallengeSent = PBMethods.colorize(getConfig().getString("messages.round.ChallengeSent"));
+		Strings.ChallengeReceived = PBMethods.colorize(getConfig().getString("messages.round.ChallengeReceived"));
+		Strings.NoChallengeFromTeam = PBMethods.colorize(getConfig().getString("messages.round.NoChallengeFromTeam"));
+		Strings.MoveNotAllowed = PBMethods.colorize(getConfig().getString("messages.round.MoveNotAllowed"));
 		// Misc Strings
-		Strings.ChatEnabled = Methods.colorize(getConfig().getString("messages.misc.ChatEnabled"));
-		Strings.ChatDisabled = Methods.colorize(getConfig().getString("messages.misc.ChatDisabled"));
-		Strings.WinAddedToTeam = Methods.colorize(getConfig().getString("messages.misc.WinAddedToTeam"));
-		Strings.LossAddedToTeam = Methods.colorize(getConfig().getString("messages.misc.LossAddedToTeam"));
-		Strings.TeamSpawnSet = Methods.colorize(getConfig().getString("messages.misc.TeamSpawnSet"));
+		Strings.ChatEnabled = PBMethods.colorize(getConfig().getString("messages.misc.ChatEnabled"));
+		Strings.ChatDisabled = PBMethods.colorize(getConfig().getString("messages.misc.ChatDisabled"));
+		Strings.WinAddedToTeam = PBMethods.colorize(getConfig().getString("messages.misc.WinAddedToTeam"));
+		Strings.LossAddedToTeam = PBMethods.colorize(getConfig().getString("messages.misc.LossAddedToTeam"));
+		Strings.TeamSpawnSet = PBMethods.colorize(getConfig().getString("messages.misc.TeamSpawnSet"));
 		
 		try {
 		    MetricsLite metrics = new MetricsLite(this);
@@ -113,23 +115,23 @@ public class Probending extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
 		
 		if (getConfig().getBoolean("Economy.Enabled")) {
-			Methods.setupEconomy();
+			PBMethods.setupEconomy();
 		}
 		
-		Methods.populateColors();
+		PBMethods.populateColors();
 		
 		DBConnection.init();
 		
-		Methods.loadTeams();
-		Set<String> teamList = Methods.getTeams();
-		Methods.loadPlayers();
+		PBMethods.loadTeams();
+		Set<String> teamList = PBMethods.getTeams();
+		PBMethods.loadPlayers();
 		Probending.log.info("Loaded " + teamList.size() + " teams");
-		Probending.log.info("Loaded " + Methods.players.size() + " players.");
+		Probending.log.info("Loaded " + PBMethods.players.size() + " players.");
 	}
 	
 	public void configCheck() {
 		// Set Default General Settings
-		getConfig().addDefault("General.Storage", "flatfile");
+		getConfig().addDefault("General.Storage", "sqlite");
 		// Set MySQL Settings
 		getConfig().addDefault("MySQL.host", "localhost");
 		getConfig().addDefault("MySQL.port", 3306);

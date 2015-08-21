@@ -1,8 +1,8 @@
 name: Probending
-author: MistPhizzle
-version: 1.4.0
-main: com.etriacraft.probending.Probending
-depend: [Bending]
+author: ProjectKorra
+version: 1.0.0
+main: com.projectkorra.probending.Probending
+depend: [ProjectKorra]
 softdepend: [Vault, WorldGuard]
 commands:
   probending:
@@ -25,7 +25,6 @@ permissions:
       probending.chat: true
       probending.team.addwin: true
       probending.team.addloss: true
-      probending.import: true
       probending.round.start: true
       probending.round.stop: true
       probending.round.resume: true
