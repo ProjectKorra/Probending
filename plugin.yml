@@ -1,6 +1,6 @@
-name: Probending
+name: ProjectKorra (Probending)
 author: ProjectKorra
-version: 1.0.0
+version: 1.0.0 BETA 1
 main: com.projectkorra.probending.Probending
 depend: [ProjectKorra]
 softdepend: [Vault, WorldGuard]
