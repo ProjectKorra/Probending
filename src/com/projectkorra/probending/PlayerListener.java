@@ -550,8 +550,8 @@ public class PlayerListener implements Listener {
 	public static void onPlayerJoin(PlayerJoinEvent e) {
 		Player player = e.getPlayer();
 		PBMethods.createPlayer(player.getUniqueId());
-		if (GeneralMethods.getBendingPlayer(player) == null) return;
-		if (!(GeneralMethods.getBendingPlayer(player).getElements().size() > 1)) {
+		if (GeneralMethods.getBendingPlayer(player.getName()) == null) return;
+		if (!(GeneralMethods.getBendingPlayer(player.getName()).getElements().size() > 1)) {
 			String team = PBMethods.getPlayerTeam(player.getUniqueId());
 			if (team != null) {
 				String playerElement = null;

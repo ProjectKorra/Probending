@@ -1149,7 +1149,7 @@ public class Commands {
 							return true;
 						}
 
-						if (GeneralMethods.getBendingPlayer(uuid).getElements().size() == 0) {
+						if (GeneralMethods.getBendingPlayer(s.getName()).getElements().size() == 0) {
 							s.sendMessage(Strings.Prefix + Strings.noBendingType);
 							return true;
 						}
