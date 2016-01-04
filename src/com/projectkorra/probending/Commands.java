@@ -82,6 +82,7 @@ public class Commands {
 					}
 					if (args[1].equalsIgnoreCase("spectator")) {
 						PBMethods.setSpectatorSpawn(((Player) s).getLocation());
+						s.sendMessage(PBMethods.Prefix + PBMethods.TeamSpawnSet.replace("%team", "Spectator"));
 						return true;
 					}
 					if (args[1].equalsIgnoreCase("teamone")) {
