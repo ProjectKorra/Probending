@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -224,6 +225,11 @@ public class Commands {
 						// Checks to make sure the team has enough players.
 						if (PBMethods.getOnlineTeamSize(team1) < minSize || PBMethods.getOnlineTeamSize(team2) < minSize) {
 							s.sendMessage(PBMethods.Prefix + PBMethods.InvalidTeamSize);
+							return true;
+						}
+						
+						if (team1.equalsIgnoreCase(team2)) {
+							s.sendMessage(PBMethods.Prefix + ChatColor.RED + "The same team cannot play against itself.");
 							return true;
 						}
 
