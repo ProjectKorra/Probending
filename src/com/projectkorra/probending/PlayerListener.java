@@ -24,6 +24,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
+import com.projectkorra.probending.objects.Team;
 import com.projectkorra.projectkorra.Element;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.event.PlayerChangeElementEvent;
@@ -605,9 +606,10 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onChange(PlayerChangeElementEvent e) {
 		Player player = e.getTarget();
-		String team = PBMethods.getPlayerTeam(player.getUniqueId());
+		String t = PBMethods.getPlayerTeam(player.getUniqueId());
+		Team team = PBMethods.getTeam(t);
 		if (team != null) {
-			String playerElementInTeam = PBMethods.getPlayerElementInTeam(player.getUniqueId(), team);
+			String playerElementInTeam = PBMethods.getPlayerElementInTeam(player.getUniqueId(), t);
 			if (playerElementInTeam != null) {
 				String playerElement = null;
 				if (GeneralMethods.isBender(player.getName(), Element.Air)) {
@@ -628,33 +630,33 @@ public class PlayerListener implements Listener {
 				if (!playerElementInTeam.equals(playerElement)) {
 					player.sendMessage(PBMethods.Prefix + PBMethods.RemovedFromTeamBecauseDifferentElement);
 					PBMethods.removePlayerFromTeam(team, player.getUniqueId(), playerElementInTeam);
-					Set<String> teamElements = PBMethods.getTeamElements(team);
+					Set<String> teamElements = PBMethods.getTeamElements(t);
 					if (teamElements.contains("Air")) {
-						UUID airbender = PBMethods.getTeamAirbender(team).getUniqueId();
-						PBMethods.setOwner(airbender, team);
+						UUID airbender = team.getAirbender();
+						team.setOwner(airbender);
 						return;
 					}
 					if (teamElements.contains("Water")) {
-						UUID bender = PBMethods.getTeamWaterbender(team).getUniqueId();
-						PBMethods.setOwner(bender, team);
+						UUID bender = team.getWaterbender();
+						team.setOwner(bender);
 						return;
 					}
 					if (teamElements.contains("Earth")) {
-						UUID bender = PBMethods.getTeamEarthbender(team).getUniqueId();
-						PBMethods.setOwner(bender, team);
+						UUID bender = team.getEarthbender();
+						team.setOwner(bender);
 						return;
 					}
 					if (teamElements.contains("Fire")) {
-						UUID bender = PBMethods.getTeamFirebender(team).getUniqueId();
-						PBMethods.setOwner(bender, team);
+						UUID bender = team.getFirebender();
+						team.setOwner(bender);
 						return;
 					}
 					if (teamElements.contains("Chi")) {
-						UUID bender = PBMethods.getTeamChiblocker(team).getUniqueId();
-						PBMethods.setOwner(bender, team);
+						UUID bender = team.getChiblocker();
+						team.setOwner(bender);
 						return;
 					} else {
-						PBMethods.deleteTeam(team);
+						PBMethods.deleteTeam(t);
 					}
 				}
 			}
@@ -666,7 +668,8 @@ public class PlayerListener implements Listener {
 		PBMethods.createPlayer(player.getUniqueId());
 		if (GeneralMethods.getBendingPlayer(player.getName()) == null) return;
 		if (!(GeneralMethods.getBendingPlayer(player.getName()).getElements().size() > 1)) {
-			String team = PBMethods.getPlayerTeam(player.getUniqueId());
+			String t = PBMethods.getPlayerTeam(player.getUniqueId());
+			Team team = PBMethods.getTeam(t);
 			if (team != null) {
 				String playerElement = null;
 				if (GeneralMethods.isBender(player.getName(), Element.Air)) {
@@ -684,38 +687,33 @@ public class PlayerListener implements Listener {
 				if (GeneralMethods.isBender(player.getName(), Element.Chi)) {
 					playerElement = "Chi";
 				}
-				String playerElementInTeam = PBMethods.getPlayerElementInTeam(player.getUniqueId(), team);
+				String playerElementInTeam = PBMethods.getPlayerElementInTeam(player.getUniqueId(), t);
 				if (playerElementInTeam != null) {
 					if (!playerElementInTeam.equals(playerElement)) {
 						player.sendMessage(PBMethods.Prefix + PBMethods.RemovedFromTeamBecauseDifferentElement);
 						PBMethods.removePlayerFromTeam(team, player.getUniqueId(), playerElementInTeam);
-						Set<String> teamElements = PBMethods.getTeamElements(team);
+						Set<String> teamElements = PBMethods.getTeamElements(t);
 						if (teamElements.contains("Air")) {
-							UUID airbender = PBMethods.getTeamAirbender(team).getUniqueId();
-							PBMethods.setOwner(airbender, team);
+							team.setOwner(team.getAirbender());
 							return;
 						}
 						if (teamElements.contains("Water")) {
-							UUID bender = PBMethods.getTeamWaterbender(team).getUniqueId();
-							PBMethods.setOwner(bender, team);
+							team.setOwner(team.getWaterbender());
 							return;
 						}
 						if (teamElements.contains("Earth")) {
-							UUID bender = PBMethods.getTeamEarthbender(team).getUniqueId();
-							PBMethods.setOwner(bender, team);
+							team.setOwner(team.getEarthbender());
 							return;
 						}
 						if (teamElements.contains("Fire")) {
-							UUID bender = PBMethods.getTeamFirebender(team).getUniqueId();
-							PBMethods.setOwner(bender, team);
+							team.setOwner(team.getFirebender());
 							return;
 						}
 						if (teamElements.contains("Chi")) {
-							UUID bender = PBMethods.getTeamChiblocker(team).getUniqueId();
-							PBMethods.setOwner(bender, team);
+							team.setOwner(team.getChiblocker());
 							return;
 						} else {
-							PBMethods.deleteTeam(team);
+							PBMethods.deleteTeam(t);
 						}
 					}
 				}

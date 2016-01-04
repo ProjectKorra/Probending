@@ -1,7 +1,6 @@
 package com.projectkorra.probending;
 
 import java.io.IOException;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.Economy;
