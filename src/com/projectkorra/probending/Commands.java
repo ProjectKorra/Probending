@@ -67,17 +67,17 @@ public class Commands {
 
 				if (args[0].equalsIgnoreCase("setspawn")) {
 					if (!s.hasPermission("probending.setspawn")) {
-						s.sendMessage(Strings.Prefix + Strings.noPermission);
+						s.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
 						return true;
 					}
 
 					if (args.length != 2) {
-						s.sendMessage(Strings.Prefix + "§cProper Usage: §3/pb setspawn [TeamOne|TeamTwo|Spectator]");
+						s.sendMessage(PBMethods.Prefix + "§cProper Usage: §3/pb setspawn [TeamOne|TeamTwo|Spectator]");
 						return true;
 					}
 
 					if (!args[1].equalsIgnoreCase("teamone") && !args[1].equalsIgnoreCase("teamtwo") && !args[1].equalsIgnoreCase("spectator")) {
-						s.sendMessage(Strings.Prefix + "§cProper Usage:  §3/pb setspawn [TeamOne|TeamTwo|Spectator]");
+						s.sendMessage(PBMethods.Prefix + "§cProper Usage:  §3/pb setspawn [TeamOne|TeamTwo|Spectator]");
 						return true;
 					}
 					if (args[1].equalsIgnoreCase("spectator")) {
@@ -86,12 +86,12 @@ public class Commands {
 					}
 					if (args[1].equalsIgnoreCase("teamone")) {
 						PBMethods.setTeamOneSpawn(((Player) s).getLocation());
-						s.sendMessage(Strings.Prefix + Strings.TeamSpawnSet.replace("%team", "TeamOne"));
+						s.sendMessage(PBMethods.Prefix + PBMethods.TeamSpawnSet.replace("%team", "TeamOne"));
 						return true;
 					}
 					if (args[1].equalsIgnoreCase("teamtwo")) {
 						PBMethods.setTeamTwoSpawn(((Player) s).getLocation());
-						s.sendMessage(Strings.Prefix + Strings.TeamSpawnSet.replace("%team", "TeamTwo"));
+						s.sendMessage(PBMethods.Prefix + PBMethods.TeamSpawnSet.replace("%team", "TeamTwo"));
 						return true;
 					}
 
@@ -116,7 +116,7 @@ public class Commands {
 					if (args[1].equalsIgnoreCase("resume")) {
 						if (args[1].equalsIgnoreCase("resume")) {
 							if (!s.hasPermission("probending.round.resume")) {
-								s.sendMessage(Strings.Prefix + Strings.noPermission);
+								s.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
 								return true;
 							}
 
@@ -125,7 +125,7 @@ public class Commands {
 								return true;
 							}
 							if (!PBMethods.matchStarted) {
-								s.sendMessage(Strings.Prefix + Strings.NoOngoingRound);
+								s.sendMessage(PBMethods.Prefix + PBMethods.NoOngoingRound);
 								return true;
 							}
 							if (!PBMethods.matchPaused) {
@@ -133,16 +133,16 @@ public class Commands {
 								return true;
 							}
 							PBMethods.matchPaused = false;
-							PBMethods.sendPBChat(Strings.RoundResumed.replace("%seconds", String.valueOf(currentNumber / 20)));
+							PBMethods.sendPBChat(PBMethods.RoundResumed.replace("%seconds", String.valueOf(currentNumber / 20)));
 
 							clockTask = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 								public void run() {
 									currentNumber--;
 									if (currentNumber == 1200) {
-										PBMethods.sendPBChat(Strings.OneMinuteRemaining);
+										PBMethods.sendPBChat(PBMethods.OneMinuteRemaining);
 									}
 									if (currentNumber == 0) {
-										PBMethods.sendPBChat(Strings.RoundComplete);
+										PBMethods.sendPBChat(PBMethods.RoundComplete);
 										PBMethods.matchStarted = false;
 										Bukkit.getServer().getScheduler().cancelTask(clockTask);
 										PBMethods.restoreArmor();
@@ -153,7 +153,7 @@ public class Commands {
 					}
 					if (args[1].equalsIgnoreCase("pause")) {
 						if (!s.hasPermission("probending.round.pause")) {
-							s.sendMessage(Strings.Prefix + Strings.noPermission);
+							s.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
 							return true;
 						}
 						if (args.length != 2) {
@@ -161,27 +161,27 @@ public class Commands {
 							return true;
 						}
 						if (!PBMethods.matchStarted) {
-							s.sendMessage(Strings.Prefix + Strings.NoOngoingRound);
+							s.sendMessage(PBMethods.Prefix + PBMethods.NoOngoingRound);
 							return true;
 						}
 						Bukkit.getServer().getScheduler().cancelTask(clockTask);
 						PBMethods.matchPaused = true;
-						PBMethods.sendPBChat(Strings.RoundPaused.replace("%seconds", String.valueOf(currentNumber / 20)));
+						PBMethods.sendPBChat(PBMethods.RoundPaused.replace("%seconds", String.valueOf(currentNumber / 20)));
 					}
 					if (args[1].equalsIgnoreCase("stop")) {
 						// Permissions
 						if (!s.hasPermission("probending.round.stop")) {
-							s.sendMessage(Strings.Prefix + Strings.noPermission);
+							s.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
 							return true;
 						}
 
 						if (args.length != 2) {
-							s.sendMessage(Strings.Prefix + "§cProper Usage: §3/pb round stop");
+							s.sendMessage(PBMethods.Prefix + "§cProper Usage: §3/pb round stop");
 							return true;
 						}
 
 						if (!PBMethods.matchStarted) {
-							s.sendMessage(Strings.Prefix + Strings.NoOngoingRound);
+							s.sendMessage(PBMethods.Prefix + PBMethods.NoOngoingRound);
 							return true;
 						}
 						PBMethods.restoreArmor();
@@ -191,22 +191,22 @@ public class Commands {
 						PBMethods.matchPaused = false;
 						PBMethods.playingTeams.clear();
 						PBMethods.matchStarted = false;
-						PBMethods.sendPBChat(Strings.RoundStopped);
+						PBMethods.sendPBChat(PBMethods.RoundStopped);
 						return true;
 					}
 					if (args[1].equalsIgnoreCase("start")) {
 						if (!s.hasPermission("probending.round.start")) {
-							s.sendMessage(Strings.Prefix + Strings.noPermission);
+							s.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
 							return true;
 						}
 
 						if (args.length != 4) {
-							s.sendMessage(Strings.Prefix + "§cProper Usage: §3/pb round start [Team1] [Team2]");
+							s.sendMessage(PBMethods.Prefix + "§cProper Usage: §3/pb round start [Team1] [Team2]");
 							return true;
 						}
 
 						if (PBMethods.matchStarted) {
-							s.sendMessage(Strings.Prefix + Strings.RoundAlreadyGoing);
+							s.sendMessage(PBMethods.Prefix + PBMethods.RoundAlreadyGoing);
 							return true;
 						}
 
@@ -214,7 +214,7 @@ public class Commands {
 						String team2 = args[3]; // Team 2
 
 						if (!PBMethods.teamExists(team1) || !PBMethods.teamExists(team2)) {
-							s.sendMessage(Strings.Prefix + Strings.TeamDoesNotExist);
+							s.sendMessage(PBMethods.Prefix + PBMethods.TeamDoesNotExist);
 							return true;
 						}
 
@@ -222,7 +222,7 @@ public class Commands {
 
 						// Checks to make sure the team has enough players.
 						if (PBMethods.getOnlineTeamSize(team1) < minSize || PBMethods.getOnlineTeamSize(team2) < minSize) {
-							s.sendMessage(Strings.Prefix + Strings.InvalidTeamSize);
+							s.sendMessage(PBMethods.Prefix + PBMethods.InvalidTeamSize);
 							return true;
 						}
 
@@ -276,13 +276,13 @@ public class Commands {
 								currentNumber--;
 
 								if (currentNumber == startingNumber - 1) {
-									PBMethods.sendPBChat(Strings.RoundStarted.replace("%seconds", String.valueOf(startingNumber / 20)).replace("%team1", PBMethods.TeamOne).replace("%team2", PBMethods.TeamTwo));
+									PBMethods.sendPBChat(PBMethods.RoundStarted.replace("%seconds", String.valueOf(startingNumber / 20)).replace("%team1", PBMethods.TeamOne).replace("%team2", PBMethods.TeamTwo));
 								}
 								if (currentNumber == 1200) {
-									PBMethods.sendPBChat(Strings.Prefix + Strings.OneMinuteRemaining);
+									PBMethods.sendPBChat(PBMethods.Prefix + PBMethods.OneMinuteRemaining);
 								}
 								if (currentNumber == 0) {
-									PBMethods.sendPBChat(Strings.RoundComplete);
+									PBMethods.sendPBChat(PBMethods.RoundComplete);
 									PBMethods.matchStarted = false;
 									Bukkit.getServer().getScheduler().cancelTask(clockTask);
 									PBMethods.restoreArmor();
@@ -310,33 +310,33 @@ public class Commands {
 
 				if (args[0].equalsIgnoreCase("chat")) {
 					if (!s.hasPermission("probending.chat")) {
-						s.sendMessage(Strings.Prefix + Strings.noPermission);
+						s.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
 						return true;
 					}
 					if (args.length > 1) {
-						s.sendMessage(Strings.Prefix + "§cProper Usage: §3/pb chat");
+						s.sendMessage(PBMethods.Prefix + "§cProper Usage: §3/pb chat");
 						return true;
 					}
 					Player p = (Player) s;
 					if (!pbChat.contains(p)) {
 						pbChat.add(p);
-						s.sendMessage(Strings.Prefix + Strings.ChatEnabled);
+						s.sendMessage(PBMethods.Prefix + PBMethods.ChatEnabled);
 						return true;
 					}
 					if (pbChat.contains(p)) {
 						pbChat.remove(p);
-						s.sendMessage(Strings.Prefix + Strings.ChatDisabled);
+						s.sendMessage(PBMethods.Prefix + PBMethods.ChatDisabled);
 						return true;
 					}
 				}
 				if (args[0].equalsIgnoreCase("reload")) {
 					if (!s.hasPermission("probending.reload")) {
-						s.sendMessage(Strings.Prefix + Strings.noPermission);
+						s.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
 						return true;
 					}
 					plugin.reloadConfig();
-					s.sendMessage(Strings.Prefix + "§cVersion: " + plugin.getDescription().getVersion());
-					s.sendMessage(Strings.Prefix + Strings.configReloaded);
+					s.sendMessage(PBMethods.Prefix + "§cVersion: " + plugin.getDescription().getVersion());
+					s.sendMessage(PBMethods.Prefix + PBMethods.configReloaded);
 				}
 				if (args[0].equalsIgnoreCase("team")) {
 					if (args.length == 1) {
@@ -372,30 +372,30 @@ public class Commands {
 						} if (s.hasPermission("probending.team.addloss")) {
 							s.sendMessage("§3/pb team addloss [Team]§f - Adds a loss to a team.");
 						} else {
-							s.sendMessage(Strings.Prefix + Strings.NoTeamPermissions);
+							s.sendMessage(PBMethods.Prefix + PBMethods.NoTeamPermissions);
 						}
 						return true;
 					}
 					if (args[1].equalsIgnoreCase("addwin")) {
 						if (!s.hasPermission("probending.team.addwin")) {
-							s.sendMessage(Strings.Prefix + Strings.noPermission);
+							s.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
 							return true;
 						}
 						if (args.length != 3) {
-							s.sendMessage(Strings.Prefix + "§cProper Usage: §3/pb team addwin [Team]");
+							s.sendMessage(PBMethods.Prefix + "§cProper Usage: §3/pb team addwin [Team]");
 							return true;
 						}
 						String teamName = args[2];
 						Set<String> teams = PBMethods.getTeams();
 						if (!PBMethods.teamExists(teamName)) {
-							s.sendMessage(Strings.Prefix + Strings.TeamDoesNotExist);
+							s.sendMessage(PBMethods.Prefix + PBMethods.TeamDoesNotExist);
 							return true;
 						}
 						if (teams != null) {
 							for (String team: teams) {
 								if (team.equalsIgnoreCase(teamName)) {
 									PBMethods.addWin(team);
-									s.sendMessage(Strings.Prefix + Strings.WinAddedToTeam.replace("%team", team));
+									s.sendMessage(PBMethods.Prefix + PBMethods.WinAddedToTeam.replace("%team", team));
 								}
 							}
 						}
@@ -403,7 +403,7 @@ public class Commands {
 					}
 					if (args[1].equalsIgnoreCase("addloss")) {
 						if (!s.hasPermission("probending.team.addloss")) {
-							s.sendMessage(Strings.Prefix + Strings.noPermission);
+							s.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
 							return true;
 						}
 						if (args.length != 3) {
@@ -413,14 +413,14 @@ public class Commands {
 						String teamName = args[2];
 						Set<String> teams = PBMethods.getTeams();
 						if (!PBMethods.teamExists(teamName)) {
-							s.sendMessage(Strings.Prefix + Strings.TeamDoesNotExist);
+							s.sendMessage(PBMethods.Prefix + PBMethods.TeamDoesNotExist);
 							return true;
 						}
 						if (teams != null) {
 							for (String team: teams) {
 								if (team.equalsIgnoreCase(teamName)) {
 									PBMethods.addLoss(team);
-									s.sendMessage(Strings.Prefix + Strings.LossAddedToTeam.replace("%team", team));
+									s.sendMessage(PBMethods.Prefix + PBMethods.LossAddedToTeam.replace("%team", team));
 								}
 							}
 						}
@@ -428,33 +428,33 @@ public class Commands {
 					}
 					if (args[1].equalsIgnoreCase("rename")) {
 						if (!s.hasPermission("probending.team.rename")) {
-							s.sendMessage(Strings.Prefix + Strings.noPermission);
+							s.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
 							return true;
 						}
 						UUID uuid = ((Player) s).getUniqueId();
 
 						String teamName = PBMethods.getPlayerTeam(uuid);
 						if (!PBMethods.playerInTeam(uuid)) {
-							s.sendMessage(Strings.Prefix + Strings.PlayerNotInTeam);
+							s.sendMessage(PBMethods.Prefix + PBMethods.PlayerNotInTeam);
 							return true;
 						}
 						if (!PBMethods.isPlayerOwner(uuid, teamName)) {
-							s.sendMessage(Strings.Prefix + Strings.NotOwnerOfTeam);
+							s.sendMessage(PBMethods.Prefix + PBMethods.NotOwnerOfTeam);
 							return true;
 						}
 						if (args.length < 3) {
-							s.sendMessage(Strings.Prefix + "§cProper Usage §3/pb team rename [Name]");
+							s.sendMessage(PBMethods.Prefix + "§cProper Usage §3/pb team rename [Name]");
 							return true;
 						}
 						boolean econEnabled = plugin.getConfig().getBoolean("Economy.Enabled");
 
 						String newName = args[2];
 						if (newName.length() > 15) {
-							s.sendMessage(Strings.Prefix + Strings.NameTooLong);
+							s.sendMessage(PBMethods.Prefix + PBMethods.NameTooLong);
 							return true;
 						}
 						if (newName.equalsIgnoreCase(teamName)) {
-							s.sendMessage(Strings.Prefix + Strings.TeamAlreadyNamedThat.replace("%newname", teamName));
+							s.sendMessage(PBMethods.Prefix + PBMethods.TeamAlreadyNamedThat.replace("%newname", teamName));
 							return true;
 						}
 						if (econEnabled) {
@@ -463,12 +463,12 @@ public class Commands {
 							String serverAccount = plugin.getConfig().getString("Economy.ServerAccount");
 							String currency = Probending.econ.currencyNamePlural();
 							if (playerBalance < renameFee) {
-								s.sendMessage(Strings.Prefix + Strings.NotEnoughMoney.replace("%amount", renameFee.toString()).replace("%currency", currency));
+								s.sendMessage(PBMethods.Prefix + PBMethods.NotEnoughMoney.replace("%amount", renameFee.toString()).replace("%currency", currency));
 								return true;
 							}
 							Probending.econ.withdrawPlayer((Player) s, renameFee);
 							Probending.econ.depositPlayer(serverAccount, renameFee);
-							s.sendMessage(Strings.Prefix + Strings.MoneyWithdrawn.replace("%amount", renameFee.toString()).replace("%currency", currency));
+							s.sendMessage(PBMethods.Prefix + PBMethods.MoneyWithdrawn.replace("%amount", renameFee.toString()).replace("%currency", currency));
 						}
 
 						int Wins = PBMethods.getWins(teamName);
@@ -526,7 +526,7 @@ public class Commands {
 						PBMethods.setLosses(Losses, newName);
 						PBMethods.setWins(Wins, newName);
 
-						s.sendMessage(Strings.Prefix + Strings.TeamRenamed.replace("%newname", newName));
+						s.sendMessage(PBMethods.Prefix + PBMethods.TeamRenamed.replace("%newname", newName));
 						PBMethods.setOwner(uuid, newName);
 						PBMethods.deleteTeam(teamName);
 						plugin.saveConfig();
@@ -534,7 +534,7 @@ public class Commands {
 					}
 					if (args[1].equalsIgnoreCase("list")) {
 						if (!s.hasPermission("probending.team.list")) {
-							s.sendMessage(Strings.Prefix + Strings.noPermission);
+							s.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
 							return true;
 						}
 						Set<String> teams = PBMethods.getTeams();
@@ -544,17 +544,17 @@ public class Commands {
 					if (args[1].equalsIgnoreCase("disband")) {
 						UUID uuid = ((Player) s).getUniqueId();
 						if (!s.hasPermission("probending.team.disband")) {
-							s.sendMessage(Strings.Prefix + Strings.noPermission);
+							s.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
 							return true;
 						}
 						if (args.length > 3 || args.length < 2) {
-							s.sendMessage(Strings.Prefix + "§cProper Usage: §3/pb team disband [Team]");
+							s.sendMessage(PBMethods.Prefix + "§cProper Usage: §3/pb team disband [Team]");
 							return true;
 						}
 						String teamName = null;
 						if (args.length == 3) {
 							if (!s.hasPermission("probending.team.disband.other")) {
-								s.sendMessage(Strings.Prefix + Strings.noPermission);
+								s.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
 								return true;
 							}
 							teamName = args[2];
@@ -563,17 +563,17 @@ public class Commands {
 						}
 
 						if (teamName == null) {
-							s.sendMessage(Strings.Prefix + Strings.TeamDoesNotExist);
+							s.sendMessage(PBMethods.Prefix + PBMethods.TeamDoesNotExist);
 							return true;
 						}
 						if (!PBMethods.isPlayerOwner(uuid, teamName)) {
-							s.sendMessage(Strings.Prefix + Strings.NotOwnerOfTeam);
+							s.sendMessage(PBMethods.Prefix + PBMethods.NotOwnerOfTeam);
 							return true;
 						}
 						for (Player player: Bukkit.getOnlinePlayers()) {
 							if (PBMethods.getPlayerTeam(player.getUniqueId()) == null) continue;
 							if (PBMethods.getPlayerTeam(player.getUniqueId()).equals(teamName)) {
-								s.sendMessage(Strings.Prefix + Strings.TeamDisbanded.replace("%team", teamName));
+								s.sendMessage(PBMethods.Prefix + PBMethods.TeamDisbanded.replace("%team", teamName));
 							}
 						}
 						String playerElement = PBMethods.getPlayerElementAsString(uuid);
@@ -603,31 +603,31 @@ public class Commands {
 					if (args[1].equalsIgnoreCase("quit")) {
 						UUID uuid = ((Player) s).getUniqueId();
 						if (!s.hasPermission("probending.team.quit")) {
-							s.sendMessage(Strings.Prefix + Strings.noPermission);
+							s.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
 							return true;
 						}
 						if (args.length != 2) {
-							s.sendMessage(Strings.Prefix + "§cProper Usage: §3/pb team quit");
+							s.sendMessage(PBMethods.Prefix + "§cProper Usage: §3/pb team quit");
 							return true;
 						}
 
 						String teamName = PBMethods.getPlayerTeam(uuid);
 						if (teamName == null) {
-							s.sendMessage(Strings.Prefix + Strings.PlayerNotInTeam);
+							s.sendMessage(PBMethods.Prefix + PBMethods.PlayerNotInTeam);
 							return true;
 						}
 						if (PBMethods.isPlayerOwner(uuid, teamName)) {
-							s.sendMessage(Strings.Prefix + Strings.CantBootFromOwnTeam);
+							s.sendMessage(PBMethods.Prefix + PBMethods.CantBootFromOwnTeam);
 							return true;
 						}
 						String playerElement = PBMethods.getPlayerElementAsString(uuid);
 
 						PBMethods.removePlayerFromTeam(teamName, uuid, playerElement);
-						s.sendMessage(Strings.Prefix + Strings.YouHaveQuit.replace("%team", teamName));
+						s.sendMessage(PBMethods.Prefix + PBMethods.YouHaveQuit.replace("%team", teamName));
 						for (Player player: Bukkit.getOnlinePlayers()) {
 							if (PBMethods.getPlayerTeam(player.getUniqueId()) == null) continue;
 							if (PBMethods.getPlayerTeam(player.getUniqueId()).equals(teamName)) {
-								s.sendMessage(Strings.Prefix + Strings.PlayerHasQuit.replace("%team", teamName).replace("%player", s.getName()));
+								s.sendMessage(PBMethods.Prefix + PBMethods.PlayerHasQuit.replace("%team", teamName).replace("%player", s.getName()));
 							}
 						}
 						return true;
@@ -635,25 +635,25 @@ public class Commands {
 					if (args[1].equalsIgnoreCase("kick")) {
 						UUID uuid = ((Player) s).getUniqueId();
 						if (!s.hasPermission("probending.team.kick")) {
-							s.sendMessage(Strings.Prefix + Strings.noPermission);
+							s.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
 							return true;
 						}
 						if (args.length != 3) {
-							s.sendMessage(Strings.Prefix + "§cProper Usage: §3/pb team kick <Name>");
+							s.sendMessage(PBMethods.Prefix + "§cProper Usage: §3/pb team kick <Name>");
 							return true;
 						}
 						String teamName = PBMethods.getPlayerTeam(uuid);
 						if (teamName == null) {
-							s.sendMessage(Strings.Prefix + Strings.PlayerNotInTeam);
+							s.sendMessage(PBMethods.Prefix + PBMethods.PlayerNotInTeam);
 							return true;
 						}
 						if (!PBMethods.isPlayerOwner(uuid, teamName)) {
-							s.sendMessage(Strings.Prefix + Strings.NotOwnerOfTeam);
+							s.sendMessage(PBMethods.Prefix + PBMethods.NotOwnerOfTeam);
 							return true;
 						}
 						String playerName = args[2];
 						if (playerName.equals(s.getName())) {
-							s.sendMessage(Strings.Prefix + Strings.CantBootFromOwnTeam);
+							s.sendMessage(PBMethods.Prefix + PBMethods.CantBootFromOwnTeam);
 							return true;
 						}
 						@SuppressWarnings("deprecation")
@@ -667,23 +667,23 @@ public class Commands {
 						}
 
 						if (playerTeam == null) {
-							s.sendMessage(Strings.Prefix + Strings.PlayerNotOnThisTeam);
+							s.sendMessage(PBMethods.Prefix + PBMethods.PlayerNotOnThisTeam);
 							return true;
 						}
 						if (!playerTeam.equals(teamName)) {
-							s.sendMessage(Strings.Prefix + Strings.PlayerNotOnThisTeam);
+							s.sendMessage(PBMethods.Prefix + PBMethods.PlayerNotOnThisTeam);
 							return true;
 						}
 						PBMethods.removePlayerFromTeam(teamName, p3.getUniqueId(), playerElement);
 						@SuppressWarnings("deprecation")
 						Player player = Bukkit.getPlayer(playerName);
 						if (player != null) {
-							player.sendMessage(Strings.Prefix + Strings.YouHaveBeenBooted.replace("%team", teamName));
+							player.sendMessage(PBMethods.Prefix + PBMethods.YouHaveBeenBooted.replace("%team", teamName));
 						}
 						for (Player player2: Bukkit.getOnlinePlayers()) {
 							if (PBMethods.getPlayerTeam(player2.getUniqueId()) == null) continue;
 							if (PBMethods.getPlayerTeam(player2.getUniqueId()).equals(teamName)) {
-								player2.sendMessage(Strings.Prefix + Strings.PlayerHasBeenBooted.replace("%player", playerName).replace("%team", teamName));
+								player2.sendMessage(PBMethods.Prefix + PBMethods.PlayerHasBeenBooted.replace("%player", playerName).replace("%team", teamName));
 							}
 						}
 						return true;
@@ -691,7 +691,7 @@ public class Commands {
 					if (args[1].equalsIgnoreCase("join")) {
 						UUID uuid = ((Player) s).getUniqueId();
 						if (!s.hasPermission("probending.team.join")) {
-							s.sendMessage(Strings.Prefix + Strings.noPermission);
+							s.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
 							return true;
 						}
 
@@ -700,32 +700,32 @@ public class Commands {
 							return true;
 						}
 						if (PBMethods.playerInTeam(uuid)) {
-							s.sendMessage(Strings.Prefix + Strings.PlayerAlreadyInTeam);
+							s.sendMessage(PBMethods.Prefix + PBMethods.PlayerAlreadyInTeam);
 							return true;
 						}
 						String teamName = args[2];
 						if (teamInvites.get(s.getName()) == null) {
-							s.sendMessage(Strings.Prefix + Strings.NoInviteFromTeam);
+							s.sendMessage(PBMethods.Prefix + PBMethods.NoInviteFromTeam);
 							return true;
 						}
 						if (!teamInvites.get(s.getName()).contains(teamName)) {
-							s.sendMessage(Strings.Prefix + Strings.NoInviteFromTeam);
+							s.sendMessage(PBMethods.Prefix + PBMethods.NoInviteFromTeam);
 							return true;
 						}
 						String playerElement = PBMethods.getPlayerElementAsString(uuid);
 
 						if (playerElement == null) {
-							s.sendMessage(Strings.Prefix + Strings.noBendingType);
+							s.sendMessage(PBMethods.Prefix + PBMethods.noBendingType);
 							return true;
 						}
 						Set<String> teamelements = PBMethods.getTeamElements(teamName);
 						if (teamelements != null) {
 							if (teamelements.contains(playerElement)) {
-								s.sendMessage(Strings.Prefix + Strings.TeamAlreadyHasElement);
+								s.sendMessage(PBMethods.Prefix + PBMethods.TeamAlreadyHasElement);
 								return true;
 							}
 							if (!plugin.getConfig().getBoolean("TeamSettings.Allow" + playerElement)) {
-								s.sendMessage(Strings.Prefix + Strings.ElementNotAllowed.replace("%element", playerElement));
+								s.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", playerElement));
 								return true;
 							}
 							PBMethods.addPlayerToTeam(teamName, uuid, playerElement);
@@ -733,7 +733,7 @@ public class Commands {
 								String teamName2 = PBMethods.getPlayerTeam(player.getUniqueId());
 								if (teamName2 != null) {
 									if (PBMethods.getPlayerTeam(player.getUniqueId()).equalsIgnoreCase(teamName)) {
-										player.sendMessage(Strings.Prefix + Strings.PlayerJoinedTeam.replace("%player", s.getName()).replace("%team", teamName));
+										player.sendMessage(PBMethods.Prefix + PBMethods.PlayerJoinedTeam.replace("%player", s.getName()).replace("%team", teamName));
 									}
 								}
 							}
@@ -743,7 +743,7 @@ public class Commands {
 					}
 					if (args[1].equalsIgnoreCase("info")) {
 						if (!s.hasPermission("probending.team.info")) {
-							s.sendMessage(Strings.Prefix + Strings.noPermission);
+							s.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
 							return true;
 						}
 						UUID uuid = ((Player) s).getUniqueId();
@@ -756,7 +756,7 @@ public class Commands {
 						}
 
 						if (!PBMethods.teamExists(teamName)) {
-							s.sendMessage(Strings.Prefix + Strings.TeamDoesNotExist);
+							s.sendMessage(PBMethods.Prefix + PBMethods.TeamDoesNotExist);
 							return true;
 						}
 
@@ -811,22 +811,22 @@ public class Commands {
 					if (args[1].equalsIgnoreCase("invite")) {
 						UUID uuid = ((Player) s).getUniqueId();
 						if (args.length != 3) {
-							s.sendMessage(Strings.Prefix + "§cProper Usage: §3/pb team invite [Name]");
+							s.sendMessage(PBMethods.Prefix + "§cProper Usage: §3/pb team invite [Name]");
 							return true;
 						}
 						if (!s.hasPermission("probending.team.invite")) {
-							s.sendMessage(Strings.Prefix + Strings.noPermission);
+							s.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
 							return true;
 						}
 
 						if (!PBMethods.playerInTeam(uuid)) {
-							s.sendMessage(Strings.Prefix + Strings.PlayerNotInTeam);
+							s.sendMessage(PBMethods.Prefix + PBMethods.PlayerNotInTeam);
 							return true;
 						}
 
 						String playerTeam = PBMethods.getPlayerTeam(uuid);
 						if (!PBMethods.isPlayerOwner(uuid, playerTeam)) {
-							s.sendMessage(Strings.Prefix + Strings.NotOwnerOfTeam);
+							s.sendMessage(PBMethods.Prefix + PBMethods.NotOwnerOfTeam);
 							return true;
 						}
 
@@ -834,12 +834,12 @@ public class Commands {
 						Player player = Bukkit.getPlayer(args[2]);
 
 						if (player == null) {
-							s.sendMessage(Strings.Prefix + Strings.PlayerNotOnline);
+							s.sendMessage(PBMethods.Prefix + PBMethods.PlayerNotOnline);
 							return true;
 						}
 
 						if (PBMethods.playerInTeam(player.getUniqueId())) {
-							s.sendMessage(Strings.Prefix + Strings.PlayerAlreadyInTeam);
+							s.sendMessage(PBMethods.Prefix + PBMethods.PlayerAlreadyInTeam);
 							return true;
 						}
 
@@ -849,87 +849,87 @@ public class Commands {
 
 						int maxSize = plugin.getConfig().getInt("TeamSettings.MaxTeamSize");
 						if (PBMethods.getTeamSize(playerTeam) >= maxSize) {
-							s.sendMessage(Strings.Prefix + Strings.MaxSizeReached);
+							s.sendMessage(PBMethods.Prefix + PBMethods.MaxSizeReached);
 							return true;
 						}
 						String playerElement = PBMethods.getPlayerElementAsString(player.getUniqueId());
 
 						if (playerElement == null) {
-							s.sendMessage(Strings.Prefix + Strings.noBendingType);
+							s.sendMessage(PBMethods.Prefix + PBMethods.noBendingType);
 							return true;
 						}
 						if (!PBMethods.getAirAllowed()) {
 							if (playerElement.equals("Air")) {
-								s.sendMessage(Strings.Prefix + Strings.ElementNotAllowed.replace("%element", "Airbenders"));
+								s.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Airbenders"));
 								return true;
 							}
 						}
 						if (!PBMethods.getWaterAllowed()) {
 							if (playerElement.equals("Water")) {
-								s.sendMessage(Strings.Prefix + Strings.ElementNotAllowed.replace("%element", "Waterbenders"));
+								s.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Waterbenders"));
 								return true;
 							}
 						}
 						if (!PBMethods.getEarthAllowed()) {
 							if (playerElement.equals("Earth")) {
-								s.sendMessage(Strings.Prefix + Strings.ElementNotAllowed.replace("%element", "Earthbenders"));
+								s.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Earthbenders"));
 								return true;
 							}
 						}
 						if (!PBMethods.getFireAllowed()) {
 							if (playerElement.equals("Fire")) {
-								s.sendMessage(Strings.Prefix + Strings.ElementNotAllowed.replace("%element", "Firebenders"));
+								s.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Firebenders"));
 								return true;
 							}
 						}
 						if (!PBMethods.getChiAllowed()) {
 							if (playerElement.equals("Chi")) {
-								s.sendMessage(Strings.Prefix + Strings.ElementNotAllowed.replace("%element", "Chiblockers"));
+								s.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Chiblockers"));
 								return true;
 							}
 						}
 						Set<String> teamelements = PBMethods.getTeamElements(playerTeam);
 						if (teamelements != null) {
 							if (teamelements.contains(playerElement)) {
-								s.sendMessage(Strings.Prefix + Strings.TeamAlreadyHasElement);
+								s.sendMessage(PBMethods.Prefix + PBMethods.TeamAlreadyHasElement);
 								return true;
 							}
 						}
 
 						teamInvites.get(player.getName()).add(playerTeam);
-						s.sendMessage(Strings.Prefix + Strings.PlayerInviteSent.replace("%team", playerTeam).replace("%player", player.getName()));
-						player.sendMessage(Strings.Prefix + Strings.PlayerInviteReceived.replace("%team", playerTeam).replace("%player", player.getName()));
-						player.sendMessage(Strings.Prefix + Strings.InviteInstructions.replace("%team", playerTeam).replace("%player", player.getName()));
+						s.sendMessage(PBMethods.Prefix + PBMethods.PlayerInviteSent.replace("%team", playerTeam).replace("%player", player.getName()));
+						player.sendMessage(PBMethods.Prefix + PBMethods.PlayerInviteReceived.replace("%team", playerTeam).replace("%player", player.getName()));
+						player.sendMessage(PBMethods.Prefix + PBMethods.InviteInstructions.replace("%team", playerTeam).replace("%player", player.getName()));
 						return true;
 					}
 					if (args[1].equalsIgnoreCase("create")) {
 						UUID uuid = ((Player) s).getUniqueId();
 						if (args.length != 3) {
-							s.sendMessage(Strings.Prefix + "§cProper Usage: §3/pb team create [Name]");
+							s.sendMessage(PBMethods.Prefix + "§cProper Usage: §3/pb team create [Name]");
 							return true;
 						}
 						if (!s.hasPermission("probending.team.create")) {
-							s.sendMessage(Strings.Prefix + Strings.noPermission);
+							s.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
 							return true;
 						}
 						String teamName = args[2];
 						if (PBMethods.teamExists(teamName)) {
-							s.sendMessage(Strings.Prefix + Strings.teamAlreadyExists);
+							s.sendMessage(PBMethods.Prefix + PBMethods.teamAlreadyExists);
 							return true;
 						}
 
 						if (teamName.length() > 15) {
-							s.sendMessage(Strings.Prefix + Strings.NameTooLong);
+							s.sendMessage(PBMethods.Prefix + PBMethods.NameTooLong);
 							return true;
 						}
 
 						if (GeneralMethods.getBendingPlayer(s.getName()).getElements().size() == 0) {
-							s.sendMessage(Strings.Prefix + Strings.noBendingType);
+							s.sendMessage(PBMethods.Prefix + PBMethods.noBendingType);
 							return true;
 						}
 
 						if (PBMethods.playerInTeam(uuid)) {
-							s.sendMessage(Strings.Prefix + Strings.PlayerAlreadyInTeam);
+							s.sendMessage(PBMethods.Prefix + PBMethods.PlayerAlreadyInTeam);
 							return true;
 						}
 						Double creationCost = plugin.getConfig().getDouble("Economy.TeamCreationFee");
@@ -940,31 +940,31 @@ public class Commands {
 
 						if (!PBMethods.getAirAllowed()) {
 							if (playerElement.equals("Air")) {
-								s.sendMessage(Strings.Prefix + Strings.ElementNotAllowed.replace("%element", "Airbenders"));
+								s.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Airbenders"));
 								return true;
 							}
 						}
 						if (!PBMethods.getWaterAllowed()) {
 							if (playerElement.equals("Water")) {
-								s.sendMessage(Strings.Prefix + Strings.ElementNotAllowed.replace("%element", "Waterbenders"));
+								s.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Waterbenders"));
 								return true;
 							}
 						}
 						if (!PBMethods.getEarthAllowed()) {
 							if (playerElement.equals("Earth")) {
-								s.sendMessage(Strings.Prefix + Strings.ElementNotAllowed.replace("%element", "Earthbenders"));
+								s.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Earthbenders"));
 								return true;
 							}
 						}
 						if (!PBMethods.getFireAllowed()) {
 							if (playerElement.equals("Fire")) {
-								s.sendMessage(Strings.Prefix + Strings.ElementNotAllowed.replace("%element", "Firebenders"));
+								s.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Firebenders"));
 								return true;
 							}
 						}
 						if (!PBMethods.getChiAllowed()) {
 							if (playerElement.equals("Chi")) {
-								s.sendMessage(Strings.Prefix + Strings.ElementNotAllowed.replace("%element", "Chiblockers"));
+								s.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Chiblockers"));
 								return true;
 							}
 						}
@@ -973,18 +973,18 @@ public class Commands {
 							String currencyName = Probending.econ.currencyNamePlural();
 							Double playerBalance = Probending.econ.getBalance((Player) s);
 							if (playerBalance < creationCost) {
-								s.sendMessage(Strings.Prefix + Strings.NotEnoughMoney.replace("%currency", currencyName));
+								s.sendMessage(PBMethods.Prefix + PBMethods.NotEnoughMoney.replace("%currency", currencyName));
 								return true;
 							}
 							Probending.econ.withdrawPlayer((Player) s, creationCost);
 							Probending.econ.depositPlayer(serverAccount, creationCost);
-							s.sendMessage(Strings.Prefix + Strings.MoneyWithdrawn.replace("%amount", creationCost.toString()).replace("%currency", currencyName));
+							s.sendMessage(PBMethods.Prefix + PBMethods.MoneyWithdrawn.replace("%amount", creationCost.toString()).replace("%currency", currencyName));
 						}
 
 
 						PBMethods.createTeam(teamName, uuid);
 						PBMethods.addPlayerToTeam(teamName, uuid, playerElement);
-						s.sendMessage(Strings.Prefix + Strings.TeamCreated.replace("%team", teamName));
+						s.sendMessage(PBMethods.Prefix + PBMethods.TeamCreated.replace("%team", teamName));
 						return true;
 					}
 				}

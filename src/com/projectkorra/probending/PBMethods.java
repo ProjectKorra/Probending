@@ -211,44 +211,44 @@ public class PBMethods {
 						if (Side.equalsIgnoreCase("One")) {
 							if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z1)) {
 								allowedZone.put(player.getName(), t2z1); // Moves them up to Team Two Zone One
-								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
+								player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
 								continue;
 							}
 							if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z1)) {
 								allowedZone.put(player.getName(), t2z2);
-								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
+								player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
 								continue;
 							}
 							if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z2)) {
 								allowedZone.put(player.getName(), t1z1);
-								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
+								player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
 								continue;
 							}
 							if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z3)) {
 								allowedZone.put(player.getName(), t1z2);
-								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
+								player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
 								continue;
 							}
 						}
 						if (Side.equalsIgnoreCase("Two")) {
 							if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z1)) {
 								allowedZone.put(player.getName(), t1z1);
-								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
+								player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
 								continue;
 							}
 							if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z2)) {
 								allowedZone.put(player.getName(), t2z1);
-								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
+								player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
 								continue;
 							}
 							if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z3)) {
 								allowedZone.put(player.getName(), t2z2);
-								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
+								player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
 								continue;
 							}
 							if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z1)) {
 								allowedZone.put(player.getName(), t1z2);
-								player.sendMessage(Strings.Prefix + Strings.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
+								player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
 								continue;
 							}
 						}
@@ -357,7 +357,7 @@ public class PBMethods {
 	public static void sendPBChat(String message) {
 		for (Player player: Bukkit.getOnlinePlayers()) {
 			if (Commands.pbChat.contains(player)) {
-				player.sendMessage(Strings.Prefix + message);
+				player.sendMessage(PBMethods.Prefix + message);
 			}
 		}
 	}
@@ -985,5 +985,85 @@ public class PBMethods {
 		return o;
 
 	}
+	
+	public static String Prefix;
+	public static String noPermission;
+	public static String configReloaded;
+	public static String NoTeamPermissions;
+	
+	/*
+	 * Player
+	 */
+	public static String noBendingType;
+	public static String PlayerAlreadyInTeam;
+	public static String ElementNotAllowed;
+	public static String PlayerNotInTeam;
+	public static String PlayerNotOnline;
+	public static String PlayerInviteSent;
+	public static String PlayerInviteReceived;
+	public static String InviteInstructions;
+	public static String NoInviteFromTeam;
+	public static String YouHaveBeenBooted;
+	public static String YouHaveQuit;
+	public static String RemovedFromTeamBecauseDifferentElement;
+	
+	/*
+	 * Team
+	 */
+	public static String teamAlreadyExists;
+	public static String TeamCreated;
+	public static String NotOwnerOfTeam;
+	public static String MaxSizeReached;
+	public static String TeamAlreadyHasElement;
+	public static String TeamDoesNotExist;
+	public static String PlayerJoinedTeam;
+	public static String CantBootFromOwnTeam;
+	public static String PlayerNotOnThisTeam;
+	public static String PlayerHasBeenBooted;
+	public static String PlayerHasQuit;
+	public static String TeamDisbanded;
+	public static String NameTooLong;
+	public static String TeamRenamed;
+	public static String TeamAlreadyNamedThat;
+	public static String OwnerNotOnline;
+	
+	/*
+	 * Economy
+	 */
+	
+	public static String NotEnoughMoney;
+	public static String MoneyWithdrawn;
+	
+	/*
+	 * Round
+	 */
+	
+	public static String OneMinuteRemaining;
+	public static String RoundComplete;
+	public static String RoundAlreadyGoing;
+	public static String InvalidTeamSize;
+	public static String RoundStarted;
+	public static String RoundStopped;
+	public static String RoundPaused;
+	public static String RoundResumed;
+	public static String NoOngoingRound;
+	public static String PlayerEliminated;
+	public static String PlayerFouled;
+	public static String RoundEnded;
+	public static String TeamWon;
+	public static String MoveUpOneZone;
+	public static String CantEnterField;
+	public static String CantTeleportDuringMatch;
+	public static String MoveNotAllowed;
+
+	/*
+	 * Misc
+	 */
+
+	public static String ChatEnabled;
+	public static String ChatDisabled;
+	public static String WinAddedToTeam;
+	public static String LossAddedToTeam;
+	public static String TeamSpawnSet;
 
 }
