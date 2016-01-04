@@ -13,6 +13,7 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -60,7 +61,10 @@ public class PBMethods {
 	public static String t2z2 = Probending.plugin.getConfig().getString("WorldGuard.TeamTwoZoneTwo").toLowerCase();
 	public static String t2z3 = Probending.plugin.getConfig().getString("WorldGuard.TeamTwoZoneThree").toLowerCase();
 
-	// Sets Spectator Spawn
+	/**
+	 * Sets the Spectator Spawn to the specified location.
+	 * @param loc The location to set the spawn to.
+	 */
 	public static void setSpectatorSpawn(Location loc) {
 		Probending.plugin.getConfig().set("TeamSettings.SpectatorSpawn.World", loc.getWorld().getName());
 		Probending.plugin.getConfig().set("TeamSettings.SpectatorSpawn.x", loc.getX());
@@ -68,7 +72,11 @@ public class PBMethods {
 		Probending.plugin.getConfig().set("TeamSettings.SpectatorSpawn.z", loc.getZ());
 		Probending.plugin.saveConfig();
 	}
-	// Sets Spawn for TeamOne
+	
+	/**
+	 * Sets the spawn location for Team One.
+	 * @param loc The location to set the spawn to.
+	 */
 	public static void setTeamOneSpawn(Location loc) {
 		Probending.plugin.getConfig().set("TeamSettings.TeamOneSpawn.World", loc.getWorld().getName());
 		Probending.plugin.getConfig().set("TeamSettings.TeamOneSpawn.x", loc.getX());
@@ -76,7 +84,11 @@ public class PBMethods {
 		Probending.plugin.getConfig().set("TeamSettings.TeamOneSpawn.z", loc.getZ());
 		Probending.plugin.saveConfig();
 	}
-	// Sets Spawn for TeamOne
+	
+	/**
+	 * Sets the spawn location for Team Two.
+	 * @param loc The Location to set the spawn to.
+	 */
 	public static void setTeamTwoSpawn(Location loc) {
 		Probending.plugin.getConfig().set("TeamSettings.TeamTwoSpawn.World", loc.getWorld().getName());
 		Probending.plugin.getConfig().set("TeamSettings.TeamTwoSpawn.x", loc.getX());
@@ -85,7 +97,10 @@ public class PBMethods {
 		Probending.plugin.saveConfig();
 	}
 
-	// Returns Team One Spawn
+	/**
+	 * Returns the team one spawn location.
+	 * @return
+	 */
 	public static Location getTeamOneSpawn() {
 		String worldS = Probending.plugin.getConfig().getString("TeamSettings.TeamOneSpawn.World");
 		World world = Bukkit.getWorld(worldS);
@@ -96,7 +111,10 @@ public class PBMethods {
 		return loc;
 	}
 
-	// Returns Team Two Spawn
+	/**
+	 * Returns the Team Two Spawn location.
+	 * @return
+	 */
 	public static Location getTeamTwoSpawn() {
 		String worldS = Probending.plugin.getConfig().getString("TeamSettings.TeamTwoSpawn.World");
 		World world = Bukkit.getWorld(worldS);
@@ -107,7 +125,10 @@ public class PBMethods {
 		return loc;
 	}
 
-	// Returns Spectator Spawn
+	/**
+	 * Returns the set Spectator spawn.
+	 * @return
+	 */
 	public static Location getSpectatorSpawn() {
 		String worldS = Probending.plugin.getConfig().getString("TeamSettings.SpectatorSpawn.World");
 		World world = Bukkit.getWorld(worldS);
@@ -119,7 +140,9 @@ public class PBMethods {
 	}
 
 
-	// Ends a Match
+	/**
+	 * Restores the armor for any player that has had their armor changed by this plugin.
+	 */
 	public static void restoreArmor() {
 		for (Player player: Bukkit.getOnlinePlayers()) {
 			if (Commands.tmpArmor.containsKey(player)) {
@@ -132,6 +155,13 @@ public class PBMethods {
 		}
 
 	}
+	
+	/**
+	 * Checks if the zone is empty of all players from a specific team.
+	 * @param teamName The team you want to check.
+	 * @param zone The zone you want to check.
+	 * @return true if the selected zone contains no players of the specified team.
+	 */
 
 	public static boolean isZoneEmpty(String teamName, String zone) {
 		if (teamName.equalsIgnoreCase(PBMethods.TeamOne)) { 
@@ -151,7 +181,12 @@ public class PBMethods {
 		return true;
 	}
 	public static Set<String> colors = new HashSet<String>();
-	// Moves players up
+	
+	/**
+	 * Moves all players still in a Probending match on a specific team up one zone.
+	 * @param team = Name of the team to move.
+	 * @param side = What side they are on. (One or Two)
+	 */
 	public static void MovePlayersUp(String team, String Side) {
 		for (Player player: Bukkit.getOnlinePlayers()) {
 			UUID uuid = player.getUniqueId();
@@ -209,7 +244,13 @@ public class PBMethods {
 			}
 		}
 	}
-	//Returns a set of players allowed in a zone.
+	
+	
+	/**
+	 * Returns all players allowed to be in a zone.
+	 * @param zone The name of the zone you want to check.
+	 * @return Set<String> of player names allowed in a zone.
+	 */
 	public static Set<String> playersInZone(String zone) {
 		Set<String> playersInZone = new HashSet<String>();
 		for (Player p: Bukkit.getOnlinePlayers()) {
@@ -226,7 +267,12 @@ public class PBMethods {
 	public static HashMap<String, String> players = new HashMap<String, String>();
 	public static String storage = Probending.plugin.getConfig().getString("General.Storage");
 
-	// Gives the player Leather Armor (With Color)
+	/**
+	 * Colors a piece of armor.
+	 * @param i The ItemStack to color. Must be leather armor.
+	 * @param c The color to make the armor.
+	 * @return The colored ItemStack. Should be a single piece of armor.
+	 */
 	public static ItemStack createColorArmor(ItemStack i, Color c)
 	{
 		LeatherArmorMeta meta = (LeatherArmorMeta)i.getItemMeta();
@@ -235,7 +281,9 @@ public class PBMethods {
 		return i;
 	}
 
-	// Populates list of colors.
+	/**
+	 * Populates a list of colors for use.
+	 */
 	public static void populateColors() {
 		colors.add("Cyan");
 		colors.add("Black");
@@ -257,7 +305,10 @@ public class PBMethods {
 
 	}
 
-	// Checks if WorldGuard is enabled.
+	/**
+	 * Checks if WorldGuard is installed.
+	 * @return The WorldGuard plugin.
+	 */
 	public static WorldGuardPlugin getWorldGuard() {
 		Plugin plugin = Probending.plugin.getServer().getPluginManager().getPlugin("WorldGuard");
 
@@ -268,7 +319,11 @@ public class PBMethods {
 
 		return (WorldGuardPlugin) plugin;
 	}
-	// Gets region player is in
+	/**
+	 * Checks to see which regions are at a location.
+	 * @param loc The location to check.
+	 * @return Set<String> of regions at the given location. The String is the region name.
+	 */
 	public static Set<String> RegionsAtLocation(Location loc) {
 
 		ApplicableRegionSet set = WGBukkit.getRegionManager(loc.getWorld()).getApplicableRegions(loc);
@@ -281,7 +336,10 @@ public class PBMethods {
 
 	}
 
-	// Sends a message in Probending Chat
+	/**
+	 * Sends a message in the Probending Chat channel.
+	 * @param message The message to send.
+	 */
 	public static void sendPBChat(String message) {
 		for (Player player: Bukkit.getOnlinePlayers()) {
 			if (Commands.pbChat.contains(player)) {
@@ -289,7 +347,12 @@ public class PBMethods {
 			}
 		}
 	}
-	// Gets a color from a string.
+	
+	/**
+	 * Get a color from a user friendly string.
+	 * @param pretendColor The string of the color you want.
+	 * @return Color of specified String as a color, null if String is invalid.
+	 */
 	public static Color getColorFromString (String pretendColor) {
 		if (pretendColor.equalsIgnoreCase("Cyan")) {
 			return Color.AQUA;
@@ -345,7 +408,11 @@ public class PBMethods {
 		return null;
 	}
 
-	// Checks if the team exists, returns true if the team does exist, returns false if not.
+	/**
+	 * Checks if a team exists. Case insensitive.
+	 * @param teamName The name of the team as a string.
+	 * @return true if the team exists. False if it does not.
+	 */
 	public static boolean teamExists(String teamName) {
 		for (String team: teams) {
 			if (team.equalsIgnoreCase(teamName)) {
@@ -355,7 +422,9 @@ public class PBMethods {
 		return false;
 	}
 
-	// Loads teams on startup
+	/**
+	 * Loads all teams. Should only be done on startup.
+	 */
 	public static void loadTeams() {
 		ResultSet rs2 = DBConnection.sql.readQuery("SELECT team FROM probending_teams");
 		try {
@@ -368,6 +437,10 @@ public class PBMethods {
 
 	}
 
+	/**
+	 * Creates data for a player. 
+	 * @param uuid The uuid of the player to create data for.
+	 */
 	public static void createPlayer(UUID uuid) {
 		ResultSet rs2 = DBConnection.sql.readQuery("SELECT * FROM probending_players WHERE uuid = '" + uuid.toString() + "'");
 		try {
@@ -383,7 +456,10 @@ public class PBMethods {
 			ex.printStackTrace();
 		}
 	}
-	// Load Players on Startup
+	
+	/**
+	 * Loads all player data. Should only be done during startup by this plugin.
+	 */
 	public static void loadPlayers() {
 		ResultSet rs2 = DBConnection.sql.readQuery("SELECT * FROM probending_players");
 		try {
@@ -395,39 +471,72 @@ public class PBMethods {
 		}
 
 	}
-	// Creates a team.
+	
+	/**
+	 * Creates a new Probending team.
+	 * @param teamName The name of the new team.
+	 * @param owner The UUID of the owner of the team.
+	 */
 	public static void createTeam(String teamName, UUID owner) {
 		DBConnection.sql.modifyQuery("INSERT INTO probending_teams (team, owner) VALUES ('" + teamName + "', '" + owner.toString() + "')");
 		DBConnection.sql.modifyQuery("UPDATE probending_players SET team = '" + teamName + "' WHERE uuid = '" + owner.toString() + "'");
 		teams.add(teamName);
 	}
-	// Deletes a team.
+	
+	/**
+	 * Deletes an existing Probending team. Check to make sure it exists first.
+	 * See {@link #teamExists(String)}
+	 * @param teamName The name of the team to delete.
+	 */
 	public static void deleteTeam(String teamName) {
 		DBConnection.sql.modifyQuery("DELETE FROM probending_teams WHERE team = '" + teamName + "'");
 		teams.remove(teamName);
 	}
-	// Adds a player to a team.
+	
+	/**
+	 * Adds a player to an existing Probending team. Check to make sure the team exists and doesn't have the element already.
+	 * See {@link #teamExists(String)}
+	 * @param teamName The name of the team to add a player to.
+	 * @param player The UUID of the player to add to the team.
+	 * @param element The player's element.
+	 */
 	public static void addPlayerToTeam(String teamName, UUID player, String element) {
 		DBConnection.sql.modifyQuery("UPDATE probending_teams SET " + element + " = '" + player.toString() + "' WHERE team = '" + teamName + "'");
 		DBConnection.sql.modifyQuery("UPDATE probending_players SET team = '" + teamName + "' WHERE uuid = '" + player.toString() + "'");
 		players.put(player.toString(), teamName);
 	}
 
-	// Removes a player from a team.
+	/**
+	 * Removes a player from a Probending team. Check to make sure the team exists and the player is on the team.
+	 * See {@link #teamExists(String)}
+	 * See {@link #playerInTeam(UUID)}
+	 * See {@link #getPlayerTeam(UUID)}
+	 * @param teamName The name of the team to remove the player from.
+	 * @param player The UUID of the player to remove.
+	 * @param element The element of the player on the team. See {@link #getPlayerElementInTeam(UUID, String)}
+	 */
 	public static void removePlayerFromTeam(String teamName, UUID player, String element) {
 		DBConnection.sql.modifyQuery("UPDATE probending_players SET team = NULL WHERE uuid = '" + player.toString() + "'");
 		DBConnection.sql.modifyQuery("UPDATE probending_teams SET " + element + " = NULL WHERE team = '" + teamName + "'");
-		Bukkit.getServer().broadcastMessage(element);
 		players.put(player.toString(), null);
 	}
 
-	// Checks if the player is in a team. Returns true if the player is in a team.
+	/**
+	 * Checks if a player is in any Probending team.
+	 * @param player The uuid of the player to check.
+	 * @return true if the player is in a team. False if the player is not in a team.
+	 */
 	public static boolean playerInTeam(UUID player) {
 		if (players.get(player.toString()) == null) return false;
 		return true;
 	}
 
-	// Checks the player's element in the team. (Regardless of if they've changed)
+	/**
+	 * Checks the player's element in a Probending team.
+	 * @param player The uuid of the player to check.
+	 * @param teamName The name of the team to check.
+	 * @return The element as a String.
+	 */
 	public static String getPlayerElementInTeam(UUID player, String teamName) {
 		ResultSet rs2 = DBConnection.sql.readQuery("SELECT * FROM probending_teams WHERE team = '" + teamName + "'");
 		try {
@@ -453,12 +562,21 @@ public class PBMethods {
 		return null;
 	}
 
-	// Returns the name of the player's team.
+	/**
+	 * Gets the name of a player team as a String.
+	 * @param player The UUID of the player to check.
+	 * @return Name of player String. Can return null if the player does not exist. See {@link #playerInTeam(UUID)}
+	 */
+	
 	public static String getPlayerTeam(UUID player) {
 		return players.get(player.toString());
 	}
 
-	// Returns the amount of players in a team.
+	/**
+	 * Gets the amount of players on a team.
+	 * @param teamName The name of the team to check.
+	 * @return Number of players in a team. 0 if the team does not exist.
+	 */
 	public static int getTeamSize(String teamName) {
 		int size = 0;
 		ResultSet rs2 = DBConnection.sql.readQuery("SELECT * FROM probending_teams WHERE team = '" + teamName + "'");
@@ -486,7 +604,11 @@ public class PBMethods {
 		return size;
 	}
 
-	// Gets the owner of a team.
+	/**
+	 * Returns the owner of a team. 
+	 * @param teamName The name of the team to check.
+	 * @return Owner's Player Name.
+	 */
 	public static String getOwner(String teamName) {
 		String owner = null;
 		String playername = null;
@@ -501,12 +623,22 @@ public class PBMethods {
 
 		return playername;
 	}
-	// Sets the owner of a team.
+	
+	/**
+	 * Changes the owner of a team. Make sure the player is on the team first.
+	 * @param player The UUID of the player to make owner of the team.
+	 * @param teamName The name of the team you're changing.
+	 */
 	public static void setOwner(UUID player, String teamName) {
 		DBConnection.sql.modifyQuery("UPDATE probending_teams SET owner = '" + player.toString() + "' WHERE team = '" + teamName + "'");
 	}
 
-	// Returns true if the player is the owner of the team.
+	/**
+	 * Checks if the player is the owner of the team.
+	 * @param player The UUID of the player you're checking.
+	 * @param teamName The name of the team you're checking.
+	 * @return true if the player is the owner of the team, false if not.
+	 */
 	public static boolean isPlayerOwner(UUID player, String teamName) {
 		ResultSet rs2 = DBConnection.sql.readQuery("SELECT owner FROM probending_teams WHERE team = '" + teamName + "' AND owner = '" + player.toString() + "'");
 		try {
@@ -521,7 +653,11 @@ public class PBMethods {
 		return false;
 	}
 
-	// Returns a set (List) of all of the teams elements.
+	/**
+	 * Returns all of the elements on a team.
+	 * @param teamName The name of the team you are checking.
+	 * @return A Set<String> of the elements on a team. Strings are Air, Water, Earth, Fire, Chi
+	 */
 	public static Set<String> getTeamElements(String teamName) {
 		Set<String> teamelements = new HashSet<String>();
 
@@ -549,15 +685,19 @@ public class PBMethods {
 		return teamelements;
 	}
 
-	// Returns the name of the team's airbender.
-	public static String getTeamAirbender(String teamName) {
-		String airbender = null;
+	/**
+	 * Returns the team's Airbender if they exist. 
+	 * @param teamName The name of the team to check.
+	 * @return OfflinePlayer of the team's Airbender. null if the team does not have an Airbender.
+	 */
+	public static OfflinePlayer getTeamAirbender(String teamName) {
+		OfflinePlayer airbender = null;
 		ResultSet rs2 = DBConnection.sql.readQuery("SELECT Air FROM probending_teams WHERE team = '"+ teamName + "'");
 		try {
 			if (rs2.next()) {
 				String uuid = rs2.getString("Air");
 				if (uuid == null) return null;
-				airbender = Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName();
+				airbender = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -566,15 +706,19 @@ public class PBMethods {
 		return airbender;
 	}
 
-	// Returns the name of the team's waterbender.
-	public static String getTeamWaterbender(String teamName) {
-		String waterbender = null;
+	/**
+	 * Returns the team's Waterbender if they exist.
+	 * @param teamName The name of the team to check.
+	 * @return OfflinePlayer of the team's Waterbender. null if the team does not have a Waterbender.
+	 */
+	public static OfflinePlayer getTeamWaterbender(String teamName) {
+		OfflinePlayer waterbender = null;
 		ResultSet rs2 = DBConnection.sql.readQuery("SELECT Water FROM probending_teams WHERE team = '"+ teamName + "'");
 		try {
 			if (rs2.next()) {
 				String uuid = rs2.getString("Water");
 				if (uuid == null) return null;
-				waterbender = Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName();
+				waterbender = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -582,15 +726,19 @@ public class PBMethods {
 		return waterbender;
 	}
 
-	// Returns the name of the team's earthbender.
-	public static String getTeamEarthbender(String teamName) {
-		String earthbender = null;
+	/**
+	 * Returns the team's Earthbender if they exist.
+	 * @param teamName The name of the team to check.
+	 * @return OfflinePlayer of the team's Earthbender. null if the team does not have an Earthbender.
+	 */
+	public static OfflinePlayer getTeamEarthbender(String teamName) {
+		OfflinePlayer earthbender = null;
 		ResultSet rs2 = DBConnection.sql.readQuery("SELECT Earth FROM probending_teams WHERE team = '"+ teamName + "'");
 		try {
 			if (rs2.next()) {
 				String uuid = rs2.getString("Earth");
 				if (uuid == null) return null;
-				earthbender = Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName();
+				earthbender = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -598,15 +746,19 @@ public class PBMethods {
 		return earthbender;
 	}
 
-	// Returns the name of the team's firebender.
-	public static String getTeamFirebender(String teamName) {
-		String fire = null;
+	/**
+	 * Returns the team's Firebender if they exist.
+	 * @param teamName The name of the team to check.
+	 * @return OfflinePlayer of the team's Firebender. null if the team does not have a Firebender.
+	 */
+	public static OfflinePlayer getTeamFirebender(String teamName) {
+		OfflinePlayer fire = null;
 		ResultSet rs2 = DBConnection.sql.readQuery("SELECT Fire FROM probending_teams WHERE team = '"+ teamName + "'");
 		try {
 			if (rs2.next()) {
 				String uuid = rs2.getString("Fire");
 				if (uuid == null) return null;
-				fire = Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName();
+				fire = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -614,15 +766,19 @@ public class PBMethods {
 		return fire;
 	}
 
-	// Returns the name of the team's chiblocker.
-	public static String getTeamChiblocker(String teamName) {
-		String chi = null;
+	/**
+	 * Returns the team's Chiblocker if they exist.
+	 * @param teamName The name of the team to check.
+	 * @return OfflinePlayer of the team's Chiblocker. null if the team does not exist.
+	 */
+	public static OfflinePlayer getTeamChiblocker(String teamName) {
+		OfflinePlayer chi = null;
 		ResultSet rs2 = DBConnection.sql.readQuery("SELECT Chi FROM probending_teams WHERE team = '"+ teamName + "'");
 		try {
 			if (rs2.next()) {
 				String uuid = rs2.getString("Chi");
 				if (uuid == null) return null;
-				chi = Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName();
+				chi = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -630,32 +786,52 @@ public class PBMethods {
 		return chi;
 	}
 
-	// Checks if Airbenders are allowed to be in Probending teams.
+	/**
+	 * Checks if Airbenders are allowed to Probend.
+	 * @return true if Airbenders can Probend, false if not.
+	 */
 	public static boolean getAirAllowed() {
 		return Probending.plugin.getConfig().getBoolean("TeamSettings.AllowAir");
 	}
 
-	// Checks if Waterbenders are allowed to be in Probending teams.
+	/**
+	 * Checks if Waterbenders are allowed to Probend.
+	 * @return true if Waterbenders can Probend, false if not.
+	 */
 	public static boolean getWaterAllowed() {
 		return Probending.plugin.getConfig().getBoolean("TeamSettings.AllowWater");
 	}
+	
+	/**
+	 * Checks if Earthbenders are allowed o Probend.
+	 * @return true if Earthbenders can Probend, false if not.
+	 */
 
-	// Checks if Earthbenders are allowed to be in Probending teams.
 	public static boolean getEarthAllowed() {
 		return Probending.plugin.getConfig().getBoolean("TeamSettings.AllowEarth");
 	}
 
-	// Checks if Firebenders are allowed to be in Probending teams.
+	/**
+	 * Checks if Firebenders are allowed to Probend.
+	 * @return true if Firebenders can Probend, false if not.
+	 */
 	public static boolean getFireAllowed() {
 		return Probending.plugin.getConfig().getBoolean("TeamSettings.AllowFire");
 	}
 
-	// Checks if Chiblockers are allowed to be in Probending teams.
+	/**
+	 * Checks if Chiblockers are allowed to Probend.
+	 * @return true of Chiblockers can Probend, false if not.
+	 */
 	public static boolean getChiAllowed() {
 		return Probending.plugin.getConfig().getBoolean("TeamSettings.AllowChi");
 	}
 
-	//Returns the player's element as a string.
+	/**
+	 * Returns the player's element as a String.
+	 * @param uuid The uuid of the player to check.
+	 * @return The name of the element the player possesses. null if none. Strings are: Air, Water, Earth, Fire, Chi
+	 */
 	public static String getPlayerElementAsString(UUID uuid) {
 		String player = Bukkit.getOfflinePlayer(uuid).getName();
 		if (GeneralMethods.isBender(player, Element.Air)) return "Air";
@@ -666,31 +842,60 @@ public class PBMethods {
 		return null;
 	}
 
-	// Adds color to messages.
+	/**
+	 * Adds color to a message. Replacing the & symbol with the appropriate color.
+	 * @param message The message to add color to.
+	 * @return The message with color.
+	 */
 	public static String colorize(String message) {
 		return message.replaceAll("(?i)&([a-fk-or0-9])", "\u00A7$1");
 	}
 
 
-	// Returns a Set (List) of Strings.
+	/**
+	 * Returns a Set<String> of teams.
+	 * @return Set<String> of Probending teams.
+	 */
 	public static Set<String> getTeams() {
 		return teams;
 	}
 
+	/**
+	 * Sets up the economy feature.
+	 * @return true if the economy is enabled (vault is isntalled), false if Vault is not found.
+	 */
 	public static boolean setupEconomy() {
 		RegisteredServiceProvider<Economy> economyProvider = Probending.plugin.getServer().getServicesManager().getRegistration(Economy.class);
 		Probending.econ = economyProvider.getProvider();
 		return (Probending.econ != null);
 	}
+	
+	/**
+	 * Set the number of wins a team has.
+	 * @param wins The number of wins you want to set the team to.
+	 * @param teamName The name of the team you want to change.
+	 */
 
 	public static void setWins(int wins, String teamName) {
 		DBConnection.sql.modifyQuery("UPDATE probending_teams SET wins = " + wins + " WHERE team = '" + teamName + "'");
 	}
+	
+	/**
+	 * Set the number of losses a team has.
+	 * @param losses The number of losses you want to set the team to.
+	 * @param teamName The name of the team you want to change.
+	 */
 
 	public static void setLosses(int losses, String teamName) {
 		DBConnection.sql.modifyQuery("UPDATE probending_teams SET losses = " + losses + " WHERE team = '" + teamName + "'");
 
 	}
+	
+	/**
+	 * Get the amount of wins a team has.
+	 * @param teamName The name of the team to check.
+	 * @return The number of wins a team has.
+	 */
 
 	public static int getWins(String teamName) {
 		int wins = 0;
@@ -704,6 +909,12 @@ public class PBMethods {
 		}
 		return wins;
 	}
+	
+	/**
+	 * Get the amount of losses a team has.
+	 * @param teamName The name of the team to check.
+	 * @return The number of losses a team has.
+	 */
 
 	public static int getLosses(String teamName) {
 		int losses = 0;
@@ -719,18 +930,32 @@ public class PBMethods {
 		return losses;
 	}
 
+	/**
+	 * Add a win to a team.
+	 * @param teamName The name of the team to add a win to.
+	 */
+	
 	public static void addWin(String teamName) {
 		int currentWins = getWins(teamName);
 		int newWins = currentWins + 1;
 		DBConnection.sql.modifyQuery("UPDATE probending_teams SET wins = " + newWins + " WHERE team = '" + teamName + "'");
 	}
 
+	/**
+	 * Add a loss to a team.
+	 * @param teamName The name of the team to add a loss to.
+	 */
 	public static void addLoss(String teamName) {
 		int currentLosses = getLosses(teamName);
 		int newLosses = currentLosses + 1;
 		DBConnection.sql.modifyQuery("UPDATE probending_teams SET losses = " + newLosses + " WHERE team = '" + teamName + "'");
 	}
 
+	/**
+	 * Get the number of players a team has online. For total number of players (including offline) see {@link #getTeamSize(String)}
+	 * @param teamName The name of the team to check.
+	 * @return The number of online players a team has. Returns 0 if the team does not exist or no players are online.
+	 */
 	public static int getOnlineTeamSize(String teamName) {
 		int o = 0;
 		for (Player player: Bukkit.getOnlinePlayers()) {

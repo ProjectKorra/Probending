@@ -13,6 +13,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
@@ -21,9 +22,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 import com.projectkorra.projectkorra.Element;
 import com.projectkorra.projectkorra.GeneralMethods;
+import com.projectkorra.projectkorra.event.PlayerChangeElementEvent;
 import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -66,6 +69,43 @@ public class PlayerListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerDamage(EntityDamageEvent e) {
+		if (e.getEntity() instanceof Player) {
+			Player player = (Player) e.getEntity();
+			if (PBMethods.teamOnePlayers.contains(player.getName()) || PBMethods.teamTwoPlayers.contains(player.getName())) {
+				e.setDamage(0);
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerShift(PlayerToggleSneakEvent e) {
+		Player p = e.getPlayer();
+		List<String> allowedMoves = Probending.plugin.getConfig().getStringList("TeamSettings.AllowedMoves");
+		String playerTeam = PBMethods.getPlayerTeam(p.getUniqueId());
+		if (playerTeam != null) {
+			if (playerTeam.equalsIgnoreCase(PBMethods.TeamOne) || playerTeam.equalsIgnoreCase(PBMethods.TeamTwo)) {
+				if (PBMethods.matchStarted) {
+					if (!allowedMoves.contains(GeneralMethods.getBoundAbility(p).toString()) && GeneralMethods.getBoundAbility(p) != null) {
+						e.setCancelled(true);
+					}
+				}
+			}
+		}
+		if (PBMethods.allowedZone.containsKey(p.getName())) {
+			if (PBMethods.matchStarted && PBMethods.getWorldGuard() != null && PBMethods.AutomateMatches) {
+				Location loc = p.getLocation();
+				Set<String> regions = PBMethods.RegionsAtLocation(loc);
+				String allowedZone = PBMethods.allowedZone.get(p.getName());
+				if (regions != null && !regions.isEmpty()) {
+					if (!regions.contains(allowedZone)) {
+						e.setCancelled(true);
+					}
+				}
+			}
+		}
+	}
+	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerAnimation(PlayerAnimationEvent e) {
 		Player p = e.getPlayer();
 		List<String> allowedMoves = Probending.plugin.getConfig().getStringList("TeamSettings.AllowedMoves");
@@ -73,6 +113,9 @@ public class PlayerListener implements Listener {
 		if (playerTeam != null) {
 			if (playerTeam.equalsIgnoreCase(PBMethods.TeamOne) || playerTeam.equalsIgnoreCase(PBMethods.TeamTwo)) {
 				if (PBMethods.matchStarted) {
+					if (PBMethods.allowedZone.containsKey(p)) {
+						
+					}
 					if (!allowedMoves.contains(GeneralMethods.getBoundAbility(p).toString()) && GeneralMethods.getBoundAbility(p) != null) {
 						e.setCancelled(true);
 					}
@@ -135,6 +178,8 @@ public class PlayerListener implements Listener {
 					if (PBMethods.teamOnePlayers.isEmpty()) {
 						PBMethods.sendPBChat(Strings.RoundStopped);
 						PBMethods.sendPBChat(Strings.TeamWon.replace("%team", PBMethods.TeamTwo));
+						PBMethods.addWin(PBMethods.TeamTwo);
+						PBMethods.addLoss(PBMethods.TeamOne);
 						Bukkit.getServer().getScheduler().cancelTask(Commands.clockTask);
 						PBMethods.matchStarted = false;
 						PBMethods.playingTeams.clear();
@@ -153,6 +198,8 @@ public class PlayerListener implements Listener {
 					if (PBMethods.teamTwoPlayers.isEmpty()) {
 						PBMethods.sendPBChat(Strings.RoundStopped);
 						PBMethods.sendPBChat(Strings.TeamWon.replace("%team", PBMethods.TeamOne));
+						PBMethods.addWin(PBMethods.TeamOne);
+						PBMethods.addLoss(PBMethods.TeamTwo);
 						Bukkit.getServer().getScheduler().cancelTask(Commands.clockTask);
 						PBMethods.matchStarted = false;
 						PBMethods.playingTeams.clear();
@@ -176,6 +223,7 @@ public class PlayerListener implements Listener {
 		if (PBMethods.allowedZone.containsKey(p.getName())) { 
 
 			if (PBMethods.matchStarted && PBMethods.getWorldGuard() != null && PBMethods.AutomateMatches) {
+
 				if (PBMethods.getPlayerTeam(p.getUniqueId()) != null) {
 					if (PBMethods.getPlayerTeam(p.getUniqueId()).equalsIgnoreCase(PBMethods.TeamOne)) teamSide = PBMethods.TeamOne;
 					if (PBMethods.getPlayerTeam(p.getUniqueId()).equalsIgnoreCase(PBMethods.TeamTwo))teamSide = PBMethods.TeamTwo; 
@@ -193,6 +241,8 @@ public class PlayerListener implements Listener {
 							if (PBMethods.teamTwoPlayers.isEmpty()) {
 								PBMethods.sendPBChat(Strings.RoundStopped);
 								PBMethods.sendPBChat(Strings.TeamWon.replace("%team", PBMethods.TeamOne));
+								PBMethods.addWin(PBMethods.TeamOne);
+								PBMethods.addLoss(PBMethods.TeamTwo);
 								Bukkit.getServer().getScheduler().cancelTask(Commands.clockTask);
 								PBMethods.matchStarted = false;
 								PBMethods.playingTeams.clear();
@@ -217,6 +267,8 @@ public class PlayerListener implements Listener {
 							if (PBMethods.teamOnePlayers.isEmpty()) {
 								PBMethods.sendPBChat(Strings.RoundStopped);
 								PBMethods.sendPBChat(Strings.TeamWon.replace("%team", PBMethods.TeamTwo));
+								PBMethods.addWin(PBMethods.TeamTwo);
+								PBMethods.addLoss(PBMethods.TeamOne);
 								Bukkit.getServer().getScheduler().cancelTask(Commands.clockTask);
 								PBMethods.matchStarted = false;
 								PBMethods.playingTeams.clear();
@@ -236,7 +288,7 @@ public class PlayerListener implements Listener {
 							if (teamSide.equalsIgnoreCase(PBMethods.TeamOne)) {
 								PBMethods.allowedZone.put(p.getName(), PBMethods.t2z1);
 								PBMethods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", PBMethods.allowedZone.get(p.getName())));
-								if (PBMethods.isZoneEmpty(PBMethods.TeamOne, PBMethods.t2z2)) {
+								if (PBMethods.isZoneEmpty(PBMethods.TeamOne, PBMethods.t2z2) && PBMethods.isZoneEmpty(PBMethods.TeamOne, PBMethods.t2z1)) {
 									PBMethods.MovePlayersUp(PBMethods.TeamTwo, "Two");
 								}
 							}
@@ -244,7 +296,7 @@ public class PlayerListener implements Listener {
 							if (teamSide.equalsIgnoreCase(PBMethods.TeamTwo)) {
 								PBMethods.allowedZone.put(p.getName(), PBMethods.t2z3);
 								PBMethods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", PBMethods.allowedZone.get(p.getName())));
-								if (PBMethods.isZoneEmpty(PBMethods.TeamTwo, PBMethods.t2z2)) { 
+								if (PBMethods.isZoneEmpty(PBMethods.TeamTwo, PBMethods.t2z2) && PBMethods.isZoneEmpty(PBMethods.TeamTwo, PBMethods.t2z1) && PBMethods.isZoneEmpty(PBMethods.TeamTwo, PBMethods.t1z1)) { 
 									PBMethods.MovePlayersUp(PBMethods.TeamOne, "One");
 								}
 							}
@@ -259,7 +311,7 @@ public class PlayerListener implements Listener {
 							if (teamSide.equalsIgnoreCase(PBMethods.TeamOne)) {
 								PBMethods.allowedZone.put(p.getName(), PBMethods.t1z3);
 								PBMethods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", PBMethods.allowedZone.get(p.getName())));
-								if (PBMethods.isZoneEmpty(PBMethods.TeamOne, PBMethods.t1z2)) {
+								if (PBMethods.isZoneEmpty(PBMethods.TeamOne, PBMethods.t1z2) && PBMethods.isZoneEmpty(PBMethods.TeamOne, PBMethods.t1z1)) {
 									PBMethods.MovePlayersUp(PBMethods.TeamTwo, "Two");
 								}
 							}
@@ -290,7 +342,7 @@ public class PlayerListener implements Listener {
 							if (teamSide.equalsIgnoreCase(PBMethods.TeamTwo)) {
 								PBMethods.allowedZone.put(p.getName(), PBMethods.t2z1);
 								PBMethods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", PBMethods.allowedZone.get(p.getName())));
-								if (PBMethods.isZoneEmpty(PBMethods.TeamTwo, PBMethods.t1z1)) {
+								if (PBMethods.isZoneEmpty(PBMethods.TeamTwo, PBMethods.t1z1) && PBMethods.isZoneEmpty(PBMethods.TeamTwo, PBMethods.t1z2)) {
 									PBMethods.MovePlayersUp(PBMethods.TeamOne, "One");
 								}
 							}
@@ -307,6 +359,8 @@ public class PlayerListener implements Listener {
 								if (PBMethods.teamOnePlayers.isEmpty()) {
 									PBMethods.sendPBChat(Strings.RoundStopped);
 									PBMethods.sendPBChat(Strings.TeamWon.replace("%team", PBMethods.TeamTwo));
+									PBMethods.addWin(PBMethods.TeamTwo);
+									PBMethods.addLoss(PBMethods.TeamOne);
 									PBMethods.matchStarted = false;
 									Bukkit.getServer().getScheduler().cancelTask(Commands.clockTask);
 									PBMethods.playingTeams.clear();
@@ -328,14 +382,14 @@ public class PlayerListener implements Listener {
 							if (teamSide.equalsIgnoreCase(PBMethods.TeamTwo)) {
 								PBMethods.allowedZone.put(p.getName(), PBMethods.t2z2);
 								PBMethods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", PBMethods.allowedZone.get(p.getName())));
-								if (PBMethods.isZoneEmpty(PBMethods.TeamTwo, PBMethods.t2z1)) {
+								if (PBMethods.isZoneEmpty(PBMethods.TeamTwo, PBMethods.t2z1) && PBMethods.isZoneEmpty(PBMethods.TeamTwo, PBMethods.t1z1)) {
 									PBMethods.MovePlayersUp(PBMethods.TeamOne, "One");
 								}
 							}
 							if (teamSide.equalsIgnoreCase(PBMethods.TeamOne)){
 								PBMethods.allowedZone.put(p.getName(), PBMethods.t1z1);
 								PBMethods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", PBMethods.allowedZone.get(p.getName())));
-								if (PBMethods.isZoneEmpty(PBMethods.TeamOne, PBMethods.t2z1)) { 
+								if (PBMethods.isZoneEmpty(PBMethods.TeamOne, PBMethods.t2z1) && PBMethods.isZoneEmpty(PBMethods.TeamOne, PBMethods.t2z2)) { 
 									PBMethods.MovePlayersUp(PBMethods.TeamTwo, "Two");
 								}
 							}
@@ -352,6 +406,8 @@ public class PlayerListener implements Listener {
 								if (PBMethods.teamTwoPlayers.isEmpty()) {
 									PBMethods.sendPBChat(Strings.RoundStopped);
 									PBMethods.sendPBChat(Strings.TeamWon.replace("%team", PBMethods.TeamOne));
+									PBMethods.addWin(PBMethods.TeamOne);
+									PBMethods.addLoss(PBMethods.TeamTwo);
 									PBMethods.matchStarted = false;
 									Bukkit.getServer().getScheduler().cancelTask(Commands.clockTask);
 									PBMethods.playingTeams.clear();
@@ -372,14 +428,14 @@ public class PlayerListener implements Listener {
 							if (teamSide.equalsIgnoreCase(PBMethods.TeamTwo)) {
 								PBMethods.allowedZone.put(p.getName(), PBMethods.t2z3); 
 								PBMethods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", PBMethods.allowedZone.get(p.getName())));
-								if (PBMethods.isZoneEmpty(PBMethods.TeamTwo, PBMethods.t2z2)) {
+								if (PBMethods.isZoneEmpty(PBMethods.TeamTwo, PBMethods.t2z2) && PBMethods.isZoneEmpty(PBMethods.TeamTwo, PBMethods.t2z1)) {
 									PBMethods.MovePlayersUp(PBMethods.TeamOne, "One");
 								}
 							}
 							if (teamSide.equalsIgnoreCase(PBMethods.TeamOne)) {
 								PBMethods.allowedZone.put(p.getName(), PBMethods.t2z1);
 								PBMethods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", PBMethods.allowedZone.get(p.getName())));
-								if (PBMethods.isZoneEmpty(PBMethods.TeamOne, PBMethods.t2z2)) {
+								if (PBMethods.isZoneEmpty(PBMethods.TeamOne, PBMethods.t2z2) && PBMethods.isZoneEmpty(PBMethods.TeamOne, PBMethods.t2z1)) {
 									PBMethods.MovePlayersUp(PBMethods.TeamTwo, "Two");
 								}
 							}
@@ -428,7 +484,7 @@ public class PlayerListener implements Listener {
 							if (teamSide.equalsIgnoreCase(PBMethods.TeamOne)) { // Team One Player
 								PBMethods.allowedZone.put(p.getName(),  PBMethods.t1z1); // Stick them to Zone One on Team One's Side.
 								PBMethods.sendPBChat(Strings.PlayerFouled.replace("%player", p.getName()).replace("%zone", PBMethods.allowedZone.get(p.getName())));
-								if (PBMethods.isZoneEmpty(PBMethods.TeamOne, PBMethods.t2z1)) { 
+								if (PBMethods.isZoneEmpty(PBMethods.TeamOne, PBMethods.t2z1) && PBMethods.isZoneEmpty(PBMethods.TeamOne, PBMethods.t2z2)) { 
 									PBMethods.MovePlayersUp(PBMethods.TeamTwo, "Two");
 								}
 							}
@@ -547,6 +603,64 @@ public class PlayerListener implements Listener {
 	} 
 
 	@EventHandler
+	public void onChange(PlayerChangeElementEvent e) {
+		Player player = e.getTarget();
+		String team = PBMethods.getPlayerTeam(player.getUniqueId());
+		if (team != null) {
+			String playerElementInTeam = PBMethods.getPlayerElementInTeam(player.getUniqueId(), team);
+			if (playerElementInTeam != null) {
+				String playerElement = null;
+				if (GeneralMethods.isBender(player.getName(), Element.Air)) {
+					playerElement = "Air";
+				}
+				if (GeneralMethods.isBender(player.getName(), Element.Water)) {
+					playerElement = "Water";
+				}
+				if (GeneralMethods.isBender(player.getName(), Element.Earth)) {
+					playerElement = "Earth";
+				}
+				if (GeneralMethods.isBender(player.getName(), Element.Fire)) {
+					playerElement = "Fire";
+				}
+				if (GeneralMethods.isBender(player.getName(), Element.Chi)) {
+					playerElement = "Chi";
+				}
+				if (!playerElementInTeam.equals(playerElement)) {
+					player.sendMessage(Strings.Prefix + Strings.RemovedFromTeamBecauseDifferentElement);
+					PBMethods.removePlayerFromTeam(team, player.getUniqueId(), playerElementInTeam);
+					Set<String> teamElements = PBMethods.getTeamElements(team);
+					if (teamElements.contains("Air")) {
+						UUID airbender = PBMethods.getTeamAirbender(team).getUniqueId();
+						PBMethods.setOwner(airbender, team);
+						return;
+					}
+					if (teamElements.contains("Water")) {
+						UUID bender = PBMethods.getTeamWaterbender(team).getUniqueId();
+						PBMethods.setOwner(bender, team);
+						return;
+					}
+					if (teamElements.contains("Earth")) {
+						UUID bender = PBMethods.getTeamEarthbender(team).getUniqueId();
+						PBMethods.setOwner(bender, team);
+						return;
+					}
+					if (teamElements.contains("Fire")) {
+						UUID bender = PBMethods.getTeamFirebender(team).getUniqueId();
+						PBMethods.setOwner(bender, team);
+						return;
+					}
+					if (teamElements.contains("Chi")) {
+						UUID bender = PBMethods.getTeamChiblocker(team).getUniqueId();
+						PBMethods.setOwner(bender, team);
+						return;
+					} else {
+						PBMethods.deleteTeam(team);
+					}
+				}
+			}
+		}
+	}
+	@EventHandler
 	public static void onPlayerJoin(PlayerJoinEvent e) {
 		Player player = e.getPlayer();
 		PBMethods.createPlayer(player.getUniqueId());
@@ -577,27 +691,27 @@ public class PlayerListener implements Listener {
 						PBMethods.removePlayerFromTeam(team, player.getUniqueId(), playerElementInTeam);
 						Set<String> teamElements = PBMethods.getTeamElements(team);
 						if (teamElements.contains("Air")) {
-							UUID airbender = UUID.fromString(PBMethods.getTeamAirbender(team));
+							UUID airbender = PBMethods.getTeamAirbender(team).getUniqueId();
 							PBMethods.setOwner(airbender, team);
 							return;
 						}
 						if (teamElements.contains("Water")) {
-							UUID bender = UUID.fromString(PBMethods.getTeamWaterbender(team));
+							UUID bender = PBMethods.getTeamWaterbender(team).getUniqueId();
 							PBMethods.setOwner(bender, team);
 							return;
 						}
 						if (teamElements.contains("Earth")) {
-							UUID bender = UUID.fromString(PBMethods.getTeamEarthbender(team));
+							UUID bender = PBMethods.getTeamEarthbender(team).getUniqueId();
 							PBMethods.setOwner(bender, team);
 							return;
 						}
 						if (teamElements.contains("Fire")) {
-							UUID bender = UUID.fromString(PBMethods.getTeamFirebender(team));
+							UUID bender = PBMethods.getTeamFirebender(team).getUniqueId();
 							PBMethods.setOwner(bender, team);
 							return;
 						}
 						if (teamElements.contains("Chi")) {
-							UUID bender = UUID.fromString(PBMethods.getTeamChiblocker(team));
+							UUID bender = PBMethods.getTeamChiblocker(team).getUniqueId();
 							PBMethods.setOwner(bender, team);
 							return;
 						} else {

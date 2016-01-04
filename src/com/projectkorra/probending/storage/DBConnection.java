@@ -1,11 +1,6 @@
 package com.projectkorra.probending.storage;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import com.projectkorra.probending.Probending;
-
-import java.sql.DatabaseMetaData;
 
 public final class DBConnection {
 

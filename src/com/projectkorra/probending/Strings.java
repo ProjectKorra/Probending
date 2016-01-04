@@ -1,86 +1,92 @@
 package com.projectkorra.probending;
 
+import org.bukkit.configuration.file.FileConfiguration;
+
 public class Strings {
 
-	public static String TeamSpawnSet;
-	public static String Prefix;
-	public static String teamAlreadyExists;
-	public static String noBendingType;
-	public static String PlayerAlreadyInTeam;
-	public static String ElementNotAllowed;
-	public static String TeamCreated;
-	public static String noPermission;
-
-	public static String PlayerNotInTeam;
-	public static String MaxSizeReached;
-	public static String TeamAlreadyHasElement;
-	public static String PlayerInviteSent;
-	public static String PlayerInviteReceived;
-	public static String InviteInstructions;
-	public static String NotOwnerOfTeam;
-	public static String PlayerNotOnline;
-
-	public static String TeamDoesNotExist;
-
-	public static String NoInviteFromTeam;
-	public static String PlayerJoinedTeam;
-
-	public static String CantBootFromOwnTeam;
-	public static String PlayerNotOnThisTeam;
-	public static String YouHaveBeenBooted;
-	public static String PlayerHasBeenBooted;
-
-	public static String YouHaveQuit;
-	public static String PlayerHasQuit;
-
-	public static String TeamDisbanded;
-
-	public static String configReloaded;
-
-	public static String NotEnoughMoney;
-	public static String MoneyWithdrawn;
-
-	public static String NameTooLong;
-	public static String TeamRenamed;
-	public static String TeamAlreadyNamedThat;
-
-	public static String ChatEnabled;
-	public static String ChatDisabled;
-
-	public static String NoTeamPermissions;
-
-	public static String WinAddedToTeam;
-	public static String LossAddedToTeam;
-
-	// Round Messages
-	public static String RoundAlreadyGoing;
-	public static String InvalidTeamSize;
-	public static String RoundStarted;
-
-	public static String NoOngoingRound;
-	public static String RoundStopped;
-	public static String RoundPaused;
-	public static String RoundNotPaused;
-	public static String RoundComplete;
-	public static String OneMinuteRemaining;
-	public static String RoundResumed;
+	public static FileConfiguration config = Probending.plugin.getConfig();
 	
-	public static String RemovedFromTeamBecauseDifferentElement;
-	public static String SetTeamColor;
+	/*
+	 * General
+	 */
+	public static String Prefix = PBMethods.colorize(config.getString("messages.general.Prefix"));
+	public static String noPermission = PBMethods.colorize(config.getString("messages.general.noPermission"));
+	public static String configReloaded = PBMethods.colorize(config.getString("messages.general.configReloaded"));
+	public static String NoTeamPermissions = PBMethods.colorize(config.getString("messages.general.NoTeamPermissions"));
+	
+	/*
+	 * Player
+	 */
+	public static String noBendingType = PBMethods.colorize(config.getString("messages.player.noBendingType"));
+	public static String PlayerAlreadyInTeam = PBMethods.colorize(config.getString("messages.player.PlayerAlreadyInTeam"));
+	public static String ElementNotAllowed = PBMethods.colorize(config.getString("messages.player.ElementNotAllowed"));
+	public static String PlayerNotInTeam = PBMethods.colorize(config.getString("messages.player.PlayerNotInTeam"));
+	public static String PlayerNotOnline = PBMethods.colorize(config.getString("messages.player.PlayerNotOnline"));
+	public static String PlayerInviteSent = PBMethods.colorize(config.getString("messages.player.PlayerInviteSent"));
+	public static String PlayerInviteReceived = PBMethods.colorize(config.getString("messages.player.PlayerInviteReceived"));
+	public static String InviteInstructions = PBMethods.colorize(config.getString("messages.player.InviteInstructions"));
+	public static String NoInviteFromTeam = PBMethods.colorize(config.getString("messages.player.NoInviteFromTeam"));
+	public static String YouHaveBeenBooted = PBMethods.colorize(config.getString("messages.player.YouHaveBeenBooted"));
+	public static String YouHaveQuit = PBMethods.colorize(config.getString("messages.player.YouHaveQuit"));
+	public static String RemovedFromTeamBecauseDifferentElement = PBMethods.colorize(config.getString("messages.player.RemovedFromTeamBecauseDifferentElement"));
+	
+	/*
+	 * Team
+	 */
+	public static String teamAlreadyExists = PBMethods.colorize(config.getString("messages.team.teamAlreadyExists"));
+	public static String TeamCreated = PBMethods.colorize(config.getString("messages.team.TeamCreated"));
+	public static String NotOwnerOfTeam = PBMethods.colorize(config.getString("messages.team.NotOwnerOfTeam"));
+	public static String MaxSizeReached = PBMethods.colorize(config.getString("messages.team.MaxSizeReached"));
+	public static String TeamAlreadyHasElement = PBMethods.colorize(config.getString("messages.team.TeamAlreadyHasElement"));
+	public static String TeamDoesNotExist = PBMethods.colorize(config.getString("messages.team.TeamDoesNotExist"));
+	public static String PlayerJoinedTeam = PBMethods.colorize(config.getString("messages.team.PlayerJoinedTeam"));
+	public static String CantBootFromOwnTeam = PBMethods.colorize(config.getString("messages.team.CantBootFromOwnTeam"));
+	public static String PlayerNotOnThisTeam = PBMethods.colorize(config.getString("messages.team.PlayerNotOnThisTeam"));
+	public static String PlayerHasBeenBooted = PBMethods.colorize(config.getString("messages.team.PlayerHasBeenBooted"));
+	public static String PlayerHasQuit = PBMethods.colorize(config.getString("messages.team.PlayerHasQuit"));
+	public static String TeamDisbanded = PBMethods.colorize(config.getString("messages.team.TeamDisbanded"));
+	public static String NameTooLong = PBMethods.colorize(config.getString("messages.team.NameTooLong"));
+	public static String TeamRenamed = PBMethods.colorize(config.getString("messages.team.TeamRenamed"));
+	public static String TeamAlreadyNamedThat = PBMethods.colorize(config.getString("messages.team.TeamAleadyNamedThat"));
+	public static String OwnerNotOnline = PBMethods.colorize(config.getString("messages.team.OwnerNotOnline"));
+	
+	/*
+	 * Economy
+	 */
+	
+	public static String NotEnoughMoney = PBMethods.colorize(config.getString("messages.economy.NotEnoughMoney"));
+	public static String MoneyWithdrawn = PBMethods.colorize(config.getString("messages.economy.MoneyWithdrawn"));
+	
+	/*
+	 * Round
+	 */
+	
+	public static String OneMinuteRemaining = PBMethods.colorize(config.getString("messages.round.OneMinuteRemaining"));
+	public static String RoundComplete = PBMethods.colorize(config.getString("messages.round.RoundComplete"));
+	public static String RoundAlreadyGoing = PBMethods.colorize(config.getString("messages.round.RoundAlreadyGoing"));
+	public static String InvalidTeamSize = PBMethods.colorize(config.getString("messages.round.InvalidTeamSize"));
+	public static String RoundStarted = PBMethods.colorize(config.getString("messages.round.RoundStarted"));
+	public static String RoundStopped = PBMethods.colorize(config.getString("messages.round.RoundStopped"));
+	public static String RoundPaused = PBMethods.colorize(config.getString("messages.round.RoundPaused"));
+	public static String RoundResumed = PBMethods.colorize(config.getString("messages.round.RoundResumed"));
+	public static String NoOngoingRound = PBMethods.colorize(config.getString("messages.round.NoOngoingRound"));
+	public static String PlayerEliminated = PBMethods.colorize(config.getString("messages.round.PlayerEliminated"));
+	public static String PlayerFouled = PBMethods.colorize(config.getString("messages.round.PlayerFouled"));
+	public static String RoundEnded = PBMethods.colorize(config.getString("messages.round.RoundEnded"));
+	public static String TeamWon = PBMethods.colorize(config.getString("messages.round.TeamWon"));
+	public static String MoveUpOneZone = PBMethods.colorize(config.getString("messages.round.MoveUpOneZone"));
+	public static String CantEnterField = PBMethods.colorize(config.getString("messages.round.CantEnterField"));
+	public static String CantTeleportDuringMatch = PBMethods.colorize(config.getString("messages.round.CantTeleportDuringMatch"));
+	public static String MoveNotAllowed = PBMethods.colorize(config.getString("messages.round.MoveNotAllowed"));
 
-	public static String CantEnterField;
-	public static String PlayerEliminated;
-	public static String PlayerFouled;
+	/*
+	 * Misc
+	 */
 
-	public static String TeamWon;
-	public static String MoveUpOneZone;
+	public static String ChatEnabled = PBMethods.colorize(config.getString("messages.misc.ChatEnabled"));
+	public static String ChatDisabled = PBMethods.colorize(config.getString("messages.misc.ChatDisabled"));
+	public static String WinAddedToTeam = PBMethods.colorize(config.getString("messages.misc.WinAddedToTeam"));
+	public static String LossAddedToTeam = PBMethods.colorize(config.getString("messages.misc.LossAddedToTeam"));
+	public static String TeamSpawnSet = PBMethods.colorize(config.getString("messages.misc.TeamSpawnSet"));
 	
-	public static String CantTeleportDuringMatch;
-	
-	public static String ChallengeSent;
-	public static String ChallengeReceived;
-	public static String NoChallengeFromTeam;
-	public static String OwnerNotOnline;
-	
-	public static String MoveNotAllowed;
 }

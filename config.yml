@@ -97,9 +97,6 @@ messages:
     MoveUpOneZone: '&aYou may move up to %zone.'
     CantEnterField: '&cYou are not allowed to enter the field during a match.'
     CantTeleportDuringMatch: '&cYou are not allowed to teleport during a match.'
-    ChallengeSent: '&aYou have sent a challenge to &e%team&a.'
-    ChallengeReceived: '&aYou have received a challenge from &e%team&a. Use &3/pb challenge accept [Team] &ato accept.'
-    NoChallengeFromTeam: '&cYou dont have a challenge from that team.'
     MoveNotAllowed: '&cYou are not allowed to use &e%ability &cduring a Probending match.'
   misc:
     ChatEnabled: '&aYou have enabled Probending Chat. To disable it, run the command again.'

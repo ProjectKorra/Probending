@@ -1,6 +1,6 @@
-name: ProjectKorra (Probending)
+name: Probending
 author: ProjectKorra
-version: 1.0.0 BETA 1
+version: 1.0.0
 main: com.projectkorra.probending.Probending
 depend: [ProjectKorra]
 softdepend: [Vault, WorldGuard]
@@ -42,6 +42,5 @@ permissions:
       probending.team.quit: true
       probending.team.list: true
       probending.team.rename: true
+      probending.team.disband: true
       probending.chat: true
-      probending.challenge.accept: true
-      probending.challenge: true

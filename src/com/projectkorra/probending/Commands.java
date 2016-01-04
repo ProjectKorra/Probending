@@ -1,6 +1,5 @@
 package com.projectkorra.probending;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -18,7 +17,6 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.projectkorra.probending.storage.DBConnection;
 import com.projectkorra.projectkorra.GeneralMethods;
 
 
@@ -42,7 +40,6 @@ public class Commands {
 	//HashMaps
 	public static Set<Player> pbChat = new HashSet<Player>();
 	public static HashMap<String, LinkedList<String>> teamInvites = new HashMap<String, LinkedList<String>>();
-	public static HashMap<String, LinkedList<String>> teamChallenges = new HashMap<String, LinkedList<String>>();
 	public static HashMap<Player, ItemStack[]> tmpArmor = new HashMap<Player, ItemStack[]>();
 
 	private void init() {
@@ -65,232 +62,9 @@ public class Commands {
 					if (s.hasPermission("probending.setspawn")) {
 						s.sendMessage("§3/probending setspawn [TeamOne|TeamTwo|Spectator]");
 					}
-					if (s.hasPermission("probending.challenge")) {
-						s.sendMessage("§3/pb challenge <accept> [Team]§f - Challenge / Accept a challenge.");
-					}
 					return true;
 				}
-
-				if (args[0].equalsIgnoreCase("challenge")) {
-					if (!s.hasPermission("probending.challenge")) {
-						s.sendMessage(Strings.Prefix + Strings.noPermission);
-						return true;
-					}
-					
-					if (args.length == 1) {
-						s.sendMessage(Strings.Prefix + "§cProper Usage: §3/pb challenge <accept> [Team]");
-						return true;
-					}
-
-					if (args[1].equalsIgnoreCase("accept")) {
-						
-						UUID uuid = ((Player) s).getUniqueId();
-						if (!s.hasPermission("probending.challenge.accept")) {
-							s.sendMessage(Strings.Prefix + Strings.noPermission);
-							return true;
-						}
-						if (args.length != 3) {
-							s.sendMessage(Strings.Prefix + "§cProper Usage: §3/pb challenge accept [Team]");
-							return true;
-						}
-						if (PBMethods.getPlayerTeam(uuid) == null) {
-							s.sendMessage(Strings.Prefix + Strings.PlayerNotInTeam);
-							return true;
-						}
-
-
-
-						Set<String> teams = PBMethods.getTeams();
-						String teamName = null;
-						for (String team: teams) {
-							if (team.equalsIgnoreCase(args[2])) {
-								teamName = team;
-							}
-						}
-
-						if (teamName == null) {
-							s.sendMessage(Strings.Prefix + Strings.TeamDoesNotExist);
-							return true;
-						}
-
-						if (!teamChallenges.containsKey(PBMethods.getPlayerTeam(uuid))) {
-							s.sendMessage(Strings.Prefix + Strings.NoChallengeFromTeam);
-							return true;
-						}
-
-						if (teamChallenges.get(PBMethods.getPlayerTeam(uuid)) != null) {
-							if (!teamChallenges.get(PBMethods.getPlayerTeam(uuid)).contains(teamName)) {
-								s.sendMessage(Strings.Prefix + Strings.NoChallengeFromTeam);
-								return true;
-							}
-						}
-
-						int yourTeamSize = PBMethods.getOnlineTeamSize(PBMethods.getPlayerTeam(uuid));
-						int opponentTeamSize = PBMethods.getOnlineTeamSize(teamName);
-						int minTeamSize = plugin.getConfig().getInt("TeamSettings.MinTeamSize");
-						int maxTeamSize = plugin.getConfig().getInt("TeamSettings.MaxTeamSize");
-
-						if (yourTeamSize < minTeamSize || opponentTeamSize < minTeamSize || yourTeamSize > maxTeamSize || opponentTeamSize > maxTeamSize || opponentTeamSize != yourTeamSize) {
-							s.sendMessage(Strings.Prefix + Strings.InvalidTeamSize);
-							return true;
-						}
-
-						Player otherOwner = Bukkit.getPlayer(PBMethods.getOwner(teamName));
-						if (otherOwner == null) {
-							s.sendMessage(Strings.Prefix + Strings.OwnerNotOnline);
-							return true;
-						}
-
-						if (PBMethods.matchStarted) {
-							s.sendMessage(Strings.Prefix + Strings.RoundAlreadyGoing);
-							return true;
-						}
-
-						// We've checked everything, now to actually start the match if everything is in place :)
-
-						String team1 = PBMethods.getPlayerTeam(uuid); // Team 1
-						String team2 = teamName; // Team 2
-
-
-						// Add players to list of playing teams and send a message confirming it.
-						PBMethods.playingTeams.add(team1.toLowerCase());
-						PBMethods.playingTeams.add(team2.toLowerCase());
-						PBMethods.TeamOne = team1.toLowerCase();
-						PBMethods.TeamTwo = team2.toLowerCase();
-
-						for (Player player: Bukkit.getOnlinePlayers()) {
-							String playerTeam = PBMethods.getPlayerTeam(uuid);
-							Color teamColor = null;
-							if (playerTeam != null) {
-								if (playerTeam.equalsIgnoreCase(team1)) teamColor = PBMethods.getColorFromString(plugin.getConfig().getString("TeamSettings.TeamOneColor"));
-								if (playerTeam.equalsIgnoreCase(team2)) teamColor = PBMethods.getColorFromString(plugin.getConfig().getString("TeamSettings.TeamTwoColor"));
-								if (playerTeam.equalsIgnoreCase(PBMethods.TeamOne)) {
-									PBMethods.teamOnePlayers.add(player.getName());
-									player.teleport(PBMethods.getTeamOneSpawn());
-								}
-								if (playerTeam.equalsIgnoreCase(PBMethods.TeamTwo)) {
-									PBMethods.teamTwoPlayers.add(player.getName());
-									player.teleport(PBMethods.getTeamTwoSpawn());
-								}
-								if (playerTeam.equalsIgnoreCase(PBMethods.TeamOne) || playerTeam.equalsIgnoreCase(PBMethods.TeamTwo)) {
-									tmpArmor.put(player, player.getInventory().getArmorContents()); // Backs up their armor.
-									ItemStack armor1 = PBMethods.createColorArmor(new ItemStack(Material.LEATHER_HELMET), teamColor);
-									ItemStack armor2 = PBMethods.createColorArmor(new ItemStack(Material.LEATHER_CHESTPLATE), teamColor);
-									ItemStack armor3 = PBMethods.createColorArmor(new ItemStack(Material.LEATHER_LEGGINGS), teamColor);
-									ItemStack armor4 = PBMethods.createColorArmor(new ItemStack(Material.LEATHER_BOOTS), teamColor);
-									player.getInventory().setHelmet(armor1);
-									player.getInventory().setChestplate(armor2);
-									player.getInventory().setLeggings(armor3);
-									player.getInventory().setBoots(armor4);
-								} else {
-									if (PBMethods.RegionsAtLocation(player.getLocation()) != null && PBMethods.RegionsAtLocation(player.getLocation()).contains(PBMethods.ProbendingField)) {
-										player.teleport(PBMethods.getSpectatorSpawn());
-									}
-								}
-							}
-						}
-
-
-						int roundTime = plugin.getConfig().getInt("RoundSettings.Time");
-						currentNumber = roundTime * 20;
-						startingNumber = roundTime * 20;
-
-						clockTask = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-							public void run() {
-								PBMethods.matchStarted = true;
-								currentNumber--;
-
-								if (currentNumber == startingNumber - 1) {
-									PBMethods.sendPBChat(Strings.RoundStarted.replace("%seconds", String.valueOf(startingNumber / 20)).replace("%team1", PBMethods.TeamOne).replace("%team2", PBMethods.TeamTwo));
-								}
-								if (currentNumber == 1200) {
-									PBMethods.sendPBChat(Strings.Prefix + Strings.OneMinuteRemaining);
-								}
-								if (currentNumber == 0) {
-									PBMethods.sendPBChat(Strings.RoundComplete);
-									PBMethods.matchStarted = false;
-									Bukkit.getServer().getScheduler().cancelTask(clockTask);
-									PBMethods.restoreArmor();
-								}
-
-							}
-						}, 0L, 1L);
-
-						if (PBMethods.WGSupportEnabled) {
-							if (PBMethods.getWorldGuard() != null) {
-								
-								for (Player player: Bukkit.getOnlinePlayers()) {
-									String playerTeam = PBMethods.getPlayerTeam(uuid);
-
-									if (playerTeam != null) {
-										if (playerTeam.equalsIgnoreCase(team1)) {
-											PBMethods.allowedZone.put(player.getName(), PBMethods.t1z1);
-										}
-										if (playerTeam.equalsIgnoreCase(team2)) {
-											PBMethods.allowedZone.put(player.getName(), PBMethods.t2z1);
-										}
-									}
-								}
-							}
-						}
-						teamChallenges.get(PBMethods.getPlayerTeam(uuid)).remove(teamName);
-						return true;
-					}
-					Set<String> teams = PBMethods.getTeams();
-					String teamName = null;
-					for (String team: teams) {
-						if (team.equalsIgnoreCase(args[1])) {
-							teamName = team;
-						}
-					}
-					
-					if (teamName == null) {
-						s.sendMessage(Strings.Prefix + Strings.TeamDoesNotExist);
-						return true;
-					}
-
-					UUID uuid = ((Player) s).getUniqueId();
-					if (PBMethods.getPlayerTeam(uuid) == null) {
-						s.sendMessage(Strings.Prefix + Strings.PlayerNotInTeam);
-						return true;
-					}
-
-					Player otherOwner = Bukkit.getPlayer(PBMethods.getOwner(teamName));
-
-					if (otherOwner == null) {
-						s.sendMessage(Strings.Prefix + Strings.OwnerNotOnline);
-						return true;
-					}
-
-					int yourTeamSize = PBMethods.getOnlineTeamSize(PBMethods.getPlayerTeam(uuid));
-					int opponentTeamSize = PBMethods.getOnlineTeamSize(teamName);
-					int minTeamSize = plugin.getConfig().getInt("TeamSettings.MinTeamSize");
-					int maxTeamSize = plugin.getConfig().getInt("TeamSettings.MaxTeamSize");
-
-					if (yourTeamSize < minTeamSize || opponentTeamSize < minTeamSize || yourTeamSize > maxTeamSize || opponentTeamSize > maxTeamSize || opponentTeamSize != yourTeamSize) {
-						s.sendMessage(Strings.Prefix + Strings.InvalidTeamSize);
-						return true;
-					}
-
-					if (!teamChallenges.containsKey(teamName)) {
-						teamChallenges.put(teamName, new LinkedList<String>());
-					}
-
-					teamChallenges.get(teamName).add(PBMethods.getPlayerTeam(uuid));
-					s.sendMessage(Strings.Prefix + Strings.ChallengeSent.replace("%team", teamName));
-					for (Player player: Bukkit.getOnlinePlayers()) {
-						if (PBMethods.getPlayerTeam(player.getUniqueId()) != null) {
-							if (PBMethods.getPlayerTeam(player.getUniqueId()).equalsIgnoreCase(teamName)) {
-								if (PBMethods.isPlayerOwner(player.getUniqueId(), teamName)) {
-									player.sendMessage(Strings.Prefix + Strings.ChallengeReceived.replace("%team", PBMethods.getPlayerTeam(uuid)));
-								}
-							}
-						}
-					}
-
-					return true;
-
-				}
+				
 				if (args[0].equalsIgnoreCase("setspawn")) {
 					if (!s.hasPermission("probending.setspawn")) {
 						s.sendMessage(Strings.Prefix + Strings.noPermission);
@@ -355,7 +129,7 @@ public class Commands {
 								return true;
 							}
 							if (!PBMethods.matchPaused) {
-								s.sendMessage(Strings.Prefix + Strings.RoundNotPaused);
+
 								return true;
 							}
 							PBMethods.matchPaused = false;
@@ -421,19 +195,16 @@ public class Commands {
 						return true;
 					}
 					if (args[1].equalsIgnoreCase("start")) {
-						// Permissions check.
 						if (!s.hasPermission("probending.round.start")) {
 							s.sendMessage(Strings.Prefix + Strings.noPermission);
 							return true;
 						}
 
-						// Makes sure the command has enough arguments.
 						if (args.length != 4) {
 							s.sendMessage(Strings.Prefix + "§cProper Usage: §3/pb round start [Team1] [Team2]");
 							return true;
 						}
 
-						// Just so we dont start another match if one is already going.
 						if (PBMethods.matchStarted) {
 							s.sendMessage(Strings.Prefix + Strings.RoundAlreadyGoing);
 							return true;
@@ -442,7 +213,6 @@ public class Commands {
 						String team1 = args[2]; // Team 1
 						String team2 = args[3]; // Team 2
 
-						// Checks to make sure both teams exist.
 						if (!PBMethods.teamExists(team1) || !PBMethods.teamExists(team2)) {
 							s.sendMessage(Strings.Prefix + Strings.TeamDoesNotExist);
 							return true;
@@ -455,7 +225,7 @@ public class Commands {
 							s.sendMessage(Strings.Prefix + Strings.InvalidTeamSize);
 							return true;
 						}
-						// Add players to list of playing teams and send a message confirming it.
+
 						PBMethods.playingTeams.add(team1.toLowerCase());
 						PBMethods.playingTeams.add(team2.toLowerCase());
 						PBMethods.TeamOne = team1.toLowerCase();
@@ -469,9 +239,11 @@ public class Commands {
 								if (playerTeam.equalsIgnoreCase(team2)) teamColor = PBMethods.getColorFromString(plugin.getConfig().getString("TeamSettings.TeamTwoColor"));
 								if (playerTeam.equalsIgnoreCase(PBMethods.TeamOne)) {
 									PBMethods.teamOnePlayers.add(player.getName());
+									pbChat.add(player);
 									player.teleport(PBMethods.getTeamOneSpawn());
 								}
 								if (playerTeam.equalsIgnoreCase(PBMethods.TeamTwo)) {
+									pbChat.add(player);
 									player.teleport(PBMethods.getTeamTwoSpawn());
 									PBMethods.teamTwoPlayers.add(player.getName());
 								}
@@ -687,7 +459,7 @@ public class Commands {
 							return true;
 						}
 						if (econEnabled) {
-							Double playerBalance = Probending.econ.getBalance(s.getName());
+							Double playerBalance = Probending.econ.getBalance((Player) s);
 							Double renameFee = plugin.getConfig().getDouble("Economy.TeamRenameFee");
 							String serverAccount = plugin.getConfig().getString("Economy.ServerAccount");
 							String currency = Probending.econ.currencyNamePlural();
@@ -695,7 +467,7 @@ public class Commands {
 								s.sendMessage(Strings.Prefix + Strings.NotEnoughMoney.replace("%amount", renameFee.toString()).replace("%currency", currency));
 								return true;
 							}
-							Probending.econ.withdrawPlayer(s.getName(), renameFee);
+							Probending.econ.withdrawPlayer((Player) s, renameFee);
 							Probending.econ.depositPlayer(serverAccount, renameFee);
 							s.sendMessage(Strings.Prefix + Strings.MoneyWithdrawn.replace("%amount", renameFee.toString()).replace("%currency", currency));
 						}
@@ -712,23 +484,23 @@ public class Commands {
 						OfflinePlayer chiblocker = null;
 						
 						if (PBMethods.getTeamAirbender(teamName) != null) {
-							airbender = Bukkit.getOfflinePlayer(PBMethods.getTeamAirbender(teamName));
+							airbender = PBMethods.getTeamAirbender(teamName);
 						}
 						
 						if (PBMethods.getTeamWaterbender(teamName) != null) {
-							waterbender = Bukkit.getOfflinePlayer(PBMethods.getTeamWaterbender(teamName));
+							waterbender = PBMethods.getTeamWaterbender(teamName);
 						}
 						
 						if (PBMethods.getTeamEarthbender(teamName) != null) {
-							earthbender = Bukkit.getOfflinePlayer(PBMethods.getTeamEarthbender(teamName));
+							earthbender = PBMethods.getTeamEarthbender(teamName);
 						}
 						
 						if (PBMethods.getTeamFirebender(teamName) != null) {
-							firebender = Bukkit.getOfflinePlayer(PBMethods.getTeamFirebender(teamName));
+							firebender = PBMethods.getTeamFirebender(teamName);
 						}
 						
 						if (PBMethods.getTeamChiblocker(teamName) != null) {
-							chiblocker = Bukkit.getOfflinePlayer(PBMethods.getTeamChiblocker(teamName));
+							chiblocker = PBMethods.getTeamChiblocker(teamName);
 						}
 						
 						if (airbender != null) {
@@ -811,19 +583,19 @@ public class Commands {
 						Set<String> teamelements = PBMethods.getTeamElements(teamName);
 						if (teamelements != null) {
 							if (teamelements.contains("Air")) {
-								PBMethods.removePlayerFromTeam(teamName, UUID.fromString(PBMethods.getTeamAirbender(teamName)), "Air");
+								PBMethods.removePlayerFromTeam(teamName, PBMethods.getTeamAirbender(teamName).getUniqueId(), "Air");
 							}
 							if (teamelements.contains("Water")) {
-								PBMethods.removePlayerFromTeam(teamName, UUID.fromString(PBMethods.getTeamWaterbender(teamName)), "Water");
+								PBMethods.removePlayerFromTeam(teamName, PBMethods.getTeamWaterbender(teamName).getUniqueId(), "Water");
 							}
 							if (teamelements.contains("Earth")) {
-								PBMethods.removePlayerFromTeam(teamName, UUID.fromString(PBMethods.getTeamEarthbender(teamName)), "Earth");
+								PBMethods.removePlayerFromTeam(teamName, PBMethods.getTeamEarthbender(teamName).getUniqueId(), "Earth");
 							}
 							if (teamelements.contains("Fire")) {
-								PBMethods.removePlayerFromTeam(teamName, UUID.fromString(PBMethods.getTeamFirebender(teamName)), "Fire");
+								PBMethods.removePlayerFromTeam(teamName, PBMethods.getTeamFirebender(teamName).getUniqueId(), "Fire");
 							}
 							if (teamelements.contains("Chi")) {
-								PBMethods.removePlayerFromTeam(teamName, UUID.fromString(PBMethods.getTeamChiblocker(teamName)), "Chi");
+								PBMethods.removePlayerFromTeam(teamName, PBMethods.getTeamChiblocker(teamName).getUniqueId(), "Chi");
 							}
 						}
 						PBMethods.deleteTeam(teamName);
@@ -885,6 +657,7 @@ public class Commands {
 							s.sendMessage(Strings.Prefix + Strings.CantBootFromOwnTeam);
 							return true;
 						}
+						@SuppressWarnings("deprecation")
 						OfflinePlayer p3 = Bukkit.getOfflinePlayer(args[2]);
 						String playerTeam = null;
 						String playerElement = null;
@@ -903,6 +676,7 @@ public class Commands {
 							return true;
 						}
 						PBMethods.removePlayerFromTeam(teamName, p3.getUniqueId(), playerElement);
+						@SuppressWarnings("deprecation")
 						Player player = Bukkit.getPlayer(playerName);
 						if (player != null) {
 							player.sendMessage(Strings.Prefix + Strings.YouHaveBeenBooted.replace("%team", teamName));
@@ -997,38 +771,38 @@ public class Commands {
 						s.sendMessage("§3Team Name:§e " + teamName);
 						s.sendMessage("§3Team Owner:§5 " + teamOwner);
 
-						String air = PBMethods.getTeamAirbender(teamName);
-						String water = PBMethods.getTeamWaterbender(teamName);
-						String earth = PBMethods.getTeamEarthbender(teamName);
-						String fire = PBMethods.getTeamFirebender(teamName);
-						String chi = PBMethods.getTeamChiblocker(teamName);
+						OfflinePlayer air = PBMethods.getTeamAirbender(teamName);
+						OfflinePlayer water = PBMethods.getTeamWaterbender(teamName);
+						OfflinePlayer earth = PBMethods.getTeamEarthbender(teamName);
+						OfflinePlayer fire = PBMethods.getTeamFirebender(teamName);
+						OfflinePlayer chi = PBMethods.getTeamChiblocker(teamName);
 
 						int wins = PBMethods.getWins(teamName);
 						int losses = PBMethods.getLosses(teamName);
 
 						if (PBMethods.getAirAllowed()) {
 							if (air != null) {
-								s.sendMessage("§3Airbender: §7" + air);
+								s.sendMessage("§3Airbender: §7" + air.getName());
 							}
 						}
 						if (PBMethods.getWaterAllowed()) {
 							if (water != null) {
-								s.sendMessage("§3Waterbender: §b" + water);
+								s.sendMessage("§3Waterbender: §b" + water.getName());
 							}
 						}
 						if (PBMethods.getEarthAllowed()) {
 							if (earth != null) {
-								s.sendMessage("§3Earthbender: §a" + earth);
+								s.sendMessage("§3Earthbender: §a" + earth.getName());
 							}
 						}
 						if (PBMethods.getFireAllowed()) {
 							if (fire != null) {
-								s.sendMessage("§3Firebender: §c" + fire);
+								s.sendMessage("§3Firebender: §c" + fire.getName());
 							}
 						}
 						if (PBMethods.getChiAllowed()) {
 							if (chi != null) {
-								s.sendMessage("§3Chiblocker: §6" + chi);
+								s.sendMessage("§3Chiblocker: §6" + chi.getName());
 							}
 						}
 						s.sendMessage("§3Wins: §e" + wins);
@@ -1057,6 +831,7 @@ public class Commands {
 							return true;
 						}
 
+						@SuppressWarnings("deprecation")
 						Player player = Bukkit.getPlayer(args[2]);
 
 						if (player == null) {
@@ -1197,12 +972,12 @@ public class Commands {
 
 						if (econEnabled) {
 							String currencyName = Probending.econ.currencyNamePlural();
-							Double playerBalance = Probending.econ.getBalance(s.getName());
+							Double playerBalance = Probending.econ.getBalance((Player) s);
 							if (playerBalance < creationCost) {
 								s.sendMessage(Strings.Prefix + Strings.NotEnoughMoney.replace("%currency", currencyName));
 								return true;
 							}
-							Probending.econ.withdrawPlayer(s.getName(), creationCost);
+							Probending.econ.withdrawPlayer((Player) s, creationCost);
 							Probending.econ.depositPlayer(serverAccount, creationCost);
 							s.sendMessage(Strings.Prefix + Strings.MoneyWithdrawn.replace("%amount", creationCost.toString()).replace("%currency", currencyName));
 						}
