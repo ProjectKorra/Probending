@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.milkbowl.vault.economy.Economy;
 
@@ -21,6 +21,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import com.projectkorra.probending.objects.Team;
 import com.projectkorra.probending.storage.DBConnection;
 import com.projectkorra.projectkorra.Element;
 import com.projectkorra.projectkorra.GeneralMethods;
@@ -277,7 +278,6 @@ public class PBMethods {
 		return playersInZone;
 	}
 	// Storage Data
-	public static Set<String> teams = new HashSet<String>();
 	public static HashMap<String, String> players = new HashMap<String, String>();
 	public static String storage = Probending.plugin.getConfig().getString("General.Storage");
 
@@ -428,7 +428,7 @@ public class PBMethods {
 	 * @return true if the team exists. False if it does not.
 	 */
 	public static boolean teamExists(String teamName) {
-		for (String team: teams) {
+		for (String team: Team.teams.keySet()) {
 			if (team.equalsIgnoreCase(teamName)) {
 				return true;
 			}
@@ -443,7 +443,16 @@ public class PBMethods {
 		ResultSet rs2 = DBConnection.sql.readQuery("SELECT team FROM probending_teams");
 		try {
 			while (rs2.next()) {
-				teams.add(rs2.getString("team"));
+				String name = rs2.getString("team");
+				UUID owner = UUID.fromString(rs2.getString("owner"));
+				UUID airbender = UUID.fromString(rs2.getString("Air"));
+				UUID waterbender = UUID.fromString(rs2.getString("Water"));
+				UUID earthbender = UUID.fromString(rs2.getString("Earth"));
+				UUID firebender = UUID.fromString(rs2.getString("Fire"));
+				UUID chiblocker = UUID.fromString(rs2.getString("Chi"));
+				int wins = rs2.getInt("wins");
+				int losses = rs2.getInt("losses");
+				new Team(name, owner, airbender, waterbender, earthbender, firebender, chiblocker, wins, losses);
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -494,7 +503,7 @@ public class PBMethods {
 	public static void createTeam(String teamName, UUID owner) {
 		DBConnection.sql.modifyQuery("INSERT INTO probending_teams (team, owner) VALUES ('" + teamName + "', '" + owner.toString() + "')");
 		DBConnection.sql.modifyQuery("UPDATE probending_players SET team = '" + teamName + "' WHERE uuid = '" + owner.toString() + "'");
-		teams.add(teamName);
+		new Team(teamName, owner, null, null, null, null, null, 0, 0);
 	}
 	
 	/**
@@ -504,7 +513,7 @@ public class PBMethods {
 	 */
 	public static void deleteTeam(String teamName) {
 		DBConnection.sql.modifyQuery("DELETE FROM probending_teams WHERE team = '" + teamName + "'");
-		teams.remove(teamName);
+		Team.teams.remove(teamName);
 	}
 	
 	/**
@@ -515,8 +524,13 @@ public class PBMethods {
 	 * @param element The player's element.
 	 */
 	public static void addPlayerToTeam(String teamName, UUID player, String element) {
-		DBConnection.sql.modifyQuery("UPDATE probending_teams SET " + element + " = '" + player.toString() + "' WHERE team = '" + teamName + "'");
+		Team team = getTeam(teamName);
 		DBConnection.sql.modifyQuery("UPDATE probending_players SET team = '" + teamName + "' WHERE uuid = '" + player.toString() + "'");
+		if (element.equalsIgnoreCase("air")) team.setAirbender(player);
+		if (element.equalsIgnoreCase("water")) team.setWaterbender(player);
+		if (element.equalsIgnoreCase("earth")) team.setEarthbender(player);
+		if (element.equalsIgnoreCase("fire")) team.setFirebender(player);
+		if (element.equalsIgnoreCase("chi")) team.setChiblocker(player);
 		players.put(player.toString(), teamName);
 	}
 
@@ -867,16 +881,18 @@ public class PBMethods {
 
 
 	/**
-	 * Returns a Set<String> of teams.
-	 * @return Set<String> of Probending teams.
+	 * Returns a ConcurrentHashMap of Probending teams.
+	 * The Key is the String name of the team.
+	 * The Value is the Team Object.
+	 * @return ConcurrentHashMap<String, Team> of Probending teams.
 	 */
-	public static Set<String> getTeams() {
-		return teams;
+	public static ConcurrentHashMap<String, Team> getTeams() {
+		return Team.teams;
 	}
 
 	/**
 	 * Sets up the economy feature.
-	 * @return true if the economy is enabled (vault is isntalled), false if Vault is not found.
+	 * @return true if the economy is enabled (vault is installed), false if Vault is not found.
 	 */
 	public static boolean setupEconomy() {
 		RegisteredServiceProvider<Economy> economyProvider = Probending.plugin.getServer().getServicesManager().getRegistration(Economy.class);
@@ -984,6 +1000,15 @@ public class PBMethods {
 		}
 		return o;
 
+	}
+	
+	public static Team getTeam(String teamName) {
+		for (String s: Team.teams.keySet()) {
+			if (s.equalsIgnoreCase(teamName)) {
+				return Team.teams.get(s);
+			}
+		}
+		return null;
 	}
 	
 	public static String Prefix;
