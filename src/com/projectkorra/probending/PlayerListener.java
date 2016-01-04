@@ -174,6 +174,7 @@ public class PlayerListener implements Listener {
 					PBMethods.allowedZone.remove(p.getName());
 					p.getInventory().setArmorContents(null);
 					p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
+					p.teleport(PBMethods.getSpectatorSpawn());
 					Commands.tmpArmor.remove(p);
 					if (PBMethods.teamOnePlayers.isEmpty()) {
 						PBMethods.sendPBChat(PBMethods.RoundStopped);
@@ -194,6 +195,7 @@ public class PlayerListener implements Listener {
 					PBMethods.allowedZone.remove(p.getName());
 					p.getInventory().setArmorContents(null);
 					p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
+					p.teleport(PBMethods.getSpectatorSpawn());
 					Commands.tmpArmor.remove(p);
 					if (PBMethods.teamTwoPlayers.isEmpty()) {
 						PBMethods.sendPBChat(PBMethods.RoundStopped);
@@ -236,6 +238,7 @@ public class PlayerListener implements Listener {
 							PBMethods.sendPBChat(PBMethods.PlayerEliminated.replace("%player", p.getName()));
 							p.getInventory().setArmorContents(null);
 							p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
+							p.teleport(PBMethods.getSpectatorSpawn());
 							Commands.tmpArmor.remove(p);
 							PBMethods.teamTwoPlayers.remove(p.getName());
 							if (PBMethods.teamTwoPlayers.isEmpty()) {
@@ -262,6 +265,7 @@ public class PlayerListener implements Listener {
 							PBMethods.sendPBChat(PBMethods.PlayerEliminated.replace("%player", p.getName()));
 							p.getInventory().setArmorContents(null);
 							p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
+							p.teleport(PBMethods.getSpectatorSpawn());
 							Commands.tmpArmor.remove(p);
 							PBMethods.teamOnePlayers.remove(p.getName());
 							if (PBMethods.teamOnePlayers.isEmpty()) {
@@ -355,6 +359,7 @@ public class PlayerListener implements Listener {
 								p.getInventory().setArmorContents(null);
 								p.getInventory().setArmorContents(Commands.tmpArmor.get(p));
 								Commands.tmpArmor.remove(p);
+								p.teleport(PBMethods.getSpectatorSpawn());
 								PBMethods.teamOnePlayers.remove(p.getName());
 								if (PBMethods.teamOnePlayers.isEmpty()) {
 									PBMethods.sendPBChat(PBMethods.RoundStopped);
