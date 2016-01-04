@@ -64,7 +64,7 @@ public class Commands {
 					}
 					return true;
 				}
-				
+
 				if (args[0].equalsIgnoreCase("setspawn")) {
 					if (!s.hasPermission("probending.setspawn")) {
 						s.sendMessage(Strings.Prefix + Strings.noPermission);
@@ -291,20 +291,19 @@ public class Commands {
 							}
 						}, 0L, 1L);
 
-						if (PBMethods.WGSupportEnabled) {
-							if (PBMethods.getWorldGuard() != null) {
-								for (Player player: Bukkit.getOnlinePlayers()) {
-									String teamName = PBMethods.getPlayerTeam(player.getUniqueId());
-									if (teamName != null) {
-										if (teamName.equalsIgnoreCase(team1)) {
-											PBMethods.allowedZone.put(player.getName(), PBMethods.t1z1);
-										}
-										if (teamName.equalsIgnoreCase(team2)) {
-											PBMethods.allowedZone.put(player.getName(), PBMethods.t2z1);
-										}
+						if (PBMethods.isWorldGuardSupportEnabled() && PBMethods.hasWorldGuard()) {
+							for (Player player: Bukkit.getOnlinePlayers()) {
+								String teamName = PBMethods.getPlayerTeam(player.getUniqueId());
+								if (teamName != null) {
+									if (teamName.equalsIgnoreCase(team1)) {
+										PBMethods.allowedZone.put(player.getName(), PBMethods.t1z1);
+									}
+									if (teamName.equalsIgnoreCase(team2)) {
+										PBMethods.allowedZone.put(player.getName(), PBMethods.t2z1);
 									}
 								}
 							}
+
 						}
 					}
 				}
@@ -476,33 +475,33 @@ public class Commands {
 						int Losses = PBMethods.getLosses(teamName);
 
 						PBMethods.createTeam(newName, uuid);
-						
+
 						OfflinePlayer airbender = null;
 						OfflinePlayer waterbender = null;
 						OfflinePlayer earthbender = null;
 						OfflinePlayer firebender = null;
 						OfflinePlayer chiblocker = null;
-						
+
 						if (PBMethods.getTeamAirbender(teamName) != null) {
 							airbender = PBMethods.getTeamAirbender(teamName);
 						}
-						
+
 						if (PBMethods.getTeamWaterbender(teamName) != null) {
 							waterbender = PBMethods.getTeamWaterbender(teamName);
 						}
-						
+
 						if (PBMethods.getTeamEarthbender(teamName) != null) {
 							earthbender = PBMethods.getTeamEarthbender(teamName);
 						}
-						
+
 						if (PBMethods.getTeamFirebender(teamName) != null) {
 							firebender = PBMethods.getTeamFirebender(teamName);
 						}
-						
+
 						if (PBMethods.getTeamChiblocker(teamName) != null) {
 							chiblocker = PBMethods.getTeamChiblocker(teamName);
 						}
-						
+
 						if (airbender != null) {
 							PBMethods.removePlayerFromTeam(teamName, airbender.getUniqueId(), "Air");
 							PBMethods.addPlayerToTeam(newName, airbender.getUniqueId(), "Air");
@@ -562,7 +561,7 @@ public class Commands {
 						} else {
 							teamName = PBMethods.getPlayerTeam(uuid);
 						}
-						
+
 						if (teamName == null) {
 							s.sendMessage(Strings.Prefix + Strings.TeamDoesNotExist);
 							return true;

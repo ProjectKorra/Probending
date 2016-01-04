@@ -114,7 +114,7 @@ public class PlayerListener implements Listener {
 			if (playerTeam.equalsIgnoreCase(PBMethods.TeamOne) || playerTeam.equalsIgnoreCase(PBMethods.TeamTwo)) {
 				if (PBMethods.matchStarted) {
 					if (PBMethods.allowedZone.containsKey(p)) {
-						
+
 					}
 					if (!allowedMoves.contains(GeneralMethods.getBoundAbility(p).toString()) && GeneralMethods.getBoundAbility(p) != null) {
 						e.setCancelled(true);
@@ -505,19 +505,18 @@ public class PlayerListener implements Listener {
 	public void onPlayerPlaceBlock(BlockPlaceEvent e) {
 		Player player = e.getPlayer();
 		Location loc = player.getLocation();
-		if (PBMethods.WGSupportEnabled) {
-			if (PBMethods.getWorldGuard() != null) {
-				ApplicableRegionSet set = WGBukkit.getRegionManager(loc.getWorld()).getApplicableRegions(loc);
-				for (ProtectedRegion region: set) {
-					if (region != null) {
-						if (region.getId().equalsIgnoreCase(PBMethods.ProbendingField)) {
-							if (PBMethods.buildDisabled) {
-								if (!player.hasPermission("probending.worldguard.buildonfield")) {
-									e.setCancelled(true);
-								}
+		if (PBMethods.isWorldGuardSupportEnabled() && PBMethods.hasWorldGuard()) {
+			ApplicableRegionSet set = WGBukkit.getRegionManager(loc.getWorld()).getApplicableRegions(loc);
+			for (ProtectedRegion region: set) {
+				if (region != null) {
+					if (region.getId().equalsIgnoreCase(PBMethods.ProbendingField)) {
+						if (PBMethods.buildDisabled) {
+							if (!player.hasPermission("probending.worldguard.buildonfield")) {
+								e.setCancelled(true);
 							}
 						}
 					}
+
 				}
 			}
 		}
@@ -539,16 +538,14 @@ public class PlayerListener implements Listener {
 	public void onPlayerBreakBlock(BlockBreakEvent e) {
 		Player player = e.getPlayer();
 		Location loc = player.getLocation();
-		if (PBMethods.WGSupportEnabled) {
-			if (PBMethods.getWorldGuard() != null) {
-				ApplicableRegionSet set = WGBukkit.getRegionManager(loc.getWorld()).getApplicableRegions(loc);
-				for (ProtectedRegion region: set) {
-					if (region != null) {
-						if (region.getId().equalsIgnoreCase(PBMethods.ProbendingField)) {
-							if (PBMethods.buildDisabled) {
-								if (!player.hasPermission("probending.worldguard.buildonfield")) {
-									e.setCancelled(true);
-								}
+		if (PBMethods.isWorldGuardSupportEnabled() && PBMethods.hasWorldGuard()) {
+			ApplicableRegionSet set = WGBukkit.getRegionManager(loc.getWorld()).getApplicableRegions(loc);
+			for (ProtectedRegion region: set) {
+				if (region != null) {
+					if (region.getId().equalsIgnoreCase(PBMethods.ProbendingField)) {
+						if (PBMethods.buildDisabled) {
+							if (!player.hasPermission("probending.worldguard.buildonfield")) {
+								e.setCancelled(true);
 							}
 						}
 					}
@@ -561,27 +558,25 @@ public class PlayerListener implements Listener {
 		Player player = e.getPlayer();
 		Location locTo = e.getTo();
 		Location locFrom = e.getFrom();
-		if (PBMethods.WGSupportEnabled) {
-			if (PBMethods.getWorldGuard() != null) {
-				ApplicableRegionSet set = WGBukkit.getRegionManager(locTo.getWorld()).getApplicableRegions(locTo);
-				for (ProtectedRegion region: set) {
-					if (region != null) {
-						// Checks if the player can enter the field during a Probending Match
-						if (region.getId().equalsIgnoreCase(PBMethods.ProbendingField)) {
-							if (PBMethods.matchStarted) {
-								String teamName = PBMethods.getPlayerTeam(player.getUniqueId());
-								if (teamName != null) {
-									if (!PBMethods.playingTeams.contains(teamName.toLowerCase())) {
-										player.sendMessage(Strings.Prefix + Strings.CantEnterField);
-										player.teleport(locFrom);
-										e.setCancelled(true);
-									}
-								}
-								if (teamName == null) {
+		if (PBMethods.isWorldGuardSupportEnabled() && PBMethods.hasWorldGuard()) {
+			ApplicableRegionSet set = WGBukkit.getRegionManager(locTo.getWorld()).getApplicableRegions(locTo);
+			for (ProtectedRegion region: set) {
+				if (region != null) {
+					// Checks if the player can enter the field during a Probending Match
+					if (region.getId().equalsIgnoreCase(PBMethods.ProbendingField)) {
+						if (PBMethods.matchStarted) {
+							String teamName = PBMethods.getPlayerTeam(player.getUniqueId());
+							if (teamName != null) {
+								if (!PBMethods.playingTeams.contains(teamName.toLowerCase())) {
 									player.sendMessage(Strings.Prefix + Strings.CantEnterField);
 									player.teleport(locFrom);
 									e.setCancelled(true);
 								}
+							}
+							if (teamName == null) {
+								player.sendMessage(Strings.Prefix + Strings.CantEnterField);
+								player.teleport(locFrom);
+								e.setCancelled(true);
 							}
 						}
 					}

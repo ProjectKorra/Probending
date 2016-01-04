@@ -50,7 +50,6 @@ public class PBMethods {
 	public static Set<String> teamTwoPlayers = new HashSet<String>();
 
 	// WorldGuard Stuffs
-	public static boolean WGSupportEnabled = Probending.plugin.getConfig().getBoolean("WorldGuard.EnableSupport");
 	public static boolean buildDisabled = Probending.plugin.getConfig().getBoolean("WorldGuard.DisableBuildOnField");
 	public static String ProbendingField = Probending.plugin.getConfig().getString("WorldGuard.ProbendingField");
 	public static boolean AutomateMatches = Probending.plugin.getConfig().getBoolean("WorldGuard.AutomateMatches");
@@ -61,6 +60,21 @@ public class PBMethods {
 	public static String t2z2 = Probending.plugin.getConfig().getString("WorldGuard.TeamTwoZoneTwo").toLowerCase();
 	public static String t2z3 = Probending.plugin.getConfig().getString("WorldGuard.TeamTwoZoneThree").toLowerCase();
 
+	/**
+	 * Checks if the config has WorldGuard Support Enabled.
+	 * @return true if the config says to support WorldGuard.
+	 */
+	public static boolean isWorldGuardSupportEnabled() {
+		return Probending.plugin.getConfig().getBoolean("WorldGuard.EnableSupport");
+	}
+	/**
+	 * Checks if the server has WorldGuard installed.
+	 * @return true if the server finds WorldGuard.
+	 */
+	public static boolean hasWorldGuard() {
+		if (Probending.plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null) return true;
+		return false;
+	}
 	/**
 	 * Sets the Spectator Spawn to the specified location.
 	 * @param loc The location to set the spawn to.
