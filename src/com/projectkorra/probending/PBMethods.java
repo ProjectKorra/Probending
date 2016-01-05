@@ -441,16 +441,34 @@ public class PBMethods {
 	 * Loads all teams. Should only be done on startup.
 	 */
 	public static void loadTeams() {
-		ResultSet rs2 = DBConnection.sql.readQuery("SELECT team FROM probending_teams");
+		ResultSet rs2 = DBConnection.sql.readQuery("SELECT * FROM probending_teams");
+		UUID airbender = null;
+		UUID waterbender = null;
+		UUID earthbender = null;
+		UUID firebender = null;
+		UUID chiblocker = null;
 		try {
 			while (rs2.next()) {
 				String name = rs2.getString("team");
 				UUID owner = UUID.fromString(rs2.getString("owner"));
-				UUID airbender = UUID.fromString(rs2.getString("Air"));
-				UUID waterbender = UUID.fromString(rs2.getString("Water"));
-				UUID earthbender = UUID.fromString(rs2.getString("Earth"));
-				UUID firebender = UUID.fromString(rs2.getString("Fire"));
-				UUID chiblocker = UUID.fromString(rs2.getString("Chi"));
+				if (rs2.getString("Air") != null) {
+					airbender = UUID.fromString(rs2.getString("Air"));
+				}
+				
+				if (rs2.getString("Water") != null) {
+					airbender = UUID.fromString(rs2.getString("Water"));
+				}
+				
+				if (rs2.getString("Earth") != null) {
+					earthbender = UUID.fromString(rs2.getString("Earth"));
+				}
+				
+				if (rs2.getString("Fire") != null) {
+					firebender = UUID.fromString(rs2.getString("Fire"));
+				}
+				if (rs2.getString("Chi") != null) {
+					chiblocker = UUID.fromString(rs2.getString("Chi"));
+				}
 				int wins = rs2.getInt("wins");
 				int losses = rs2.getInt("losses");
 				new Team(name, owner, airbender, waterbender, earthbender, firebender, chiblocker, wins, losses);
@@ -757,6 +775,7 @@ public class PBMethods {
 	 * @return OfflinePlayer of the team's Airbender. null if the team doesn't have an Airbender.
 	 */
 	public static OfflinePlayer getAirbender(Team team) {
+		if (team.getAirbender() == null) return null;
 		return Bukkit.getOfflinePlayer(team.getAirbender());
 	}
 	
@@ -766,6 +785,7 @@ public class PBMethods {
 	 * @return OfflinePlayer of the team's Waterbender. null if the team doesn't have an Waterbender.
 	 */
 	public static OfflinePlayer getWaterbender(Team team) {
+		if (team.getWaterbender() == null) return null;
 		return Bukkit.getOfflinePlayer(team.getWaterbender());
 	}
 	
@@ -775,6 +795,7 @@ public class PBMethods {
 	 * @return OfflinePlayer of the team's Earthbender. null if the team doesn't have an Earthbender.
 	 */
 	public static OfflinePlayer getEarthbender(Team team) {
+		if (team.getEarthbender() == null) return null;
 		return Bukkit.getOfflinePlayer(team.getEarthbender());
 	}
 	
@@ -784,6 +805,7 @@ public class PBMethods {
 	 * @return OfflinePlayer of the team's Firebender. null if the team doesn't have an Firebender.
 	 */
 	public static OfflinePlayer getFirebender(Team team) {
+		if (team.getFirebender() == null) return null;
 		return Bukkit.getOfflinePlayer(team.getFirebender());
 	}
 	
@@ -793,6 +815,7 @@ public class PBMethods {
 	 * @return OfflinePlayer of the team's Chiblocker. null if the team doesn't have an Chiblocker.
 	 */
 	public static OfflinePlayer getChiblocker(Team team) {
+		if (team.getChiblocker() == null) return null;
 		return Bukkit.getOfflinePlayer(team.getChiblocker());
 	}
 
