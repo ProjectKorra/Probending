@@ -1,8 +1,12 @@
 package com.projectkorra.probending;
 
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import com.projectkorra.probending.command.Commands;
+import com.projectkorra.projectkorra.Element;
+import com.projectkorra.projectkorra.GeneralMethods;
+import com.projectkorra.projectkorra.event.PlayerChangeElementEvent;
+import com.sk89q.worldguard.bukkit.WGBukkit;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -24,12 +28,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
-import com.projectkorra.projectkorra.Element;
-import com.projectkorra.projectkorra.GeneralMethods;
-import com.projectkorra.projectkorra.event.PlayerChangeElementEvent;
-import com.sk89q.worldguard.bukkit.WGBukkit;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 public class PlayerListener implements Listener {
 
