@@ -61,19 +61,19 @@ public class DisbandCommand extends PBCommand {
 		Set<String> teamelements = PBMethods.getTeamElements(teamName);
 		if (teamelements != null) {
 			if (teamelements.contains("Air")) {
-				PBMethods.removePlayerFromTeam(team, PBMethods.getTeamAirbender(teamName).getUniqueId(), "Air");
+				PBMethods.removePlayerFromTeam(team, team.getAirbender(), "Air");
 			}
 			if (teamelements.contains("Water")) {
-				PBMethods.removePlayerFromTeam(team, PBMethods.getTeamWaterbender(teamName).getUniqueId(), "Water");
+				PBMethods.removePlayerFromTeam(team, team.getWaterbender(), "Water");
 			}
 			if (teamelements.contains("Earth")) {
-				PBMethods.removePlayerFromTeam(team, PBMethods.getTeamEarthbender(teamName).getUniqueId(), "Earth");
+				PBMethods.removePlayerFromTeam(team, team.getEarthbender(), "Earth");
 			}
 			if (teamelements.contains("Fire")) {
-				PBMethods.removePlayerFromTeam(team, PBMethods.getTeamFirebender(teamName).getUniqueId(), "Fire");
+				PBMethods.removePlayerFromTeam(team, team.getFirebender(), "Fire");
 			}
 			if (teamelements.contains("Chi")) {
-				PBMethods.removePlayerFromTeam(team, PBMethods.getTeamChiblocker(teamName).getUniqueId(), "Chi");
+				PBMethods.removePlayerFromTeam(team, team.getChiblocker(), "Chi");
 			}
 		}
 		PBMethods.deleteTeam(teamName);

@@ -10,6 +10,7 @@ import com.projectkorra.projectkorra.earthbending.EarthMethods;
 import com.projectkorra.projectkorra.firebending.FireMethods;
 import com.projectkorra.projectkorra.waterbending.WaterMethods;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -54,18 +55,18 @@ public class InfoCommand extends PBCommand {
 			teamName = team.getName();
 		}
 
-		String teamOwner = PBMethods.getOwner(teamName);
+		String teamOwner = Bukkit.getOfflinePlayer(team.getOwner()).getName();
 		sender.sendMessage(ChatColor.DARK_AQUA + "Team Name: " + ChatColor.YELLOW + teamName);
 		sender.sendMessage(ChatColor.DARK_AQUA + "Team Owner: " + ChatColor.DARK_PURPLE + teamOwner);
 
-		OfflinePlayer air = PBMethods.getTeamAirbender(teamName);
-		OfflinePlayer water = PBMethods.getTeamWaterbender(teamName);
-		OfflinePlayer earth = PBMethods.getTeamEarthbender(teamName);
-		OfflinePlayer fire = PBMethods.getTeamFirebender(teamName);
-		OfflinePlayer chi = PBMethods.getTeamChiblocker(teamName);
+		OfflinePlayer air = PBMethods.getAirbender(team);
+		OfflinePlayer water = PBMethods.getWaterbender(team);
+		OfflinePlayer earth = PBMethods.getEarthbender(team);
+		OfflinePlayer fire = PBMethods.getFirebender(team);
+		OfflinePlayer chi = PBMethods.getChiblocker(team);
 
-		int wins = PBMethods.getWins(teamName);
-		int losses = PBMethods.getLosses(teamName);
+		int wins = team.getWins();
+		int losses = team.getLosses();
 
 		if (PBMethods.getAirAllowed()) {
 			if (air != null) {

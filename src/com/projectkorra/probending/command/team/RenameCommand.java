@@ -62,8 +62,8 @@ public class RenameCommand extends PBCommand {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.MoneyWithdrawn.replace("%amount", renameFee.toString()).replace("%currency", currency));
 		}
 
-		int Wins = PBMethods.getWins(teamName);
-		int Losses = PBMethods.getLosses(teamName);
+		int Wins = team.getWins();
+		int Losses = team.getLosses();
 
 		PBMethods.createTeam(newName, uuid);
 
@@ -73,24 +73,24 @@ public class RenameCommand extends PBCommand {
 		OfflinePlayer firebender = null;
 		OfflinePlayer chiblocker = null;
 
-		if (PBMethods.getTeamAirbender(teamName) != null) {
-			airbender = PBMethods.getTeamAirbender(teamName);
+		if (PBMethods.getAirbender(team) != null) {
+			airbender = PBMethods.getAirbender(team);
 		}
 
-		if (PBMethods.getTeamWaterbender(teamName) != null) {
-			waterbender = PBMethods.getTeamWaterbender(teamName);
+		if (PBMethods.getWaterbender(team) != null) {
+			waterbender = PBMethods.getWaterbender(team);
 		}
 
-		if (PBMethods.getTeamEarthbender(teamName) != null) {
-			earthbender = PBMethods.getTeamEarthbender(teamName);
+		if (PBMethods.getEarthbender(team) != null) {
+			earthbender = PBMethods.getEarthbender(team);
 		}
 
-		if (PBMethods.getTeamFirebender(teamName) != null) {
-			firebender = PBMethods.getTeamFirebender(teamName);
+		if (PBMethods.getFirebender(team) != null) {
+			firebender = PBMethods.getFirebender(team);
 		}
 
-		if (PBMethods.getTeamChiblocker(teamName) != null) {
-			chiblocker = PBMethods.getTeamChiblocker(teamName);
+		if (PBMethods.getChiblocker(team) != null) {
+			chiblocker = PBMethods.getChiblocker(team);
 		}
 
 		if (airbender != null) {
