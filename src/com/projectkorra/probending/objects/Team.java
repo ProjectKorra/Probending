@@ -69,18 +69,22 @@ public class Team {
 	
 	public void addWin() {
 		this.wins = wins + 1;
+		DBConnection.sql.modifyQuery("UPDATE probending_teams SET wins = " + this.wins + " WHERE team = '" + this.name + "'");
 	}
 	
 	public void addLoss() {
 		this.losses = losses + 1;
+		DBConnection.sql.modifyQuery("UPDATE probending_teams SET losses = " + this.losses + " WHERE team = '" + this.name + "'");
 	}
 	
 	public void setWins(int number) {
 		this.wins = number;
+		DBConnection.sql.modifyQuery("UPDATE probending_teams SET wins = " + this.wins + " WHERE team = '" + this.name + "'");
 	}
 	
 	public void setLosses(int number) {
 		this.losses = number;
+		DBConnection.sql.modifyQuery("UPDATE probending_teams SET wins = " + this.losses + " WHERE team = '" + this.name + "'");
 	}
 	
 	public void setAirbender(UUID player) {
@@ -96,6 +100,11 @@ public class Team {
 	public void setEarthbender(UUID player) {
 		DBConnection.sql.modifyQuery("UPDATE probending_teams SET Earth = '" + player.toString() + "' WHERE team = '" + this.name + "'");
 		this.earthbender = player;
+	}
+	
+	public void setOwner(UUID player) {
+		DBConnection.sql.modifyQuery("UPDATE probending_teams SET owner = '" + player.toString() + "' WHERE team = '" + this.name + "'");
+		this.owner = player;
 	}
 	
 	public void setFirebender(UUID player) {

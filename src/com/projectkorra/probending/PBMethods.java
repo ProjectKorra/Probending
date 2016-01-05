@@ -1,14 +1,16 @@
 package com.projectkorra.probending;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-
 import net.milkbowl.vault.economy.Economy;
+
+import com.projectkorra.probending.command.Commands;
+import com.projectkorra.probending.objects.Team;
+import com.projectkorra.probending.storage.DBConnection;
+import com.projectkorra.projectkorra.Element;
+import com.projectkorra.projectkorra.GeneralMethods;
+import com.sk89q.worldguard.bukkit.WGBukkit;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -21,14 +23,13 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import com.projectkorra.probending.objects.Team;
-import com.projectkorra.probending.storage.DBConnection;
-import com.projectkorra.projectkorra.Element;
-import com.projectkorra.projectkorra.GeneralMethods;
-import com.sk89q.worldguard.bukkit.WGBukkit;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class PBMethods {
@@ -440,16 +441,34 @@ public class PBMethods {
 	 * Loads all teams. Should only be done on startup.
 	 */
 	public static void loadTeams() {
-		ResultSet rs2 = DBConnection.sql.readQuery("SELECT team FROM probending_teams");
+		ResultSet rs2 = DBConnection.sql.readQuery("SELECT * FROM probending_teams");
+		UUID airbender = null;
+		UUID waterbender = null;
+		UUID earthbender = null;
+		UUID firebender = null;
+		UUID chiblocker = null;
 		try {
 			while (rs2.next()) {
 				String name = rs2.getString("team");
 				UUID owner = UUID.fromString(rs2.getString("owner"));
-				UUID airbender = UUID.fromString(rs2.getString("Air"));
-				UUID waterbender = UUID.fromString(rs2.getString("Water"));
-				UUID earthbender = UUID.fromString(rs2.getString("Earth"));
-				UUID firebender = UUID.fromString(rs2.getString("Fire"));
-				UUID chiblocker = UUID.fromString(rs2.getString("Chi"));
+				if (rs2.getString("Air") != null) {
+					airbender = UUID.fromString(rs2.getString("Air"));
+				}
+				
+				if (rs2.getString("Water") != null) {
+					airbender = UUID.fromString(rs2.getString("Water"));
+				}
+				
+				if (rs2.getString("Earth") != null) {
+					earthbender = UUID.fromString(rs2.getString("Earth"));
+				}
+				
+				if (rs2.getString("Fire") != null) {
+					firebender = UUID.fromString(rs2.getString("Fire"));
+				}
+				if (rs2.getString("Chi") != null) {
+					chiblocker = UUID.fromString(rs2.getString("Chi"));
+				}
 				int wins = rs2.getInt("wins");
 				int losses = rs2.getInt("losses");
 				new Team(name, owner, airbender, waterbender, earthbender, firebender, chiblocker, wins, losses);
@@ -543,9 +562,14 @@ public class PBMethods {
 	 * @param player The UUID of the player to remove.
 	 * @param element The element of the player on the team. See {@link #getPlayerElementInTeam(UUID, String)}
 	 */
-	public static void removePlayerFromTeam(String teamName, UUID player, String element) {
+	public static void removePlayerFromTeam(Team team, UUID player, String element) {
 		DBConnection.sql.modifyQuery("UPDATE probending_players SET team = NULL WHERE uuid = '" + player.toString() + "'");
-		DBConnection.sql.modifyQuery("UPDATE probending_teams SET " + element + " = NULL WHERE team = '" + teamName + "'");
+		DBConnection.sql.modifyQuery("UPDATE probending_teams SET " + element + " = NULL WHERE team = '" + team.getName() + "'");
+		if (element.equalsIgnoreCase("air")) team.setAirbender(null);
+		if (element.equalsIgnoreCase("water")) team.setWaterbender(null);
+		if (element.equalsIgnoreCase("earth")) team.setEarthbender(null);
+		if (element.equalsIgnoreCase("fire")) team.setFirebender(null);
+		if (element.equalsIgnoreCase("chi")) team.setChiblocker(null);
 		players.put(player.toString(), null);
 	}
 
@@ -637,6 +661,7 @@ public class PBMethods {
 	 * @param teamName The name of the team to check.
 	 * @return Owner's Player Name.
 	 */
+	@Deprecated
 	public static String getOwner(String teamName) {
 		String owner = null;
 		String playername = null;
@@ -650,6 +675,15 @@ public class PBMethods {
 		}
 
 		return playername;
+	}
+	
+	/**
+	 * Returns the owner of the team.
+	 * @param team The team object.
+	 * @return The owner of the team.
+	 */
+	public static OfflinePlayer getOwner(Team team) {
+		return Bukkit.getOfflinePlayer(team.getOwner());
 	}
 	
 	/**
@@ -718,6 +752,7 @@ public class PBMethods {
 	 * @param teamName The name of the team to check.
 	 * @return OfflinePlayer of the team's Airbender. null if the team does not have an Airbender.
 	 */
+	@Deprecated
 	public static OfflinePlayer getTeamAirbender(String teamName) {
 		OfflinePlayer airbender = null;
 		ResultSet rs2 = DBConnection.sql.readQuery("SELECT Air FROM probending_teams WHERE team = '"+ teamName + "'");
@@ -733,12 +768,63 @@ public class PBMethods {
 
 		return airbender;
 	}
+	
+	/**
+	 * Returns the team's Airbender if they exist.
+	 * @param team The team object to check.
+	 * @return OfflinePlayer of the team's Airbender. null if the team doesn't have an Airbender.
+	 */
+	public static OfflinePlayer getAirbender(Team team) {
+		if (team.getAirbender() == null) return null;
+		return Bukkit.getOfflinePlayer(team.getAirbender());
+	}
+	
+	/**
+	 * Returns the team's Waterbender if they exist.
+	 * @param team The team object to check.
+	 * @return OfflinePlayer of the team's Waterbender. null if the team doesn't have an Waterbender.
+	 */
+	public static OfflinePlayer getWaterbender(Team team) {
+		if (team.getWaterbender() == null) return null;
+		return Bukkit.getOfflinePlayer(team.getWaterbender());
+	}
+	
+	/**
+	 * Returns the team's Earthbender if they exist.
+	 * @param team The team object to check.
+	 * @return OfflinePlayer of the team's Earthbender. null if the team doesn't have an Earthbender.
+	 */
+	public static OfflinePlayer getEarthbender(Team team) {
+		if (team.getEarthbender() == null) return null;
+		return Bukkit.getOfflinePlayer(team.getEarthbender());
+	}
+	
+	/**
+	 * Returns the team's Firebender if they exist.
+	 * @param team The team object to check.
+	 * @return OfflinePlayer of the team's Firebender. null if the team doesn't have an Firebender.
+	 */
+	public static OfflinePlayer getFirebender(Team team) {
+		if (team.getFirebender() == null) return null;
+		return Bukkit.getOfflinePlayer(team.getFirebender());
+	}
+	
+	/**
+	 * Returns the team's Chiblocker if they exist.
+	 * @param team The team object to check.
+	 * @return OfflinePlayer of the team's Chiblocker. null if the team doesn't have an Chiblocker.
+	 */
+	public static OfflinePlayer getChiblocker(Team team) {
+		if (team.getChiblocker() == null) return null;
+		return Bukkit.getOfflinePlayer(team.getChiblocker());
+	}
 
 	/**
 	 * Returns the team's Waterbender if they exist.
 	 * @param teamName The name of the team to check.
 	 * @return OfflinePlayer of the team's Waterbender. null if the team does not have a Waterbender.
 	 */
+	@Deprecated
 	public static OfflinePlayer getTeamWaterbender(String teamName) {
 		OfflinePlayer waterbender = null;
 		ResultSet rs2 = DBConnection.sql.readQuery("SELECT Water FROM probending_teams WHERE team = '"+ teamName + "'");
@@ -759,6 +845,7 @@ public class PBMethods {
 	 * @param teamName The name of the team to check.
 	 * @return OfflinePlayer of the team's Earthbender. null if the team does not have an Earthbender.
 	 */
+	@Deprecated
 	public static OfflinePlayer getTeamEarthbender(String teamName) {
 		OfflinePlayer earthbender = null;
 		ResultSet rs2 = DBConnection.sql.readQuery("SELECT Earth FROM probending_teams WHERE team = '"+ teamName + "'");
@@ -779,6 +866,7 @@ public class PBMethods {
 	 * @param teamName The name of the team to check.
 	 * @return OfflinePlayer of the team's Firebender. null if the team does not have a Firebender.
 	 */
+	@Deprecated
 	public static OfflinePlayer getTeamFirebender(String teamName) {
 		OfflinePlayer fire = null;
 		ResultSet rs2 = DBConnection.sql.readQuery("SELECT Fire FROM probending_teams WHERE team = '"+ teamName + "'");
@@ -799,6 +887,7 @@ public class PBMethods {
 	 * @param teamName The name of the team to check.
 	 * @return OfflinePlayer of the team's Chiblocker. null if the team does not exist.
 	 */
+	@Deprecated
 	public static OfflinePlayer getTeamChiblocker(String teamName) {
 		OfflinePlayer chi = null;
 		ResultSet rs2 = DBConnection.sql.readQuery("SELECT Chi FROM probending_teams WHERE team = '"+ teamName + "'");
@@ -905,7 +994,7 @@ public class PBMethods {
 	 * @param wins The number of wins you want to set the team to.
 	 * @param teamName The name of the team you want to change.
 	 */
-
+	@Deprecated
 	public static void setWins(int wins, String teamName) {
 		DBConnection.sql.modifyQuery("UPDATE probending_teams SET wins = " + wins + " WHERE team = '" + teamName + "'");
 	}
@@ -915,7 +1004,7 @@ public class PBMethods {
 	 * @param losses The number of losses you want to set the team to.
 	 * @param teamName The name of the team you want to change.
 	 */
-
+	@Deprecated
 	public static void setLosses(int losses, String teamName) {
 		DBConnection.sql.modifyQuery("UPDATE probending_teams SET losses = " + losses + " WHERE team = '" + teamName + "'");
 
@@ -926,7 +1015,7 @@ public class PBMethods {
 	 * @param teamName The name of the team to check.
 	 * @return The number of wins a team has.
 	 */
-
+	@Deprecated
 	public static int getWins(String teamName) {
 		int wins = 0;
 		ResultSet rs2 = DBConnection.sql.readQuery("SELECT wins FROM probending_teams WHERE team = '" + teamName + "'");
@@ -945,7 +1034,7 @@ public class PBMethods {
 	 * @param teamName The name of the team to check.
 	 * @return The number of losses a team has.
 	 */
-
+	@Deprecated
 	public static int getLosses(String teamName) {
 		int losses = 0;
 		ResultSet rs2 = DBConnection.sql.readQuery("SELECT losses FROM probending_teams WHERE team = '" + teamName + "'");
@@ -964,7 +1053,7 @@ public class PBMethods {
 	 * Add a win to a team.
 	 * @param teamName The name of the team to add a win to.
 	 */
-	
+	@Deprecated
 	public static void addWin(String teamName) {
 		int currentWins = getWins(teamName);
 		int newWins = currentWins + 1;
@@ -975,6 +1064,7 @@ public class PBMethods {
 	 * Add a loss to a team.
 	 * @param teamName The name of the team to add a loss to.
 	 */
+	@Deprecated
 	public static void addLoss(String teamName) {
 		int currentLosses = getLosses(teamName);
 		int newLosses = currentLosses + 1;

@@ -1,14 +1,14 @@
 package com.projectkorra.probending;
 
 import java.io.IOException;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.Economy;
 
-import org.bukkit.plugin.java.JavaPlugin;
-
+import com.projectkorra.probending.command.Commands;
 import com.projectkorra.probending.storage.DBConnection;
+
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class Probending extends JavaPlugin {
 	
