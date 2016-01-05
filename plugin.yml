@@ -11,36 +11,36 @@ permissions:
   probending.admin:
     default: false
     children:
-      probending.team.create: true
-      probending.team.invite: true
-      probending.team.info: true
-      probending.team.join: true
-      probending.team.kick: true
-      probending.team.quit: true
-      probending.team.disband: true
-      probending.team.disband.other: true
-      probending.team.list: true
-      probending.reload: true
-      probending.team.rename: true
-      probending.chat: true
-      probending.team.addwin: true
-      probending.team.addloss: true
-      probending.round.start: true
-      probending.round.stop: true
-      probending.round.resume: true
-      probending.round.pause: true
+      probending.command.team.create: true
+      probending.command.team.invite: true
+      probending.command.team.info: true
+      probending.command.team.join: true
+      probending.command.team.kick: true
+      probending.command.team.quit: true
+      probending.command.team.disband: true
+      probending.command.team.disband.other: true
+      probending.command.team.list: true
+      probending.command.reload: true
+      probending.command.team.rename: true
+      probending.command.chat: true
+      probending.command.team.addwin: true
+      probending.command.team.addloss: true
+      probending.command.round.start: true
+      probending.command.round.stop: true
+      probending.command.round.resume: true
+      probending.command.round.pause: true
       probending.worldguard.buildonfield: true
-      probending.setspawn: true
+      probending.command.setspawn: true
   probending.user:
     default: false
     children:
-      probending.team.create: true
-      probending.team.invite: true
-      probending.team.info: true
-      probending.team.join: true
-      probending.team.kick: true
-      probending.team.quit: true
-      probending.team.list: true
-      probending.team.rename: true
-      probending.team.disband: true
-      probending.chat: true
+      probending.command.team.create: true
+      probending.command.team.invite: true
+      probending.command.team.info: true
+      probending.command.team.join: true
+      probending.command.team.kick: true
+      probending.command.team.quit: true
+      probending.command.team.list: true
+      probending.command.team.rename: true
+      probending.command.team.disband: true
+      probending.command.chat: true
