@@ -18,6 +18,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.projectkorra.probending.objects.Team;
 import com.projectkorra.projectkorra.GeneralMethods;
 
 
@@ -393,18 +394,15 @@ public class Commands {
 							return true;
 						}
 						String teamName = args[2];
-						Set<String> teams = PBMethods.getTeams();
+						Team team = PBMethods.getTeam(args[2]);
 						if (!PBMethods.teamExists(teamName)) {
 							s.sendMessage(PBMethods.Prefix + PBMethods.TeamDoesNotExist);
 							return true;
 						}
-						if (teams != null) {
-							for (String team: teams) {
-								if (team.equalsIgnoreCase(teamName)) {
-									PBMethods.addWin(team);
-									s.sendMessage(PBMethods.Prefix + PBMethods.WinAddedToTeam.replace("%team", team));
-								}
-							}
+						
+						if (team != null) {
+							team.addWin();
+							s.sendMessage(PBMethods.Prefix + PBMethods.WinAddedToTeam.replace("%team", team.getName()));
 						}
 						return true;	
 					}
@@ -418,19 +416,14 @@ public class Commands {
 							return true;
 						}
 						String teamName = args[2];
-						Set<String> teams = PBMethods.getTeams();
-						if (!PBMethods.teamExists(teamName)) {
+						Team team = PBMethods.getTeam(teamName);
+						if (team == null) {
 							s.sendMessage(PBMethods.Prefix + PBMethods.TeamDoesNotExist);
 							return true;
 						}
-						if (teams != null) {
-							for (String team: teams) {
-								if (team.equalsIgnoreCase(teamName)) {
-									PBMethods.addLoss(team);
-									s.sendMessage(PBMethods.Prefix + PBMethods.LossAddedToTeam.replace("%team", team));
-								}
-							}
-						}
+						
+						team.addLoss();
+						s.sendMessage(PBMethods.Prefix + PBMethods.LossAddedToTeam.replace("%team", team.getName()));
 						return true;
 					}
 					if (args[1].equalsIgnoreCase("rename")) {
@@ -544,8 +537,7 @@ public class Commands {
 							s.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
 							return true;
 						}
-						Set<String> teams = PBMethods.getTeams();
-						s.sendMessage("§cTeams: §a" + teams.toString());
+						s.sendMessage("§cTeams: §a" + PBMethods.getTeams().keySet().toArray());
 						return true;
 					}
 					if (args[1].equalsIgnoreCase("disband")) {
@@ -766,13 +758,16 @@ public class Commands {
 							s.sendMessage(PBMethods.Prefix + PBMethods.TeamDoesNotExist);
 							return true;
 						}
-
-						Set<String> teams = PBMethods.getTeams();
-						for (String team: teams) {
-							if (team.equalsIgnoreCase(teamName)) {
-								teamName = team;
-							}
+						
+						Team team = PBMethods.getTeam(teamName);
+						
+						if (team == null) {
+							s.sendMessage(PBMethods.Prefix + PBMethods.TeamDoesNotExist);
+							return true;
+						} else {
+							teamName = team.getName();
 						}
+
 						String teamOwner = PBMethods.getOwner(teamName);
 						s.sendMessage("§3Team Name:§e " + teamName);
 						s.sendMessage("§3Team Owner:§5 " + teamOwner);

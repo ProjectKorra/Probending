@@ -140,9 +140,8 @@ public class Probending extends JavaPlugin {
 		DBConnection.init();
 		
 		PBMethods.loadTeams();
-		Set<String> teamList = PBMethods.getTeams();
 		PBMethods.loadPlayers();
-		Probending.log.info("Loaded " + teamList.size() + " teams");
+		Probending.log.info("Loaded " + PBMethods.getTeams().size() + " teams");
 		Probending.log.info("Loaded " + PBMethods.players.size() + " players.");
 		
 		
