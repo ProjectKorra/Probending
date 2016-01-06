@@ -172,6 +172,8 @@ public class PlayerListener implements Listener {
 				}
 
 				if (teamSide.equalsIgnoreCase(PBMethods.TeamOne)) {
+					Team team1 = PBMethods.getTeam(PBMethods.TeamOne);
+					Team team2 = PBMethods.getTeam(PBMethods.TeamTwo);
 					PBMethods.sendPBChat(PBMethods.PlayerEliminated.replace("%player", p.getName()));
 					PBMethods.allowedZone.remove(p.getName());
 					p.getInventory().setArmorContents(null);
@@ -181,8 +183,8 @@ public class PlayerListener implements Listener {
 					if (PBMethods.teamOnePlayers.isEmpty()) {
 						PBMethods.sendPBChat(PBMethods.RoundStopped);
 						PBMethods.sendPBChat(PBMethods.TeamWon.replace("%team", PBMethods.TeamTwo));
-						PBMethods.addWin(PBMethods.TeamTwo);
-						PBMethods.addLoss(PBMethods.TeamOne);
+						team1.addWin();
+						team2.addLoss();
 						Bukkit.getServer().getScheduler().cancelTask(Commands.clockTask);
 						PBMethods.matchStarted = false;
 						PBMethods.playingTeams.clear();
@@ -193,6 +195,8 @@ public class PlayerListener implements Listener {
 					}
 				}
 				if (teamSide.equalsIgnoreCase(PBMethods.TeamTwo)) {
+					Team team1 = PBMethods.getTeam(PBMethods.TeamOne);
+					Team team2 = PBMethods.getTeam(PBMethods.TeamTwo);
 					PBMethods.sendPBChat(PBMethods.PlayerEliminated.replace("%player", p.getName()));
 					PBMethods.allowedZone.remove(p.getName());
 					p.getInventory().setArmorContents(null);
@@ -202,8 +206,8 @@ public class PlayerListener implements Listener {
 					if (PBMethods.teamTwoPlayers.isEmpty()) {
 						PBMethods.sendPBChat(PBMethods.RoundStopped);
 						PBMethods.sendPBChat(PBMethods.TeamWon.replace("%team", PBMethods.TeamOne));
-						PBMethods.addWin(PBMethods.TeamOne);
-						PBMethods.addLoss(PBMethods.TeamTwo);
+						team1.addWin();
+						team2.addLoss();
 						Bukkit.getServer().getScheduler().cancelTask(Commands.clockTask);
 						PBMethods.matchStarted = false;
 						PBMethods.playingTeams.clear();
@@ -244,10 +248,12 @@ public class PlayerListener implements Listener {
 							Commands.tmpArmor.remove(p);
 							PBMethods.teamTwoPlayers.remove(p.getName());
 							if (PBMethods.teamTwoPlayers.isEmpty()) {
+								Team team1 = PBMethods.getTeam(PBMethods.TeamOne);
+								Team team2 = PBMethods.getTeam(PBMethods.TeamTwo);
 								PBMethods.sendPBChat(PBMethods.RoundStopped);
 								PBMethods.sendPBChat(PBMethods.TeamWon.replace("%team", PBMethods.TeamOne));
-								PBMethods.addWin(PBMethods.TeamOne);
-								PBMethods.addLoss(PBMethods.TeamTwo);
+								team1.addWin();
+								team2.addLoss();
 								Bukkit.getServer().getScheduler().cancelTask(Commands.clockTask);
 								PBMethods.matchStarted = false;
 								PBMethods.playingTeams.clear();
@@ -271,10 +277,12 @@ public class PlayerListener implements Listener {
 							Commands.tmpArmor.remove(p);
 							PBMethods.teamOnePlayers.remove(p.getName());
 							if (PBMethods.teamOnePlayers.isEmpty()) {
+								Team team1 = PBMethods.getTeam(PBMethods.TeamOne);
+								Team team2 = PBMethods.getTeam(PBMethods.TeamTwo);
 								PBMethods.sendPBChat(PBMethods.RoundStopped);
 								PBMethods.sendPBChat(PBMethods.TeamWon.replace("%team", PBMethods.TeamTwo));
-								PBMethods.addWin(PBMethods.TeamTwo);
-								PBMethods.addLoss(PBMethods.TeamOne);
+								team1.addLoss();
+								team2.addWin();
 								Bukkit.getServer().getScheduler().cancelTask(Commands.clockTask);
 								PBMethods.matchStarted = false;
 								PBMethods.playingTeams.clear();
@@ -364,10 +372,12 @@ public class PlayerListener implements Listener {
 								p.teleport(PBMethods.getSpectatorSpawn());
 								PBMethods.teamOnePlayers.remove(p.getName());
 								if (PBMethods.teamOnePlayers.isEmpty()) {
+									Team team1 = PBMethods.getTeam(PBMethods.TeamOne);
+									Team team2 = PBMethods.getTeam(PBMethods.TeamTwo);
 									PBMethods.sendPBChat(PBMethods.RoundStopped);
 									PBMethods.sendPBChat(PBMethods.TeamWon.replace("%team", PBMethods.TeamTwo));
-									PBMethods.addWin(PBMethods.TeamTwo);
-									PBMethods.addLoss(PBMethods.TeamOne);
+									team1.addLoss();
+									team2.addWin();
 									PBMethods.matchStarted = false;
 									Bukkit.getServer().getScheduler().cancelTask(Commands.clockTask);
 									PBMethods.playingTeams.clear();
@@ -411,10 +421,12 @@ public class PlayerListener implements Listener {
 								Commands.tmpArmor.remove(p);
 								PBMethods.teamTwoPlayers.remove(p.getName());
 								if (PBMethods.teamTwoPlayers.isEmpty()) {
+									Team team1 = PBMethods.getTeam(PBMethods.TeamOne);
+									Team team2 = PBMethods.getTeam(PBMethods.TeamTwo);
 									PBMethods.sendPBChat(PBMethods.RoundStopped);
 									PBMethods.sendPBChat(PBMethods.TeamWon.replace("%team", PBMethods.TeamOne));
-									PBMethods.addWin(PBMethods.TeamOne);
-									PBMethods.addLoss(PBMethods.TeamTwo);
+									team1.addWin();
+									team2.addLoss();
 									PBMethods.matchStarted = false;
 									Bukkit.getServer().getScheduler().cancelTask(Commands.clockTask);
 									PBMethods.playingTeams.clear();

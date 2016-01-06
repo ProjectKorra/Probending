@@ -720,27 +720,6 @@ public class PBMethods {
 
 		return size;
 	}
-
-	/**
-	 * Returns the owner of a team. 
-	 * @param teamName The name of the team to check.
-	 * @return Owner's Player Name.
-	 */
-	@Deprecated
-	public static String getOwner(String teamName) {
-		String owner = null;
-		String playername = null;
-		ResultSet rs2 = DBConnection.sql.readQuery("SELECT owner FROM probending_teams WHERE team = '" + teamName + "'");
-		try {
-			rs2.next();
-			owner = rs2.getString("owner");
-			playername = Bukkit.getOfflinePlayer(UUID.fromString(owner)).getName();
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		}
-
-		return playername;
-	}
 	
 	/**
 	 * Returns the owner of the team.
@@ -812,27 +791,6 @@ public class PBMethods {
 		return teamelements;
 	}
 
-	/**
-	 * Returns the team's Airbender if they exist. 
-	 * @param teamName The name of the team to check.
-	 * @return OfflinePlayer of the team's Airbender. null if the team does not have an Airbender.
-	 */
-	@Deprecated
-	public static OfflinePlayer getTeamAirbender(String teamName) {
-		OfflinePlayer airbender = null;
-		ResultSet rs2 = DBConnection.sql.readQuery("SELECT Air FROM probending_teams WHERE team = '"+ teamName + "'");
-		try {
-			if (rs2.next()) {
-				String uuid = rs2.getString("Air");
-				if (uuid == null) return null;
-				airbender = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
-			}
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		}
-
-		return airbender;
-	}
 	
 	/**
 	 * Returns the team's Airbender if they exist.
@@ -882,90 +840,6 @@ public class PBMethods {
 	public static OfflinePlayer getChiblocker(Team team) {
 		if (team.getChiblocker() == null) return null;
 		return Bukkit.getOfflinePlayer(team.getChiblocker());
-	}
-
-	/**
-	 * Returns the team's Waterbender if they exist.
-	 * @param teamName The name of the team to check.
-	 * @return OfflinePlayer of the team's Waterbender. null if the team does not have a Waterbender.
-	 */
-	@Deprecated
-	public static OfflinePlayer getTeamWaterbender(String teamName) {
-		OfflinePlayer waterbender = null;
-		ResultSet rs2 = DBConnection.sql.readQuery("SELECT Water FROM probending_teams WHERE team = '"+ teamName + "'");
-		try {
-			if (rs2.next()) {
-				String uuid = rs2.getString("Water");
-				if (uuid == null) return null;
-				waterbender = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
-			}
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		}
-		return waterbender;
-	}
-
-	/**
-	 * Returns the team's Earthbender if they exist.
-	 * @param teamName The name of the team to check.
-	 * @return OfflinePlayer of the team's Earthbender. null if the team does not have an Earthbender.
-	 */
-	@Deprecated
-	public static OfflinePlayer getTeamEarthbender(String teamName) {
-		OfflinePlayer earthbender = null;
-		ResultSet rs2 = DBConnection.sql.readQuery("SELECT Earth FROM probending_teams WHERE team = '"+ teamName + "'");
-		try {
-			if (rs2.next()) {
-				String uuid = rs2.getString("Earth");
-				if (uuid == null) return null;
-				earthbender = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
-			}
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		}
-		return earthbender;
-	}
-
-	/**
-	 * Returns the team's Firebender if they exist.
-	 * @param teamName The name of the team to check.
-	 * @return OfflinePlayer of the team's Firebender. null if the team does not have a Firebender.
-	 */
-	@Deprecated
-	public static OfflinePlayer getTeamFirebender(String teamName) {
-		OfflinePlayer fire = null;
-		ResultSet rs2 = DBConnection.sql.readQuery("SELECT Fire FROM probending_teams WHERE team = '"+ teamName + "'");
-		try {
-			if (rs2.next()) {
-				String uuid = rs2.getString("Fire");
-				if (uuid == null) return null;
-				fire = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
-			}
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		}
-		return fire;
-	}
-
-	/**
-	 * Returns the team's Chiblocker if they exist.
-	 * @param teamName The name of the team to check.
-	 * @return OfflinePlayer of the team's Chiblocker. null if the team does not exist.
-	 */
-	@Deprecated
-	public static OfflinePlayer getTeamChiblocker(String teamName) {
-		OfflinePlayer chi = null;
-		ResultSet rs2 = DBConnection.sql.readQuery("SELECT Chi FROM probending_teams WHERE team = '"+ teamName + "'");
-		try {
-			if (rs2.next()) {
-				String uuid = rs2.getString("Chi");
-				if (uuid == null) return null;
-				chi = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
-			}
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		}
-		return chi;
 	}
 
 	/**
@@ -1063,88 +937,6 @@ public class PBMethods {
 		RegisteredServiceProvider<Economy> economyProvider = Probending.plugin.getServer().getServicesManager().getRegistration(Economy.class);
 		Probending.econ = economyProvider.getProvider();
 		return (Probending.econ != null);
-	}
-	
-	/**
-	 * Set the number of wins a team has.
-	 * @param wins The number of wins you want to set the team to.
-	 * @param teamName The name of the team you want to change.
-	 */
-	@Deprecated
-	public static void setWins(int wins, String teamName) {
-		DBConnection.sql.modifyQuery("UPDATE probending_teams SET wins = " + wins + " WHERE team = '" + teamName + "'");
-	}
-	
-	/**
-	 * Set the number of losses a team has.
-	 * @param losses The number of losses you want to set the team to.
-	 * @param teamName The name of the team you want to change.
-	 */
-	@Deprecated
-	public static void setLosses(int losses, String teamName) {
-		DBConnection.sql.modifyQuery("UPDATE probending_teams SET losses = " + losses + " WHERE team = '" + teamName + "'");
-
-	}
-	
-	/**
-	 * Get the amount of wins a team has.
-	 * @param teamName The name of the team to check.
-	 * @return The number of wins a team has.
-	 */
-	@Deprecated
-	public static int getWins(String teamName) {
-		int wins = 0;
-		ResultSet rs2 = DBConnection.sql.readQuery("SELECT wins FROM probending_teams WHERE team = '" + teamName + "'");
-		try {
-			if (rs2.next()) {
-				wins = rs2.getInt("wins");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return wins;
-	}
-	
-	/**
-	 * Get the amount of losses a team has.
-	 * @param teamName The name of the team to check.
-	 * @return The number of losses a team has.
-	 */
-	@Deprecated
-	public static int getLosses(String teamName) {
-		int losses = 0;
-		ResultSet rs2 = DBConnection.sql.readQuery("SELECT losses FROM probending_teams WHERE team = '" + teamName + "'");
-		try {
-			if (rs2.next()) {
-				losses = rs2.getInt("losses");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return losses;
-	}
-
-	/**
-	 * Add a win to a team.
-	 * @param teamName The name of the team to add a win to.
-	 */
-	@Deprecated
-	public static void addWin(String teamName) {
-		int currentWins = getWins(teamName);
-		int newWins = currentWins + 1;
-		DBConnection.sql.modifyQuery("UPDATE probending_teams SET wins = " + newWins + " WHERE team = '" + teamName + "'");
-	}
-
-	/**
-	 * Add a loss to a team.
-	 * @param teamName The name of the team to add a loss to.
-	 */
-	@Deprecated
-	public static void addLoss(String teamName) {
-		int currentLosses = getLosses(teamName);
-		int newLosses = currentLosses + 1;
-		DBConnection.sql.modifyQuery("UPDATE probending_teams SET losses = " + newLosses + " WHERE team = '" + teamName + "'");
 	}
 
 	/**
