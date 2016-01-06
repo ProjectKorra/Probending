@@ -3,98 +3,107 @@ package com.projectkorra.probending.objects;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.World;
 
 public class Arena {
-	public static List<Arena> arenas = new ArrayList<>();
+	public static ConcurrentHashMap<String, Arena> arenas = new ConcurrentHashMap<String, Arena>();
 	
 	private String name;
-	private UUID id;
+
+	private World world;
+	private Location spectatorSpawn;
+	private Location teamOneSpawn;
+	private Location teamTwoSpawn;
 	
-	private Location spectator;
+	private String divider;
+	private String teamOneZoneOne;
+	private String teamOneZoneTwo;
+	private String teamOneZoneThree;
 	
-	private Location teamOneZoneOne;
-	private Location teamOneZoneTwo;
-	private Location teamOneZoneThree;
+	private String teamTwoZoneOne;
+	private String teamTwoZoneTwo;
+	private String teamTwoZoneThree;
 	
-	private Location teamTwoZoneOne;
-	private Location teamTwoZoneTwo;
-	private Location teamTwoZoneThree;
+	private Color teamOneColor;
+	private Color teamTwoColor;
 	
-	public Arena(String name) {
+	public Arena(String name, World world, Location spectatorSpawn, Location teamOneSpawn, Location teamTwoSpawn, String divider, String teamOneZoneOne, String teamOneZoneTwo, String teamOneZoneThree, String teamTwoZoneOne, String teamTwoZoneTwo, String teamTwoZoneThree, Color teamOneColor, Color teamTwoColor) {
 		this.name = name;
-		this.id = UUID.randomUUID();
+		this.world = world;
+		this.spectatorSpawn = spectatorSpawn;
+		this.teamOneSpawn = teamOneSpawn;
+		this.teamTwoSpawn = teamTwoSpawn;
+		this.divider = divider;
+		this.teamOneZoneOne = teamOneZoneOne;
+		this.teamOneZoneTwo = teamOneZoneTwo;
+		this.teamOneZoneThree = teamOneZoneThree;
+		this.teamTwoZoneOne = teamTwoZoneOne;
+		this.teamTwoZoneTwo = teamTwoZoneTwo;
+		this.teamTwoZoneThree = teamTwoZoneThree;
+		this.teamOneColor = teamOneColor;
+		this.teamTwoColor = teamTwoColor;
 		
-		arenas.add(this);
-	}
-	
-	public void setName(String name) {
-		this.name = name;
+		arenas.put(name, this);
 	}
 	
 	public String getName() {
 		return this.name;
 	}
 	
-	public UUID getId() {
-		return this.id;
+	public World getWorld() {
+		return this.world;
 	}
 	
-	public void setSpectator(Location l) {
-		this.spectator = l;
+	public Location getSpectatorSpawn() {
+		return this.spectatorSpawn;
 	}
 	
-	public Location getSpectator() {
-		return this.spectator;
+	public Location getTeamOneSpawn() {
+		return this.teamOneSpawn;
 	}
 	
-	public void setTeamOneZoneOne(Location l) {
-		this.teamOneZoneOne = l;
+	public Location getTeamTwoSpawn() {
+		return this.teamTwoSpawn;
 	}
 	
-	public Location getTeamOneZoneOne() {
+	public String getTeamOneZoneOne() {
 		return this.teamOneZoneOne;
 	}
 	
-	public void setTeamOneZoneTwo(Location l) {
-		this.teamOneZoneTwo = l;
-	}
-	
-	public Location getTeamOneZoneTwo() {
+	public String getTeamOneZoneTwo() {
 		return this.teamOneZoneTwo;
 	}
 	
-	public void setTeamOneZoneThree(Location l) {
-		this.teamOneZoneThree = l;
-	}
-	
-	public Location getTeamOneZoneThree() {
+	public String getTeamOneZoneThree() {
 		return this.teamOneZoneThree;
 	}
 	
-	public void setTeamTwoZoneOne(Location l) {
-		this.teamTwoZoneOne = l;
-	}
-	
-	public Location getTeamTwoZoneOne() {
+	public String getTeamTwoZoneOne() {
 		return this.teamTwoZoneOne;
 	}
 	
-	public void setTeamTwoZoneTwo(Location l) {
-		this.teamTwoZoneTwo = l;
-	}
-	
-	public Location getTeamTwoZoneTwo() {
+	public String getTeamTwoZoneTwo() {
 		return this.teamTwoZoneTwo;
 	}
 	
-	public void setTeamTwoZoneThree(Location l) {
-		this.teamTwoZoneThree = l;
+	public String getTeamTwoZoneThree() {
+		return this.teamTwoZoneThree;
 	}
 	
-	public Location getTeamTwoZoneThree() {
-		return this.teamTwoZoneThree;
+	public String getDivider() {
+		return this.divider;
+	}
+	
+	public Color getTeamOneColor() {
+		return this.teamOneColor;
+	}
+	
+	public Color getTeamTwoColor() {
+		return this.teamTwoColor;
 	}
 	
 	
