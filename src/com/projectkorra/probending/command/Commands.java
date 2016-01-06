@@ -46,6 +46,7 @@ public class Commands {
 	public static HashMap<String, LinkedList<String>> teamInvites = new HashMap<String, LinkedList<String>>();
 	public static HashMap<Player, ItemStack[]> tmpArmor = new HashMap<Player, ItemStack[]>();
 	
+	public static String[] arenaaliases = {"arena", "arenas", "a"};
 	public static String[] teamaliases = {"team", "teams", "t"};
 	public static String[] roundaliases = {"round", "r"};
 	
@@ -60,11 +61,12 @@ public class Commands {
 		//Base Commands
 		new HelpCommand();
 		new TeamCommand();
+		new ArenaCommand();
 		new RoundCommand();
 		new ChatCommand();
 		new ReloadCommand();
 		new SetSpawnCommand();
-
+		
 		//Team Commands
 		new AddWinCommand();
 		new AddLossCommand();

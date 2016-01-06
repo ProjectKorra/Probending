@@ -141,8 +141,10 @@ public class Probending extends JavaPlugin {
 		
 		PBMethods.loadTeams();
 		PBMethods.loadPlayers();
+		PBMethods.loadArenas();
 		Probending.log.info("Loaded " + PBMethods.getTeams().size() + " teams");
 		Probending.log.info("Loaded " + PBMethods.players.size() + " players.");
+		Probending.log.info("Loaded " + PBMethods.getArenas().size() + " arenas");
 		
 		
 	}

@@ -1,8 +1,5 @@
 package com.projectkorra.probending.objects;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Color;
@@ -19,6 +16,7 @@ public class Arena {
 	private Location teamOneSpawn;
 	private Location teamTwoSpawn;
 	
+	private String field;
 	private String divider;
 	private String teamOneZoneOne;
 	private String teamOneZoneTwo;
@@ -31,12 +29,13 @@ public class Arena {
 	private Color teamOneColor;
 	private Color teamTwoColor;
 	
-	public Arena(String name, World world, Location spectatorSpawn, Location teamOneSpawn, Location teamTwoSpawn, String divider, String teamOneZoneOne, String teamOneZoneTwo, String teamOneZoneThree, String teamTwoZoneOne, String teamTwoZoneTwo, String teamTwoZoneThree, Color teamOneColor, Color teamTwoColor) {
+	public Arena(String name, World world, Location spectatorSpawn, Location teamOneSpawn, Location teamTwoSpawn, String field, String divider, String teamOneZoneOne, String teamOneZoneTwo, String teamOneZoneThree, String teamTwoZoneOne, String teamTwoZoneTwo, String teamTwoZoneThree, Color teamOneColor, Color teamTwoColor) {
 		this.name = name;
 		this.world = world;
 		this.spectatorSpawn = spectatorSpawn;
 		this.teamOneSpawn = teamOneSpawn;
 		this.teamTwoSpawn = teamTwoSpawn;
+		this.field = field;
 		this.divider = divider;
 		this.teamOneZoneOne = teamOneZoneOne;
 		this.teamOneZoneTwo = teamOneZoneTwo;
@@ -68,6 +67,10 @@ public class Arena {
 	
 	public Location getTeamTwoSpawn() {
 		return this.teamTwoSpawn;
+	}
+	
+	public String getField() {
+		return this.field;
 	}
 	
 	public String getTeamOneZoneOne() {

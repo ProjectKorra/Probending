@@ -3,6 +3,7 @@ package com.projectkorra.probending;
 import net.milkbowl.vault.economy.Economy;
 
 import com.projectkorra.probending.command.Commands;
+import com.projectkorra.probending.objects.Arena;
 import com.projectkorra.probending.objects.Team;
 import com.projectkorra.probending.storage.DBConnection;
 import com.projectkorra.projectkorra.Element;
@@ -170,6 +171,56 @@ public class PBMethods {
 			}
 		}
 
+	}
+	
+	public static void loadArenas() {
+		ResultSet rs2 = DBConnection.sql.readQuery("SELECT * FROM probending_arenas");
+		try {
+			if (!rs2.next()) return;
+			do {
+				String name = rs2.getString("name");
+				World world = null;
+				if (rs2.getString("world") != null) world = Bukkit.getWorld(rs2.getString("world"));
+				Integer spectatorX = rs2.getInt("spectatorX");
+				Integer spectatorY = rs2.getInt("spectatorY");
+				Integer spectatorZ = rs2.getInt("spectatorZ");
+				Integer teamOneX = rs2.getInt("teamOneX");
+				Integer teamOneY = rs2.getInt("teamOneY");
+				Integer teamOneZ = rs2.getInt("teamOneZ");
+				Integer teamTwoX = rs2.getInt("teamTwoX");
+				Integer teamTwoY = rs2.getInt("teamTwoY");
+				Integer teamTwoZ = rs2.getInt("teamTwoZ");
+				String field = rs2.getString("field");
+				String divider = rs2.getString("divider");
+				String teamOneZoneOne = rs2.getString("teamOneZoneOne");
+				String teamOneZoneTwo = rs2.getString("teamOneZoneTwo");
+				String teamOneZoneThree = rs2.getString("teamOneZoneThree");
+				String teamTwoZoneOne = rs2.getString("teamTwoZoneOne");
+				String teamTwoZoneTwo = rs2.getString("teamTwoZoneTwo");
+				String teamTwoZoneThree = rs2.getString("teamTwoZoneThree");
+				Color teamOneColor = null;
+				Color teamTwoColor = null;
+				if (rs2.getString("teamOneColor") != null) teamOneColor = PBMethods.getColorFromString(rs2.getString("teamOneColor"));
+				if (rs2.getString("teamTwoColor") != null) teamTwoColor = PBMethods.getColorFromString(rs2.getString("teamTwoColor"));
+				Location spectatorSpawn = null;
+				Location teamOneSpawn = null;
+				Location teamTwoSpawn = null;
+				if (world != null && spectatorX != null && spectatorY != null && spectatorZ != null) {
+					spectatorSpawn = new Location(world, spectatorX, spectatorY, spectatorZ);
+				}
+				if (world != null && teamOneX != null && teamOneY != null && teamOneZ != null) {
+					teamOneSpawn = new Location(world, teamOneX, teamOneY, teamOneZ);
+				}
+				
+				if (world != null && teamTwoX != null && teamTwoZ != null && teamTwoZ != null) {
+					teamTwoSpawn = new Location(world, teamTwoX, teamTwoY, teamTwoZ);
+				}
+				
+				new Arena(name, world, spectatorSpawn, teamOneSpawn, teamTwoSpawn, field, divider, teamOneZoneOne, teamOneZoneTwo, teamOneZoneThree, teamTwoZoneOne, teamTwoZoneTwo, teamTwoZoneThree, teamOneColor, teamTwoColor);
+			} while (rs2.next());
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
 	}
 	
 	/**
@@ -436,7 +487,21 @@ public class PBMethods {
 		}
 		return false;
 	}
+	
+	/**
+	 * Checks if an arena exists. Case insensitive.
+	 * @param name The name of the arena as a string.
+	 * @return true if the team exists. False if it does not.
+	 */
 
+	public static boolean arenaExists(String name) {
+		for (String arena: Arena.arenas.keySet()) {
+			if (arena.equalsIgnoreCase(name)) {
+				return true;
+			}
+		}
+		return false;
+	}
 	/**
 	 * Loads all teams. Should only be done on startup.
 	 */
@@ -978,6 +1043,17 @@ public class PBMethods {
 	public static ConcurrentHashMap<String, Team> getTeams() {
 		return Team.teams;
 	}
+	
+	/**
+	 * Returns a ConcurrentHashMap of Probending arenas.
+	 * The key is the String name of the arena.
+	 * The value is the arena object.
+	 * @return ConcurrentHashMap<String, Arena> of Probending Arenas.
+	 */
+	
+	public static ConcurrentHashMap<String, Arena> getArenas() {
+		return Arena.arenas;
+	}
 
 	/**
 	 * Sets up the economy feature.
@@ -1092,10 +1168,29 @@ public class PBMethods {
 
 	}
 	
+	/**
+	 * Gets the team with the given name. Case insensitive.
+	 * @param teamName
+	 * @return The team object for the team with the given name.
+	 */
 	public static Team getTeam(String teamName) {
 		for (String s: Team.teams.keySet()) {
 			if (s.equalsIgnoreCase(teamName)) {
 				return Team.teams.get(s);
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Gets the arena with the given name. Case insensitive.
+	 * @param arenaName
+	 * @return The arena object for the arena with the given name.
+	 */
+	public static Arena getArena(String arenaName) {
+		for (String a: Arena.arenas.keySet()) {
+			if (a.equalsIgnoreCase(arenaName)) {
+				return Arena.arenas.get(a);
 			}
 		}
 		return null;
