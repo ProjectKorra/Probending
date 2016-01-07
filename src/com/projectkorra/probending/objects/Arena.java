@@ -101,6 +101,46 @@ public class Arena {
 		return this.teamTwoSpawn;
 	}
 	
+	public void setField(String zone) {
+		this.field = zone;
+		DBConnection.sql.modifyQuery("UPDATE probending_arenas SET field = '" + zone + "' WHERE name = '" + this.name + "'");
+	}
+	
+	public void setDivider(String zone) {
+		this.divider = zone;
+		DBConnection.sql.modifyQuery("UPDATE probending_arenas SET divider = '" + zone + "' WHERE name = '" + this.name + "'");
+	}
+	
+	public void setTeamOneZoneOne(String zone) {
+		this.teamOneZoneOne = zone;
+		DBConnection.sql.modifyQuery("UPDATE probending_arenas SET teamOneZoneOne = '" + zone + "' WHERE name = '" + this.name + "'");
+	}
+	
+	public void setTeamOneZoneTwo(String zone) {
+		this.teamOneZoneTwo = zone;
+		DBConnection.sql.modifyQuery("UPDATE probending_arenas SET teamOneZoneTwo = '" + zone + "' WHERE name = '" + this.name + "'");
+	}
+	
+	public void setTeamOneZoneThree(String zone) {
+		this.teamOneZoneThree = zone;
+		DBConnection.sql.modifyQuery("UPDATE probending_arenas SET teamOneZoneThree = '" + zone + "' WHERE name = '" + this.name + "'");
+	}
+	
+	public void setTeamTwoZoneOne(String zone) {
+		this.teamTwoZoneOne = zone;
+		DBConnection.sql.modifyQuery("UPDATE probending_arenas SET teamTwoZoneOne = '" + zone + "' WHERE name = '" + this.name + "'");
+	}
+	
+	public void setTeamTwoZoneTwo(String zone) {
+		this.teamTwoZoneTwo = zone;
+		DBConnection.sql.modifyQuery("UPDATE probending_arenas SET teamTwoZoneTwo = '" + zone + "' WHERE name = '" + this.name + "'");
+	}
+	
+	public void setTeamTwoZoneThree(String zone) {
+		this.teamTwoZoneThree = zone;
+		DBConnection.sql.modifyQuery("UPDATE probending_arenas SET teamTwoZoneThree = '" + zone + "' WHERE name = '" + this.name + "'");
+	}
+	
 	public String getField() {
 		return this.field;
 	}
