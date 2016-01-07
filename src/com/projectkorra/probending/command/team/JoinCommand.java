@@ -16,7 +16,7 @@ import java.util.UUID;
 public class JoinCommand extends PBCommand {
 	
 	public JoinCommand() {
-		super ("join", "/pb team join <Team>", "Join a team.", new String[] {"join", "j"}, true, Commands.teamaliases);
+		super ("team-join", "/pb team join <Team>", "Join a team.", new String[] {"join", "j"}, true, Commands.teamaliases);
 	}
 
 	@Override

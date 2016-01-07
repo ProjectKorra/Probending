@@ -12,7 +12,7 @@ import java.util.List;
 public class StopCommand extends PBCommand {
 
 	public StopCommand() {
-		super ("stop", "/pb round stop", "Stops round.", new String[] {"stop"}, true, Commands.roundaliases);
+		super ("round-stop", "/pb round stop", "Stops round.", new String[] {"stop"}, true, Commands.roundaliases);
 	}
 
 	@Override

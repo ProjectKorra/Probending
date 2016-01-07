@@ -15,7 +15,7 @@ import java.util.UUID;
 public class QuitCommand extends PBCommand {
 	
 	public QuitCommand() {
-		super ("quit", "/pb team quit", "Quit your current team.", new String[] {"quit", "q", "leave", "l"}, true, Commands.teamaliases);
+		super ("team-quit", "/pb team quit", "Quit your current team.", new String[] {"quit", "q", "leave", "l"}, true, Commands.teamaliases);
 	}
 
 	@Override

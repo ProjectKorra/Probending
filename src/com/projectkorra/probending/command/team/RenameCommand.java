@@ -16,9 +16,10 @@ import java.util.UUID;
 public class RenameCommand extends PBCommand {
 	
 	public RenameCommand() {
-		super ("rename", "/pb team rename <Name>", "Rename your team.", new String[] {"rename", "name"}, true, Commands.teamaliases);
+		super ("team-rename", "/pb team rename <Name>", "Rename your team.", new String[] {"rename", "name"}, true, Commands.teamaliases);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void execute(CommandSender sender, List<String> args) {
 		if (!isPlayer(sender) || !hasTeamPermission(sender) || !correctLength(sender, args.size(), 2, 2)) {

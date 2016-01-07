@@ -13,7 +13,7 @@ import java.util.List;
 public class ResumeCommand extends PBCommand {
 
 	public ResumeCommand() {
-		super ("resume", "/pb round resume", "Resume round.", new String[] {"resume", "r"}, true, Commands.roundaliases);
+		super ("round-resume", "/pb round resume", "Resume round.", new String[] {"resume", "r"}, true, Commands.roundaliases);
 	}
 
 	@Override

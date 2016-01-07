@@ -12,7 +12,7 @@ import java.util.List;
 public class PauseCommand extends PBCommand {
 
 	public PauseCommand() {
-		super ("pause", "/pb round pause", "Pauses round.", new String[] {"pause", "pa"}, true, Commands.roundaliases);
+		super ("round-pause", "/pb round pause", "Pauses round.", new String[] {"pause", "pa"}, true, Commands.roundaliases);
 	}
 
 	@Override

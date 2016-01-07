@@ -17,7 +17,7 @@ import java.util.UUID;
 public class InviteCommand extends PBCommand {
 	
 	public InviteCommand() {
-		super ("invite", "/pb team invite <Player>", "Invite a player to your team.", new String[] {"invite", "i"}, true, Commands.teamaliases);
+		super ("team-invite", "/pb team invite <Player>", "Invite a player to your team.", new String[] {"invite", "i"}, true, Commands.teamaliases);
 	}
 
 	@Override
