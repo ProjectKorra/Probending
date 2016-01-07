@@ -2,6 +2,7 @@ package com.projectkorra.probending.command;
 
 import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.command.arena.ArenaCreate;
+import com.projectkorra.probending.command.arena.ArenaSetSpawnCommand;
 import com.projectkorra.probending.command.arena.ArenaSetWorldCommand;
 import com.projectkorra.probending.command.round.PauseCommand;
 import com.projectkorra.probending.command.round.ResumeCommand;
@@ -67,10 +68,10 @@ public class Commands {
 		new RoundCommand();
 		new ChatCommand();
 		new ReloadCommand();
-		new SetSpawnCommand();
 		
 		//Arena Commands
 		new ArenaSetWorldCommand();
+		new ArenaSetSpawnCommand();
 		new ArenaCreate();
 		
 		//Team Commands

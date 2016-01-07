@@ -6,6 +6,8 @@ import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import com.projectkorra.probending.storage.DBConnection;
+
 public class Arena {
 	public static ConcurrentHashMap<String, Arena> arenas = new ConcurrentHashMap<String, Arena>();
 	
@@ -55,6 +57,36 @@ public class Arena {
 	
 	public World getWorld() {
 		return this.world;
+	}
+	
+	public void setWorld(World world) {
+		this.world = world;
+		DBConnection.sql.modifyQuery("UPDATE probending_arenas SET world = '" + world.getName() + "' WHERE name = '" + this.name + "'");
+	}
+	
+	public void setSpectatorSpawn(Location loc) {
+		this.spectatorSpawn = loc;
+		int x = loc.getBlockX();
+		int y = loc.getBlockY();
+		int z = loc.getBlockZ();
+		
+		DBConnection.sql.modifyQuery("UPDATE probending_arenas SET spectatorX = " + x + " WHERE name = '" + this.name + "'");
+		DBConnection.sql.modifyQuery("UPDATE probending_arenas SET spectatorY = " + y + " WHERE name = '" + this.name + "'");
+		DBConnection.sql.modifyQuery("UPDATE probending_arenas SET spectatorZ = " + z  +" WHERE name = '" + this.name + "'");
+	}
+	
+	public void setTeamOneSpawn(Location loc) {
+		this.teamOneSpawn = loc;
+		DBConnection.sql.modifyQuery("UPDATE probending_arenas SET teamOneX = " + loc.getBlockX() + " WHERE name = '" + this.name + "'");
+		DBConnection.sql.modifyQuery("UPDATE probending_arenas SET teamOneY = " + loc.getBlockY() + " WHERE name = '" + this.name + "'");
+		DBConnection.sql.modifyQuery("UPDATE probending_arenas SET teamOneZ = " + loc.getBlockZ() + " WHERE name = '" + this.name + "'");
+	}
+	
+	public void setTeamTwoSpawn(Location loc) {
+		this.teamTwoSpawn = loc;
+		DBConnection.sql.modifyQuery("UPDATE probending_arenas SET teamTwoX = " + loc.getBlockX() + " WHERE name = '" + this.name + "'");
+		DBConnection.sql.modifyQuery("UPDATE probending_arenas SET teamTwoY = " + loc.getBlockY() + " WHERE name = '" + this.name + "'");
+		DBConnection.sql.modifyQuery("UPDATE probending_arenas SET teamTwoZ = " + loc.getBlockZ() + " WHERE name = '" + this.name + "'");
 	}
 	
 	public Location getSpectatorSpawn() {

@@ -564,6 +564,12 @@ public class PBMethods {
 		}
 	}
 	
+	public static void createArena(String arena, String teamOne, String teamTwo) {
+		if (getArena(arena) != null) return; // We don't want to create an arena that already exists.
+		DBConnection.sql.modifyQuery("INSERT INTO probending_arenas (name, teamOneColor, teamTwoColor) VALUES ('" + arena + "', '" + teamOne + "', '" + teamTwo + "')");
+		new Arena(arena, null, null, null, null, null, null, null, null, null, null, null, null, getColorFromString(teamOne), getColorFromString(teamTwo));
+	}
+	
 	/**
 	 * Loads all player data. Should only be done during startup by this plugin.
 	 */
