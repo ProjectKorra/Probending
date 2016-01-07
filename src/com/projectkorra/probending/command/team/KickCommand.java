@@ -16,9 +16,10 @@ import java.util.UUID;
 public class KickCommand extends PBCommand {
 	
 	public KickCommand() {
-		super ("kick", "/pb team kick <Player>", "Kick a player from your team.", new String[] {"kick", "k"}, true, Commands.teamaliases);
+		super ("team-kick", "/pb team kick <Player>", "Kick a player from your team.", new String[] {"kick", "k"}, true, Commands.teamaliases);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void execute(CommandSender sender, List<String> args) {
 		if (!isPlayer(sender) || !hasTeamPermission(sender) || !correctLength(sender, args.size(), 2, 2)) {

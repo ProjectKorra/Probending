@@ -18,7 +18,7 @@ import java.util.List;
 public class StartCommand extends PBCommand {
 
 	public StartCommand() {
-		super ("start", "/pb round start <Team 1> <Team 2>", "Starts round.", new String[] {"start"}, true, Commands.roundaliases);
+		super ("round-start", "/pb round start <Team 1> <Team 2>", "Starts round.", new String[] {"start"}, true, Commands.roundaliases);
 	}
 
 	@Override

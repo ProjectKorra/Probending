@@ -16,7 +16,7 @@ import java.util.UUID;
 public class DisbandCommand extends PBCommand {
 	
 	public DisbandCommand() {
-		super ("disband", "/pb team disband [Team]", "Disband your team/another team.", new String[] {"disband"}, true, Commands.teamaliases);
+		super ("team-disband", "/pb team disband [Team]", "Disband your team/another team.", new String[] {"disband"}, true, Commands.teamaliases);
 	}
 
 	@Override

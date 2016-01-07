@@ -10,7 +10,7 @@ import com.projectkorra.probending.command.PBCommand;
 public class ArenaCreate extends PBCommand {
 	
 	public ArenaCreate() {
-		super ("create", "/pb arena create [Arena]", "Creates a new arena.", new String[] {"create", "c"}, true, Commands.arenaaliases);
+		super ("arena-create", "/pb arena create [Arena]", "Creates a new arena.", new String[] {"create", "c"}, true, Commands.arenaaliases);
 	}
 
 	@Override

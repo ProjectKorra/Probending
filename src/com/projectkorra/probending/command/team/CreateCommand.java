@@ -15,7 +15,7 @@ import java.util.UUID;
 public class CreateCommand extends PBCommand {
 
 	public CreateCommand() {
-		super("create", "/pb team create <Team Name>", "Create a team.", new String[] {"create", "c"}, true, Commands.teamaliases);
+		super("team-create", "/pb team create <Team Name>", "Create a team.", new String[] {"create", "c"}, true, Commands.teamaliases);
 	}
 
 	@SuppressWarnings("deprecation")

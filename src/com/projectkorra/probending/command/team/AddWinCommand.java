@@ -12,7 +12,7 @@ import java.util.List;
 public class AddWinCommand extends PBCommand {
 	
 	public AddWinCommand() {
-		super ("addwin", "/pb team addwin [Team]", "Adds a win to a team.", new String[] {"addwin", "win"}, true, Commands.teamaliases);
+		super ("team-addwin", "/pb team addwin [Team]", "Adds a win to a team.", new String[] {"addwin", "win"}, true, Commands.teamaliases);
 	}
 
 	@Override
