@@ -27,12 +27,12 @@ public class RoundCommand extends PBCommand {
 		}
 		List<String> strings = new ArrayList<String>();
 		for (PBCommand command : instances.values()) {
-			if (command.isChild() && Arrays.asList(command.getParentAliases()).contains("arena")
-					&& sender.hasPermission("probending.command.arena." + command.getName())) {
+			if (command.isChild() && Arrays.asList(command.getParentAliases()).contains("round")
+					&& sender.hasPermission("probending.command.round." + command.getName())) {
 				strings.add(command.getProperUse() + ChatColor.WHITE + " - " + command.getDescription());
 			}
 		}
-		for (String s : getPage(strings, ChatColor.GOLD + "Arena Commands:", page, true)) {
+		for (String s : getPage(strings, ChatColor.GOLD + "Round Commands:", page, true)) {
 			sender.sendMessage(ChatColor.DARK_AQUA + s);
 		}
 		return;
