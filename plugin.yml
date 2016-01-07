@@ -1,6 +1,6 @@
 name: Probending
 author: ProjectKorra
-version: 1.0.1
+version: 1.1.0 - BETA PRIVATE BUILD
 main: com.projectkorra.probending.Probending
 depend: [ProjectKorra]
 softdepend: [Vault, WorldGuard]
@@ -29,6 +29,7 @@ permissions:
       probending.command.round.stop: true
       probending.command.round.resume: true
       probending.command.round.pause: true
+      probending.command.arnea.create: true
       probending.worldguard.buildonfield: true
       probending.command.setspawn: true
   probending.user:
