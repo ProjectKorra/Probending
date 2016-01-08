@@ -40,6 +40,7 @@ public class ArenaSetWorldCommand extends PBCommand {
 		Arena arena = PBMethods.getArena(args.get(1));
 		if (arena == null) {
 			sender.sendMessage(PBMethods.Prefix + ChatColor.RED + "Please specify an existing an Arena.");
+			return;
 		}
 		arena.setWorld(world);
 		sender.sendMessage(PBMethods.Prefix + ChatColor.GREEN + "You have changed the world of " + arena.getName() + " to " + world.getName() + ".");
