@@ -2,6 +2,7 @@ package com.projectkorra.probending.command;
 
 import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.command.arena.ArenaCreate;
+import com.projectkorra.probending.command.arena.ArenaDelete;
 import com.projectkorra.probending.command.arena.ArenaListCommand;
 import com.projectkorra.probending.command.arena.ArenaSetSpawnCommand;
 import com.projectkorra.probending.command.arena.ArenaSetWorldCommand;
