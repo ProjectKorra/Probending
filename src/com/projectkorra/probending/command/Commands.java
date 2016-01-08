@@ -68,8 +68,9 @@ public class Commands {
 		new RoundCommand();
 		new ChatCommand();
 		new ReloadCommand();
-		
+	
 		//Arena Commands
+		new ArenaDelete();
 		new ArenaSetWorldCommand();
 		new ArenaSetSpawnCommand();
 		new ArenaSetZoneCommand();

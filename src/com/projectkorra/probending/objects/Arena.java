@@ -181,6 +181,11 @@ public class Arena {
 		return this.teamTwoColor;
 	}
 	
+	public void delete() {
+		DBConnection.sql.modifyQuery("DELETE FROM probending_arenas WHERE name = '" + this.name + "'");
+		arenas.remove(this.name);
+	}
+	
 	
 
 }
