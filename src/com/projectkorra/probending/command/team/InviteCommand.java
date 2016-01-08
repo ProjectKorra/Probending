@@ -4,6 +4,8 @@ import com.projectkorra.probending.PBMethods;
 import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.command.Commands;
 import com.projectkorra.probending.command.PBCommand;
+import com.projectkorra.probending.objects.Team;
+import com.projectkorra.projectkorra.Element;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -32,8 +34,8 @@ public class InviteCommand extends PBCommand {
 			return;
 		}
 
-		String playerTeam = PBMethods.getPlayerTeam(uuid);
-		if (!PBMethods.isPlayerOwner(uuid, playerTeam)) {
+		Team team = PBMethods.getPlayerTeam(uuid);
+		if (!team.isOwner(uuid)) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.NotOwnerOfTeam);
 			return;
 		}
@@ -55,7 +57,7 @@ public class InviteCommand extends PBCommand {
 		}
 
 		int maxSize = Probending.plugin.getConfig().getInt("TeamSettings.MaxTeamSize");
-		if (PBMethods.getTeamSize(playerTeam) >= maxSize) {
+		if (team.getSize() >= maxSize) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.MaxSizeReached);
 			return;
 		}
@@ -95,18 +97,18 @@ public class InviteCommand extends PBCommand {
 				return;
 			}
 		}
-		Set<String> teamelements = PBMethods.getTeamElements(playerTeam);
-		if (teamelements != null) {
-			if (teamelements.contains(playerElement)) {
+		Set<Element> elements = team.getElements();
+		if (elements != null) {
+			if (elements.contains(playerElement.toString())) {
 				sender.sendMessage(PBMethods.Prefix + PBMethods.TeamAlreadyHasElement);
 				return;
 			}
 		}
 
-		Commands.teamInvites.get(player.getName()).add(playerTeam);
-		sender.sendMessage(PBMethods.Prefix + PBMethods.PlayerInviteSent.replace("%team", playerTeam).replace("%player", player.getName()));
-		player.sendMessage(PBMethods.Prefix + PBMethods.PlayerInviteReceived.replace("%team", playerTeam).replace("%player", player.getName()));
-		player.sendMessage(PBMethods.Prefix + PBMethods.InviteInstructions.replace("%team", playerTeam).replace("%player", player.getName()));
+		Commands.teamInvites.get(player.getName()).add(team.getName());
+		sender.sendMessage(PBMethods.Prefix + PBMethods.PlayerInviteSent.replace("%team", team.getName()).replace("%player", player.getName()));
+		player.sendMessage(PBMethods.Prefix + PBMethods.PlayerInviteReceived.replace("%team", team.getName()).replace("%player", player.getName()));
+		player.sendMessage(PBMethods.Prefix + PBMethods.InviteInstructions.replace("%team", team.getName()).replace("%player", player.getName()));
 		return;
 	}
 }

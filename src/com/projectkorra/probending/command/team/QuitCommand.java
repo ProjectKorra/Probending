@@ -25,24 +25,21 @@ public class QuitCommand extends PBCommand {
 		}
 		
 		UUID uuid = ((Player) sender).getUniqueId();
-		String teamName = PBMethods.getPlayerTeam(uuid);
-		Team team = PBMethods.getTeam(teamName);
+		Team team = PBMethods.getPlayerTeam(uuid);
 		if (team == null) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.PlayerNotInTeam);
 			return;
 		}
-		if (PBMethods.isPlayerOwner(uuid, teamName)) {
+		if (team.isOwner(uuid)) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.CantBootFromOwnTeam);
 			return;
 		}
-		String playerElement = PBMethods.getPlayerElementAsString(uuid);
-
-		PBMethods.removePlayerFromTeam(team, uuid, playerElement);
-		sender.sendMessage(PBMethods.Prefix + PBMethods.YouHaveQuit.replace("%team", teamName));
+		team.removePlayer(uuid);
+		sender.sendMessage(PBMethods.Prefix + PBMethods.YouHaveQuit.replace("%team", team.getName()));
 		for (Player player: Bukkit.getOnlinePlayers()) {
 			if (PBMethods.getPlayerTeam(player.getUniqueId()) == null) continue;
-			if (PBMethods.getPlayerTeam(player.getUniqueId()).equals(teamName)) {
-				sender.sendMessage(PBMethods.Prefix + PBMethods.PlayerHasQuit.replace("%team", teamName).replace("%player", sender.getName()));
+			if (PBMethods.getPlayerTeam(player.getUniqueId()).equals(team.getName())) {
+				sender.sendMessage(PBMethods.Prefix + PBMethods.PlayerHasQuit.replace("%team", team.getName()).replace("%player", sender.getName()));
 			}
 		}
 		return;

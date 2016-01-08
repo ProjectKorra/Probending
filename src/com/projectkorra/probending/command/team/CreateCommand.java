@@ -4,6 +4,7 @@ import com.projectkorra.probending.PBMethods;
 import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.command.Commands;
 import com.projectkorra.probending.command.PBCommand;
+import com.projectkorra.probending.objects.Team;
 import com.projectkorra.projectkorra.GeneralMethods;
 
 import org.bukkit.command.CommandSender;
@@ -28,7 +29,7 @@ public class CreateCommand extends PBCommand {
 		UUID uuid = ((Player) sender).getUniqueId();
 		
 		String teamName = args.get(1);
-		if (PBMethods.teamExists(teamName)) {
+		if (PBMethods.getTeam(teamName) != null) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.teamAlreadyExists);
 			return;
 		}
@@ -99,7 +100,8 @@ public class CreateCommand extends PBCommand {
 
 
 		PBMethods.createTeam(teamName, uuid);
-		PBMethods.addPlayerToTeam(teamName, uuid, playerElement);
+		Team team = PBMethods.getTeam(teamName);
+		team.addPlayer(uuid, playerElement);
 		sender.sendMessage(PBMethods.Prefix + PBMethods.TeamCreated.replace("%team", teamName));
 	}
 

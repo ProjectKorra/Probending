@@ -33,37 +33,28 @@ public class InfoCommand extends PBCommand {
 		
 		UUID uuid = ((Player) sender).getUniqueId();
 		
-		String teamName = null;
+		Team team = null;
 		if (args.size() == 1) {
-			teamName = PBMethods.getPlayerTeam(uuid);
+			team = PBMethods.getPlayerTeam(uuid);
 		}
 		if (args.size() == 2) {
-			teamName = args.get(1);
+			team = PBMethods.getTeam(args.get(1));
 		}
 
-		if (!PBMethods.teamExists(teamName)) {
-			sender.sendMessage(PBMethods.Prefix + PBMethods.TeamDoesNotExist);
-			return;
-		}
-		
-		Team team = PBMethods.getTeam(teamName);
-		
 		if (team == null) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.TeamDoesNotExist);
 			return;
-		} else {
-			teamName = team.getName();
 		}
 
 		String teamOwner = Bukkit.getOfflinePlayer(team.getOwner()).getName();
-		sender.sendMessage(ChatColor.DARK_AQUA + "Team Name: " + ChatColor.YELLOW + teamName);
+		sender.sendMessage(ChatColor.DARK_AQUA + "Team Name: " + ChatColor.YELLOW + team.getName());
 		sender.sendMessage(ChatColor.DARK_AQUA + "Team Owner: " + ChatColor.DARK_PURPLE + teamOwner);
 
-		OfflinePlayer air = PBMethods.getAirbender(team);
-		OfflinePlayer water = PBMethods.getWaterbender(team);
-		OfflinePlayer earth = PBMethods.getEarthbender(team);
-		OfflinePlayer fire = PBMethods.getFirebender(team);
-		OfflinePlayer chi = PBMethods.getChiblocker(team);
+		OfflinePlayer air = Bukkit.getOfflinePlayer(team.getAirbender());
+		OfflinePlayer water = Bukkit.getOfflinePlayer(team.getWaterbender());
+		OfflinePlayer earth = Bukkit.getOfflinePlayer(team.getEarthbender());
+		OfflinePlayer fire = Bukkit.getOfflinePlayer(team.getFirebender());
+		OfflinePlayer chi = Bukkit.getOfflinePlayer(team.getChiblocker());
 
 		int wins = team.getWins();
 		int losses = team.getLosses();

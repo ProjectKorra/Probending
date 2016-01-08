@@ -4,6 +4,8 @@ import com.projectkorra.probending.PBMethods;
 import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.command.Commands;
 import com.projectkorra.probending.command.PBCommand;
+import com.projectkorra.probending.objects.Team;
+import com.projectkorra.projectkorra.Element;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -39,15 +41,17 @@ public class JoinCommand extends PBCommand {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.NoInviteFromTeam);
 			return;
 		}
+		
+		Team team = PBMethods.getTeam(teamName);
 		String playerElement = PBMethods.getPlayerElementAsString(uuid);
 
 		if (playerElement == null) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.noBendingType);
 			return;
 		}
-		Set<String> teamelements = PBMethods.getTeamElements(teamName);
-		if (teamelements != null) {
-			if (teamelements.contains(playerElement)) {
+		Set<Element> elements = team.getElements();
+		if (elements != null) {
+			if (elements.contains(playerElement.toString())) {
 				sender.sendMessage(PBMethods.Prefix + PBMethods.TeamAlreadyHasElement);
 				return;
 			}
@@ -55,12 +59,12 @@ public class JoinCommand extends PBCommand {
 				sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", playerElement));
 				return;
 			}
-			PBMethods.addPlayerToTeam(teamName, uuid, playerElement);
+			team.addPlayer(uuid, playerElement);
 			for (Player player: Bukkit.getOnlinePlayers()) {
-				String teamName2 = PBMethods.getPlayerTeam(player.getUniqueId());
-				if (teamName2 != null) {
-					if (PBMethods.getPlayerTeam(player.getUniqueId()).equalsIgnoreCase(teamName)) {
-						player.sendMessage(PBMethods.Prefix + PBMethods.PlayerJoinedTeam.replace("%player", sender.getName()).replace("%team", teamName));
+				Team team2 = PBMethods.getPlayerTeam(player.getUniqueId());
+				if (team2 != null) {
+					if (PBMethods.getPlayerTeam(player.getUniqueId()).getName().equalsIgnoreCase(team.getName())) {
+						player.sendMessage(PBMethods.Prefix + PBMethods.PlayerJoinedTeam.replace("%player", sender.getName()).replace("%team", team.getName()));
 					}
 				}
 			}

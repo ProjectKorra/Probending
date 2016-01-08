@@ -23,7 +23,7 @@ public class AddWinCommand extends PBCommand {
 
 		String teamName = args.get(1);
 		Team team = PBMethods.getTeam(args.get(1));
-		if (!PBMethods.teamExists(teamName)) {
+		if (PBMethods.getTeam(teamName) == null) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.TeamDoesNotExist);
 			return;
 		}

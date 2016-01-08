@@ -4,6 +4,7 @@ import net.milkbowl.vault.economy.Economy;
 
 import com.projectkorra.probending.command.Commands;
 import com.projectkorra.probending.objects.Arena;
+import com.projectkorra.probending.objects.Round;
 import com.projectkorra.probending.objects.Team;
 import com.projectkorra.probending.storage.DBConnection;
 import com.projectkorra.projectkorra.Element;
@@ -41,28 +42,6 @@ public class PBMethods {
 		this.plugin = plugin;
 	}
 
-	// Probending Match Stuff
-	public static boolean matchStarted = false;
-	public static boolean matchPaused = false;
-	public static Set<String> playingTeams = new HashSet<String>();
-	public static String TeamOne = null;
-	public static String TeamTwo = null;
-	public static HashMap<String, String> allowedZone = new HashMap<String, String>();
-
-	public static Set<String> teamOnePlayers = new HashSet<String>();
-	public static Set<String> teamTwoPlayers = new HashSet<String>();
-
-	// WorldGuard Stuffs
-	public static boolean buildDisabled = Probending.plugin.getConfig().getBoolean("WorldGuard.DisableBuildOnField");
-	public static String ProbendingField = Probending.plugin.getConfig().getString("WorldGuard.ProbendingField");
-	public static boolean AutomateMatches = Probending.plugin.getConfig().getBoolean("WorldGuard.AutomateMatches");
-	public static String t1z1 = Probending.plugin.getConfig().getString("WorldGuard.TeamOneZoneOne").toLowerCase();
-	public static String t1z2 = Probending.plugin.getConfig().getString("WorldGuard.TeamOneZoneTwo").toLowerCase();
-	public static String t1z3 = Probending.plugin.getConfig().getString("WorldGuard.TeamOneZoneThree").toLowerCase();
-	public static String t2z1 = Probending.plugin.getConfig().getString("WorldGuard.TeamTwoZoneOne").toLowerCase();
-	public static String t2z2 = Probending.plugin.getConfig().getString("WorldGuard.TeamTwoZoneTwo").toLowerCase();
-	public static String t2z3 = Probending.plugin.getConfig().getString("WorldGuard.TeamTwoZoneThree").toLowerCase();
-
 	/**
 	 * Checks if the config has WorldGuard Support Enabled.
 	 * @return true if the config says to support WorldGuard.
@@ -78,99 +57,47 @@ public class PBMethods {
 		if (Probending.plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null) return true;
 		return false;
 	}
-	/**
-	 * Sets the Spectator Spawn to the specified location.
-	 * @param loc The location to set the spawn to.
-	 */
-	public static void setSpectatorSpawn(Location loc) {
-		Probending.plugin.getConfig().set("TeamSettings.SpectatorSpawn.World", loc.getWorld().getName());
-		Probending.plugin.getConfig().set("TeamSettings.SpectatorSpawn.x", loc.getX());
-		Probending.plugin.getConfig().set("TeamSettings.SpectatorSpawn.y", loc.getY());
-		Probending.plugin.getConfig().set("TeamSettings.SpectatorSpawn.z", loc.getZ());
-		Probending.plugin.saveConfig();
-	}
 	
 	/**
-	 * Sets the spawn location for Team One.
-	 * @param loc The location to set the spawn to.
+	 * Checks to see if there is an ongoing round at the specified arena.
+	 * @return true if there is a round, false if not.
 	 */
-	public static void setTeamOneSpawn(Location loc) {
-		Probending.plugin.getConfig().set("TeamSettings.TeamOneSpawn.World", loc.getWorld().getName());
-		Probending.plugin.getConfig().set("TeamSettings.TeamOneSpawn.x", loc.getX());
-		Probending.plugin.getConfig().set("TeamSettings.TeamOneSpawn.y", loc.getY());
-		Probending.plugin.getConfig().set("TeamSettings.TeamOneSpawn.z", loc.getZ());
-		Probending.plugin.saveConfig();
-	}
 	
-	/**
-	 * Sets the spawn location for Team Two.
-	 * @param loc The Location to set the spawn to.
-	 */
-	public static void setTeamTwoSpawn(Location loc) {
-		Probending.plugin.getConfig().set("TeamSettings.TeamTwoSpawn.World", loc.getWorld().getName());
-		Probending.plugin.getConfig().set("TeamSettings.TeamTwoSpawn.x", loc.getX());
-		Probending.plugin.getConfig().set("TeamSettings.TeamTwoSpawn.y", loc.getY());
-		Probending.plugin.getConfig().set("TeamSettings.TeamTwoSpawn.z", loc.getZ());
-		Probending.plugin.saveConfig();
-	}
-
-	/**
-	 * Returns the team one spawn location.
-	 * @return
-	 */
-	public static Location getTeamOneSpawn() {
-		String worldS = Probending.plugin.getConfig().getString("TeamSettings.TeamOneSpawn.World");
-		World world = Bukkit.getWorld(worldS);
-		Double x = Probending.plugin.getConfig().getDouble("TeamSettings.TeamOneSpawn.x");
-		Double y = Probending.plugin.getConfig().getDouble("TeamSettings.TeamOneSpawn.y");
-		Double z = Probending.plugin.getConfig().getDouble("TeamSettings.TeamOneSpawn.z");
-		Location loc = new Location(world,x,y,z);
-		return loc;
-	}
-
-	/**
-	 * Returns the Team Two Spawn location.
-	 * @return
-	 */
-	public static Location getTeamTwoSpawn() {
-		String worldS = Probending.plugin.getConfig().getString("TeamSettings.TeamTwoSpawn.World");
-		World world = Bukkit.getWorld(worldS);
-		Double x = Probending.plugin.getConfig().getDouble("TeamSettings.TeamTwoSpawn.x");
-		Double y = Probending.plugin.getConfig().getDouble("TeamSettings.TeamTwoSpawn.y");
-		Double z = Probending.plugin.getConfig().getDouble("TeamSettings.TeamTwoSpawn.z");
-		Location loc = new Location(world,x,y,z);
-		return loc;
-	}
-
-	/**
-	 * Returns the set Spectator spawn.
-	 * @return
-	 */
-	public static Location getSpectatorSpawn() {
-		String worldS = Probending.plugin.getConfig().getString("TeamSettings.SpectatorSpawn.World");
-		World world = Bukkit.getWorld(worldS);
-		Double x = Probending.plugin.getConfig().getDouble("TeamSettings.SpectatorSpawn.x");
-		Double y = Probending.plugin.getConfig().getDouble("TeamSettings.SpectatorSpawn.y");
-		Double z = Probending.plugin.getConfig().getDouble("TeamSettings.SpectatorSpawn.z");
-		Location loc = new Location(world,x,y,z);
-		return loc;
-	}
-
-
-	/**
-	 * Restores the armor for any player that has had their armor changed by this plugin.
-	 */
-	public static void restoreArmor() {
-		for (Player player: Bukkit.getOnlinePlayers()) {
-			if (Commands.tmpArmor.containsKey(player)) {
-				if (player.getInventory().getArmorContents() != null) {
-					player.getInventory().setArmorContents(null);
-				}
-				player.getInventory().setArmorContents(Commands.tmpArmor.get(player));
-				Commands.tmpArmor.remove(player);
+	public static boolean isRoundAtArena(Arena arena) {
+		for (UUID round: Round.rounds.keySet()) {
+			if (Round.rounds.get(round).getArena() == arena) {
+				return true;
 			}
 		}
-
+		return false;
+	}
+	
+	/**
+	 * Restores the armor for a player that has had their armor changed by this plugin.
+	 * @param player The player to restore armor to.
+	 */
+	public static void restoreArmor(Player player) {
+		if (Commands.tmpArmor.containsKey(player)) {
+			if (player.getInventory().getArmorContents() != null) {
+				player.getInventory().setArmorContents(null);
+			}
+			player.getInventory().setArmorContents(Commands.tmpArmor.get(player));
+			Commands.tmpArmor.remove(player);
+		}
+	}
+	
+	/**
+	 * Gets the ongoing round at the specified arena.
+	 * @param arena The arena to check.
+	 * @return The round object for the round at the arena. Null if no round at the arena.
+	 */
+	public static Round getRoundAtArena(Arena arena) {
+		for (UUID uuids: Round.rounds.keySet()) {
+			if (Round.rounds.get(uuids).getArena() == arena) {
+				return Round.rounds.get(uuids);
+			}
+		}
+		return null;
 	}
 	
 	public static void loadArenas() {
@@ -223,112 +150,8 @@ public class PBMethods {
 		}
 	}
 	
-	/**
-	 * Checks if the zone is empty of all players from a specific team.
-	 * @param teamName The team you want to check.
-	 * @param zone The zone you want to check.
-	 * @return true if the selected zone contains no players of the specified team.
-	 */
-
-	public static boolean isZoneEmpty(String teamName, String zone) {
-		if (teamName.equalsIgnoreCase(PBMethods.TeamOne)) { 
-			for (String player: teamOnePlayers) {
-				if (allowedZone.get(player).contains(zone)) {
-					return false;
-				}
-			}
-		}
-		if (teamName.equalsIgnoreCase(PBMethods.TeamTwo)) {
-			for (String player: teamTwoPlayers) {
-				if (allowedZone.get(player).contains(zone)) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
 	public static Set<String> colors = new HashSet<String>();
 	
-	/**
-	 * Moves all players still in a Probending match on a specific team up one zone.
-	 * @param team = Name of the team to move.
-	 * @param side = What side they are on. (One or Two)
-	 */
-	public static void MovePlayersUp(String team, String Side) {
-		for (Player player: Bukkit.getOnlinePlayers()) {
-			UUID uuid = player.getUniqueId();
-			if (getPlayerTeam(uuid) != null) {
-				if (getPlayerTeam(uuid).equalsIgnoreCase(team)) {
-					String playerZone = allowedZone.get(player.getName());
-					if (playerZone != null) {
-						if (Side.equalsIgnoreCase("One")) {
-							if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z1)) {
-								allowedZone.put(player.getName(), t2z1); // Moves them up to Team Two Zone One
-								player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
-								continue;
-							}
-							if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z1)) {
-								allowedZone.put(player.getName(), t2z2);
-								player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
-								continue;
-							}
-							if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z2)) {
-								allowedZone.put(player.getName(), t1z1);
-								player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
-								continue;
-							}
-							if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z3)) {
-								allowedZone.put(player.getName(), t1z2);
-								player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
-								continue;
-							}
-						}
-						if (Side.equalsIgnoreCase("Two")) {
-							if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z1)) {
-								allowedZone.put(player.getName(), t1z1);
-								player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
-								continue;
-							}
-							if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z2)) {
-								allowedZone.put(player.getName(), t2z1);
-								player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
-								continue;
-							}
-							if (allowedZone.get(player.getName()).equalsIgnoreCase(t2z3)) {
-								allowedZone.put(player.getName(), t2z2);
-								player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
-								continue;
-							}
-							if (allowedZone.get(player.getName()).equalsIgnoreCase(t1z1)) {
-								allowedZone.put(player.getName(), t1z2);
-								player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", allowedZone.get(player.getName())));
-								continue;
-							}
-						}
-
-					}
-				}
-			}
-		}
-	}
-	
-	
-	/**
-	 * Returns all players allowed to be in a zone.
-	 * @param zone The name of the zone you want to check.
-	 * @return Set<String> of player names allowed in a zone.
-	 */
-	public static Set<String> playersInZone(String zone) {
-		Set<String> playersInZone = new HashSet<String>();
-		for (Player p: Bukkit.getOnlinePlayers()) {
-			if (allowedZone.containsKey(p.getName())) {
-				if (allowedZone.get(p.getName()).equalsIgnoreCase(zone)) {
-					playersInZone.add(p.getName());
-				}
-			}
-		}
-		return playersInZone;
-	}
 	// Storage Data
 	public static HashMap<String, String> players = new HashMap<String, String>();
 	public static String storage = Probending.plugin.getConfig().getString("General.Storage");
@@ -473,27 +296,13 @@ public class PBMethods {
 		}
 		return null;
 	}
-
-	/**
-	 * Checks if a team exists. Case insensitive.
-	 * @param teamName The name of the team as a string.
-	 * @return true if the team exists. False if it does not.
-	 */
-	public static boolean teamExists(String teamName) {
-		for (String team: Team.teams.keySet()) {
-			if (team.equalsIgnoreCase(teamName)) {
-				return true;
-			}
-		}
-		return false;
-	}
 	
 	/**
 	 * Checks if an arena exists. Case insensitive.
 	 * @param name The name of the arena as a string.
 	 * @return true if the team exists. False if it does not.
 	 */
-
+	
 	public static boolean arenaExists(String name) {
 		for (String arena: Arena.arenas.keySet()) {
 			if (arena.equalsIgnoreCase(name)) {
@@ -595,54 +404,6 @@ public class PBMethods {
 		DBConnection.sql.modifyQuery("UPDATE probending_players SET team = '" + teamName + "' WHERE uuid = '" + owner.toString() + "'");
 		new Team(teamName, owner, null, null, null, null, null, 0, 0);
 	}
-	
-	/**
-	 * Deletes an existing Probending team. Check to make sure it exists first.
-	 * See {@link #teamExists(String)}
-	 * @param teamName The name of the team to delete.
-	 */
-	public static void deleteTeam(String teamName) {
-		DBConnection.sql.modifyQuery("DELETE FROM probending_teams WHERE team = '" + teamName + "'");
-		Team.teams.remove(teamName);
-	}
-	
-	/**
-	 * Adds a player to an existing Probending team. Check to make sure the team exists and doesn't have the element already.
-	 * See {@link #teamExists(String)}
-	 * @param teamName The name of the team to add a player to.
-	 * @param player The UUID of the player to add to the team.
-	 * @param element The player's element.
-	 */
-	public static void addPlayerToTeam(String teamName, UUID player, String element) {
-		Team team = getTeam(teamName);
-		DBConnection.sql.modifyQuery("UPDATE probending_players SET team = '" + teamName + "' WHERE uuid = '" + player.toString() + "'");
-		if (element.equalsIgnoreCase("air")) team.setAirbender(player);
-		if (element.equalsIgnoreCase("water")) team.setWaterbender(player);
-		if (element.equalsIgnoreCase("earth")) team.setEarthbender(player);
-		if (element.equalsIgnoreCase("fire")) team.setFirebender(player);
-		if (element.equalsIgnoreCase("chi")) team.setChiblocker(player);
-		players.put(player.toString(), teamName);
-	}
-
-	/**
-	 * Removes a player from a Probending team. Check to make sure the team exists and the player is on the team.
-	 * See {@link #teamExists(String)}
-	 * See {@link #playerInTeam(UUID)}
-	 * See {@link #getPlayerTeam(UUID)}
-	 * @param teamName The name of the team to remove the player from.
-	 * @param player The UUID of the player to remove.
-	 * @param element The element of the player on the team. See {@link #getPlayerElementInTeam(UUID, String)}
-	 */
-	public static void removePlayerFromTeam(Team team, UUID player, String element) {
-		DBConnection.sql.modifyQuery("UPDATE probending_players SET team = NULL WHERE uuid = '" + player.toString() + "'");
-		DBConnection.sql.modifyQuery("UPDATE probending_teams SET " + element + " = NULL WHERE team = '" + team.getName() + "'");
-		if (element.equalsIgnoreCase("air")) team.setAirbender(null);
-		if (element.equalsIgnoreCase("water")) team.setWaterbender(null);
-		if (element.equalsIgnoreCase("earth")) team.setEarthbender(null);
-		if (element.equalsIgnoreCase("fire")) team.setFirebender(null);
-		if (element.equalsIgnoreCase("chi")) team.setChiblocker(null);
-		players.put(player.toString(), null);
-	}
 
 	/**
 	 * Checks if a player is in any Probending team.
@@ -688,44 +449,13 @@ public class PBMethods {
 	/**
 	 * Gets the name of a player team as a String.
 	 * @param player The UUID of the player to check.
-	 * @return Name of player String. Can return null if the player does not exist. See {@link #playerInTeam(UUID)}
+	 * @return The team the player is on. Returns null if the team does not exist.
 	 */
 	
-	public static String getPlayerTeam(UUID player) {
-		return players.get(player.toString());
+	public static Team getPlayerTeam(UUID player) {
+		return getTeam(players.get(player.toString()));
 	}
 
-	/**
-	 * Gets the amount of players on a team.
-	 * @param teamName The name of the team to check.
-	 * @return Number of players in a team. 0 if the team does not exist.
-	 */
-	public static int getTeamSize(String teamName) {
-		int size = 0;
-		ResultSet rs2 = DBConnection.sql.readQuery("SELECT * FROM probending_teams WHERE team = '" + teamName + "'");
-		try {
-			rs2.next();
-			if (rs2.getString("Air") != null) {
-				size++;
-			}
-			if (rs2.getString("Water") != null) {
-				size++;
-			}
-			if (rs2.getString("Earth") != null) {
-				size++;
-			}
-			if (rs2.getString("Fire") != null) {
-				size++;
-			}
-			if (rs2.getString("Chi") != null) {
-				size++;
-			}
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		}
-
-		return size;
-	}
 	
 	/**
 	 * Returns the owner of the team.
@@ -744,110 +474,7 @@ public class PBMethods {
 	public static void setOwner(UUID player, String teamName) {
 		DBConnection.sql.modifyQuery("UPDATE probending_teams SET owner = '" + player.toString() + "' WHERE team = '" + teamName + "'");
 	}
-
-	/**
-	 * Checks if the player is the owner of the team.
-	 * @param player The UUID of the player you're checking.
-	 * @param teamName The name of the team you're checking.
-	 * @return true if the player is the owner of the team, false if not.
-	 */
-	public static boolean isPlayerOwner(UUID player, String teamName) {
-		ResultSet rs2 = DBConnection.sql.readQuery("SELECT owner FROM probending_teams WHERE team = '" + teamName + "' AND owner = '" + player.toString() + "'");
-		try {
-			if (rs2.next()) {
-				return true;
-			} else {
-				return false;
-			}
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		}
-		return false;
-	}
-
-	/**
-	 * Returns all of the elements on a team.
-	 * @param teamName The name of the team you are checking.
-	 * @return A Set<String> of the elements on a team. Strings are Air, Water, Earth, Fire, Chi
-	 */
-	public static Set<String> getTeamElements(String teamName) {
-		Set<String> teamelements = new HashSet<String>();
-
-		ResultSet rs2 = DBConnection.sql.readQuery("SELECT * FROM probending_teams WHERE team = '" + teamName + "'");
-		try {
-			rs2.next();
-			if (rs2.getString("Air") != null) {
-				teamelements.add("Air");
-			}
-			if (rs2.getString("Water") != null) {
-				teamelements.add("Water");
-			}
-			if (rs2.getString("Earth") != null) {
-				teamelements.add("Earth");
-			}
-			if (rs2.getString("Fire") != null) {
-				teamelements.add("Fire");
-			}
-			if (rs2.getString("Chi") != null) {
-				teamelements.add("Chi");
-			}
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		}
-		return teamelements;
-	}
-
 	
-	/**
-	 * Returns the team's Airbender if they exist.
-	 * @param team The team object to check.
-	 * @return OfflinePlayer of the team's Airbender. null if the team doesn't have an Airbender.
-	 */
-	public static OfflinePlayer getAirbender(Team team) {
-		if (team.getAirbender() == null) return null;
-		return Bukkit.getOfflinePlayer(team.getAirbender());
-	}
-	
-	/**
-	 * Returns the team's Waterbender if they exist.
-	 * @param team The team object to check.
-	 * @return OfflinePlayer of the team's Waterbender. null if the team doesn't have an Waterbender.
-	 */
-	public static OfflinePlayer getWaterbender(Team team) {
-		if (team.getWaterbender() == null) return null;
-		return Bukkit.getOfflinePlayer(team.getWaterbender());
-	}
-	
-	/**
-	 * Returns the team's Earthbender if they exist.
-	 * @param team The team object to check.
-	 * @return OfflinePlayer of the team's Earthbender. null if the team doesn't have an Earthbender.
-	 */
-	public static OfflinePlayer getEarthbender(Team team) {
-		if (team.getEarthbender() == null) return null;
-		return Bukkit.getOfflinePlayer(team.getEarthbender());
-	}
-	
-	/**
-	 * Returns the team's Firebender if they exist.
-	 * @param team The team object to check.
-	 * @return OfflinePlayer of the team's Firebender. null if the team doesn't have an Firebender.
-	 */
-	public static OfflinePlayer getFirebender(Team team) {
-		if (team.getFirebender() == null) return null;
-		return Bukkit.getOfflinePlayer(team.getFirebender());
-	}
-	
-	/**
-	 * Returns the team's Chiblocker if they exist.
-	 * @param team The team object to check.
-	 * @return OfflinePlayer of the team's Chiblocker. null if the team doesn't have an Chiblocker.
-	 */
-	public static OfflinePlayer getChiblocker(Team team) {
-		if (team.getChiblocker() == null) return null;
-		return Bukkit.getOfflinePlayer(team.getChiblocker());
-	}
-
 	/**
 	 * Checks if Airbenders are allowed to Probend.
 	 * @return true if Airbenders can Probend, false if not.
@@ -950,20 +577,28 @@ public class PBMethods {
 	 * @param teamName The name of the team to check.
 	 * @return The number of online players a team has. Returns 0 if the team does not exist or no players are online.
 	 */
-	public static int getOnlineTeamSize(String teamName) {
-		int o = 0;
-		for (Player player: Bukkit.getOnlinePlayers()) {
-			UUID uuid = player.getUniqueId();
-			if (player != null) {
-				if (getPlayerTeam(uuid) != null) {
-					if (getPlayerTeam(uuid).equalsIgnoreCase(teamName)) {
-						o++;
-					}
-				}
-			}
+	public static int getOnlineTeamSize(Team team) {
+		return team.getOnlinePlayers().size();
+	}
+	
+	/**
+	 * Checks if the player is currently in a Probending round.
+	 * @param player The player to check.
+	 * @return true if the player is in a round. False if not.
+	 */
+	
+	public static boolean isPlayerInRound(Player player) {
+		for (UUID uuid: Round.rounds.keySet()) {
+			if (Round.rounds.get(uuid).getRoundPlayers().contains(player)) return true;
 		}
-		return o;
-
+		return false;
+	}
+	
+	public static Round getPlayerRound(Player player) {
+		for (UUID uuid: Round.rounds.keySet()) {
+			if (Round.rounds.get(uuid).getRoundPlayers().contains(player)) return Round.rounds.get(uuid);
+		}
+		return null;
 	}
 	
 	/**

@@ -6,8 +6,6 @@ import com.projectkorra.probending.command.arena.ArenaListCommand;
 import com.projectkorra.probending.command.arena.ArenaSetSpawnCommand;
 import com.projectkorra.probending.command.arena.ArenaSetWorldCommand;
 import com.projectkorra.probending.command.arena.ArenaSetZoneCommand;
-import com.projectkorra.probending.command.round.PauseCommand;
-import com.projectkorra.probending.command.round.ResumeCommand;
 import com.projectkorra.probending.command.round.StartCommand;
 import com.projectkorra.probending.command.round.StopCommand;
 import com.projectkorra.probending.command.team.AddLossCommand;
@@ -94,8 +92,6 @@ public class Commands {
 		//Round Commands
 		new StartCommand();
 		new StopCommand();
-		new PauseCommand();
-		new ResumeCommand();
 
 		/**
 		 * Set of all of the Classes which extend Command
