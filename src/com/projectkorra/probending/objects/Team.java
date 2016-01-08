@@ -77,6 +77,16 @@ public class Team {
 	public int getLosses() {
 		return losses;
 	}
+	
+	public Set<UUID> getPlayerUUIDs() {
+		Set<UUID> playeruuids = new HashSet<UUID>();
+		if (hasAirbender()) playeruuids.add(getAirbender());
+		if (hasWaterbender()) playeruuids.add(getWaterbender());
+		if (hasEarthbender()) playeruuids.add(getEarthbender());
+		if (hasFirebender()) playeruuids.add(getFirebender());
+		if (hasChiblocker()) playeruuids.add(getChiblocker());
+		return playeruuids;
+	}
 
 	public Set<Player> getOnlinePlayers() {
 		Set<Player> players = new HashSet<Player>();
@@ -111,32 +121,34 @@ public class Team {
 	}
 
 	public void setAirbender(UUID player) {
-		DBConnection.sql.modifyQuery("UPDATE probending_teams SET Air = '" + player.toString() + "' WHERE team = '" + this.name + "'");
+		//String uuid = player != null ? "'" + player.toString() + "'" : "NULL";
+		DBConnection.sql.modifyQuery("UPDATE probending_teams SET Air = " + (player != null ? "'" + player.toString() + "'" : "NULL") + " WHERE team = '" + this.name + "'");
 		this.airbender = player;
 	}
 
 	public void setWaterbender(UUID player) {
-		DBConnection.sql.modifyQuery("UPDATE probending_teams SET Water = '" + player.toString() + "' WHERE team = '" + this.name + "'");
+		//String uuid = player != null ? "'" + player.toString() + "'" : "NULL";
+		DBConnection.sql.modifyQuery("UPDATE probending_teams SET Water = " + (player != null ? "'" + player.toString() + "'" : "NULL") + " WHERE team = '" + this.name + "'");
 		this.waterbender = player;
 	}
 
 	public void setEarthbender(UUID player) {
-		DBConnection.sql.modifyQuery("UPDATE probending_teams SET Earth = '" + player.toString() + "' WHERE team = '" + this.name + "'");
+		DBConnection.sql.modifyQuery("UPDATE probending_teams SET Earth = " + (player != null ? "'" + player.toString() + "'" : "NULL") + " WHERE team = '" + this.name + "'");
 		this.earthbender = player;
 	}
 
 	public void setOwner(UUID player) {
-		DBConnection.sql.modifyQuery("UPDATE probending_teams SET owner = '" + player.toString() + "' WHERE team = '" + this.name + "'");
+		DBConnection.sql.modifyQuery("UPDATE probending_teams SET owner = " + (player != null ? "'" + player.toString() + "'" : "NULL") + " WHERE team = '" + this.name + "'");
 		this.owner = player;
 	}
 
 	public void setFirebender(UUID player) {
-		DBConnection.sql.modifyQuery("UPDATE probending_teams SET Fire = '" + player.toString() + "' WHERE team = '" + this.name + "'");
+		DBConnection.sql.modifyQuery("UPDATE probending_teams SET Fire = " + (player != null ? "'" + player.toString() + "'" : "NULL") + " WHERE team = '" + this.name + "'");
 		this.firebender = player;
 	}
 
 	public void setChiblocker(UUID player) {
-		DBConnection.sql.modifyQuery("UPDATE probending_teams SET Chi = '" + player.toString() + "' WHERE team = '" + this.name + "'");
+		DBConnection.sql.modifyQuery("UPDATE probending_teams SET Chi = " + (player != null ? "'" + player.toString() + "'" : "NULL") + " WHERE team = '" + this.name + "'");
 		this.chiblocker = player;
 	}
 	
