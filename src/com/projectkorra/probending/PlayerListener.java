@@ -136,6 +136,9 @@ public class PlayerListener implements Listener {
 		Player p = e.getPlayer();
 		Location from = e.getFrom();
 		Location to = e.getTo();
+		if (!PBMethods.isWorldGuardSupportEnabled() || PBMethods.getWorldGuard() == null || !PBMethods.isAutomateMatches()) {
+			return;
+		}
 		Set<String> fromRegions = PBMethods.RegionsAtLocation(from);
 		Set<String> toRegions = PBMethods.RegionsAtLocation(to);
 		if (PBMethods.isPlayerInRound(p)) {

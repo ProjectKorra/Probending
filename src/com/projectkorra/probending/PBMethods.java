@@ -42,6 +42,9 @@ public class PBMethods {
 		this.plugin = plugin;
 	}
 
+	public static boolean isAutomateMatches() {
+		return Probending.plugin.getConfig().getBoolean("WorldGuard.AutomateMatches");
+	}
 	/**
 	 * Checks if the config has WorldGuard Support Enabled.
 	 * @return true if the config says to support WorldGuard.
