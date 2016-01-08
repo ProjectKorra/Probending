@@ -50,11 +50,27 @@ public class InfoCommand extends PBCommand {
 		sender.sendMessage(ChatColor.DARK_AQUA + "Team Name: " + ChatColor.YELLOW + team.getName());
 		sender.sendMessage(ChatColor.DARK_AQUA + "Team Owner: " + ChatColor.DARK_PURPLE + teamOwner);
 
-		OfflinePlayer air = Bukkit.getOfflinePlayer(team.getAirbender());
-		OfflinePlayer water = Bukkit.getOfflinePlayer(team.getWaterbender());
-		OfflinePlayer earth = Bukkit.getOfflinePlayer(team.getEarthbender());
-		OfflinePlayer fire = Bukkit.getOfflinePlayer(team.getFirebender());
-		OfflinePlayer chi = Bukkit.getOfflinePlayer(team.getChiblocker());
+		OfflinePlayer air = null;
+		OfflinePlayer water = null;
+		OfflinePlayer earth = null;
+		OfflinePlayer fire = null;
+		OfflinePlayer chi = null;
+		
+		if (team.hasAirbender()) {
+			air = Bukkit.getOfflinePlayer(team.getAirbender());
+		}
+		if (team.hasWaterbender()) {
+			water = Bukkit.getOfflinePlayer(team.getWaterbender());
+		}
+		if (team.hasEarthbender()) {
+			earth = Bukkit.getOfflinePlayer(team.getEarthbender());
+		}
+		if (team.hasFirebender()) {
+			fire = Bukkit.getOfflinePlayer(team.getFirebender());
+		}
+		if (team.hasChiblocker()) {
+			chi = Bukkit.getOfflinePlayer(team.getChiblocker());
+		}
 
 		int wins = team.getWins();
 		int losses = team.getLosses();
