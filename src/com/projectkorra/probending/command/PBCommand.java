@@ -143,7 +143,7 @@ public abstract class PBCommand implements SubCommand {
 	 * @return True if they have permission, false otherwise
 	 */
 	protected boolean hasTeamPermission(CommandSender sender) {
-		if (sender.hasPermission("probending.command.team." + name)) {
+		if (sender.hasPermission("probending.command.team." + name.replace("team-", ""))) {
 			return true;
 		} else {
 			sender.sendMessage(ChatColor.RED + "You don't have permission to do that.");
@@ -159,7 +159,7 @@ public abstract class PBCommand implements SubCommand {
 	 * @return True if they have permission, false otherwise.
 	 */
 	protected boolean hasArenaPermission(CommandSender sender) {
-		if (sender.hasPermission("probending.command.arena." + name)) {
+		if (sender.hasPermission("probending.command.arena." + name.replace("arena-", ""))) {
 			return true;
 		} else {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
@@ -176,7 +176,7 @@ public abstract class PBCommand implements SubCommand {
 	 * @return True if they have permission, false otherwise
 	 */
 	protected boolean hasRoundPermission(CommandSender sender) {
-		if (sender.hasPermission("probending.command.round." + name)) {
+		if (sender.hasPermission("probending.command.round." + name.replace("round-", ""))) {
 			return true;
 		} else {
 			sender.sendMessage(ChatColor.RED + "You don't have permission to do that.");
