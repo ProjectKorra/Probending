@@ -4,7 +4,7 @@ import com.projectkorra.probending.PBMethods;
 import com.projectkorra.probending.command.Commands;
 import com.projectkorra.probending.command.PBCommand;
 import com.projectkorra.probending.objects.Team;
-import org.bukkit.Bukkit;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -14,7 +14,7 @@ import java.util.UUID;
 public class DisbandCommand extends PBCommand {
 	
 	public DisbandCommand() {
-		super ("team-disband", "/pb team disband [Team]", "Disband your team/another team.", new String[] {"disband"}, true, Commands.teamaliases);
+		super ("team-disband", "/pb team disband [Team]", "Disband your team/another team.", new String[] {"disband", "dis", "delete", "del"}, true, Commands.teamaliases);
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class DisbandCommand extends PBCommand {
 
 		Team team = null;
 		if (args.size() == 2) {
-			if (!sender.hasPermission("probending.team.disband.other")) {
+			if (!sender.hasPermission("probending.command.team.disband.other")) {
 				sender.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
 				return;
 			}
@@ -43,18 +43,19 @@ public class DisbandCommand extends PBCommand {
 			return;
 		}
 		
-		if (!team.isOwner(uuid)) {
+		if (!team.isOwner(uuid) && !sender.hasPermission("probending.command.team.disband.other")) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.NotOwnerOfTeam);
 			return;
 		}
 		
-		for (Player player: Bukkit.getOnlinePlayers()) {
-			if (PBMethods.getPlayerTeam(player.getUniqueId()) == null) continue;
-			if (PBMethods.getPlayerTeam(player.getUniqueId()) == team) {
+		for (UUID playeruuid : team.getPlayerUUIDs()) {
+			if (PBMethods.getPlayerTeam(playeruuid) == null) continue;
+			if (PBMethods.getPlayerTeam(playeruuid) == team) {
 				sender.sendMessage(PBMethods.Prefix + PBMethods.TeamDisbanded.replace("%team", team.getName()));
-				team.removePlayer(player.getUniqueId());
+				team.removePlayer(playeruuid);
 			}
 		}
+		
 		team.delete();
 		return;
 	}
