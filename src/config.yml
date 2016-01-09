@@ -16,16 +16,9 @@ RoundSettings:
   - EarthBlast
   - FireBlast
 WorldGuard:
-  EnableSupport: false
-  ProbendingField: ProbendingField
-  AutomateMatches: false
+  EnableSupport: true
+  AutomateMatches: true
   DisableBuildOnField: true
-  TeamOneZoneOne: RedZone1
-  TeamOneZoneTwo: RedZone2
-  TeamOneZoneThree: RedZone3
-  TeamTwoZoneOne: BlueZone1
-  TeamTwoZoneTwo: BlueZone2
-  TeamTwoZoneThree: BlueZone3
 TeamSettings:
   AllowFire: true
   AllowAir: false
@@ -34,8 +27,6 @@ TeamSettings:
   AllowChi: false
   MaxTeamSize: 4
   MinTeamSize: 2
-  TeamOneColor: Red
-  TeamTwoColor: Cyan
 Economy:
   Enabled: false
   ServerAccount: Server

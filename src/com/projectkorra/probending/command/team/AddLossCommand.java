@@ -12,7 +12,7 @@ import java.util.List;
 public class AddLossCommand extends PBCommand {
 
 	public AddLossCommand() {
-		super ("addloss", "/pb team addloss [Team]", "Adds a loss to a team.", new String[] {"addloss", "loss"}, true, Commands.teamaliases);
+		super ("team-addloss", "/pb team addloss [Team]", "Adds a loss to a team.", new String[] {"addloss", "loss"}, true, Commands.teamaliases);
 	}
 
 	@Override

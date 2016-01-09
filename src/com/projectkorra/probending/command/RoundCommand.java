@@ -15,9 +15,10 @@ public class RoundCommand extends PBCommand {
 
 	@Override
 	public void execute(CommandSender sender, List<String> args) {
-		if (!hasPermission(sender) || !correctLength(sender, args.size(), 0, 1)) {
+		if (!hasPermission(sender) || !correctLength(sender, args.size(), 0, 4)) {
 			return;
 		}
+		
 		int page = 1;
 		if (args.size() > 1) {
 			if (isNumeric(args.get(0))) {

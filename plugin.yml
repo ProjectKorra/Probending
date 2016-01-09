@@ -1,6 +1,6 @@
 name: Probending
 author: ProjectKorra
-version: 1.0.1
+version: 1.1.0 - BETA PRIVATE BUILD
 main: com.projectkorra.probending.Probending
 depend: [ProjectKorra]
 softdepend: [Vault, WorldGuard]
@@ -9,30 +9,24 @@ commands:
     aliases: [pb]
 permissions:
   probending.admin:
-    default: false
+    default: op
     children:
-      probending.command.team.create: true
-      probending.command.team.invite: true
-      probending.command.team.info: true
-      probending.command.team.join: true
-      probending.command.team.kick: true
-      probending.command.team.quit: true
-      probending.command.team.disband: true
       probending.command.team.disband.other: true
-      probending.command.team.list: true
       probending.command.reload: true
-      probending.command.team.rename: true
-      probending.command.chat: true
       probending.command.team.addwin: true
       probending.command.team.addloss: true
       probending.command.round.start: true
       probending.command.round.stop: true
-      probending.command.round.resume: true
-      probending.command.round.pause: true
       probending.worldguard.buildonfield: true
       probending.command.setspawn: true
+      probending.command.arena.create: true
+      probending.command.arena.delete: true
+      probending.command.arena.setspawn: true
+      probending.command.arena.setworld: true
+      probending.command.arena.setzone: true
+      probending.user: true
   probending.user:
-    default: false
+    default: true
     children:
       probending.command.team.create: true
       probending.command.team.invite: true
@@ -44,3 +38,4 @@ permissions:
       probending.command.team.rename: true
       probending.command.team.disband: true
       probending.command.chat: true
+      probending.command.arena.list: true

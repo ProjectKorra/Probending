@@ -16,9 +16,10 @@ import java.util.UUID;
 public class KickCommand extends PBCommand {
 	
 	public KickCommand() {
-		super ("kick", "/pb team kick <Player>", "Kick a player from your team.", new String[] {"kick", "k"}, true, Commands.teamaliases);
+		super ("team-kick", "/pb team kick <Player>", "Kick a player from your team.", new String[] {"kick", "k"}, true, Commands.teamaliases);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void execute(CommandSender sender, List<String> args) {
 		if (!isPlayer(sender) || !hasTeamPermission(sender) || !correctLength(sender, args.size(), 2, 2)) {
@@ -27,13 +28,12 @@ public class KickCommand extends PBCommand {
 		
 		UUID uuid = ((Player) sender).getUniqueId();
 
-		String teamName = PBMethods.getPlayerTeam(uuid);
-		Team team = PBMethods.getTeam(teamName);
+		Team team = (PBMethods.getPlayerTeam(uuid));
 		if (team == null) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.PlayerNotInTeam);
 			return;
 		}
-		if (!PBMethods.isPlayerOwner(uuid, teamName)) {
+		if (!team.isOwner(uuid)) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.NotOwnerOfTeam);
 			return;
 		}
@@ -43,11 +43,11 @@ public class KickCommand extends PBCommand {
 			return;
 		}
 		OfflinePlayer p3 = Bukkit.getOfflinePlayer(args.get(1));
-		String playerTeam = null;
+		Team playerTeam = null;
 		String playerElement = null;
 
 		if (p3 != null) {
-			playerElement = PBMethods.getPlayerElementInTeam(p3.getUniqueId(), teamName);
+			playerElement = PBMethods.getPlayerElementInTeam(p3.getUniqueId(), team.getName());
 			playerTeam = PBMethods.getPlayerTeam(p3.getUniqueId());
 		}
 
@@ -55,19 +55,19 @@ public class KickCommand extends PBCommand {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.PlayerNotOnThisTeam);
 			return;
 		}
-		if (!playerTeam.equals(teamName)) {
+		if (!playerTeam.equals(team)) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.PlayerNotOnThisTeam);
 			return;
 		}
-		PBMethods.removePlayerFromTeam(team, p3.getUniqueId(), playerElement);
+		team.removePlayer(p3.getUniqueId());
 		Player player = Bukkit.getPlayer(playerName);
 		if (player != null) {
-			player.sendMessage(PBMethods.Prefix + PBMethods.YouHaveBeenBooted.replace("%team", teamName));
+			player.sendMessage(PBMethods.Prefix + PBMethods.YouHaveBeenBooted.replace("%team", team.getName()));
 		}
 		for (Player player2: Bukkit.getOnlinePlayers()) {
 			if (PBMethods.getPlayerTeam(player2.getUniqueId()) == null) continue;
-			if (PBMethods.getPlayerTeam(player2.getUniqueId()).equals(teamName)) {
-				player2.sendMessage(PBMethods.Prefix + PBMethods.PlayerHasBeenBooted.replace("%player", playerName).replace("%team", teamName));
+			if (PBMethods.getPlayerTeam(player2.getUniqueId()).equals(team.getName())) {
+				player2.sendMessage(PBMethods.Prefix + PBMethods.PlayerHasBeenBooted.replace("%player", playerName).replace("%team", team.getName()));
 			}
 		}
 		return;

@@ -6,7 +6,6 @@ import com.projectkorra.probending.command.Commands;
 import com.projectkorra.probending.command.PBCommand;
 import com.projectkorra.probending.objects.Team;
 
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -16,9 +15,10 @@ import java.util.UUID;
 public class RenameCommand extends PBCommand {
 	
 	public RenameCommand() {
-		super ("rename", "/pb team rename <Name>", "Rename your team.", new String[] {"rename", "name"}, true, Commands.teamaliases);
+		super ("team-rename", "/pb team rename <Name>", "Rename your team.", new String[] {"rename", "name"}, true, Commands.teamaliases);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void execute(CommandSender sender, List<String> args) {
 		if (!isPlayer(sender) || !hasTeamPermission(sender) || !correctLength(sender, args.size(), 2, 2)) {
@@ -27,13 +27,12 @@ public class RenameCommand extends PBCommand {
 		
 		UUID uuid = ((Player) sender).getUniqueId();
 
-		String teamName = PBMethods.getPlayerTeam(uuid);
-		Team team = PBMethods.getTeam(teamName);
+		Team team = PBMethods.getPlayerTeam(uuid);
 		if (!PBMethods.playerInTeam(uuid)) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.PlayerNotInTeam);
 			return;
 		}
-		if (!PBMethods.isPlayerOwner(uuid, teamName)) {
+		if (!team.isOwner(uuid)) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.NotOwnerOfTeam);
 			return;
 		}
@@ -44,8 +43,8 @@ public class RenameCommand extends PBCommand {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.NameTooLong);
 			return;
 		}
-		if (newName.equalsIgnoreCase(teamName)) {
-			sender.sendMessage(PBMethods.Prefix + PBMethods.TeamAlreadyNamedThat.replace("%newname", teamName));
+		if (newName.equalsIgnoreCase(team.getName())) {
+			sender.sendMessage(PBMethods.Prefix + PBMethods.TeamAlreadyNamedThat.replace("%newname", team.getName()));
 			return;
 		}
 		if (econEnabled) {
@@ -66,61 +65,41 @@ public class RenameCommand extends PBCommand {
 		int Losses = team.getLosses();
 
 		PBMethods.createTeam(newName, uuid);
+		Team newTeam = PBMethods.getTeam(newName);
 
-		OfflinePlayer airbender = null;
-		OfflinePlayer waterbender = null;
-		OfflinePlayer earthbender = null;
-		OfflinePlayer firebender = null;
-		OfflinePlayer chiblocker = null;
+		UUID air = team.getAirbender();
+		UUID water = team.getWaterbender();
+		UUID earth = team.getEarthbender();
+		UUID fire = team.getFirebender();
+		UUID chi = team.getChiblocker();
 
-		if (PBMethods.getAirbender(team) != null) {
-			airbender = PBMethods.getAirbender(team);
+		if (team.hasAirbender()) {
+			team.removePlayer(team.getAirbender());
+			newTeam.addPlayer(air, "Air");
 		}
-
-		if (PBMethods.getWaterbender(team) != null) {
-			waterbender = PBMethods.getWaterbender(team);
+		if (team.hasWaterbender()) {
+			team.removePlayer(team.getWaterbender());
+			newTeam.addPlayer(water, "Water");
 		}
-
-		if (PBMethods.getEarthbender(team) != null) {
-			earthbender = PBMethods.getEarthbender(team);
+		if (team.hasEarthbender()) {
+			team.removePlayer(team.getEarthbender());
+			newTeam.addPlayer(earth, "Earth");
 		}
-
-		if (PBMethods.getFirebender(team) != null) {
-			firebender = PBMethods.getFirebender(team);
+		if (team.hasFirebender()) {
+			team.removePlayer(team.getFirebender());
+			newTeam.addPlayer(fire, "Fire");
 		}
-
-		if (PBMethods.getChiblocker(team) != null) {
-			chiblocker = PBMethods.getChiblocker(team);
-		}
-
-		if (airbender != null) {
-			PBMethods.removePlayerFromTeam(team, airbender.getUniqueId(), "Air");
-			PBMethods.addPlayerToTeam(newName, airbender.getUniqueId(), "Air");
-		}
-		if (waterbender != null) {
-			PBMethods.removePlayerFromTeam(team, waterbender.getUniqueId(), "Water");
-			PBMethods.addPlayerToTeam(newName, waterbender.getUniqueId(), "Water");
-		}
-		if (earthbender != null) {
-			PBMethods.removePlayerFromTeam(team, earthbender.getUniqueId(), "Earth");
-			PBMethods.addPlayerToTeam(newName, earthbender.getUniqueId(), "Earth");
-		}
-		if (firebender != null) {
-			PBMethods.removePlayerFromTeam(team, firebender.getUniqueId(), "Fire");
-			PBMethods.addPlayerToTeam(newName, firebender.getUniqueId(), "Fire");
-		}
-		if (chiblocker != null) {
-			PBMethods.removePlayerFromTeam(team, chiblocker.getUniqueId(), "Chi");
-			PBMethods.addPlayerToTeam(newName, chiblocker.getUniqueId(), "Chi");
+		if (team.hasChiblocker()) {
+			team.removePlayer(team.getChiblocker());
+			newTeam.addPlayer(chi, "Chi");
 		}
 		
-		team.setLosses(Losses);
-		team.setWins(Wins);
+		newTeam.setLosses(Losses);
+		newTeam.setWins(Wins);
 
 		sender.sendMessage(PBMethods.Prefix + PBMethods.TeamRenamed.replace("%newname", newName));
-		PBMethods.setOwner(uuid, newName);
-		PBMethods.deleteTeam(teamName);
-		Probending.plugin.saveConfig();
+		newTeam.setOwner(uuid);
+		team.delete();
 		return;
 	}
 }

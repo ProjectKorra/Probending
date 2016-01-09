@@ -13,7 +13,7 @@ import java.util.List;
 public class ListCommand extends PBCommand {
 	
 	public ListCommand() {
-		super ("list", "/pb team list", "List all teams.", new String[] {"list", "l"}, true, Commands.teamaliases);
+		super ("team-list", "/pb team list", "List all teams.", new String[] {"list", "l"}, true, Commands.teamaliases);
 	}
 
 	@Override

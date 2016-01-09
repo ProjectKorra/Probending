@@ -12,7 +12,7 @@ import java.util.List;
 public class AddWinCommand extends PBCommand {
 	
 	public AddWinCommand() {
-		super ("addwin", "/pb team addwin [Team]", "Adds a win to a team.", new String[] {"addwin", "win"}, true, Commands.teamaliases);
+		super ("team-addwin", "/pb team addwin [Team]", "Adds a win to a team.", new String[] {"addwin", "win"}, true, Commands.teamaliases);
 	}
 
 	@Override
@@ -23,7 +23,7 @@ public class AddWinCommand extends PBCommand {
 
 		String teamName = args.get(1);
 		Team team = PBMethods.getTeam(args.get(1));
-		if (!PBMethods.teamExists(teamName)) {
+		if (PBMethods.getTeam(teamName) == null) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.TeamDoesNotExist);
 			return;
 		}

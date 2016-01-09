@@ -12,7 +12,7 @@ public final class DBConnection {
 	public static String db;
 	public static String user;
 	public static String pass;
-	
+
 	public static boolean isOpen = false;
 
 	public static void init() {
@@ -30,7 +30,7 @@ public final class DBConnection {
 						+ " PRIMARY KEY (id));";
 				sql.modifyQuery(query);
 			}
-			
+
 			if (!sql.tableExists("probending_teams")) {
 				Probending.log.info("Creating probending_teams table.");
 				String query = "CREATE TABLE IF NOT EXISTS `probending_teams` ("
@@ -48,6 +48,35 @@ public final class DBConnection {
 				sql.modifyQuery(query);
 			}
 
+			if (!sql.tableExists("probending_arenas")) {
+				Probending.log.info("Creating probending_arenas table.");
+				String query = "CREATE TABLE IF NOT EXISTS `probending_arenas` ("
+						+ "`id` int(32) NOT NULL AUTO_INCREMENT,"
+						+ "`name` varchar(255),"
+						+ "`world` varchar(255),"
+						+ "`spectatorX` int(32),"
+						+ "`spectatorY` int(32),"
+						+ "`spectatorZ` int(32),"
+						+ "`teamOneX` int(32),"
+						+ "`teamOneY` int(32),"
+						+ "`teamOneZ` int(32),"
+						+ "`teamTwoX` int(32),"
+						+ "`teamTwoY` int(32),"
+						+ "`teamTwoZ` int(32),"
+						+ "`field` varchar(255)"
+						+ "`divider` varchar(255),"
+						+ "`teamOneZoneOne` varchar(255),"
+						+ "`teamOneZoneTwo` varchar(255),"
+						+ "`teamOneZoneThree` varchar(255),"
+						+ "`teamTwoZoneOne` varchar(255),"
+						+ "`teamTwoZoneTwo` varchar(255),"
+						+ "`teamTwoZoneThree` varchar(255),"
+						+ "`teamOneColor` varchar(255),"
+						+ "`teamTwoColor` varchar(255),"
+						+ " PRIMARY KEY (id));";
+				sql.modifyQuery(query);
+			}
+
 		} else {
 			/*
 			 * Using SQLite
@@ -58,7 +87,7 @@ public final class DBConnection {
 				Probending.plugin.getServer().getPluginManager().disablePlugin(Probending.plugin);
 				return;
 			}
-			
+
 			isOpen = true;
 			if (!sql.tableExists("probending_players")) {
 				Probending.log.info("Creating probending_players table.");
@@ -67,7 +96,7 @@ public final class DBConnection {
 						+ "`team` TEXT(255));";
 				sql.modifyQuery(query);
 			}
-			
+
 			if (!sql.tableExists("probending_teams")) {
 				Probending.log.info("Creating probending_teams table.");
 				String query = "CREATE TABLE `probending_teams` ("
@@ -82,7 +111,33 @@ public final class DBConnection {
 						+ "`losses` INTEGER(32));";
 				sql.modifyQuery(query);
 			}
+
+			if (!sql.tableExists("probending_arenas")) {
+				Probending.log.info("Creating probending_arenas table.");
+				String query = "CREATE TABLE IF NOT EXISTS `probending_arenas` ("
+						+ "`name` TEXT(255),"
+						+ "`world` TEXT(255),"
+						+ "`spectatorX` INTEGER(32),"
+						+ "`spectatorY` INTEGER(32),"
+						+ "`spectatorZ` INTEGER(32),"
+						+ "`teamOneX` INTEGER(32),"
+						+ "`teamOneY` INTEGER(32),"
+						+ "`teamOneZ` INTEGER(32),"
+						+ "`teamTwoX` INTEGER(32),"
+						+ "`teamTwoY` INTEGER(32),"
+						+ "`teamTwoZ` INTEGER(32),"
+						+ "`divider` TEXT(255),"
+						+ "`field` TEXT(255),"
+						+ "`teamOneZoneOne` TEXT(255),"
+						+ "`teamOneZoneTwo` TEXT(255),"
+						+ "`teamOneZoneThree` TEXT(255),"
+						+ "`teamTwoZoneOne` TEXT(255),"
+						+ "`teamTwoZoneTwo` TEXT(255),"
+						+ "`teamTwoZoneThree` TEXT(255),"
+						+ "`teamOneColor` TEXT(255),"
+						+ "`teamTwoColor` TEXT(255));";
+				sql.modifyQuery(query);
+			}
 		}
 	}
-
 }

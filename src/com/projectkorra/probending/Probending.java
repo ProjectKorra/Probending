@@ -6,8 +6,10 @@ import java.util.logging.Logger;
 import net.milkbowl.vault.economy.Economy;
 
 import com.projectkorra.probending.command.Commands;
+import com.projectkorra.probending.objects.Round;
 import com.projectkorra.probending.storage.DBConnection;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Probending extends JavaPlugin {
@@ -141,10 +143,17 @@ public class Probending extends JavaPlugin {
 		
 		PBMethods.loadTeams();
 		PBMethods.loadPlayers();
+		PBMethods.loadArenas();
 		Probending.log.info("Loaded " + PBMethods.getTeams().size() + " teams");
 		Probending.log.info("Loaded " + PBMethods.players.size() + " players.");
+		Probending.log.info("Loaded " + PBMethods.getArenas().size() + " arenas");
 		
-		
+		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+			@Override
+			public void run() {
+				Round.progressAll();
+			}
+		}, 0, 1);
 	}
 
 }

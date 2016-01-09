@@ -3,35 +3,37 @@ package com.projectkorra.probending.command.round;
 import com.projectkorra.probending.PBMethods;
 import com.projectkorra.probending.command.Commands;
 import com.projectkorra.probending.command.PBCommand;
+import com.projectkorra.probending.objects.Arena;
+import com.projectkorra.probending.objects.Round;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
 public class StopCommand extends PBCommand {
 
 	public StopCommand() {
-		super ("stop", "/pb round stop", "Stops round.", new String[] {"stop"}, true, Commands.roundaliases);
+		super ("round-stop", "/pb round stop [Arena]", "Stops round.", new String[] {"stop"}, true, Commands.roundaliases);
 	}
 
 	@Override
 	public void execute(CommandSender sender, List<String> args) {
-		if (!isPlayer(sender) || !hasRoundPermission(sender) || !correctLength(sender, args.size(), 1, 1)) {
+		if (!isPlayer(sender) || !hasRoundPermission(sender) || !correctLength(sender, args.size(), 2, 2)) {
 			return;
 		}
-
-		if (!PBMethods.matchStarted) {
+		
+		Arena arena = PBMethods.getArena(args.get(1));
+		if (!PBMethods.isRoundAtArena(arena)) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.NoOngoingRound);
 			return;
 		}
-		PBMethods.restoreArmor();
-
-		Bukkit.getServer().getScheduler().cancelTask(Commands.clockTask);
-
-		PBMethods.matchPaused = false;
-		PBMethods.playingTeams.clear();
-		PBMethods.matchStarted = false;
+		
+		Round round = PBMethods.getRoundAtArena(arena);
+		for (Player player: round.getRoundPlayers()) {
+			PBMethods.restoreArmor(player);
+			round.stop();
+		}
 		PBMethods.sendPBChat(PBMethods.RoundStopped);
 		return;
 	}

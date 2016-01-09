@@ -1,8 +1,12 @@
 package com.projectkorra.probending.command;
 
 import com.projectkorra.probending.Probending;
-import com.projectkorra.probending.command.round.PauseCommand;
-import com.projectkorra.probending.command.round.ResumeCommand;
+import com.projectkorra.probending.command.arena.ArenaCreate;
+import com.projectkorra.probending.command.arena.ArenaDelete;
+import com.projectkorra.probending.command.arena.ArenaListCommand;
+import com.projectkorra.probending.command.arena.ArenaSetSpawnCommand;
+import com.projectkorra.probending.command.arena.ArenaSetWorldCommand;
+import com.projectkorra.probending.command.arena.ArenaSetZoneCommand;
 import com.projectkorra.probending.command.round.StartCommand;
 import com.projectkorra.probending.command.round.StopCommand;
 import com.projectkorra.probending.command.team.AddLossCommand;
@@ -46,6 +50,7 @@ public class Commands {
 	public static HashMap<String, LinkedList<String>> teamInvites = new HashMap<String, LinkedList<String>>();
 	public static HashMap<Player, ItemStack[]> tmpArmor = new HashMap<Player, ItemStack[]>();
 	
+	public static String[] arenaaliases = {"arena", "arenas", "a"};
 	public static String[] teamaliases = {"team", "teams", "t"};
 	public static String[] roundaliases = {"round", "r"};
 	
@@ -60,11 +65,19 @@ public class Commands {
 		//Base Commands
 		new HelpCommand();
 		new TeamCommand();
+		new ArenaCommand();
 		new RoundCommand();
 		new ChatCommand();
 		new ReloadCommand();
-		new SetSpawnCommand();
-
+	
+		//Arena Commands
+		new ArenaDelete();
+		new ArenaSetWorldCommand();
+		new ArenaSetSpawnCommand();
+		new ArenaSetZoneCommand();
+		new ArenaListCommand();
+		new ArenaCreate();
+		
 		//Team Commands
 		new AddWinCommand();
 		new AddLossCommand();
@@ -81,8 +94,6 @@ public class Commands {
 		//Round Commands
 		new StartCommand();
 		new StopCommand();
-		new PauseCommand();
-		new ResumeCommand();
 
 		/**
 		 * Set of all of the Classes which extend Command

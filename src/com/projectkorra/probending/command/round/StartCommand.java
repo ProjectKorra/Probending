@@ -4,6 +4,9 @@ import com.projectkorra.probending.PBMethods;
 import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.command.Commands;
 import com.projectkorra.probending.command.PBCommand;
+import com.projectkorra.probending.objects.Arena;
+import com.projectkorra.probending.objects.Round;
+import com.projectkorra.probending.objects.Team;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,116 +21,81 @@ import java.util.List;
 public class StartCommand extends PBCommand {
 
 	public StartCommand() {
-		super ("start", "/pb round start <Team 1> <Team 2>", "Starts round.", new String[] {"start"}, true, Commands.roundaliases);
+		super ("round-start", "/pb round start <Team 1> <Team 2> <Arena>", "Starts round.", new String[] {"start"}, true, Commands.roundaliases);
 	}
 
 	@Override
 	public void execute(CommandSender sender, List<String> args) {
-		if (!isPlayer(sender) || !hasRoundPermission(sender) || !correctLength(sender, args.size(), 3, 3)) {
+		if (!isPlayer(sender) || !hasRoundPermission(sender) || !correctLength(sender, args.size(), 4, 4)) {
 			return;
 		}
 
-		if (PBMethods.matchStarted) {
-			sender.sendMessage(PBMethods.Prefix + PBMethods.RoundAlreadyGoing);
-			return;
-		}
+		Team team1 = PBMethods.getTeam(args.get(1));
+		Team team2 = PBMethods.getTeam(args.get(2));
+		Arena arena = PBMethods.getArena(args.get(3));
 
-		String team1 = args.get(1); // Team 1
-		String team2 = args.get(2); // Team 2
-
-		if (!PBMethods.teamExists(team1) || !PBMethods.teamExists(team2)) {
+		if (team1 == null || team2 == null) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.TeamDoesNotExist);
+			return;
+		}
+
+		if (team1 == team2) {
+			sender.sendMessage(PBMethods.Prefix + ChatColor.RED + "The same team cannot play against itself.");
+			return;
+		}
+
+		if (arena == null) {
+			sender.sendMessage(PBMethods.Prefix + ChatColor.RED + "That team does not exist.");
 			return;
 		}
 
 		int minSize = Probending.plugin.getConfig().getInt("TeamSettings.MinTeamSize");
 
-		// Checks to make sure the team has enough players.
-		if (PBMethods.getOnlineTeamSize(team1) < minSize || PBMethods.getOnlineTeamSize(team2) < minSize) {
+		if (team1.getOnlinePlayers().size() < minSize || team2.getOnlinePlayers().size() < minSize) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.InvalidTeamSize);
 			return;
 		}
-		
-		if (team1.equalsIgnoreCase(team2)) {
-			sender.sendMessage(PBMethods.Prefix + ChatColor.RED + "The same team cannot play against itself.");
-			return;
+
+		if (PBMethods.isRoundAtArena(arena)) {
+			sender.sendMessage(PBMethods.Prefix + ChatColor.RED + "There is already an ongoing round at " + args);
 		}
 
-		PBMethods.playingTeams.add(team1.toLowerCase());
-		PBMethods.playingTeams.add(team2.toLowerCase());
-		PBMethods.TeamOne = team1.toLowerCase();
-		PBMethods.TeamTwo = team2.toLowerCase();
-
+		Round round = new Round(team1, team2, team1.getOnlinePlayers(), team2.getOnlinePlayers(), arena);
+		for (Player player: team1.getOnlinePlayers()) {
+			Color teamColor = arena.getTeamOneColor();
+			Commands.pbChat.add(player);
+			player.teleport(arena.getTeamOneSpawn());
+			Commands.tmpArmor.put(player, player.getInventory().getArmorContents()); // Backs up their armor.
+			ItemStack armor1 = PBMethods.createColorArmor(new ItemStack(Material.LEATHER_HELMET), teamColor);
+			ItemStack armor2 = PBMethods.createColorArmor(new ItemStack(Material.LEATHER_CHESTPLATE), teamColor);
+			ItemStack armor3 = PBMethods.createColorArmor(new ItemStack(Material.LEATHER_LEGGINGS), teamColor);
+			ItemStack armor4 = PBMethods.createColorArmor(new ItemStack(Material.LEATHER_BOOTS), teamColor);
+			player.getInventory().setHelmet(armor1);
+			player.getInventory().setChestplate(armor2);
+			player.getInventory().setLeggings(armor3);
+			player.getInventory().setBoots(armor4);
+			round.setAllowedZone(player, arena.getTeamOneZoneOne());
+		}
+		for (Player player: team2.getOnlinePlayers()) {
+			Color teamColor = arena.getTeamTwoColor();
+			Commands.pbChat.add(player);
+			player.teleport(arena.getTeamTwoSpawn());
+			Commands.tmpArmor.put(player, player.getInventory().getArmorContents()); // Backs up their armor.
+			ItemStack armor1 = PBMethods.createColorArmor(new ItemStack(Material.LEATHER_HELMET), teamColor);
+			ItemStack armor2 = PBMethods.createColorArmor(new ItemStack(Material.LEATHER_CHESTPLATE), teamColor);
+			ItemStack armor3 = PBMethods.createColorArmor(new ItemStack(Material.LEATHER_LEGGINGS), teamColor);
+			ItemStack armor4 = PBMethods.createColorArmor(new ItemStack(Material.LEATHER_BOOTS), teamColor);
+			player.getInventory().setHelmet(armor1);
+			player.getInventory().setChestplate(armor2);
+			player.getInventory().setLeggings(armor3);
+			player.getInventory().setBoots(armor4);
+			round.setAllowedZone(player, arena.getTeamTwoZoneOne());
+		}
 		for (Player player: Bukkit.getOnlinePlayers()) {
-			String playerTeam = PBMethods.getPlayerTeam(player.getUniqueId());
-			Color teamColor = null;
-			if (playerTeam != null) {
-				if (playerTeam.equalsIgnoreCase(team1)) teamColor = PBMethods.getColorFromString(Probending.plugin.getConfig().getString("TeamSettings.TeamOneColor"));
-				if (playerTeam.equalsIgnoreCase(team2)) teamColor = PBMethods.getColorFromString(Probending.plugin.getConfig().getString("TeamSettings.TeamTwoColor"));
-				if (playerTeam.equalsIgnoreCase(PBMethods.TeamOne)) {
-					PBMethods.teamOnePlayers.add(player.getName());
-					Commands.pbChat.add(player);
-					player.teleport(PBMethods.getTeamOneSpawn());
-				}
-				if (playerTeam.equalsIgnoreCase(PBMethods.TeamTwo)) {
-					Commands.pbChat.add(player);
-					player.teleport(PBMethods.getTeamTwoSpawn());
-					PBMethods.teamTwoPlayers.add(player.getName());
-				}
-				if (playerTeam.equalsIgnoreCase(PBMethods.TeamOne) || playerTeam.equalsIgnoreCase(PBMethods.TeamTwo)) {
-					Commands.tmpArmor.put(player, player.getInventory().getArmorContents()); // Backs up their armor.
-					ItemStack armor1 = PBMethods.createColorArmor(new ItemStack(Material.LEATHER_HELMET), teamColor);
-					ItemStack armor2 = PBMethods.createColorArmor(new ItemStack(Material.LEATHER_CHESTPLATE), teamColor);
-					ItemStack armor3 = PBMethods.createColorArmor(new ItemStack(Material.LEATHER_LEGGINGS), teamColor);
-					ItemStack armor4 = PBMethods.createColorArmor(new ItemStack(Material.LEATHER_BOOTS), teamColor);
-					player.getInventory().setHelmet(armor1);
-					player.getInventory().setChestplate(armor2);
-					player.getInventory().setLeggings(armor3);
-					player.getInventory().setBoots(armor4);
-				} else {
-					if (PBMethods.RegionsAtLocation(player.getLocation()) != null && PBMethods.RegionsAtLocation(player.getLocation()).contains(PBMethods.ProbendingField)) {
-						player.teleport(PBMethods.getSpectatorSpawn());
-					}
-				}
-			}
-		}
-
-
-		int roundTime = Probending.plugin.getConfig().getInt("RoundSettings.Time");
-		Commands.currentNumber = roundTime * 20;
-		Commands.startingNumber = roundTime * 20;
-
-		Commands.clockTask = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(Probending.plugin, new Runnable() {
-			public void run() {
-				PBMethods.matchStarted = true;
-				Commands.currentNumber--;
-
-				if (Commands.currentNumber == Commands.startingNumber - 1) {
-					PBMethods.sendPBChat(PBMethods.RoundStarted.replace("%seconds", String.valueOf(Commands.startingNumber / 20)).replace("%team1", PBMethods.TeamOne).replace("%team2", PBMethods.TeamTwo));
-				}
-				if (Commands.currentNumber == 1200) {
-					PBMethods.sendPBChat(PBMethods.Prefix + PBMethods.OneMinuteRemaining);
-				}
-				if (Commands.currentNumber == 0) {
-					PBMethods.sendPBChat(PBMethods.RoundComplete);
-					PBMethods.matchStarted = false;
-					Bukkit.getServer().getScheduler().cancelTask(Commands.clockTask);
-					PBMethods.restoreArmor();
-				}
-
-			}
-		}, 0L, 1L);
-
-		if (PBMethods.isWorldGuardSupportEnabled() && PBMethods.hasWorldGuard()) {
-			for (Player player: Bukkit.getOnlinePlayers()) {
-				String teamName = PBMethods.getPlayerTeam(player.getUniqueId());
-				if (teamName != null) {
-					if (teamName.equalsIgnoreCase(team1)) {
-						PBMethods.allowedZone.put(player.getName(), PBMethods.t1z1);
-					}
-					if (teamName.equalsIgnoreCase(team2)) {
-						PBMethods.allowedZone.put(player.getName(), PBMethods.t2z1);
-					}
+			if (!round.getRoundPlayers().contains(player)) {
+				if (PBMethods.RegionsAtLocation(player.getLocation()) != null && PBMethods.RegionsAtLocation(player.getLocation()).contains(arena.getField())) {
+					player.teleport(arena.getSpectatorSpawn());
+					player.sendMessage(PBMethods.Prefix + ChatColor.RED + "A round is starting at this arena shortly. You may not be on the field.");
 				}
 			}
 

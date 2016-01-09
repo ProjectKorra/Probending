@@ -1,5 +1,6 @@
 package com.projectkorra.probending.command;
 
+import com.projectkorra.probending.PBMethods;
 import com.projectkorra.projectkorra.command.SubCommand;
 
 import org.bukkit.ChatColor;
@@ -142,10 +143,26 @@ public abstract class PBCommand implements SubCommand {
 	 * @return True if they have permission, false otherwise
 	 */
 	protected boolean hasTeamPermission(CommandSender sender) {
-		if (sender.hasPermission("probending.command.team." + name)) {
+		if (sender.hasPermission("probending.command.team." + name.replace("team-", ""))) {
 			return true;
 		} else {
 			sender.sendMessage(ChatColor.RED + "You don't have permission to do that.");
+			return false;
+		}
+	}
+	
+	/**
+	 * Checks if the {@link CommandSender} has permission to execute the
+	 * command. The permission is in the format 'probending.command.arena.
+	 * {@link PBCommand#name name}'. If not, they are told so.
+	 * @param sender The CommandSender to check
+	 * @return True if they have permission, false otherwise.
+	 */
+	protected boolean hasArenaPermission(CommandSender sender) {
+		if (sender.hasPermission("probending.command.arena." + name.replace("arena-", ""))) {
+			return true;
+		} else {
+			sender.sendMessage(PBMethods.Prefix + PBMethods.noPermission);
 			return false;
 		}
 	}
@@ -159,7 +176,7 @@ public abstract class PBCommand implements SubCommand {
 	 * @return True if they have permission, false otherwise
 	 */
 	protected boolean hasRoundPermission(CommandSender sender) {
-		if (sender.hasPermission("probending.command.round." + name)) {
+		if (sender.hasPermission("probending.command.round." + name.replace("round-", ""))) {
 			return true;
 		} else {
 			sender.sendMessage(ChatColor.RED + "You don't have permission to do that.");
