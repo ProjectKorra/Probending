@@ -5,6 +5,7 @@ import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.command.Commands;
 import com.projectkorra.probending.command.PBCommand;
 import com.projectkorra.probending.objects.Team;
+import com.projectkorra.projectkorra.Element;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -75,23 +76,23 @@ public class RenameCommand extends PBCommand {
 
 		if (team.hasAirbender()) {
 			team.removePlayer(team.getAirbender());
-			newTeam.addPlayer(air, "Air");
+			newTeam.addPlayer(air, Element.Air);
 		}
 		if (team.hasWaterbender()) {
 			team.removePlayer(team.getWaterbender());
-			newTeam.addPlayer(water, "Water");
+			newTeam.addPlayer(water, Element.Water);
 		}
 		if (team.hasEarthbender()) {
 			team.removePlayer(team.getEarthbender());
-			newTeam.addPlayer(earth, "Earth");
+			newTeam.addPlayer(earth, Element.Earth);
 		}
 		if (team.hasFirebender()) {
 			team.removePlayer(team.getFirebender());
-			newTeam.addPlayer(fire, "Fire");
+			newTeam.addPlayer(fire, Element.Fire);
 		}
 		if (team.hasChiblocker()) {
 			team.removePlayer(team.getChiblocker());
-			newTeam.addPlayer(chi, "Chi");
+			newTeam.addPlayer(chi, Element.Chi);
 		}
 		
 		newTeam.setLosses(Losses);

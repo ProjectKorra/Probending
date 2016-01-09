@@ -1,6 +1,25 @@
 package com.projectkorra.probending;
 
-import net.milkbowl.vault.economy.Economy;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 import com.projectkorra.probending.command.Commands;
 import com.projectkorra.probending.objects.Arena;
@@ -14,24 +33,7 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.RegisteredServiceProvider;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import net.milkbowl.vault.economy.Economy;
 
 
 public class PBMethods {
@@ -532,6 +534,18 @@ public class PBMethods {
 		if (GeneralMethods.isBender(player, Element.Fire)) return "Fire";
 		if (GeneralMethods.isBender(player, Element.Chi)) return "Chi";
 		return null;
+	}
+	
+	public static List<String> getPlayerElementsAsString(UUID uuid) {
+		String player = Bukkit.getOfflinePlayer(uuid).getName();
+		List<String> elements = new ArrayList<>();
+		if (GeneralMethods.isBender(player, Element.Air)) elements.add("Air");
+		if (GeneralMethods.isBender(player, Element.Water)) elements.add("Water");
+		if (GeneralMethods.isBender(player, Element.Earth)) elements.add("Earth");
+		if (GeneralMethods.isBender(player, Element.Fire)) elements.add("Fire");
+		if (GeneralMethods.isBender(player, Element.Chi)) elements.add("Chi");
+		
+		return elements;
 	}
 
 	/**

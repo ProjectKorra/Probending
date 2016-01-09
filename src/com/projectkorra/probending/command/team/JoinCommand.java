@@ -16,9 +16,9 @@ import java.util.Set;
 import java.util.UUID;
 
 public class JoinCommand extends PBCommand {
-	
+
 	public JoinCommand() {
-		super ("team-join", "/pb team join <Team>", "Join a team.", new String[] {"join", "j"}, true, Commands.teamaliases);
+		super("team-join", "/pb team join <Team>", "Join a team.", new String[] { "join", "j" }, true, Commands.teamaliases);
 	}
 
 	@Override
@@ -26,50 +26,50 @@ public class JoinCommand extends PBCommand {
 		if (!isPlayer(sender) || !hasTeamPermission(sender) || !correctLength(sender, args.size(), 2, 2)) {
 			return;
 		}
-		
+
 		UUID uuid = ((Player) sender).getUniqueId();
 		if (PBMethods.playerInTeam(uuid)) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.PlayerAlreadyInTeam);
 			return;
 		}
-		String teamName = args.get(1);
-		if (Commands.teamInvites.get(sender.getName()) == null) {
-			sender.sendMessage(PBMethods.Prefix + PBMethods.NoInviteFromTeam);
-			return;
-		}
-		if (!Commands.teamInvites.get(sender.getName()).contains(teamName)) {
-			sender.sendMessage(PBMethods.Prefix + PBMethods.NoInviteFromTeam);
-			return;
-		}
-		
-		Team team = PBMethods.getTeam(teamName);
-		String playerElement = PBMethods.getPlayerElementAsString(uuid);
+		Team team = PBMethods.getTeam(args.get(1));
 
-		if (playerElement == null) {
+		if (!team.invites.containsKey(Bukkit.getPlayer(uuid))) {
+			return;
+		}
+		List<String> playerElements = PBMethods.getPlayerElementsAsString(uuid);
+
+		if (playerElements == null) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.noBendingType);
 			return;
 		}
-		Set<Element> elements = team.getElements();
-		if (elements != null) {
-			if (elements.contains(playerElement.toString())) {
-				sender.sendMessage(PBMethods.Prefix + PBMethods.TeamAlreadyHasElement);
-				return;
-			}
-			if (!Probending.plugin.getConfig().getBoolean("TeamSettings.Allow" + playerElement)) {
-				sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", playerElement));
-				return;
-			}
-			team.addPlayer(uuid, playerElement);
-			for (Player player: Bukkit.getOnlinePlayers()) {
-				Team team2 = PBMethods.getPlayerTeam(player.getUniqueId());
-				if (team2 != null) {
-					if (PBMethods.getPlayerTeam(player.getUniqueId()).getName().equalsIgnoreCase(team.getName())) {
-						player.sendMessage(PBMethods.Prefix + PBMethods.PlayerJoinedTeam.replace("%player", sender.getName()).replace("%team", team.getName()));
+
+		for (String e : playerElements) {
+			if (Element.getType(e) == team.invites.get(Bukkit.getPlayer(uuid))) {
+				Set<Element> elements = team.getElements();
+				if (elements != null) {
+					if (elements.contains(Element.getType(e))) {
+						sender.sendMessage(PBMethods.Prefix + PBMethods.TeamAlreadyHasElement);
+						return;
+					}
+					if (!Probending.plugin.getConfig().getBoolean("TeamSettings.Allow" + Element.getType(e).toString())) {
+						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", Element.getType(e).toString()));
+						return;
+					}
+					team.addPlayer(uuid, team.invites.get(Bukkit.getPlayer(uuid)));
+					for (Player player : Bukkit.getOnlinePlayers()) {
+						Team team2 = PBMethods.getPlayerTeam(player.getUniqueId());
+						if (team2 != null) {
+							if (PBMethods.getPlayerTeam(player.getUniqueId()).getName().equalsIgnoreCase(team.getName())) {
+								player.sendMessage(PBMethods.Prefix + PBMethods.PlayerJoinedTeam
+										.replace("%player", sender.getName()).replace("%team", team.getName()));
+							}
+						}
 					}
 				}
+				team.invites.remove(Bukkit.getPlayer(uuid));
+				return;
 			}
 		}
-		Commands.teamInvites.remove(sender.getName());
-		return;
 	}
 }

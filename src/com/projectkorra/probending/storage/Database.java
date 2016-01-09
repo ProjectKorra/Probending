@@ -77,14 +77,16 @@ public abstract class Database {
 * @param query Query to run
 */
     public void modifyQuery(String query) {
-        try {
-            Statement stmt = this.connection.createStatement();
-            stmt.execute(query);
-            
-            stmt.close();
-        } catch(SQLException e) {
-            e.printStackTrace();
-        }
+    	if (this.connection != null) {
+            try {
+                Statement stmt = this.connection.createStatement();
+                stmt.execute(query);
+                
+                stmt.close();
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
+    	}
     }
     
     /**
@@ -94,15 +96,17 @@ public abstract class Database {
 * @return Result set of ran query
 */
     public ResultSet readQuery(String query) {
-        try {
-            Statement stmt = this.connection.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
-            
-            return rs;
-        } catch(SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
+    	if (this.connection != null) {
+            try {
+                Statement stmt = this.connection.createStatement();
+                ResultSet rs = stmt.executeQuery(query);
+                
+                return rs;
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
+    	}
+    	return null;
     }
     
     /**
@@ -112,16 +116,18 @@ public abstract class Database {
 * @return True if table exists, else false
 */
     public boolean tableExists(String table) {
-        try {
-            DatabaseMetaData dmd = this.connection.getMetaData();
-            ResultSet rs = dmd.getTables(null, null, table, null);
-            
-            if(rs.next()) return true;
-            else return false;
-        } catch(Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+    	if (this.connection != null) {
+            try {
+                DatabaseMetaData dmd = this.connection.getMetaData();
+                ResultSet rs = dmd.getTables(null, null, table, null);
+                
+                if(rs.next()) return true;
+                else return false;
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+    	}
+    	return false;
     }
     
 }
