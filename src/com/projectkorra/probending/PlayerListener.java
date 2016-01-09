@@ -451,10 +451,9 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onChange(PlayerChangeElementEvent e) {
 		Player player = e.getTarget();
-		String t = PBMethods.getPlayerTeam(player.getUniqueId()).getName();
-		Team team = PBMethods.getTeam(t);
+		Team team = PBMethods.getPlayerTeam(player.getUniqueId());
 		if (team != null) {
-			String playerElementInTeam = PBMethods.getPlayerElementInTeam(player.getUniqueId(), t);
+			String playerElementInTeam = PBMethods.getPlayerElementInTeam(player.getUniqueId(), team.getName());
 			if (playerElementInTeam != null) {
 				String playerElement = null;
 				if (GeneralMethods.isBender(player.getName(), Element.Air)) {
