@@ -24,7 +24,7 @@ public class CreateCommand extends PBCommand {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void execute(CommandSender sender, List<String> args) {
-		if (!isPlayer(sender) || !hasTeamPermission(sender) || !correctLength(sender, args.size(), 3, 3)) {
+		if (!isPlayer(sender) || !hasTeamPermission(sender) || !correctLength(sender, args.size(), 2, 3)) {
 			return;
 		}
 
@@ -69,7 +69,7 @@ public class CreateCommand extends PBCommand {
 
 		for (String e : playerElements) {
 			if (Element.getType(e) == element) {
-				if (element == Element.Air) {
+				if (Element.getType(e) == Element.Air) {
 					if (!PBMethods.getAirAllowed()) {
 						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Airbenders"));
 						return;
@@ -90,7 +90,7 @@ public class CreateCommand extends PBCommand {
 						return;
 					}
 				} else if (Element.getType(e) == Element.Chi) {
-					if (!PBMethods.getAirAllowed()) {
+					if (!PBMethods.getChiAllowed()) {
 						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Chiblockers"));
 						return;
 					}

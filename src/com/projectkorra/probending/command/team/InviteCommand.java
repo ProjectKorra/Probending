@@ -72,7 +72,7 @@ public class InviteCommand extends PBCommand {
 
 		for (String e : playerElements) {
 			if (Element.getType(e) == element) {
-				if (element == Element.Air) {
+				if (Element.getType(e) == Element.Air) {
 					if (!PBMethods.getAirAllowed()) {
 						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Airbenders"));
 						return;
@@ -93,7 +93,7 @@ public class InviteCommand extends PBCommand {
 						return;
 					}
 				} else if (Element.getType(e) == Element.Chi) {
-					if (!PBMethods.getAirAllowed()) {
+					if (!PBMethods.getChiAllowed()) {
 						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Chiblockers"));
 						return;
 					}
