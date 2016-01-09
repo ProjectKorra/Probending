@@ -43,6 +43,8 @@ public class Probending extends JavaPlugin {
 		 * Player
 		 */
 		PBMethods.noBendingType = PBMethods.colorize(getConfig().getString("messages.player.noBendingType"));
+		PBMethods.multiBendingTypes = PBMethods.colorize(getConfig().getString("messages.player.MultipleBendingTypes"));
+		PBMethods.PlayerNotElement = PBMethods.colorize(getConfig().getString("messages.player.PlayerNotElement"));
 		PBMethods.PlayerAlreadyInTeam = PBMethods.colorize(getConfig().getString("messages.player.PlayerAlreadyInTeam"));
 		PBMethods.ElementNotAllowed = PBMethods.colorize(getConfig().getString("messages.player.ElementNotAllowed"));
 		PBMethods.PlayerNotInTeam = PBMethods.colorize(getConfig().getString("messages.player.PlayerNotInTeam"));

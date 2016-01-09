@@ -17,7 +17,7 @@ import java.util.UUID;
 public class CreateCommand extends PBCommand {
 
 	public CreateCommand() {
-		super("team-create", "/pb team create <Team Name> <Element>", "Create a team.", new String[] { "create", "c" }, true,
+		super("team-create", "/pb team create <Team Name> [Element]", "Create a team.", new String[] { "create", "c" }, true,
 				Commands.teamaliases);
 	}
 
@@ -41,7 +41,8 @@ public class CreateCommand extends PBCommand {
 			return;
 		}
 
-		if (GeneralMethods.getBendingPlayer(sender.getName()).getElements().size() == 0) {
+		List<Element> elements = GeneralMethods.getBendingPlayer(sender.getName()).getElements();
+		if (elements.size() == 0) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.noBendingType);
 			return;
 		}
@@ -55,67 +56,67 @@ public class CreateCommand extends PBCommand {
 		String serverAccount = Probending.plugin.getConfig().getString("Economy.ServerAccount");
 		boolean econEnabled = Probending.plugin.getConfig().getBoolean("Economy.Enabled");
 
-		Element element = Element.getType(args.get(2));
-		List<String> playerElements = PBMethods.getPlayerElementsAsString(uuid);
+		String element = null;
+		if (elements.size() > 0) {
+			if (args.size() == 3) {
+				element = args.get(2);
+				if (!elements.contains(Element.getType(element))) {
+					sender.sendMessage(PBMethods.Prefix + PBMethods.PlayerNotElement);
+					return;
+				}
+			} else {
+				sender.sendMessage(PBMethods.Prefix + PBMethods.multiBendingTypes);
+				return;
+			}
+		} else {
+			element = elements.get(0).name();
+		}
 
 		if (element == null) {
 			return;
 		}
 
-		if (playerElements == null) {
-			sender.sendMessage(PBMethods.Prefix + PBMethods.noBendingType);
+		if (!PBMethods.getAirAllowed() && element.equalsIgnoreCase("Air")) {
+			sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Airbenders"));
 			return;
 		}
 
-		for (String e : playerElements) {
-			if (Element.getType(e) == element) {
-				if (Element.getType(e) == Element.Air) {
-					if (!PBMethods.getAirAllowed()) {
-						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Airbenders"));
-						return;
-					}
-				} else if (Element.getType(e) == Element.Water) {
-					if (!PBMethods.getWaterAllowed()) {
-						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Waterbenders"));
-						return;
-					}
-				} else if (Element.getType(e) == Element.Earth) {
-					if (!PBMethods.getEarthAllowed()) {
-						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Earthbenders"));
-						return;
-					}
-				} else if (Element.getType(e) == Element.Fire) {
-					if (!PBMethods.getFireAllowed()) {
-						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Firebenders"));
-						return;
-					}
-				} else if (Element.getType(e) == Element.Chi) {
-					if (!PBMethods.getChiAllowed()) {
-						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Chiblockers"));
-						return;
-					}
-				} else {
-					return;
-				}
-
-				if (econEnabled) {
-					String currencyName = Probending.econ.currencyNamePlural();
-					Double playerBalance = Probending.econ.getBalance((Player) sender);
-					if (playerBalance < creationCost) {
-						sender.sendMessage(PBMethods.Prefix + PBMethods.NotEnoughMoney.replace("%currency", currencyName));
-						return;
-					}
-					Probending.econ.withdrawPlayer((Player) sender, creationCost);
-					Probending.econ.depositPlayer(serverAccount, creationCost);
-					sender.sendMessage(PBMethods.Prefix + PBMethods.MoneyWithdrawn.replace("%amount", creationCost.toString())
-							.replace("%currency", currencyName));
-				}
-
-				PBMethods.createTeam(teamName, uuid);
-				Team team = PBMethods.getTeam(teamName);
-				team.addPlayer(uuid, Element.getType(e));
-				sender.sendMessage(PBMethods.Prefix + PBMethods.TeamCreated.replace("%team", teamName));
-			}
+		if (!PBMethods.getWaterAllowed() && element.equalsIgnoreCase("Water")) {
+			sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Waterbenders"));
+			return;
 		}
+
+		if (!PBMethods.getEarthAllowed() && element.equalsIgnoreCase("Earth")) {
+			sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Earthbenders"));
+			return;
+		}
+
+		if (!PBMethods.getFireAllowed() && element.equalsIgnoreCase("Fire")) {
+			sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Firebenders"));
+			return;
+		}
+
+		if (!PBMethods.getChiAllowed() && element.equalsIgnoreCase("Chi")) {
+			sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Chiblockers"));
+			return;
+		}
+
+		if (econEnabled) {
+			String currencyName = Probending.econ.currencyNamePlural();
+			Double playerBalance = Probending.econ.getBalance((Player) sender);
+			if (playerBalance < creationCost) {
+				sender.sendMessage(PBMethods.Prefix + PBMethods.NotEnoughMoney.replace("%currency", currencyName));
+				return;
+			}
+			Probending.econ.withdrawPlayer((Player) sender, creationCost);
+			Probending.econ.depositPlayer(serverAccount, creationCost);
+			sender.sendMessage(PBMethods.Prefix + PBMethods.MoneyWithdrawn.replace("%amount", creationCost.toString())
+					.replace("%currency", currencyName));
+		}
+
+		PBMethods.createTeam(teamName, uuid);
+		Team team = PBMethods.getTeam(teamName);
+		team.addPlayer(uuid, Element.getType(element));
+		sender.sendMessage(PBMethods.Prefix + PBMethods.TeamCreated.replace("%team", teamName));
 	}
 }
