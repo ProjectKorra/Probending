@@ -1,5 +1,6 @@
 package com.projectkorra.probending.objects;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -15,6 +16,7 @@ import com.projectkorra.projectkorra.Element;
 public class Team {
 
 	public static ConcurrentHashMap<String, Team> teams = new ConcurrentHashMap<String, Team>();
+	public HashMap<Player, Element> invites;
 	String name;
 	UUID owner;
 	UUID airbender;
@@ -35,6 +37,7 @@ public class Team {
 		this.chiblocker = chiblocker;
 		this.wins = wins;
 		this.losses = losses;
+		this.invites = new HashMap<Player, Element>();
 		teams.put(name, this);
 	}
 
@@ -219,13 +222,13 @@ public class Team {
 		return elements;
 	}
 	
-	public void addPlayer(UUID player, String element) {
+	public void addPlayer(UUID player, Element element) {
 		DBConnection.sql.modifyQuery("UPDATE probending_players SET team = '" + this.name + "' WHERE uuid = '" + player.toString() + "'");
-		if (element.equalsIgnoreCase("air")) this.setAirbender(player);
-		if (element.equalsIgnoreCase("water")) this.setWaterbender(player);
-		if (element.equalsIgnoreCase("earth")) this.setEarthbender(player);
-		if (element.equalsIgnoreCase("fire")) this.setFirebender(player);
-		if (element.equalsIgnoreCase("chi")) this.setChiblocker(player);
+		if (element == Element.Air) this.setAirbender(player);
+		if (element == Element.Water) this.setWaterbender(player);
+		if (element == Element.Earth) this.setEarthbender(player);
+		if (element == Element.Fire) this.setFirebender(player);
+		if (element == Element.Chi) this.setChiblocker(player);
 		PBMethods.players.put(player.toString(), this.name);
 	}
 	

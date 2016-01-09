@@ -1,5 +1,13 @@
 package com.projectkorra.probending.command.team;
 
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 import com.projectkorra.probending.PBMethods;
 import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.command.Commands;
@@ -7,27 +15,19 @@ import com.projectkorra.probending.command.PBCommand;
 import com.projectkorra.probending.objects.Team;
 import com.projectkorra.projectkorra.Element;
 
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
 public class InviteCommand extends PBCommand {
-	
+
 	public InviteCommand() {
-		super ("team-invite", "/pb team invite <Player>", "Invite a player to your team.", new String[] {"invite", "i"}, true, Commands.teamaliases);
+		super("team-invite", "/pb team invite <Player> <Element>", "Invite a player to your team.",
+				new String[] { "invite", "i" }, true, Commands.teamaliases);
 	}
 
 	@Override
 	public void execute(CommandSender sender, List<String> args) {
-		if (!isPlayer(sender) || !hasTeamPermission(sender) || !correctLength(sender, args.size(), 2, 2)) {
+		if (!isPlayer(sender) || !hasTeamPermission(sender) || !correctLength(sender, args.size(), 3, 3)) {
 			return;
 		}
-		
+
 		UUID uuid = ((Player) sender).getUniqueId();
 		if (!PBMethods.playerInTeam(uuid)) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.PlayerNotInTeam);
@@ -52,63 +52,72 @@ public class InviteCommand extends PBCommand {
 			return;
 		}
 
-		if (!Commands.teamInvites.containsKey(player.getName())) {
-			Commands.teamInvites.put(player.getName(), new LinkedList<String>());
-		}
-
 		int maxSize = Probending.plugin.getConfig().getInt("TeamSettings.MaxTeamSize");
 		if (team.getSize() >= maxSize) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.MaxSizeReached);
 			return;
 		}
-		String playerElement = PBMethods.getPlayerElementAsString(player.getUniqueId());
 
-		if (playerElement == null) {
-			sender.sendMessage(PBMethods.Prefix + PBMethods.noBendingType);
+		Element element = Element.getType(args.get(2));
+		List<String> playerElements = PBMethods.getPlayerElementsAsString(player.getUniqueId());
+
+		if (element == null) {
 			return;
 		}
-		if (!PBMethods.getAirAllowed()) {
-			if (playerElement.equals("Air")) {
-				sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Airbenders"));
-				return;
-			}
-		}
-		if (!PBMethods.getWaterAllowed()) {
-			if (playerElement.equals("Water")) {
-				sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Waterbenders"));
-				return;
-			}
-		}
-		if (!PBMethods.getEarthAllowed()) {
-			if (playerElement.equals("Earth")) {
-				sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Earthbenders"));
-				return;
-			}
-		}
-		if (!PBMethods.getFireAllowed()) {
-			if (playerElement.equals("Fire")) {
-				sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Firebenders"));
-				return;
-			}
-		}
-		if (!PBMethods.getChiAllowed()) {
-			if (playerElement.equals("Chi")) {
-				sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Chiblockers"));
-				return;
-			}
-		}
-		Set<Element> elements = team.getElements();
-		if (elements != null) {
-			if (elements.contains(playerElement.toString())) {
-				sender.sendMessage(PBMethods.Prefix + PBMethods.TeamAlreadyHasElement);
-				return;
-			}
+
+		if (playerElements == null) {
+			player.sendMessage(PBMethods.Prefix + PBMethods.noBendingType);
+			return;
 		}
 
-		Commands.teamInvites.get(player.getName()).add(team.getName());
-		sender.sendMessage(PBMethods.Prefix + PBMethods.PlayerInviteSent.replace("%team", team.getName()).replace("%player", player.getName()));
-		player.sendMessage(PBMethods.Prefix + PBMethods.PlayerInviteReceived.replace("%team", team.getName()).replace("%player", player.getName()));
-		player.sendMessage(PBMethods.Prefix + PBMethods.InviteInstructions.replace("%team", team.getName()).replace("%player", player.getName()));
-		return;
+		for (String e : playerElements) {
+			if (Element.getType(e) == element) {
+				if (element == Element.Air) {
+					if (!PBMethods.getAirAllowed()) {
+						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Airbenders"));
+						return;
+					}
+				} else if (Element.getType(e) == Element.Water) {
+					if (!PBMethods.getWaterAllowed()) {
+						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Waterbenders"));
+						return;
+					}
+				} else if (Element.getType(e) == Element.Earth) {
+					if (!PBMethods.getEarthAllowed()) {
+						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Earthbenders"));
+						return;
+					}
+				} else if (Element.getType(e) == Element.Fire) {
+					if (!PBMethods.getFireAllowed()) {
+						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Firebenders"));
+						return;
+					}
+				} else if (Element.getType(e) == Element.Chi) {
+					if (!PBMethods.getAirAllowed()) {
+						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Chiblockers"));
+						return;
+					}
+				} else {
+					return;
+				}
+
+				Set<Element> elements = team.getElements();
+				if (elements != null) {
+					if (elements.contains(Element.getType(e))) {
+						sender.sendMessage(PBMethods.Prefix + PBMethods.TeamAlreadyHasElement);
+						return;
+					}
+				}
+
+				team.invites.put(player, Element.getType(e));
+				sender.sendMessage(PBMethods.Prefix
+						+ PBMethods.PlayerInviteSent.replace("%team", team.getName()).replace("%player", player.getName()));
+				player.sendMessage(PBMethods.Prefix
+						+ PBMethods.PlayerInviteReceived.replace("%team", team.getName()).replace("%player", player.getName()));
+				player.sendMessage(PBMethods.Prefix
+						+ PBMethods.InviteInstructions.replace("%team", team.getName()).replace("%player", player.getName()));
+				return;
+			}
+		}
 	}
 }
