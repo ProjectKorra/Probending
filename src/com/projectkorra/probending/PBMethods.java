@@ -655,6 +655,8 @@ public class PBMethods {
 	 * Player
 	 */
 	public static String noBendingType;
+	public static String multiBendingTypes;
+	public static String PlayerNotElement;
 	public static String PlayerAlreadyInTeam;
 	public static String ElementNotAllowed;
 	public static String PlayerNotInTeam;

@@ -6,6 +6,7 @@ import com.projectkorra.probending.command.Commands;
 import com.projectkorra.probending.command.PBCommand;
 import com.projectkorra.probending.objects.Team;
 import com.projectkorra.projectkorra.Element;
+import com.projectkorra.projectkorra.GeneralMethods;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -35,25 +36,26 @@ public class JoinCommand extends PBCommand {
 		Team team = PBMethods.getTeam(args.get(1));
 
 		if (!team.invites.containsKey(Bukkit.getPlayer(uuid))) {
+			sender.sendMessage(PBMethods.Prefix + PBMethods.NoInviteFromTeam);
 			return;
 		}
-		List<String> playerElements = PBMethods.getPlayerElementsAsString(uuid);
-
-		if (playerElements == null) {
+		
+		List<Element> elements = GeneralMethods.getBendingPlayer(sender.getName()).getElements();
+		if (elements.size() == 0) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.noBendingType);
 			return;
 		}
 
-		for (String e : playerElements) {
-			if (Element.getType(e) == team.invites.get(Bukkit.getPlayer(uuid))) {
-				Set<Element> elements = team.getElements();
-				if (elements != null) {
-					if (elements.contains(Element.getType(e))) {
+		for (Element e : elements) {
+			if (e == team.invites.get(Bukkit.getPlayer(uuid))) {
+				Set<Element> teamelements = team.getElements();
+				if (teamelements != null) {
+					if (teamelements.contains(e)) {
 						sender.sendMessage(PBMethods.Prefix + PBMethods.TeamAlreadyHasElement);
 						return;
 					}
-					if (!Probending.plugin.getConfig().getBoolean("TeamSettings.Allow" + Element.getType(e).toString())) {
-						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", Element.getType(e).toString()));
+					if (!Probending.plugin.getConfig().getBoolean("TeamSettings.Allow" + e.toString())) {
+						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", e.toString()));
 						return;
 					}
 					team.addPlayer(uuid, team.invites.get(Bukkit.getPlayer(uuid)));

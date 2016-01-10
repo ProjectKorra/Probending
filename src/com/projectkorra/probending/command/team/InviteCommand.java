@@ -14,17 +14,18 @@ import com.projectkorra.probending.command.Commands;
 import com.projectkorra.probending.command.PBCommand;
 import com.projectkorra.probending.objects.Team;
 import com.projectkorra.projectkorra.Element;
+import com.projectkorra.projectkorra.GeneralMethods;
 
 public class InviteCommand extends PBCommand {
 
 	public InviteCommand() {
-		super("team-invite", "/pb team invite <Player> <Element>", "Invite a player to your team.",
+		super("team-invite", "/pb team invite <Player> [Element]", "Invite a player to your team.",
 				new String[] { "invite", "i" }, true, Commands.teamaliases);
 	}
 
 	@Override
 	public void execute(CommandSender sender, List<String> args) {
-		if (!isPlayer(sender) || !hasTeamPermission(sender) || !correctLength(sender, args.size(), 3, 3)) {
+		if (!isPlayer(sender) || !hasTeamPermission(sender) || !correctLength(sender, args.size(), 2, 3)) {
 			return;
 		}
 
@@ -57,67 +58,73 @@ public class InviteCommand extends PBCommand {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.MaxSizeReached);
 			return;
 		}
+		
+		List<Element> elements = GeneralMethods.getBendingPlayer(player.getName()).getElements();
+		if (elements.size() == 0) {
+			sender.sendMessage(PBMethods.Prefix + PBMethods.noBendingType);
+			return;
+		}
 
-		Element element = Element.getType(args.get(2));
-		List<String> playerElements = PBMethods.getPlayerElementsAsString(player.getUniqueId());
+		String element = null;
+		if (elements.size() > 0) {
+			if (args.size() == 3) {
+				element = args.get(2);
+				if (!elements.contains(Element.getType(element))) {
+					sender.sendMessage(PBMethods.Prefix + PBMethods.PlayerNotElement);
+					return;
+				}
+			} else {
+				sender.sendMessage(PBMethods.Prefix + PBMethods.multiBendingTypes);
+				return;
+			}
+		} else {
+			element = elements.get(0).name();
+		}
 
 		if (element == null) {
 			return;
 		}
 
-		if (playerElements == null) {
-			player.sendMessage(PBMethods.Prefix + PBMethods.noBendingType);
+		if (!PBMethods.getAirAllowed() && element.equalsIgnoreCase("Air")) {
+			sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Airbenders"));
 			return;
 		}
 
-		for (String e : playerElements) {
-			if (Element.getType(e) == element) {
-				if (Element.getType(e) == Element.Air) {
-					if (!PBMethods.getAirAllowed()) {
-						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Airbenders"));
-						return;
-					}
-				} else if (Element.getType(e) == Element.Water) {
-					if (!PBMethods.getWaterAllowed()) {
-						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Waterbenders"));
-						return;
-					}
-				} else if (Element.getType(e) == Element.Earth) {
-					if (!PBMethods.getEarthAllowed()) {
-						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Earthbenders"));
-						return;
-					}
-				} else if (Element.getType(e) == Element.Fire) {
-					if (!PBMethods.getFireAllowed()) {
-						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Firebenders"));
-						return;
-					}
-				} else if (Element.getType(e) == Element.Chi) {
-					if (!PBMethods.getChiAllowed()) {
-						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Chiblockers"));
-						return;
-					}
-				} else {
-					return;
-				}
+		if (!PBMethods.getWaterAllowed() && element.equalsIgnoreCase("Water")) {
+			sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Waterbenders"));
+			return;
+		}
 
-				Set<Element> elements = team.getElements();
-				if (elements != null) {
-					if (elements.contains(Element.getType(e))) {
-						sender.sendMessage(PBMethods.Prefix + PBMethods.TeamAlreadyHasElement);
-						return;
-					}
-				}
+		if (!PBMethods.getEarthAllowed() && element.equalsIgnoreCase("Earth")) {
+			sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Earthbenders"));
+			return;
+		}
 
-				team.invites.put(player, Element.getType(e));
-				sender.sendMessage(PBMethods.Prefix
-						+ PBMethods.PlayerInviteSent.replace("%team", team.getName()).replace("%player", player.getName()));
-				player.sendMessage(PBMethods.Prefix
-						+ PBMethods.PlayerInviteReceived.replace("%team", team.getName()).replace("%player", player.getName()));
-				player.sendMessage(PBMethods.Prefix
-						+ PBMethods.InviteInstructions.replace("%team", team.getName()).replace("%player", player.getName()));
+		if (!PBMethods.getFireAllowed() && element.equalsIgnoreCase("Fire")) {
+			sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Firebenders"));
+			return;
+		}
+
+		if (!PBMethods.getChiAllowed() && element.equalsIgnoreCase("Chi")) {
+			sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", "Chiblockers"));
+			return;
+		}
+
+		Set<Element> teamelements = team.getElements();
+		if (teamelements != null) {
+			if (teamelements.contains(Element.getType(element))) {
+				sender.sendMessage(PBMethods.Prefix + PBMethods.TeamAlreadyHasElement);
 				return;
 			}
 		}
+
+		team.invites.put(player, Element.getType(element));
+		sender.sendMessage(PBMethods.Prefix
+				+ PBMethods.PlayerInviteSent.replace("%team", team.getName()).replace("%player", player.getName()));
+		player.sendMessage(PBMethods.Prefix
+				+ PBMethods.PlayerInviteReceived.replace("%team", team.getName()).replace("%player", player.getName()));
+		player.sendMessage(PBMethods.Prefix
+				+ PBMethods.InviteInstructions.replace("%team", team.getName()).replace("%player", player.getName()));
+		return;
 	}
 }
