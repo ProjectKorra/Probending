@@ -31,6 +31,7 @@ public class StopCommand extends PBCommand {
 		
 		Round round = PBMethods.getRoundAtArena(arena);
 		for (Player player: round.getRoundPlayers()) {
+			player.teleport(round.getArena().getSpectatorSpawn());
 			PBMethods.restoreArmor(player);
 			round.stop();
 		}
