@@ -42,7 +42,7 @@ public class Team {
 	}
 
 	public boolean isOwner(UUID uuid) {
-		if (this.owner == uuid) return true;
+		if (this.owner.equals(uuid)) return true;
 		return false;
 	}
 	public String getName() {
@@ -94,7 +94,7 @@ public class Team {
 	public Set<Player> getOnlinePlayers() {
 		Set<Player> players = new HashSet<Player>();
 		for (Player player: Bukkit.getOnlinePlayers()) {
-			if (PBMethods.players.containsKey(player.getUniqueId())) {
+			if (PBMethods.players.containsKey(player.getUniqueId().toString())) {
 				if (PBMethods.getPlayerTeam(player.getUniqueId()).getName().equalsIgnoreCase(this.getName())) {
 					players.add(player);
 				}
