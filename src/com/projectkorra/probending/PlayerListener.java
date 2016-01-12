@@ -21,7 +21,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -43,25 +42,6 @@ public class PlayerListener implements Listener {
 		this.plugin = plugin;
 	}
 
-	@EventHandler(priority = EventPriority.LOW) 
-	public void onPlayerInteract(PlayerInteractEvent e) {
-		Player p = e.getPlayer();
-		List<String> allowedMoves = Probending.plugin.getConfig().getStringList("TeamSettings.AllowedMoves");
-		if (PBMethods.isPlayerInRound(p)) {
-			Round round = PBMethods.getPlayerRound(p);
-			if (!allowedMoves.contains(GeneralMethods.getBoundAbility(p).toString()) && GeneralMethods.getBoundAbility(p) != null) {
-				p.sendMessage(PBMethods.Prefix + PBMethods.MoveNotAllowed.replace("%ability", GeneralMethods.getBoundAbility(p).toString()));
-				e.setCancelled(true); // Cancels bending if the bound ability is not on the allowed ability list.
-			}
-			Set<String> regions = PBMethods.RegionsAtLocation(p.getLocation());
-			if (regions != null && !regions.isEmpty()) {
-				if (!regions.contains(round.getAllowedZone(p))) { // Cancels Bending if the player is not in the right zone.
-					e.setCancelled(true);
-				}
-			}
-		}
-	}
-
 	/**
 	 * Removes damage if the player is in a Probending Round.
 	 * @param e
@@ -79,7 +59,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerShift(PlayerToggleSneakEvent e) {
 		Player p = e.getPlayer();
-		List<String> allowedMoves = Probending.plugin.getConfig().getStringList("TeamSettings.AllowedMoves");
+		List<String> allowedMoves = Probending.plugin.getConfig().getStringList("RoundSettings.AllowedMoves");
 		if (PBMethods.isPlayerInRound(p)) {
 			Round round = PBMethods.getPlayerRound(p);
 			if (!allowedMoves.contains(GeneralMethods.getBoundAbility(p).toString()) && GeneralMethods.getBoundAbility(p) != null) {
@@ -97,7 +77,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerAnimation(PlayerAnimationEvent e) {
 		Player p = e.getPlayer();
-		List<String> allowedMoves = Probending.plugin.getConfig().getStringList("TeamSettings.AllowedMoves");
+		List<String> allowedMoves = Probending.plugin.getConfig().getStringList("RoundSettings.AllowedMoves");
 		if (PBMethods.isPlayerInRound(p)) {
 			Round round = PBMethods.getPlayerRound(p);
 			if (!allowedMoves.contains(GeneralMethods.getBoundAbility(p).toString()) && GeneralMethods.getBoundAbility(p) != null) {
@@ -117,7 +97,12 @@ public class PlayerListener implements Listener {
 		Player p = e.getPlayer();
 
 		if (PBMethods.isPlayerInRound(p)) {
+			Arena a = PBMethods.getPlayerRound(p).getArena();
+			if (e.getTo() == a.getSpectatorSpawn() || e.getTo() == a.getTeamOneSpawn() || e.getTo() == a.getTeamTwoSpawn()) {
+				return;
+			}
 			p.sendMessage(PBMethods.Prefix + PBMethods.CantTeleportDuringMatch);
+			e.setCancelled(true);
 		}
 	}
 
@@ -172,15 +157,18 @@ public class PlayerListener implements Listener {
 				if (toRegions.contains(divider) && !zone.equalsIgnoreCase(divider)) {
 					if (fromRegions.contains(t1z1) && zone.equalsIgnoreCase(t1z1)) {
 						if (team == round.getTeamOne()) { // The player is stepping on the divider from Team 1 Zone 1 and is on Team One
+							if (round.getAllowedZone(p) == t2z1) {
+								return;
+							}
 							round.setAllowedZone(p, t1z2);
-							PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)));
+							PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)), round);
 							if (round.isZoneEmpty(round.getTeamOne(), t1z1)) {
 								round.movePlayersUp(round.getTeamTwo());
 							}
 						}
 						if (team == round.getTeamTwo()) {
 							round.setAllowedZone(p, t2z1);
-							PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)));
+							PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)), round);
 							if (round.isZoneEmpty(round.getTeamTwo(), t1z1) && round.isZoneEmpty(round.getTeamTwo(), t1z2)) {
 								round.movePlayersUp(round.getTeamOne());
 							}
@@ -189,14 +177,17 @@ public class PlayerListener implements Listener {
 					if (fromRegions.contains(t2z1) && zone.equalsIgnoreCase(t2z1)) {
 						if (team == round.getTeamOne()) {
 							round.setAllowedZone(p, t1z1);
-							PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)));
+							PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)), round);
 							if (round.isZoneEmpty(round.getTeamOne(), t2z1) && round.isZoneEmpty(round.getTeamOne(), t2z2)) {
 								round.movePlayersUp(round.getTeamTwo());
 							}
 						}
 						if (team == round.getTeamTwo()) {
+							if (round.getAllowedZone(p) == t1z1) {
+								return;
+							}
 							round.setAllowedZone(p, t2z2);
-							PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)));
+							PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)), round);
 							if (round.isZoneEmpty(round.getTeamTwo(), t2z1) && round.isZoneEmpty(round.getTeamTwo(), t1z1)) {
 								round.movePlayersUp(round.getTeamOne());
 							}
@@ -209,7 +200,7 @@ public class PlayerListener implements Listener {
 					if (fromRegions.contains(t2z2) && zone.equalsIgnoreCase(t2z2)) { // They are coming from t2z2, that's where they were supposed to be. FOUL.
 						if (PBMethods.getPlayerTeam(p.getUniqueId()) == round.getTeamOne()) {
 							round.setAllowedZone(p, t2z1); // Move them back to team 2 zone 1.
-							PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)));
+							PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)), round);
 							if (round.isZoneEmpty(round.getTeamOne(), t2z2) && round.isZoneEmpty(round.getTeamOne(), t2z1)) {
 								// There are no team one players in t2z2 or t2z1
 								round.movePlayersUp(round.getTeamTwo());
@@ -217,7 +208,7 @@ public class PlayerListener implements Listener {
 						}
 						if (PBMethods.getPlayerTeam(p.getUniqueId()) == round.getTeamTwo()) {
 							round.setAllowedZone(p, t2z3);
-							PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)));
+							PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)), round);
 							if (round.isZoneEmpty(round.getTeamTwo(), t2z2)) {
 								round.movePlayersUp(round.getTeamOne());
 							}
@@ -230,14 +221,14 @@ public class PlayerListener implements Listener {
 					if (fromRegions.contains(t1z2) && round.getAllowedZone(p).equalsIgnoreCase(t1z2)) {
 						if (team == round.getTeamOne()) {
 							round.setAllowedZone(p, t1z3);
-							PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)));
+							PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)), round);
 							if (round.isZoneEmpty(round.getTeamOne(), t1z2) && round.isZoneEmpty(round.getTeamOne(), t1z1)) {
 								round.movePlayersUp(round.getTeamTwo());
 							}
 						}
 						if (team == round.getTeamTwo()) {
 							round.setAllowedZone(p, t1z1);
-							PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)));
+							PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)), round);
 							if (round.isZoneEmpty(round.getTeamTwo(), t1z2)) {
 								round.movePlayersUp(round.getTeamOne());
 							}
@@ -249,14 +240,14 @@ public class PlayerListener implements Listener {
 				if (fromRegions.contains(t1z1) && round.getAllowedZone(p).equalsIgnoreCase(t1z1)) {
 					if (team == round.getTeamOne()) {
 						round.setAllowedZone(p, t1z2);
-						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)));
+						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)), round);
 						if (round.isZoneEmpty(round.getTeamOne(), t1z1)) {
 							round.movePlayersUp(round.getTeamTwo());
 						}
 					}
 					if (team == round.getTeamTwo()) {
 						round.setAllowedZone(p, t2z1);
-						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)));
+						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)), round);
 						if (round.isZoneEmpty(round.getTeamTwo(), t1z1) && round.isZoneEmpty(round.getTeamTwo(), t1z2)) {
 							round.movePlayersUp(round.getTeamOne());
 						}
@@ -270,14 +261,14 @@ public class PlayerListener implements Listener {
 				if (fromRegions.contains(t2z1) && round.getAllowedZone(p).equals(t2z1)) {
 					if (team == round.getTeamTwo()) {
 						round.setAllowedZone(p, t2z2);
-						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)));
+						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)), round);
 						if (round.isZoneEmpty(round.getTeamTwo(), t2z1) && round.isZoneEmpty(round.getTeamTwo(), t1z1)) {
 							round.movePlayersUp(round.getTeamOne());
 						}
 					}
 					if (team == round.getTeamOne()) {
 						round.setAllowedZone(p, t1z1); 
-						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)));
+						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)), round);
 						if (round.isZoneEmpty(round.getTeamOne(), t2z1) && round.isZoneEmpty(round.getTeamOne(), t2z2)) {
 							round.movePlayersUp(round.getTeamTwo());
 						}
@@ -293,14 +284,14 @@ public class PlayerListener implements Listener {
 				if (fromRegions.contains(t2z2) && zone.equalsIgnoreCase(t2z2)) {
 					if (team == round.getTeamTwo()) {
 						round.setAllowedZone(p, t2z3);
-						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)));
+						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)), round);
 						if (round.isZoneEmpty(round.getTeamTwo(), t2z2) && round.isZoneEmpty(round.getTeamTwo(), t2z1)) {
 							round.movePlayersUp(round.getTeamOne());
 						}
 					}
 					if (team == round.getTeamOne()) {
 						round.setAllowedZone(p, t2z1);
-						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)));
+						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)), round);
 						if (round.isZoneEmpty(round.getTeamOne(), t2z2) && round.isZoneEmpty(round.getTeamOne(), t2z1)) {
 							round.movePlayersUp(round.getTeamTwo());
 						}
@@ -310,14 +301,14 @@ public class PlayerListener implements Listener {
 				if (fromRegions.contains(t1z1) && zone.equalsIgnoreCase(t1z1)) {
 					if (team == round.getTeamOne()) {
 						round.setAllowedZone(p, t1z2);
-						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)));
+						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)), round);
 						if (round.isZoneEmpty(round.getTeamOne(), t1z1)) {
 							round.movePlayersUp(round.getTeamTwo());
 						}
 					}
 					if (team == round.getTeamTwo()) {
 						round.setAllowedZone(p, t2z1);
-						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)));
+						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)), round);
 						if (round.isZoneEmpty(round.getTeamTwo(), t1z1)) {
 							round.movePlayersUp(round.getTeamOne());
 						}
@@ -328,14 +319,14 @@ public class PlayerListener implements Listener {
 				if (fromRegions.contains(t1z2) && zone.equalsIgnoreCase(t1z2)) {
 					if (team == round.getTeamOne()) {
 						round.setAllowedZone(p, t1z3);
-						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)));
+						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)), round);
 						if (round.isZoneEmpty(round.getTeamOne(), t1z2)) {
 							round.movePlayersUp(round.getTeamTwo());
 						}
 					}
 					if (team == round.getTeamTwo()) {
 						round.setAllowedZone(p, t1z1);
-						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)));
+						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)), round);
 						if (round.isZoneEmpty(round.getTeamTwo(), t1z2)) {
 							round.movePlayersUp(round.getTeamOne());
 						}
@@ -344,14 +335,14 @@ public class PlayerListener implements Listener {
 				if (fromRegions.contains(t2z1) && zone.equalsIgnoreCase(t2z1)) {
 					if (team == round.getTeamOne()) {
 						round.setAllowedZone(p, t1z1);
-						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)));
+						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)), round);
 						if (round.isZoneEmpty(round.getTeamOne(), t2z1) && round.isZoneEmpty(round.getTeamOne(), t2z2)) {
 							round.movePlayersUp(round.getTeamTwo());
 						}
 					}
 					if (team == round.getTeamTwo()) {
 						round.setAllowedZone(p, t2z2);
-						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)));
+						PBMethods.sendPBChat(PBMethods.PlayerFouled.replace("%player", p.getName()).replace("%zone", round.getAllowedZone(p)), round);
 						if (round.isZoneEmpty(round.getTeamTwo(), t2z1)) {
 							round.movePlayersUp(round.getTeamOne());
 						}
