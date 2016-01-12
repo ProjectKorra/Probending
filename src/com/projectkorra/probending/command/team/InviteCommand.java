@@ -66,7 +66,7 @@ public class InviteCommand extends PBCommand {
 		}
 
 		String element = null;
-		if (elements.size() > 0) {
+		if (elements.size() > 1) {
 			if (args.size() == 3) {
 				element = args.get(2);
 				if (!elements.contains(Element.getType(element))) {

@@ -1,5 +1,6 @@
 package com.projectkorra.probending.command.arena;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -13,7 +14,7 @@ import com.projectkorra.probending.objects.Arena;
 public class ArenaListCommand extends PBCommand {
 
 	public ArenaListCommand() {
-		super ("arena-list", "/pb arena list", "Lists all arenas on this server.", new String[] {"list, l"}, true, Commands.arenaaliases);
+		super ("arena-list", "/pb arena list", "Lists all arenas on this server.", new String[] {"list", "l"}, true, Commands.arenaaliases);
 	}
 
 	@Override
@@ -22,8 +23,14 @@ public class ArenaListCommand extends PBCommand {
 			return;
 		}
 		
-		sender.sendMessage(PBMethods.Prefix + ChatColor.GOLD + "List of Probending Arenas");
-		sender.sendMessage(Arena.arenas.keySet().toString());
+		List<String> arenas = new ArrayList<String>();
+		arenas.addAll(Arena.arenas.keySet());
+		if (arenas.isEmpty()) {
+			sender.sendMessage(PBMethods.Prefix + ChatColor.RED + "There are no Probending Arenas!");
+		} else {
+			sender.sendMessage(PBMethods.Prefix + ChatColor.GOLD + "List of Probending Arenas: ");
+			sender.sendMessage(ChatColor.GREEN + arenas.toString().replace("[", "").replace("]", ""));
+		}
 		return;
 	}
 }

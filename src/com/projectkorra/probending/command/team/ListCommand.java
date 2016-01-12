@@ -25,9 +25,10 @@ public class ListCommand extends PBCommand {
 		List<String> teams = new ArrayList<String>();
 		teams.addAll(PBMethods.getTeams().keySet());
 		if (teams.isEmpty()) {
-			sender.sendMessage(ChatColor.RED + "There are no Probending teams!");
+			sender.sendMessage(PBMethods.Prefix + ChatColor.RED + "There are no Probending Teams!");
 		} else {
-			sender.sendMessage(ChatColor.RED + "Teams: " + ChatColor.GREEN + teams.toString().replace("[", "").replace("]", ""));
+			sender.sendMessage(PBMethods.Prefix + ChatColor.GOLD + "List of Probending Teams: ");
+			sender.sendMessage(ChatColor.GREEN + teams.toString().replace("[", "").replace("]", ""));
 		}
 		return;
 	}

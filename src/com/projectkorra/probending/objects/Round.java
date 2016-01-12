@@ -1,16 +1,16 @@
 package com.projectkorra.probending.objects;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import com.projectkorra.probending.PBMethods;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import com.projectkorra.probending.PBMethods;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Round {
 
@@ -43,6 +43,7 @@ public class Round {
 		this.countdownLength = 5000;
 		this.roundDuration = 180000;
 		this.currTime = System.currentTimeMillis();
+		this.roundStartTime = System.currentTimeMillis();
 		allowedZone = new HashMap<Player, String>();
 
 		rounds.put(this.uuid, this);
@@ -150,6 +151,7 @@ public class Round {
 		PBMethods.sendPBChat(PBMethods.Prefix + PBMethods.PlayerEliminated.replace("%player", player.getName()));
 		this.allowedZone.remove(player);
 		PBMethods.restoreArmor(player);
+		Bukkit.broadcastMessage("Eliminating Player");
 		player.teleport(arena.getSpectatorSpawn());
 		if (this.teamOnePlayers.contains(player)) {
 			this.teamOnePlayers.remove(player);
@@ -188,7 +190,7 @@ public class Round {
 	}
 
 	public long getStartTime() {
-		return this.getStartTime();
+		return this.roundStartTime;
 	}
 
 	public long getRoundDuration() {
@@ -210,7 +212,7 @@ public class Round {
 					continue;
 				}
 			}
-			if (round.getStartTime() + round.getRoundDuration() >= System.currentTimeMillis()) {
+			if (round.getStartTime() + round.getRoundDuration() <= System.currentTimeMillis()) {
 				for (Player player: round.getRoundPlayers()) {
 					player.teleport(round.getArena().getSpectatorSpawn());
 					PBMethods.restoreArmor(player);

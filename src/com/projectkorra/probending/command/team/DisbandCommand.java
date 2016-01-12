@@ -51,10 +51,10 @@ public class DisbandCommand extends PBCommand {
 		for (UUID playeruuid : team.getPlayerUUIDs()) {
 			if (PBMethods.getPlayerTeam(playeruuid) == null) continue;
 			if (PBMethods.getPlayerTeam(playeruuid) == team) {
-				sender.sendMessage(PBMethods.Prefix + PBMethods.TeamDisbanded.replace("%team", team.getName()));
 				team.removePlayer(playeruuid);
 			}
 		}
+		sender.sendMessage(PBMethods.Prefix + PBMethods.TeamDisbanded.replace("%team", team.getName()));
 		
 		team.delete();
 		return;
