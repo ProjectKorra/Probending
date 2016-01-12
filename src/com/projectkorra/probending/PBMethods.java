@@ -229,14 +229,6 @@ public class PBMethods {
 		return regions;
 
 	}
-
-	/**
-	 * Sends a message in the Probending Chat channel.
-	 * @param message The message to send.
-	 */
-	//public static void sendPBChat(String message) {
-	//	sendPBChat(message, null);
-	//}
 	
 	/**
 	 * Sends a message in the Probending Chat channel.
