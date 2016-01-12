@@ -555,16 +555,6 @@ public class PBMethods {
 	}
 
 	/**
-	 * Adds color to a message. Replacing the & symbol with the appropriate color.
-	 * @param message The message to add color to.
-	 * @return The message with color.
-	 */
-	public static String colorize(String message) {
-		return message.replaceAll("(?i)&([a-fk-or0-9])", "\u00A7$1");
-	}
-
-
-	/**
 	 * Returns a ConcurrentHashMap of Probending teams.
 	 * The Key is the String name of the team.
 	 * The Value is the Team Object.
