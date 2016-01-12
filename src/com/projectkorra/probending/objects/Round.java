@@ -2,8 +2,6 @@ package com.projectkorra.probending.objects;
 
 import com.projectkorra.probending.PBMethods;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -100,46 +98,49 @@ public class Round {
 
 	public void movePlayersUp(Team team) {
 		for (Player player: getRoundPlayers()) {
+			if (!team.getPlayerUUIDs().contains(player.getUniqueId())) {
+				continue;
+			}
 			String zone = getAllowedZone(player);
 			if (this.teamOnePlayers.contains(player)) {
-				if (zone.equalsIgnoreCase(arena.getTeamOneZoneOne())) {
+				if (zone.equalsIgnoreCase(arena.getTeamOneZoneOne())) { //Move player from t1z1 to t2z1
 					setAllowedZone(player, arena.getTeamTwoZoneOne());
 					player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", getAllowedZone(player)));
 					continue;
 				}
-				if (zone.equalsIgnoreCase(arena.getTeamTwoZoneOne())) {
+				if (zone.equalsIgnoreCase(arena.getTeamTwoZoneOne())) { //Move player from t2z1 to t2z2
 					setAllowedZone(player, arena.getTeamTwoZoneTwo());
 					player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", getAllowedZone(player)));
 					continue;
 				}
-				if (zone.equalsIgnoreCase(arena.getTeamOneZoneTwo())) {
+				if (zone.equalsIgnoreCase(arena.getTeamOneZoneTwo())) { //Move player from t1z2 to t1z1
 					setAllowedZone(player, arena.getTeamOneZoneOne());
 					player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", getAllowedZone(player)));
 					continue;
 				}
-				if (zone.equalsIgnoreCase(arena.getTeamOneZoneThree())) {
+				if (zone.equalsIgnoreCase(arena.getTeamOneZoneThree())) { //Move player from t1z3 to t1z2
 					setAllowedZone(player, arena.getTeamOneZoneTwo());
 					player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", getAllowedZone(player)));
 					continue;
 				}
 			}
 			if (this.teamTwoPlayers.contains(player)) {
-				if (zone.equalsIgnoreCase(arena.getTeamTwoZoneOne())) {
+				if (zone.equalsIgnoreCase(arena.getTeamTwoZoneOne())) { //Move player from t2z1 to t1z1
 					setAllowedZone(player, arena.getTeamOneZoneOne());
 					player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", getAllowedZone(player)));
 					continue;
 				}
-				if (zone.equalsIgnoreCase(arena.getTeamTwoZoneTwo())) {
+				if (zone.equalsIgnoreCase(arena.getTeamTwoZoneTwo())) { //Move player from t2z2 to t2z1
 					setAllowedZone(player, arena.getTeamTwoZoneOne());
 					player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", getAllowedZone(player)));
 					continue;
 				}
-				if (zone.equalsIgnoreCase(arena.getTeamTwoZoneThree())) {
+				if (zone.equalsIgnoreCase(arena.getTeamTwoZoneThree())) { //Move player from t2z3 to t2z2
 					setAllowedZone(player, arena.getTeamTwoZoneTwo());
 					player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", getAllowedZone(player)));
 					continue;
 				}
-				if (zone.equalsIgnoreCase(arena.getTeamOneZoneOne())) {
+				if (zone.equalsIgnoreCase(arena.getTeamOneZoneOne())) { //Move player from t1z1 to t1z2
 					setAllowedZone(player, arena.getTeamOneZoneTwo());
 					player.sendMessage(PBMethods.Prefix + PBMethods.MoveUpOneZone.replace("%zone", getAllowedZone(player)));
 					continue;
@@ -148,18 +149,18 @@ public class Round {
 		}
 	}
 	public void eliminatePlayer(Player player) {
-		PBMethods.sendPBChat(PBMethods.Prefix + PBMethods.PlayerEliminated.replace("%player", player.getName()));
+		PBMethods.sendPBChat(PBMethods.PlayerEliminated.replace("%player", player.getName()), this);
 		this.allowedZone.remove(player);
 		PBMethods.restoreArmor(player);
-		Bukkit.broadcastMessage("Eliminating Player");
 		player.teleport(arena.getSpectatorSpawn());
 		if (this.teamOnePlayers.contains(player)) {
 			this.teamOnePlayers.remove(player);
 			if (this.teamOnePlayers.isEmpty()) { // Team Two has won.
 				getTeamTwo().addWin();
 				getTeamOne().addLoss();
-				PBMethods.sendPBChat(PBMethods.RoundStopped);
-				PBMethods.sendPBChat(PBMethods.TeamWon.replace("%team", getTeamOne().getName()));
+				PBMethods.sendPBChat(PBMethods.RoundStopped.replace("%arena", arena.getName()), null);
+				PBMethods.sendPBChat(PBMethods.TeamWon.replace("%team1", getTeamTwo().getName()).replace("%team2", getTeamOne().getName()), null);
+				endRound();
 			}
 
 		}
@@ -168,8 +169,9 @@ public class Round {
 			if (this.teamTwoPlayers.isEmpty()) { // Team One has won
 				getTeamOne().addWin();
 				getTeamTwo().addLoss();
-				PBMethods.sendPBChat(PBMethods.RoundStopped);
-				PBMethods.sendPBChat(PBMethods.TeamWon.replace("%team", getTeamTwo().getName()));
+				PBMethods.sendPBChat(PBMethods.RoundStopped.replace("%arena", arena.getName()), null);
+				PBMethods.sendPBChat(PBMethods.TeamWon.replace("%team1", getTeamOne().getName()).replace("%team2", getTeamTwo().getName()), null);
+				endRound();
 			}
 		}
 	}
@@ -207,18 +209,26 @@ public class Round {
 			if (round.isOnCountdown) {
 				if (System.currentTimeMillis() <= round.getTimeCreated() + round.getCountdownLength()) {
 					round.isOnCountdown = false;
-					PBMethods.sendPBChat(PBMethods.Prefix + ChatColor.GREEN + "The round has officially started.");
+					PBMethods.sendPBChat(PBMethods.RoundStarted
+							.replace("%team1", round.getTeamOne().getName())
+							.replace("%team2", round.getTeamTwo().getName())
+							.replace("%seconds", String.valueOf(round.getRoundDuration()/1000)), null);
 					round.setStartTime(System.currentTimeMillis());
 					continue;
 				}
 			}
 			if (round.getStartTime() + round.getRoundDuration() <= System.currentTimeMillis()) {
-				for (Player player: round.getRoundPlayers()) {
-					player.teleport(round.getArena().getSpectatorSpawn());
-					PBMethods.restoreArmor(player);
-				}
+				round.endRound();
 			}
 		}
+	}
+	
+	public void endRound() {
+		for (Player player: getRoundPlayers()) {
+			player.teleport(getArena().getSpectatorSpawn());
+			PBMethods.restoreArmor(player);
+		}
+		stop();
 	}
 	
 	public void stop() {
