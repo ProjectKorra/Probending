@@ -13,7 +13,7 @@ import com.projectkorra.probending.objects.Arena;
 public class ArenaSetZoneCommand extends PBCommand {
 	
 	public ArenaSetZoneCommand() {
-		super ("arena-setzone", "/pb arena setzone [Arena] [Zone] [Region]", "Sets the specified zone to the specified region.", new String[] {"setzone", "sz"}, true, Commands.arenaaliases);
+		super ("arena-setzone", "/pb arena setzone <Arena> <Zone> <Region>", "Sets the specified zone to the specified region.", new String[] {"setzone", "sz"}, true, Commands.arenaaliases);
 	}
 
 	@Override

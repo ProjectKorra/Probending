@@ -16,7 +16,7 @@ import com.projectkorra.probending.objects.Arena;
 public class ArenaSetWorldCommand extends PBCommand {
 
 	public ArenaSetWorldCommand() {
-		super ("arena-setworld", "/pb arena setworld [Arena] [World]", "Sets the world an arena is located in.", new String[] {"setworld", "sw"}, true, Commands.arenaaliases);
+		super ("arena-setworld", "/pb arena setworld <Arena> [World]", "Sets the world an arena is located in.", new String[] {"setworld", "sw"}, true, Commands.arenaaliases);
 	}
 
 	@Override

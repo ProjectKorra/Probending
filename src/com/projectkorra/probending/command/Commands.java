@@ -1,8 +1,8 @@
 package com.projectkorra.probending.command;
 
 import com.projectkorra.probending.Probending;
-import com.projectkorra.probending.command.arena.ArenaCreate;
-import com.projectkorra.probending.command.arena.ArenaDelete;
+import com.projectkorra.probending.command.arena.ArenaCreateCommand;
+import com.projectkorra.probending.command.arena.ArenaDeleteCommand;
 import com.projectkorra.probending.command.arena.ArenaListCommand;
 import com.projectkorra.probending.command.arena.ArenaSetSpawnCommand;
 import com.projectkorra.probending.command.arena.ArenaSetWorldCommand;
@@ -71,12 +71,12 @@ public class Commands {
 		new ReloadCommand();
 	
 		//Arena Commands
-		new ArenaDelete();
+		new ArenaDeleteCommand();
 		new ArenaSetWorldCommand();
 		new ArenaSetSpawnCommand();
 		new ArenaSetZoneCommand();
 		new ArenaListCommand();
-		new ArenaCreate();
+		new ArenaCreateCommand();
 		
 		//Team Commands
 		new AddWinCommand();
