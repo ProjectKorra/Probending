@@ -229,14 +229,15 @@ public class PBMethods {
 		return regions;
 
 	}
-
+	
 	/**
 	 * Sends a message in the Probending Chat channel.
 	 * @param message The message to send.
 	 */
-	public static void sendPBChat(String message) {
+	public static void sendPBChat(String message, Round round) {
 		for (Player player: Bukkit.getOnlinePlayers()) {
 			if (Commands.pbChat.contains(player)) {
+				if (round != null && !round.getRoundPlayers().contains(player)) continue;
 				player.sendMessage(PBMethods.Prefix + message);
 			}
 		}
@@ -328,6 +329,11 @@ public class PBMethods {
 		UUID chiblocker = null;
 		try {
 			while (rs2.next()) {
+				airbender = null;
+				waterbender = null;
+				earthbender = null;
+				firebender = null;
+				chiblocker = null;
 				String name = rs2.getString("team");
 				UUID owner = UUID.fromString(rs2.getString("owner"));
 				if (rs2.getString("Air") != null) {
@@ -335,7 +341,7 @@ public class PBMethods {
 				}
 				
 				if (rs2.getString("Water") != null) {
-					airbender = UUID.fromString(rs2.getString("Water"));
+					waterbender = UUID.fromString(rs2.getString("Water"));
 				}
 				
 				if (rs2.getString("Earth") != null) {
@@ -549,16 +555,6 @@ public class PBMethods {
 	}
 
 	/**
-	 * Adds color to a message. Replacing the & symbol with the appropriate color.
-	 * @param message The message to add color to.
-	 * @return The message with color.
-	 */
-	public static String colorize(String message) {
-		return message.replaceAll("(?i)&([a-fk-or0-9])", "\u00A7$1");
-	}
-
-
-	/**
 	 * Returns a ConcurrentHashMap of Probending teams.
 	 * The Key is the String name of the team.
 	 * The Value is the Team Object.
@@ -668,6 +664,9 @@ public class PBMethods {
 	public static String YouHaveBeenBooted;
 	public static String YouHaveQuit;
 	public static String RemovedFromTeamBecauseDifferentElement;
+	public static String RemovedFromTeamBecauseNoElement;
+	public static String ElementChanged;
+	public static String PlayerAddedElement;
 	
 	/*
 	 * Team

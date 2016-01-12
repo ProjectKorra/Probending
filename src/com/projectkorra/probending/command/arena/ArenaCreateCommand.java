@@ -9,10 +9,10 @@ import com.projectkorra.probending.PBMethods;
 import com.projectkorra.probending.command.Commands;
 import com.projectkorra.probending.command.PBCommand;
 
-public class ArenaCreate extends PBCommand {
+public class ArenaCreateCommand extends PBCommand {
 	
-	public ArenaCreate() {
-		super ("arena-create", "/pb arena create [Arena] <Team1 Color> <Team2 Color>", "Creates a new arena.", new String[] {"create", "c"}, true, Commands.arenaaliases);
+	public ArenaCreateCommand() {
+		super ("arena-create", "/pb arena create <Arena> [Team1 Color] [Team2 Color]", "Creates a new arena.", new String[] {"create", "c"}, true, Commands.arenaaliases);
 	}
 
 	@Override
@@ -21,8 +21,8 @@ public class ArenaCreate extends PBCommand {
 			return;
 		}
 		if (args.size() == 3) {
-			sender.sendMessage(ChatColor.GOLD + "Proper Usage: " + ChatColor.DARK_AQUA + "/pb create [Arena] <Team1 Color> <Team2 Color>");
-			sender.sendMessage(ChatColor.GOLD + "Note: " + ChatColor.DARK_AQUA + "/pb create [Arena] " + ChatColor.GREEN + " will create an arena with the default colors of Red (Team One) and Cyan (Team 2).");
+			sender.sendMessage(ChatColor.GOLD + "Proper Usage: " + ChatColor.DARK_AQUA + "/pb create <Arena> [Team1 Color] [Team2 Color]");
+			sender.sendMessage(ChatColor.GOLD + "Note: " + ChatColor.DARK_AQUA + "/pb create <Arena> " + ChatColor.GREEN + " will create an arena with the default colors of Red (Team One) and Cyan (Team 2).");
 			return;
 		}
 		
@@ -58,7 +58,7 @@ public class ArenaCreate extends PBCommand {
 		
 		PBMethods.createArena(arena, teamOne, teamTwo);
 		sender.sendMessage(ChatColor.GREEN + "Created an arena named " + arena + ".");
-		sender.sendMessage(ChatColor.GREEN + "Use /pb arena setworld [Arena] [World] to set the world this arena is located in.");
+		sender.sendMessage(ChatColor.GREEN + "Use /pb arena setworld <Arena> [World] to set the world this arena is located in.");
 		return;
 	}
 }

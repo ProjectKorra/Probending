@@ -187,23 +187,23 @@ public class Team {
 	
 	public void removePlayer(UUID uuid) {
 		String element = null;
-		if (getFirebender() == uuid) {
+		if (hasFirebender() && getFirebender().equals(uuid)) {
 			element = "Fire";
 			setFirebender(null);
 		}
-		if (getChiblocker() == uuid) {
+		if (hasChiblocker() && getChiblocker().equals(uuid)) {
 			element = "Chi";
 			setChiblocker(null);
 		}
-		if (getAirbender() == uuid) {
+		if (hasAirbender() && getAirbender().equals(uuid)) {
 			element = "Air";
 			setAirbender(null);
 		}
-		if (getWaterbender() == uuid) {
+		if (hasWaterbender() && getWaterbender().equals(uuid)) {
 			element = "Water";
 			setWaterbender(null);
 		}
-		if (getEarthbender() == uuid) {
+		if (hasEarthbender() && getEarthbender().equals(uuid)) {
 			element = "Earth";
 			setEarthbender(null);
 		}
@@ -240,5 +240,62 @@ public class Team {
 		if (hasFirebender()) size++;
 		if (hasChiblocker()) size++;
 		return size;
+	}
+	
+	/**
+	 * Try and change a players element on the team.
+	 * Returns false if element is already occupied or not enabled.
+	 * @param player
+	 * @param element
+	 * @return
+	 */
+	public boolean updateRole(UUID player, Element element) {
+		if (getElements().contains(element)) return false;
+		if (element.toString().equals("Air") && !PBMethods.getAirAllowed()) return false;
+		if (element.toString().equals("Water") && !PBMethods.getWaterAllowed()) return false;
+		if (element.toString().equals("Earth") && !PBMethods.getEarthAllowed()) return false;
+		if (element.toString().equals("Fire") && !PBMethods.getFireAllowed()) return false;
+		if (element.toString().equals("Chi") && !PBMethods.getChiAllowed()) return false;
+		
+		if (hasAirbender() && getAirbender().equals(player)) setAirbender(null);
+		if (hasWaterbender() && getWaterbender().equals(player)) setWaterbender(null);
+		if (hasEarthbender() && getEarthbender().equals(player)) setEarthbender(null);
+		if (hasFirebender() && getFirebender().equals(player)) setFirebender(null);
+		if (hasChiblocker() && getChiblocker().equals(player)) setChiblocker(null);
+		
+		if (element.toString().equalsIgnoreCase("Air")) {
+			setAirbender(player);
+			return true;
+		}
+		if (element.toString().equalsIgnoreCase("Water")) {
+			setWaterbender(player);
+			return true;
+		}
+		if (element.toString().equalsIgnoreCase("Earth")) {
+			setEarthbender(player);
+			return true;
+		}
+		if (element.toString().equalsIgnoreCase("Fire")) {
+			setFirebender(player);
+			return true;
+		}
+		if (element.toString().equalsIgnoreCase("Chi")) {
+			setChiblocker(player);
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Transfers the team to another member of the team.
+	 */
+	public void transferOwner() {
+		if (getSize() == 0) {
+			delete();
+			return;
+		} else {
+			setOwner((UUID) getPlayerUUIDs().toArray()[0]);
+			return;
+		}
 	}
 }

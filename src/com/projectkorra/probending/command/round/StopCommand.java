@@ -14,7 +14,7 @@ import java.util.List;
 public class StopCommand extends PBCommand {
 
 	public StopCommand() {
-		super ("round-stop", "/pb round stop [Arena]", "Stops round.", new String[] {"stop"}, true, Commands.roundaliases);
+		super ("round-stop", "/pb round stop <Arena>", "Stops round.", new String[] {"stop"}, true, Commands.roundaliases);
 	}
 
 	@Override
@@ -33,9 +33,9 @@ public class StopCommand extends PBCommand {
 		for (Player player: round.getRoundPlayers()) {
 			player.teleport(round.getArena().getSpectatorSpawn());
 			PBMethods.restoreArmor(player);
-			round.stop();
 		}
-		PBMethods.sendPBChat(PBMethods.RoundStopped);
+		PBMethods.sendPBChat(PBMethods.RoundStopped.replace("%arena", round.getArena().getName()), round);
+		round.stop();
 		return;
 	}
 }

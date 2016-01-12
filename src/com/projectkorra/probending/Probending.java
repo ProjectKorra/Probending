@@ -1,8 +1,5 @@
 package com.projectkorra.probending;
 
-import java.io.IOException;
-import java.util.logging.Logger;
-
 import net.milkbowl.vault.economy.Economy;
 
 import com.projectkorra.probending.command.Commands;
@@ -10,7 +7,11 @@ import com.projectkorra.probending.objects.Round;
 import com.projectkorra.probending.storage.DBConnection;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.IOException;
+import java.util.logging.Logger;
 
 public class Probending extends JavaPlugin {
 	
@@ -34,97 +35,100 @@ public class Probending extends JavaPlugin {
 		/*
 		 * initialize strings
 		 */
-		PBMethods.Prefix = PBMethods.colorize(getConfig().getString("messages.general.Prefix"));
-		PBMethods.noPermission = PBMethods.colorize(getConfig().getString("messages.general.noPermission"));
-		PBMethods.configReloaded = PBMethods.colorize(getConfig().getString("messages.general.configReloaded"));
-		PBMethods.NoTeamPermissions = PBMethods.colorize(getConfig().getString("messages.general.NoTeamPermissions"));
+		PBMethods.Prefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.General.Prefix"));
+		PBMethods.noPermission = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.General.NoPermission"));
+		PBMethods.configReloaded = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.General.ConfigReloaded"));
+		PBMethods.NoTeamPermissions = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.General.NoTeamPermissions"));
 		
 		/*
 		 * Player
 		 */
-		PBMethods.noBendingType = PBMethods.colorize(getConfig().getString("messages.player.noBendingType"));
-		PBMethods.multiBendingTypes = PBMethods.colorize(getConfig().getString("messages.player.MultipleBendingTypes"));
-		PBMethods.PlayerNotElement = PBMethods.colorize(getConfig().getString("messages.player.PlayerNotElement"));
-		PBMethods.PlayerAlreadyInTeam = PBMethods.colorize(getConfig().getString("messages.player.PlayerAlreadyInTeam"));
-		PBMethods.ElementNotAllowed = PBMethods.colorize(getConfig().getString("messages.player.ElementNotAllowed"));
-		PBMethods.PlayerNotInTeam = PBMethods.colorize(getConfig().getString("messages.player.PlayerNotInTeam"));
-		PBMethods.PlayerNotOnline = PBMethods.colorize(getConfig().getString("messages.player.PlayerNotOnline"));
-		PBMethods.PlayerInviteSent = PBMethods.colorize(getConfig().getString("messages.player.PlayerInviteSent"));
-		PBMethods.PlayerInviteReceived = PBMethods.colorize(getConfig().getString("messages.player.PlayerInviteReceived"));
-		PBMethods.InviteInstructions = PBMethods.colorize(getConfig().getString("messages.player.InviteInstructions"));
-		PBMethods.NoInviteFromTeam = PBMethods.colorize(getConfig().getString("messages.player.NoInviteFromTeam"));
-		PBMethods.YouHaveBeenBooted = PBMethods.colorize(getConfig().getString("messages.player.YouHaveBeenBooted"));
-		PBMethods.YouHaveQuit = PBMethods.colorize(getConfig().getString("messages.player.YouHaveQuit"));
-		PBMethods.RemovedFromTeamBecauseDifferentElement = PBMethods.colorize(getConfig().getString("messages.player.RemovedFromTeamBecauseDifferentElement"));
+		PBMethods.noBendingType = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Player.NoBendingType"));
+		PBMethods.multiBendingTypes = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Player.MultipleBendingTypes"));
+		PBMethods.PlayerNotElement = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Player.PlayerNotElement"));
+		PBMethods.PlayerAlreadyInTeam = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Player.PlayerAlreadyInTeam"));
+		PBMethods.ElementNotAllowed = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Player.ElementNotAllowed"));
+		PBMethods.PlayerNotInTeam = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Player.PlayerNotInTeam"));
+		PBMethods.PlayerNotOnline = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Player.PlayerNotOnline"));
+		PBMethods.PlayerInviteSent = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Player.PlayerInviteSent"));
+		PBMethods.PlayerInviteReceived = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Player.PlayerInviteReceived"));
+		PBMethods.InviteInstructions = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Player.InviteInstructions"));
+		PBMethods.NoInviteFromTeam = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Player.NoInviteFromTeam"));
+		PBMethods.YouHaveBeenBooted = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Player.YouHaveBeenBooted"));
+		PBMethods.YouHaveQuit = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Player.YouHaveQuit"));
+		PBMethods.RemovedFromTeamBecauseDifferentElement = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Player.RemovedFromTeamBecauseDifferentElement"));
+		PBMethods.RemovedFromTeamBecauseNoElement = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Player.RemovedFromTeamBecauseNoElement"));
+		PBMethods.ElementChanged = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Player.ElementChanged"));
+		PBMethods.PlayerAddedElement = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Player.PlayerAddedElement"));
 		
 		/*
 		 * Team
 		 */
-		PBMethods.teamAlreadyExists = PBMethods.colorize(getConfig().getString("messages.team.teamAlreadyExists"));
-		PBMethods.TeamCreated = PBMethods.colorize(getConfig().getString("messages.team.TeamCreated"));
-		PBMethods.NotOwnerOfTeam = PBMethods.colorize(getConfig().getString("messages.team.NotOwnerOfTeam"));
-		PBMethods.MaxSizeReached = PBMethods.colorize(getConfig().getString("messages.team.MaxSizeReached"));
-		PBMethods.TeamAlreadyHasElement = PBMethods.colorize(getConfig().getString("messages.team.TeamAlreadyHasElement"));
-		PBMethods.TeamDoesNotExist = PBMethods.colorize(getConfig().getString("messages.team.TeamDoesNotExist"));
-		PBMethods.PlayerJoinedTeam = PBMethods.colorize(getConfig().getString("messages.team.PlayerJoinedTeam"));
-		PBMethods.CantBootFromOwnTeam = PBMethods.colorize(getConfig().getString("messages.team.CantBootFromOwnTeam"));
-		PBMethods.PlayerNotOnThisTeam = PBMethods.colorize(getConfig().getString("messages.team.PlayerNotOnThisTeam"));
-		PBMethods.PlayerHasBeenBooted = PBMethods.colorize(getConfig().getString("messages.team.PlayerHasBeenBooted"));
-		PBMethods.PlayerHasQuit = PBMethods.colorize(getConfig().getString("messages.team.PlayerHasQuit"));
-		PBMethods.TeamDisbanded = PBMethods.colorize(getConfig().getString("messages.team.TeamDisbanded"));
-		PBMethods.NameTooLong = PBMethods.colorize(getConfig().getString("messages.team.NameTooLong"));
-		PBMethods.TeamRenamed = PBMethods.colorize(getConfig().getString("messages.team.TeamRenamed"));
+		PBMethods.teamAlreadyExists = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Team.TeamAlreadyExists"));
+		PBMethods.TeamCreated = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Team.TeamCreated"));
+		PBMethods.NotOwnerOfTeam = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Team.NotOwnerOfTeam"));
+		PBMethods.MaxSizeReached = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Team.MaxSizeReached"));
+		PBMethods.TeamAlreadyHasElement = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Team.TeamAlreadyHasElement"));
+		PBMethods.TeamDoesNotExist = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Team.TeamDoesNotExist"));
+		PBMethods.PlayerJoinedTeam = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Team.PlayerJoinedTeam"));
+		PBMethods.CantBootFromOwnTeam = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Team.CantBootFromOwnTeam"));
+		PBMethods.PlayerNotOnThisTeam = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Team.PlayerNotOnThisTeam"));
+		PBMethods.PlayerHasBeenBooted = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Team.PlayerHasBeenBooted"));
+		PBMethods.PlayerHasQuit = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Team.PlayerHasQuit"));
+		PBMethods.TeamDisbanded = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Team.TeamDisbanded"));
+		PBMethods.NameTooLong = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Team.NameTooLong"));
+		PBMethods.TeamRenamed = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Team.TeamRenamed"));
 		
-		PBMethods.TeamAlreadyNamedThat = PBMethods.colorize(getConfig().getString("messages.team.TeamAlreadyNamedThat"));
-		PBMethods.OwnerNotOnline = PBMethods.colorize(getConfig().getString("messages.team.OwnerNotOnline"));
+		PBMethods.TeamAlreadyNamedThat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Team.TeamAlreadyNamedThat"));
+		PBMethods.OwnerNotOnline = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Team.OwnerNotOnline"));
 		
 		/*
 		 * Economy
 		 */
 		
-		PBMethods.NotEnoughMoney = PBMethods.colorize(getConfig().getString("messages.economy.NotEnoughMoney"));
-		PBMethods.MoneyWithdrawn = PBMethods.colorize(getConfig().getString("messages.economy.MoneyWithdrawn"));
+		PBMethods.NotEnoughMoney = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Economy.NotEnoughMoney"));
+		PBMethods.MoneyWithdrawn = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Economy.MoneyWithdrawn"));
 		
 		/*
 		 * Round
 		 */
 		
-		PBMethods.OneMinuteRemaining = PBMethods.colorize(getConfig().getString("messages.round.OneMinuteRemaining"));
-		PBMethods.RoundComplete = PBMethods.colorize(getConfig().getString("messages.round.RoundComplete"));
-		PBMethods.RoundAlreadyGoing = PBMethods.colorize(getConfig().getString("messages.round.RoundAlreadyGoing"));
-		PBMethods.InvalidTeamSize = PBMethods.colorize(getConfig().getString("messages.round.InvalidTeamSize"));
-		PBMethods.RoundStarted = PBMethods.colorize(getConfig().getString("messages.round.RoundStarted"));
-		PBMethods.RoundStopped = PBMethods.colorize(getConfig().getString("messages.round.RoundStopped"));
-		PBMethods.RoundPaused = PBMethods.colorize(getConfig().getString("messages.round.RoundPaused"));
-		PBMethods.RoundResumed = PBMethods.colorize(getConfig().getString("messages.round.RoundResumed"));
-		PBMethods.NoOngoingRound = PBMethods.colorize(getConfig().getString("messages.round.NoOngoingRound"));
-		PBMethods.PlayerEliminated = PBMethods.colorize(getConfig().getString("messages.round.PlayerEliminated"));
-		PBMethods.PlayerFouled = PBMethods.colorize(getConfig().getString("messages.round.PlayerFouled"));
-		PBMethods.RoundEnded = PBMethods.colorize(getConfig().getString("messages.round.RoundEnded"));
-		PBMethods.TeamWon = PBMethods.colorize(getConfig().getString("messages.round.TeamWon"));
-		PBMethods.MoveUpOneZone = PBMethods.colorize(getConfig().getString("messages.round.MoveUpOneZone"));
-		PBMethods.CantEnterField = PBMethods.colorize(getConfig().getString("messages.round.CantEnterField"));
-		PBMethods.CantTeleportDuringMatch = PBMethods.colorize(getConfig().getString("messages.round.CantTeleportDuringMatch"));
-		PBMethods.MoveNotAllowed = PBMethods.colorize(getConfig().getString("messages.round.MoveNotAllowed"));
+		PBMethods.OneMinuteRemaining = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Round.OneMinuteRemaining"));
+		PBMethods.RoundComplete = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Round.RoundComplete"));
+		PBMethods.RoundAlreadyGoing = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Round.RoundAlreadyGoing"));
+		PBMethods.InvalidTeamSize = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Round.InvalidTeamSize"));
+		PBMethods.RoundStarted = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Round.RoundStarted"));
+		PBMethods.RoundStopped = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Round.RoundStopped"));
+		PBMethods.RoundPaused = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Round.RoundPaused"));
+		PBMethods.RoundResumed = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Round.RoundResumed"));
+		PBMethods.NoOngoingRound = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Round.NoOngoingRound"));
+		PBMethods.PlayerEliminated = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Round.PlayerEliminated"));
+		PBMethods.PlayerFouled = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Round.PlayerFouled"));
+		PBMethods.RoundEnded = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Round.RoundEnded"));
+		PBMethods.TeamWon = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Round.TeamWon"));
+		PBMethods.MoveUpOneZone = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Round.MoveUpOneZone"));
+		PBMethods.CantEnterField = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Round.CantEnterField"));
+		PBMethods.CantTeleportDuringMatch = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Round.CantTeleportDuringMatch"));
+		PBMethods.MoveNotAllowed = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Round.MoveNotAllowed"));
 
 		/*
 		 * Misc
 		 */
 
-		PBMethods.ChatEnabled = PBMethods.colorize(getConfig().getString("messages.misc.ChatEnabled"));
-		PBMethods.ChatDisabled = PBMethods.colorize(getConfig().getString("messages.misc.ChatDisabled"));
-		PBMethods.WinAddedToTeam = PBMethods.colorize(getConfig().getString("messages.misc.WinAddedToTeam"));
-		PBMethods.LossAddedToTeam = PBMethods.colorize(getConfig().getString("messages.misc.LossAddedToTeam"));
-		PBMethods.TeamSpawnSet = PBMethods.colorize(getConfig().getString("messages.misc.TeamSpawnSet"));
+		PBMethods.ChatEnabled = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Misc.ChatEnabled"));
+		PBMethods.ChatDisabled = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Misc.ChatDisabled"));
+		PBMethods.WinAddedToTeam = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Misc.WinAddedToTeam"));
+		PBMethods.LossAddedToTeam = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Misc.LossAddedToTeam"));
+		PBMethods.TeamSpawnSet = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Misc.TeamSpawnSet"));
 		
 		
 		//Database Stuff
 		DBConnection.engine = getConfig().getString("General.Storage");
-		DBConnection.host = getConfig().getString("MySQL.host", "localhost");
-		DBConnection.pass = getConfig().getString("MySQL.pass", "");
-		DBConnection.port = getConfig().getInt("MySQL.port", 3306);
-		DBConnection.db = getConfig().getString("MySQL.db", "minecraft");
-		DBConnection.user = getConfig().getString("MySQL.user", "root");
+		DBConnection.host = getConfig().getString("MySQL.Host", "localhost");
+		DBConnection.pass = getConfig().getString("MySQL.Pass", "");
+		DBConnection.port = getConfig().getInt("MySQL.Port", 3306);
+		DBConnection.db = getConfig().getString("MySQL.DB", "minecraft");
+		DBConnection.user = getConfig().getString("MySQL.User", "root");
 		
 		try {
 		    MetricsLite metrics = new MetricsLite(this);
@@ -146,9 +150,9 @@ public class Probending extends JavaPlugin {
 		PBMethods.loadTeams();
 		PBMethods.loadPlayers();
 		PBMethods.loadArenas();
-		Probending.log.info("Loaded " + PBMethods.getTeams().size() + " teams");
+		Probending.log.info("Loaded " + PBMethods.getTeams().size() + " teams.");
 		Probending.log.info("Loaded " + PBMethods.players.size() + " players.");
-		Probending.log.info("Loaded " + PBMethods.getArenas().size() + " arenas");
+		Probending.log.info("Loaded " + PBMethods.getArenas().size() + " arenas.");
 		
 		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			@Override

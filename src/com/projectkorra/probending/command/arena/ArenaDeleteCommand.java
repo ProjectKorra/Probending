@@ -10,10 +10,10 @@ import com.projectkorra.probending.command.Commands;
 import com.projectkorra.probending.command.PBCommand;
 import com.projectkorra.probending.objects.Arena;
 
-public class ArenaDelete extends PBCommand {
+public class ArenaDeleteCommand extends PBCommand {
 	
-	public ArenaDelete() {
-		super ("arena-delete", "/pb arena delete [Arena]", "Deletes a Probending arena.", new String[] {"delete, del"}, true, Commands.arenaaliases);
+	public ArenaDeleteCommand() {
+		super ("arena-delete", "/pb arena delete <Arena>", "Deletes a Probending arena.", new String[] {"delete", "del"}, true, Commands.arenaaliases);
 	}
 
 	@Override
