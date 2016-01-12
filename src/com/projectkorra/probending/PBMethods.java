@@ -664,6 +664,9 @@ public class PBMethods {
 	public static String YouHaveBeenBooted;
 	public static String YouHaveQuit;
 	public static String RemovedFromTeamBecauseDifferentElement;
+	public static String RemovedFromTeamBecauseNoElement;
+	public static String ElementChanged;
+	public static String PlayerAddedElement;
 	
 	/*
 	 * Team

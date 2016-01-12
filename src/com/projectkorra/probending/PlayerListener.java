@@ -30,9 +30,9 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import com.projectkorra.probending.objects.Arena;
 import com.projectkorra.probending.objects.Round;
 import com.projectkorra.probending.objects.Team;
+
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 public class PlayerListener implements Listener {
 
@@ -62,7 +62,12 @@ public class PlayerListener implements Listener {
 		List<String> allowedMoves = Probending.plugin.getConfig().getStringList("RoundSettings.AllowedMoves");
 		if (PBMethods.isPlayerInRound(p)) {
 			Round round = PBMethods.getPlayerRound(p);
-			if (!allowedMoves.contains(GeneralMethods.getBoundAbility(p).toString()) && GeneralMethods.getBoundAbility(p) != null) {
+			if (GeneralMethods.getBoundAbility(p) == null) {
+				e.setCancelled(true);
+				return;
+			}
+			String ability = GeneralMethods.getBoundAbility(p).toString();
+			if (!allowedMoves.contains(ability) && !GeneralMethods.getAbilityElement(ability).equals(PBMethods.getPlayerElementAsString(p.getUniqueId()))) {
 				e.setCancelled(true); // Don't allow the player to bend if the ability is not on the allowed ability list.
 			}
 			Set<String> regions = PBMethods.RegionsAtLocation(p.getLocation());
@@ -80,7 +85,12 @@ public class PlayerListener implements Listener {
 		List<String> allowedMoves = Probending.plugin.getConfig().getStringList("RoundSettings.AllowedMoves");
 		if (PBMethods.isPlayerInRound(p)) {
 			Round round = PBMethods.getPlayerRound(p);
-			if (!allowedMoves.contains(GeneralMethods.getBoundAbility(p).toString()) && GeneralMethods.getBoundAbility(p) != null) {
+			if (GeneralMethods.getBoundAbility(p) == null) {
+				e.setCancelled(true);
+				return;
+			}
+			String ability = GeneralMethods.getBoundAbility(p).toString();
+			if (!allowedMoves.contains(ability) && !GeneralMethods.getAbilityElement(ability).equals(PBMethods.getPlayerElementAsString(p.getUniqueId()))) {
 				e.setCancelled(true); // Don't allow the player to bend if the ability is not on the allowed ability list.
 			}
 			Set<String> regions = PBMethods.RegionsAtLocation(p.getLocation());
@@ -384,6 +394,7 @@ public class PlayerListener implements Listener {
 			}
 		}
 	}
+	
 	@EventHandler
 	public void onPlayerBreakBlock(BlockBreakEvent e) {
 		Player player = e.getPlayer();
@@ -402,6 +413,7 @@ public class PlayerListener implements Listener {
 			}
 		}
 	}
+	
 	@EventHandler
 	public static void onPlayerMove(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
@@ -426,6 +438,7 @@ public class PlayerListener implements Listener {
 			}
 		}
 	}
+	
 	@EventHandler
 	public static void onPlayerChat(AsyncPlayerChatEvent e) {
 		if (Commands.pbChat.contains(e.getPlayer())) {
@@ -438,65 +451,41 @@ public class PlayerListener implements Listener {
 			e.setFormat(PBMethods.Prefix + e.getFormat());
 		}
 	} 
-
+	
 	@EventHandler
-	public void onChange(PlayerChangeElementEvent e) {
-		Player player = e.getTarget();
+	public void onElementChange(PlayerChangeElementEvent event) {
+		Player player = event.getTarget();
 		Team team = PBMethods.getPlayerTeam(player.getUniqueId());
 		if (team != null) {
-			String playerElementInTeam = PBMethods.getPlayerElementInTeam(player.getUniqueId(), team.getName());
-			if (playerElementInTeam != null) {
-				String playerElement = null;
-				if (GeneralMethods.isBender(player.getName(), Element.Air)) {
-					playerElement = "Air";
-				}
-				if (GeneralMethods.isBender(player.getName(), Element.Water)) {
-					playerElement = "Water";
-				}
-				if (GeneralMethods.isBender(player.getName(), Element.Earth)) {
-					playerElement = "Earth";
-				}
-				if (GeneralMethods.isBender(player.getName(), Element.Fire)) {
-					playerElement = "Fire";
-				}
-				if (GeneralMethods.isBender(player.getName(), Element.Chi)) {
-					playerElement = "Chi";
-				}
-				if (!playerElementInTeam.equals(playerElement)) {
-					player.sendMessage(PBMethods.Prefix + PBMethods.RemovedFromTeamBecauseDifferentElement);
-					team.removePlayer(player.getUniqueId());
-					Set<Element> elements = team.getElements();
-					if (elements.contains(Element.Air)) {
-						UUID airbender = team.getAirbender();
-						team.setOwner(airbender);
-						return;
-					}
-					if (elements.contains(Element.Water)) {
-						UUID bender = team.getWaterbender();
-						team.setOwner(bender);
-						return;
-					}
-					if (elements.contains(Element.Earth)) {
-						UUID bender = team.getEarthbender();
-						team.setOwner(bender);
-						return;
-					}
-					if (elements.contains(Element.Fire)) {
-						UUID bender = team.getFirebender();
-						team.setOwner(bender);
-						return;
-					}
-					if (elements.contains(Element.Chi)) {
-						UUID bender = team.getChiblocker();
-						team.setOwner(bender);
+			String teamElement = PBMethods.getPlayerElementInTeam(player.getUniqueId(), team.getName());
+			if (event.getResult().equals(PlayerChangeElementEvent.Result.CHOOSE)) {
+				if (!event.getElement().toString().equalsIgnoreCase(teamElement)) {
+					if (team.updateRole(player.getUniqueId(), event.getElement())) {
+						player.sendMessage(PBMethods.Prefix + PBMethods.ElementChanged);
 						return;
 					} else {
-						team.delete();
+						player.sendMessage(PBMethods.Prefix + PBMethods.RemovedFromTeamBecauseDifferentElement);
+						team.removePlayer(player.getUniqueId());
+						team.transferOwner();
+						return;
 					}
 				}
 			}
+			if (event.getResult().equals(PlayerChangeElementEvent.Result.ADD)) {
+				player.sendMessage(PBMethods.Prefix + PBMethods.PlayerAddedElement);
+				return;
+			}
+			if ((event.getResult().equals(PlayerChangeElementEvent.Result.REMOVE) 
+					&& (event.getElement() == null || event.getElement().toString().equalsIgnoreCase(teamElement)))
+					|| event.getResult().equals(PlayerChangeElementEvent.Result.PERMAREMOVE)) {
+				player.sendMessage(PBMethods.Prefix + PBMethods.RemovedFromTeamBecauseNoElement);
+				team.removePlayer(player.getUniqueId());
+				team.transferOwner();
+				return;
+			}
 		}
 	}
+	
 	@EventHandler
 	public static void onPlayerJoin(PlayerJoinEvent e) {
 		Player player = e.getPlayer();
