@@ -17,9 +17,9 @@ public final class DBConnection {
 
 	public static void init() {
 		if (engine.equalsIgnoreCase("mysql")) {
-			sql = new MySQLConnection(Probending.log, "[Probending] Establishing Database Connection...", host, port, user, pass, db);
+			sql = new MySQLConnection(Probending.log, "Establishing Database Connection...", host, port, user, pass, db);
 			((MySQLConnection) sql).open();
-			Probending.log.info("[Probending] Etablishing Database Connection...");
+			Probending.log.info("Etablishing Database Connection...");
 
 			if (!sql.tableExists("probending_players")) {
 				Probending.log.info("Creating probending_players table.");
@@ -81,7 +81,7 @@ public final class DBConnection {
 			/*
 			 * Using SQLite
 			 */
-			sql = new SQLite(Probending.log, "[Probending] Establishing SQLite Connection.", "probending.db", Probending.plugin.getDataFolder().getAbsolutePath());
+			sql = new SQLite(Probending.log, "Establishing SQLite Connection.", "probending.db", Probending.plugin.getDataFolder().getAbsolutePath());
 			if (((SQLite) sql).open() == null) {
 				Probending.log.severe("Disablign due to database error.");
 				Probending.plugin.getServer().getPluginManager().disablePlugin(Probending.plugin);

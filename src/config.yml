@@ -1,11 +1,11 @@
 General:
   Storage: sqlite
 MySQL:
-  host: localhost
-  port: 3306
-  user: root
-  pass: ""
-  db: minecraft
+  Host: localhost
+  Port: 3306
+  User: root
+  Pass: ""
+  DB: minecraft
 RoundSettings:
   Time: 180
   WinValue: 2
@@ -32,14 +32,14 @@ Economy:
   ServerAccount: Server
   TeamCreationFee: 350.0
   TeamRenameFee: 150.0
-messages:
-  general:
+Messages:
+  General:
     Prefix: '&7[&6Probending&7] '
-    noPermission: '&cYou dont have permission to do that.'
-    configReloaded: '&aConfiguration reloaded.'
+    NoPermission: '&cYou dont have permission to do that.'
+    ConfigReloaded: '&aConfiguration reloaded.'
     NoTeamPermissions: '&cYou dont have permission for any team commands.'
-  player:
-    noBendingType: '&cPlayer does not have a Bending Type.'
+  Player:
+    NoBendingType: '&cPlayer does not have a Bending Type.'
     MultipleBendingTypes: '&cPlayer has more than one element, please specify what element you would like to use.'
     PlayerNotElement: '&cYou can''t bend that element.'
     PlayerAlreadyInTeam: '&cThat player is already in a team.'
@@ -53,8 +53,11 @@ messages:
     YouHaveBeenBooted: '&cYou have been booted from &3%team&c.'
     YouHaveQuit: '&cYou have quit &e%team&c.'
     RemovedFromTeamBecauseDifferentElement: '&cYou have been removed from your team because your element has changed.'
-  team:
-    teamAlreadyExists: '&cThat team already exists.'
+    RemovedFromTeamBecauseNoElement: '&cYou have been removed from your team because your element(s) was removed.'
+    ElementChanged: '&cYour team element has been changed.'
+    PlayerAddedElement: '&cYou have added an element, however you will still use the element you joined your team with.'
+  Team:
+    TeamAlreadyExists: '&cThat team already exists.'
     TeamCreated: '&e%team &ahas been created.'
     NotOwnerOfTeam: '&cYou dont own this team.'
     MaxSizeReached: '&cThis team has reached the maximum size.'
@@ -70,10 +73,10 @@ messages:
     TeamRenamed: '&aYour team has been renamed to &e%newname&a.'
     TeamAlreadyNamedThat: '&aYour team is already named &e%newname&a.'
     OwnerNotOnline: '&aThe owner of that team is not online.'
-  economy:
+  Economy:
     NotEnoughMoney: '&cYou do not have the &e%amount %currency &crequired to do that.'
     MoneyWithdrawn: '&e%amount %currency &awithdrawn from your account.'
-  round:
+  Round:
     OneMinuteRemaining: '&cThere is one minute remaining in this round.'
     RoundComplete: '&cThis round is now complete.'
     RoundAlreadyGoing: '&cThere is already a round going.'
@@ -91,7 +94,7 @@ messages:
     CantEnterField: '&cYou are not allowed to enter the field during a match.'
     CantTeleportDuringMatch: '&cYou are not allowed to teleport during a match.'
     MoveNotAllowed: '&cYou are not allowed to use &e%ability &cduring a Probending match.'
-  misc:
+  Misc:
     ChatEnabled: '&aYou have enabled Probending Chat. To disable it, run the command again.'
     ChatDisabled: '&cYou have disabled Probending Chat.'
     WinAddedToTeam: '&aAdded one win to &3%team&a.'
