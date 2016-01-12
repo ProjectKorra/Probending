@@ -234,9 +234,18 @@ public class PBMethods {
 	 * Sends a message in the Probending Chat channel.
 	 * @param message The message to send.
 	 */
-	public static void sendPBChat(String message) {
+	//public static void sendPBChat(String message) {
+	//	sendPBChat(message, null);
+	//}
+	
+	/**
+	 * Sends a message in the Probending Chat channel.
+	 * @param message The message to send.
+	 */
+	public static void sendPBChat(String message, Round round) {
 		for (Player player: Bukkit.getOnlinePlayers()) {
 			if (Commands.pbChat.contains(player)) {
+				if (round != null && !round.getRoundPlayers().contains(player)) continue;
 				player.sendMessage(PBMethods.Prefix + message);
 			}
 		}
@@ -328,6 +337,11 @@ public class PBMethods {
 		UUID chiblocker = null;
 		try {
 			while (rs2.next()) {
+				airbender = null;
+				waterbender = null;
+				earthbender = null;
+				firebender = null;
+				chiblocker = null;
 				String name = rs2.getString("team");
 				UUID owner = UUID.fromString(rs2.getString("owner"));
 				if (rs2.getString("Air") != null) {
@@ -335,7 +349,7 @@ public class PBMethods {
 				}
 				
 				if (rs2.getString("Water") != null) {
-					airbender = UUID.fromString(rs2.getString("Water"));
+					waterbender = UUID.fromString(rs2.getString("Water"));
 				}
 				
 				if (rs2.getString("Earth") != null) {
