@@ -185,7 +185,4 @@ public class Arena {
 		DBConnection.sql.modifyQuery("DELETE FROM probending_arenas WHERE name = '" + this.name + "'");
 		arenas.remove(this.name);
 	}
-	
-	
-
 }
