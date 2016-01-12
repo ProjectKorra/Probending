@@ -14,7 +14,7 @@ import com.projectkorra.probending.objects.Arena;
 public class ArenaSetSpawnCommand extends PBCommand {
 	
 	public ArenaSetSpawnCommand() {
-		super ("arena-setspawn", "/pb arena setspawn [Arena] Spectator|TeamOne|TeamTwo", "Sets the specified spawn location for an arena.", new String[] {"setspawn", "ss"}, true, Commands.arenaaliases);
+		super ("arena-setspawn", "/pb arena setspawn <Arena> <Spectator|TeamOne|TeamTwo>", "Sets the specified spawn location for an arena.", new String[] {"setspawn", "ss"}, true, Commands.arenaaliases);
 	}
 
 	@Override
@@ -61,39 +61,7 @@ public class ArenaSetSpawnCommand extends PBCommand {
 			sender.sendMessage(PBMethods.Prefix + ChatColor.GREEN + "You have changed the location of the Spectator spawn for " + arena.getName() + ".");
 		}
 		
-		if (arena.getTeamOneSpawn() == null) {
-			sender.sendMessage(PBMethods.Prefix + ChatColor.GREEN + "Use " + ChatColor.DARK_AQUA + "/pb arena setspawn [Arena] TeamOne " + ChatColor.GREEN + " to set the TeamOne spawn.");
-		}
-		if (arena.getTeamTwoSpawn() == null) {
-			sender.sendMessage(PBMethods.Prefix + ChatColor.GREEN + "Use " + ChatColor.DARK_AQUA + "/pb arena setspawn [Arena] TeamTwo " + ChatColor.GREEN + " to set the TeamTwo spawn.");
-		}
-		if (arena.getSpectatorSpawn() == null) {
-			sender.sendMessage(PBMethods.Prefix + ChatColor.GREEN + "Use " + ChatColor.DARK_AQUA + "/pb arena setspawn [Arena] Spectator " + ChatColor.GREEN + " to set the Spectator spawn.");
-		}
-		if (arena.getField() == null) {
-			sender.sendMessage(PBMethods.Prefix + ChatColor.GREEN + "Use " + ChatColor.DARK_AQUA + "pb arena setzone [Arena] Field [Region] " + ChatColor.GREEN + " to set the region for the Probending field.");
-		}
-		if (arena.getTeamOneZoneOne() == null) {
-			sender.sendMessage(PBMethods.Prefix + ChatColor.GREEN + "Use " + ChatColor.DARK_AQUA + "/pb arena setzone [Arena] TeamOneZoneOne [Region] " + ChatColor.GREEN + " to set the region for Team One Zone One.");
-		}
-		if (arena.getTeamOneZoneTwo() == null) {
-			sender.sendMessage(PBMethods.Prefix + ChatColor.GREEN + "Use " + ChatColor.DARK_AQUA + "/pb arena setzone [Arena] TeamOneZoneTwo [Region] " + ChatColor.GREEN + " to set the region for Team One Zone Two.");
-		}
-		if (arena.getTeamOneZoneThree() == null) {
-			sender.sendMessage(PBMethods.Prefix + ChatColor.GREEN + "Use " + ChatColor.DARK_AQUA + "/pb arena setzone [Arena] TeamOneZoneThree [Region] " + ChatColor.GREEN + " to set the region for Team One Zone Three.");
-		}
-		if (arena.getTeamTwoZoneOne() == null) {
-			sender.sendMessage(PBMethods.Prefix + ChatColor.GREEN + "Use " + ChatColor.DARK_AQUA + "/pb arena setzone [Arena] TeamTwoZoneOne [Region] " + ChatColor.GREEN + " to set the region for Team Two Zone One.");
-		}
-		if (arena.getTeamTwoZoneTwo() == null) {
-			sender.sendMessage(PBMethods.Prefix + ChatColor.GREEN + "Use " + ChatColor.DARK_AQUA + "/pb arena setzone [Arena] TeamTwoZoneTwo [Region] " + ChatColor.GREEN + "to set the region for Team Two Zone Two.");
-		}
-		if (arena.getTeamTwoZoneThree() == null) {
-			sender.sendMessage(PBMethods.Prefix + ChatColor.GREEN + "Use " + ChatColor.DARK_AQUA + "/pb arena setzone [Arena] TeamTwoZoneThree [Region] " + ChatColor.GREEN + "to set the region for Team Two Zone Three.");
-		}
-		if (arena.getDivider() == null) {
-			sender.sendMessage(PBMethods.Prefix + ChatColor.GREEN + "Use " + ChatColor.DARK_AQUA + "/pb arena setzone [Arena] Divider " + ChatColor.GREEN + " to set the region for the dividing line.");
-		}
+		sender.sendMessage(ArenaMethods.getArenaSetupHelp(arena));
 		return;
 		
 	}
