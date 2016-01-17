@@ -162,4 +162,9 @@ public class Probending extends JavaPlugin {
 		}, 0, 1);
 	}
 
+	public void onDisable() {
+		if (DBConnection.isOpen) {
+			DBConnection.sql.close();
+		}
+	}
 }
