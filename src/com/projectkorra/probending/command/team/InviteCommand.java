@@ -59,7 +59,7 @@ public class InviteCommand extends PBCommand {
 			return;
 		}
 		
-		List<Element> elements = BendingPlayer.getBendingPlayer(sender.getName()).getElements();
+		List<Element> elements = BendingPlayer.getBendingPlayer(player).getElements();
 		if (elements.size() == 0) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.noBendingType);
 			return;
@@ -110,6 +110,7 @@ public class InviteCommand extends PBCommand {
 			return;
 		}
 
+		System.out.println(element);
 		Set<Element> teamelements = team.getElements();
 		if (teamelements != null) {
 			if (teamelements.contains(Element.getElement(element))) {

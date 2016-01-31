@@ -54,8 +54,8 @@ public class JoinCommand extends PBCommand {
 						sender.sendMessage(PBMethods.Prefix + PBMethods.TeamAlreadyHasElement);
 						return;
 					}
-					if (!Probending.plugin.getConfig().getBoolean("TeamSettings.Allow" + e.toString())) {
-						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", e.toString()));
+					if (!Probending.plugin.getConfig().getBoolean("TeamSettings.Allow" + e.getName())) {
+						sender.sendMessage(PBMethods.Prefix + PBMethods.ElementNotAllowed.replace("%element", e.getName()));
 						return;
 					}
 					team.addPlayer(uuid, team.invites.get(Bukkit.getPlayer(uuid)));

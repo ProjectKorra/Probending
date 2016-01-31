@@ -95,7 +95,8 @@ public class Team {
 		Set<Player> players = new HashSet<Player>();
 		for (Player player: Bukkit.getOnlinePlayers()) {
 			if (PBMethods.players.containsKey(player.getUniqueId().toString())) {
-				if (PBMethods.getPlayerTeam(player.getUniqueId()).getName().equalsIgnoreCase(this.getName())) {
+				if (PBMethods.getPlayerTeam(player.getUniqueId()) != null && 
+						PBMethods.getPlayerTeam(player.getUniqueId()).getName().equalsIgnoreCase(this.getName())) {
 					players.add(player);
 				}
 			}
