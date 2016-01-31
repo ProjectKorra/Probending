@@ -214,21 +214,21 @@ public class Team {
 	
 	public Set<Element> getElements() {
 		Set<Element> elements = new HashSet<Element>();
-		if (getAirbender() != null) elements.add(Element.Air);
-		if (getWaterbender() != null) elements.add(Element.Water);
-		if (getEarthbender() != null) elements.add(Element.Earth);
-		if (getFirebender() != null) elements.add(Element.Fire);
-		if (getChiblocker() != null) elements.add(Element.Chi);
+		if (getAirbender() != null) elements.add(Element.AIR);
+		if (getWaterbender() != null) elements.add(Element.WATER);
+		if (getEarthbender() != null) elements.add(Element.EARTH);
+		if (getFirebender() != null) elements.add(Element.FIRE);
+		if (getChiblocker() != null) elements.add(Element.CHI);
 		return elements;
 	}
 	
 	public void addPlayer(UUID player, Element element) {
 		DBConnection.sql.modifyQuery("UPDATE probending_players SET team = '" + this.name + "' WHERE uuid = '" + player.toString() + "'");
-		if (element == Element.Air) this.setAirbender(player);
-		if (element == Element.Water) this.setWaterbender(player);
-		if (element == Element.Earth) this.setEarthbender(player);
-		if (element == Element.Fire) this.setFirebender(player);
-		if (element == Element.Chi) this.setChiblocker(player);
+		if (element == Element.AIR) this.setAirbender(player);
+		if (element == Element.WATER) this.setWaterbender(player);
+		if (element == Element.EARTH) this.setEarthbender(player);
+		if (element == Element.FIRE) this.setFirebender(player);
+		if (element == Element.CHI) this.setChiblocker(player);
 		PBMethods.players.put(player.toString(), this.name);
 	}
 	

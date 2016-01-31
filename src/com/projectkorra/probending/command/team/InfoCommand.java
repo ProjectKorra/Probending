@@ -4,11 +4,7 @@ import com.projectkorra.probending.PBMethods;
 import com.projectkorra.probending.command.Commands;
 import com.projectkorra.probending.command.PBCommand;
 import com.projectkorra.probending.objects.Team;
-import com.projectkorra.projectkorra.airbending.AirMethods;
-import com.projectkorra.projectkorra.chiblocking.ChiMethods;
-import com.projectkorra.projectkorra.earthbending.EarthMethods;
-import com.projectkorra.projectkorra.firebending.FireMethods;
-import com.projectkorra.projectkorra.waterbending.WaterMethods;
+import com.projectkorra.projectkorra.Element;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -77,27 +73,27 @@ public class InfoCommand extends PBCommand {
 
 		if (PBMethods.getAirAllowed()) {
 			if (air != null) {
-				sender.sendMessage(ChatColor.DARK_AQUA + "Airbender: " + AirMethods.getAirColor() + air.getName());
+				sender.sendMessage(ChatColor.DARK_AQUA + "Airbender: " + Element.AIR.getColor() + air.getName());
 			}
 		}
 		if (PBMethods.getWaterAllowed()) {
 			if (water != null) {
-				sender.sendMessage(ChatColor.DARK_AQUA + "Waterbender: " + WaterMethods.getWaterColor() + water.getName());
+				sender.sendMessage(ChatColor.DARK_AQUA + "Waterbender: " + Element.WATER.getColor() + water.getName());
 			}
 		}
 		if (PBMethods.getEarthAllowed()) {
 			if (earth != null) {
-				sender.sendMessage(ChatColor.DARK_AQUA + "Earthbender: " + EarthMethods.getEarthColor() + earth.getName());
+				sender.sendMessage(ChatColor.DARK_AQUA + "Earthbender: " + Element.EARTH.getColor() + earth.getName());
 			}
 		}
 		if (PBMethods.getFireAllowed()) {
 			if (fire != null) {
-				sender.sendMessage(ChatColor.DARK_AQUA + "Firebender: " + FireMethods.getFireColor() + fire.getName());
+				sender.sendMessage(ChatColor.DARK_AQUA + "Firebender: " + Element.FIRE.getColor() + fire.getName());
 			}
 		}
 		if (PBMethods.getChiAllowed()) {
 			if (chi != null) {
-				sender.sendMessage(ChatColor.DARK_AQUA + "Chiblocker: " + ChiMethods.getChiColor() + chi.getName());
+				sender.sendMessage(ChatColor.DARK_AQUA + "Chiblocker: " + Element.CHI.getColor() + chi.getName());
 			}
 		}
 		sender.sendMessage(ChatColor.DARK_AQUA + "Wins: " + ChatColor.YELLOW + wins);

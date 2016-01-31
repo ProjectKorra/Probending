@@ -5,8 +5,8 @@ import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.command.Commands;
 import com.projectkorra.probending.command.PBCommand;
 import com.projectkorra.probending.objects.Team;
+import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.Element;
-import com.projectkorra.projectkorra.GeneralMethods;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -41,7 +41,7 @@ public class CreateCommand extends PBCommand {
 			return;
 		}
 
-		List<Element> elements = GeneralMethods.getBendingPlayer(sender.getName()).getElements();
+		List<Element> elements = BendingPlayer.getBendingPlayer(sender.getName()).getElements();
 		if (elements.size() == 0) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.noBendingType);
 			return;
@@ -60,7 +60,7 @@ public class CreateCommand extends PBCommand {
 		if (elements.size() > 1) {
 			if (args.size() == 3) {
 				element = args.get(2);
-				if (!elements.contains(Element.getType(element))) {
+				if (!elements.contains(Element.getElement(element))) {
 					sender.sendMessage(PBMethods.Prefix + PBMethods.PlayerNotElement);
 					return;
 				}
@@ -69,7 +69,7 @@ public class CreateCommand extends PBCommand {
 				return;
 			}
 		} else {
-			element = elements.get(0).name();
+			element = elements.get(0).getName();
 		}
 
 		if (element == null) {
@@ -116,7 +116,7 @@ public class CreateCommand extends PBCommand {
 
 		PBMethods.createTeam(teamName, uuid);
 		Team team = PBMethods.getTeam(teamName);
-		team.addPlayer(uuid, Element.getType(element));
+		team.addPlayer(uuid, Element.getElement(element));
 		sender.sendMessage(PBMethods.Prefix + PBMethods.TeamCreated.replace("%team", teamName));
 	}
 }

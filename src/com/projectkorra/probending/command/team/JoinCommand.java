@@ -5,8 +5,8 @@ import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.command.Commands;
 import com.projectkorra.probending.command.PBCommand;
 import com.projectkorra.probending.objects.Team;
+import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.Element;
-import com.projectkorra.projectkorra.GeneralMethods;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -40,7 +40,7 @@ public class JoinCommand extends PBCommand {
 			return;
 		}
 		
-		List<Element> elements = GeneralMethods.getBendingPlayer(sender.getName()).getElements();
+		List<Element> elements = BendingPlayer.getBendingPlayer(sender.getName()).getElements();
 		if (elements.size() == 0) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.noBendingType);
 			return;
