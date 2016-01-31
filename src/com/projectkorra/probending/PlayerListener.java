@@ -1,8 +1,12 @@
 package com.projectkorra.probending;
 
 import com.projectkorra.probending.command.Commands;
+import com.projectkorra.probending.objects.Arena;
+import com.projectkorra.probending.objects.Round;
+import com.projectkorra.probending.objects.Team;
+import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.Element;
-import com.projectkorra.projectkorra.GeneralMethods;
+import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.event.PlayerChangeElementEvent;
 import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
@@ -26,10 +30,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
-
-import com.projectkorra.probending.objects.Arena;
-import com.projectkorra.probending.objects.Round;
-import com.projectkorra.probending.objects.Team;
 
 import java.util.List;
 import java.util.Set;
@@ -62,12 +62,13 @@ public class PlayerListener implements Listener {
 		List<String> allowedMoves = Probending.plugin.getConfig().getStringList("RoundSettings.AllowedMoves");
 		if (PBMethods.isPlayerInRound(p)) {
 			Round round = PBMethods.getPlayerRound(p);
-			if (GeneralMethods.getBoundAbility(p) == null) {
+			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
+			if (bPlayer.getBoundAbility() == null) {
 				e.setCancelled(true);
 				return;
 			}
-			String ability = GeneralMethods.getBoundAbility(p).toString();
-			if (!allowedMoves.contains(ability) && !GeneralMethods.getAbilityElement(ability).equals(PBMethods.getPlayerElementAsString(p.getUniqueId()))) {
+			String ability = bPlayer.getBoundAbilityName();
+			if (!allowedMoves.contains(ability) && !CoreAbility.getAbility(ability).getElement().equals(PBMethods.getPlayerElementAsString(p.getUniqueId()))) {
 				e.setCancelled(true); // Don't allow the player to bend if the ability is not on the allowed ability list.
 			}
 			Set<String> regions = PBMethods.RegionsAtLocation(p.getLocation());
@@ -85,12 +86,13 @@ public class PlayerListener implements Listener {
 		List<String> allowedMoves = Probending.plugin.getConfig().getStringList("RoundSettings.AllowedMoves");
 		if (PBMethods.isPlayerInRound(p)) {
 			Round round = PBMethods.getPlayerRound(p);
-			if (GeneralMethods.getBoundAbility(p) == null) {
+			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
+			if (bPlayer.getBoundAbility() == null) {
 				e.setCancelled(true);
 				return;
 			}
-			String ability = GeneralMethods.getBoundAbility(p).toString();
-			if (!allowedMoves.contains(ability) && !GeneralMethods.getAbilityElement(ability).equals(PBMethods.getPlayerElementAsString(p.getUniqueId()))) {
+			String ability = bPlayer.getBoundAbilityName();
+			if (!allowedMoves.contains(ability) && !CoreAbility.getAbility(ability).getElement().equals(PBMethods.getPlayerElementAsString(p.getUniqueId()))) {
 				e.setCancelled(true); // Don't allow the player to bend if the ability is not on the allowed ability list.
 			}
 			Set<String> regions = PBMethods.RegionsAtLocation(p.getLocation());
@@ -141,6 +143,7 @@ public class PlayerListener implements Listener {
 			Arena arena = round.getArena();
 			String zone = round.getAllowedZone(p);
 			String divider = arena.getDivider();
+			String field = arena.getField();
 			String t1z1 = arena.getTeamOneZoneOne();
 			String t1z2 = arena.getTeamOneZoneTwo();
 			String t1z3 = arena.getTeamOneZoneThree();
@@ -149,6 +152,10 @@ public class PlayerListener implements Listener {
 			String t2z3 = arena.getTeamTwoZoneThree();
 			Team team = PBMethods.getPlayerTeam(p.getUniqueId());
 
+			if (!toRegions.contains(field)) {
+				round.eliminatePlayer(p);
+				return;
+			}
 			if (round.getAllowedZone(p).equalsIgnoreCase(arena.getTeamTwoZoneThree())) { // The player is currently supposed to be in t2z3
 				if (!toRegions.contains(t2z3) || toRegions.isEmpty()) { // The player is moving somewhere not in t2z3
 					if (fromRegions.contains(t2z3)) { // Moving from t2z3
@@ -490,25 +497,26 @@ public class PlayerListener implements Listener {
 	public static void onPlayerJoin(PlayerJoinEvent e) {
 		Player player = e.getPlayer();
 		PBMethods.createPlayer(player.getUniqueId());
-		if (GeneralMethods.getBendingPlayer(player.getName()) == null) return;
-		if (!(GeneralMethods.getBendingPlayer(player.getName()).getElements().size() > 1)) {
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		if (bPlayer == null) return;
+		if (!(bPlayer.getElements().size() > 1)) {
 			String t = PBMethods.getPlayerTeam(player.getUniqueId()).getName();
 			Team team = PBMethods.getTeam(t);
 			if (team != null) {
 				String playerElement = null;
-				if (GeneralMethods.isBender(player.getName(), Element.Air)) {
+				if (bPlayer.hasElement(Element.AIR)) {
 					playerElement = "Air";
 				}
-				if (GeneralMethods.isBender(player.getName(), Element.Water)) {
+				if (bPlayer.hasElement(Element.WATER)) {
 					playerElement = "Water";
 				}
-				if (GeneralMethods.isBender(player.getName(), Element.Earth)) {
+				if (bPlayer.hasElement(Element.EARTH)) {
 					playerElement = "Earth";
 				}
-				if (GeneralMethods.isBender(player.getName(), Element.Fire)) {
+				if (bPlayer.hasElement(Element.FIRE)) {
 					playerElement = "Fire";
 				}
-				if (GeneralMethods.isBender(player.getName(), Element.Chi)) {
+				if (bPlayer.hasElement(Element.CHI)) {
 					playerElement = "Chi";
 				}
 				String playerElementInTeam = PBMethods.getPlayerElementInTeam(player.getUniqueId(), t);
@@ -517,23 +525,23 @@ public class PlayerListener implements Listener {
 						player.sendMessage(PBMethods.Prefix + PBMethods.RemovedFromTeamBecauseDifferentElement);
 						team.removePlayer(player.getUniqueId());
 						Set<Element> elements = team.getElements();
-						if (elements.contains(Element.Air)) {
+						if (elements.contains(Element.AIR)) {
 							team.setOwner(team.getAirbender());
 							return;
 						}
-						if (elements.contains(Element.Water)) {
+						if (elements.contains(Element.WATER)) {
 							team.setOwner(team.getWaterbender());
 							return;
 						}
-						if (elements.contains(Element.Earth)) {
+						if (elements.contains(Element.EARTH)) {
 							team.setOwner(team.getEarthbender());
 							return;
 						}
-						if (elements.contains(Element.Fire)) {
+						if (elements.contains(Element.FIRE)) {
 							team.setOwner(team.getFirebender());
 							return;
 						}
-						if (elements.contains(Element.Chi)) {
+						if (elements.contains(Element.CHI)) {
 							team.setOwner(team.getChiblocker());
 							return;
 						} else {

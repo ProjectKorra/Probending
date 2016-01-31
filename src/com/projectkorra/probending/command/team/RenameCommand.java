@@ -76,23 +76,23 @@ public class RenameCommand extends PBCommand {
 
 		if (team.hasAirbender()) {
 			team.removePlayer(team.getAirbender());
-			newTeam.addPlayer(air, Element.Air);
+			newTeam.addPlayer(air, Element.AIR);
 		}
 		if (team.hasWaterbender()) {
 			team.removePlayer(team.getWaterbender());
-			newTeam.addPlayer(water, Element.Water);
+			newTeam.addPlayer(water, Element.WATER);
 		}
 		if (team.hasEarthbender()) {
 			team.removePlayer(team.getEarthbender());
-			newTeam.addPlayer(earth, Element.Earth);
+			newTeam.addPlayer(earth, Element.EARTH);
 		}
 		if (team.hasFirebender()) {
 			team.removePlayer(team.getFirebender());
-			newTeam.addPlayer(fire, Element.Fire);
+			newTeam.addPlayer(fire, Element.FIRE);
 		}
 		if (team.hasChiblocker()) {
 			team.removePlayer(team.getChiblocker());
-			newTeam.addPlayer(chi, Element.Chi);
+			newTeam.addPlayer(chi, Element.CHI);
 		}
 		
 		newTeam.setLosses(Losses);

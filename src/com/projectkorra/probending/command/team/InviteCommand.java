@@ -1,20 +1,20 @@
 package com.projectkorra.probending.command.team;
 
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import com.projectkorra.probending.PBMethods;
 import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.command.Commands;
 import com.projectkorra.probending.command.PBCommand;
 import com.projectkorra.probending.objects.Team;
+import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.Element;
-import com.projectkorra.projectkorra.GeneralMethods;
+
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 public class InviteCommand extends PBCommand {
 
@@ -59,7 +59,7 @@ public class InviteCommand extends PBCommand {
 			return;
 		}
 		
-		List<Element> elements = GeneralMethods.getBendingPlayer(player.getName()).getElements();
+		List<Element> elements = BendingPlayer.getBendingPlayer(sender.getName()).getElements();
 		if (elements.size() == 0) {
 			sender.sendMessage(PBMethods.Prefix + PBMethods.noBendingType);
 			return;
@@ -69,7 +69,7 @@ public class InviteCommand extends PBCommand {
 		if (elements.size() > 1) {
 			if (args.size() == 3) {
 				element = args.get(2);
-				if (!elements.contains(Element.getType(element))) {
+				if (!elements.contains(Element.getElement(element))) {
 					sender.sendMessage(PBMethods.Prefix + PBMethods.PlayerNotElement);
 					return;
 				}
@@ -78,7 +78,7 @@ public class InviteCommand extends PBCommand {
 				return;
 			}
 		} else {
-			element = elements.get(0).name();
+			element = elements.get(0).getName();
 		}
 
 		if (element == null) {
@@ -112,13 +112,13 @@ public class InviteCommand extends PBCommand {
 
 		Set<Element> teamelements = team.getElements();
 		if (teamelements != null) {
-			if (teamelements.contains(Element.getType(element))) {
+			if (teamelements.contains(Element.getElement(element))) {
 				sender.sendMessage(PBMethods.Prefix + PBMethods.TeamAlreadyHasElement);
 				return;
 			}
 		}
 
-		team.invites.put(player, Element.getType(element));
+		team.invites.put(player, Element.getElement(element));
 		sender.sendMessage(PBMethods.Prefix
 				+ PBMethods.PlayerInviteSent.replace("%team", team.getName()).replace("%player", player.getName()));
 		player.sendMessage(PBMethods.Prefix

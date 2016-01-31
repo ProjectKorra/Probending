@@ -1,14 +1,18 @@
 package com.projectkorra.probending;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import net.milkbowl.vault.economy.Economy;
+
+import com.projectkorra.probending.command.Commands;
+import com.projectkorra.probending.objects.Arena;
+import com.projectkorra.probending.objects.Round;
+import com.projectkorra.probending.objects.Team;
+import com.projectkorra.probending.storage.DBConnection;
+import com.projectkorra.projectkorra.BendingPlayer;
+import com.projectkorra.projectkorra.Element;
+import com.sk89q.worldguard.bukkit.WGBukkit;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -21,19 +25,15 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import com.projectkorra.probending.command.Commands;
-import com.projectkorra.probending.objects.Arena;
-import com.projectkorra.probending.objects.Round;
-import com.projectkorra.probending.objects.Team;
-import com.projectkorra.probending.storage.DBConnection;
-import com.projectkorra.projectkorra.Element;
-import com.projectkorra.projectkorra.GeneralMethods;
-import com.sk89q.worldguard.bukkit.WGBukkit;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-
-import net.milkbowl.vault.economy.Economy;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class PBMethods {
@@ -533,23 +533,25 @@ public class PBMethods {
 	 * @return The name of the element the player possesses. null if none. Strings are: Air, Water, Earth, Fire, Chi
 	 */
 	public static String getPlayerElementAsString(UUID uuid) {
-		String player = Bukkit.getOfflinePlayer(uuid).getName();
-		if (GeneralMethods.isBender(player, Element.Air)) return "Air";
-		if (GeneralMethods.isBender(player, Element.Water)) return "Water";
-		if (GeneralMethods.isBender(player, Element.Earth)) return "Earth";
-		if (GeneralMethods.isBender(player, Element.Fire)) return "Fire";
-		if (GeneralMethods.isBender(player, Element.Chi)) return "Chi";
+		//String player = Bukkit.getOfflinePlayer(uuid).getName();
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(Bukkit.getOfflinePlayer(uuid));
+		if (bPlayer.hasElement(Element.AIR)) return "Air";
+		if (bPlayer.hasElement(Element.WATER)) return "Water";
+		if (bPlayer.hasElement(Element.EARTH)) return "Earth";
+		if (bPlayer.hasElement(Element.FIRE)) return "Fire";
+		if (bPlayer.hasElement(Element.CHI)) return "Chi";
 		return null;
 	}
 	
 	public static List<String> getPlayerElementsAsString(UUID uuid) {
-		String player = Bukkit.getOfflinePlayer(uuid).getName();
+		//String player = Bukkit.getOfflinePlayer(uuid).getName();
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(Bukkit.getOfflinePlayer(uuid));
 		List<String> elements = new ArrayList<>();
-		if (GeneralMethods.isBender(player, Element.Air)) elements.add("Air");
-		if (GeneralMethods.isBender(player, Element.Water)) elements.add("Water");
-		if (GeneralMethods.isBender(player, Element.Earth)) elements.add("Earth");
-		if (GeneralMethods.isBender(player, Element.Fire)) elements.add("Fire");
-		if (GeneralMethods.isBender(player, Element.Chi)) elements.add("Chi");
+		if (bPlayer.hasElement(Element.AIR)) elements.add("Air");
+		if (bPlayer.hasElement(Element.WATER)) elements.add("Water");
+		if (bPlayer.hasElement(Element.EARTH)) elements.add("Earth");
+		if (bPlayer.hasElement(Element.FIRE)) elements.add("Fire");
+		if (bPlayer.hasElement(Element.CHI)) elements.add("Chi");
 		
 		return elements;
 	}

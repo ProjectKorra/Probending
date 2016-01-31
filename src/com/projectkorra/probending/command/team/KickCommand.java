@@ -19,7 +19,7 @@ public class KickCommand extends PBCommand {
 		super ("team-kick", "/pb team kick <Player>", "Kick a player from your team.", new String[] {"kick", "k"}, true, Commands.teamaliases);
 	}
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings({ "deprecation" })
 	@Override
 	public void execute(CommandSender sender, List<String> args) {
 		if (!isPlayer(sender) || !hasTeamPermission(sender) || !correctLength(sender, args.size(), 2, 2)) {
@@ -44,10 +44,8 @@ public class KickCommand extends PBCommand {
 		}
 		OfflinePlayer p3 = Bukkit.getOfflinePlayer(args.get(1));
 		Team playerTeam = null;
-		String playerElement = null;
 
 		if (p3 != null) {
-			playerElement = PBMethods.getPlayerElementInTeam(p3.getUniqueId(), team.getName());
 			playerTeam = PBMethods.getPlayerTeam(p3.getUniqueId());
 		}
 
