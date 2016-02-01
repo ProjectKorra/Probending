@@ -251,12 +251,24 @@ public class Team {
 	 * @return
 	 */
 	public boolean updateRole(UUID player, Element element) {
-		if (getElements().contains(element)) return false;
-		if (element.toString().equals("Air") && !PBMethods.getAirAllowed()) return false;
-		if (element.toString().equals("Water") && !PBMethods.getWaterAllowed()) return false;
-		if (element.toString().equals("Earth") && !PBMethods.getEarthAllowed()) return false;
-		if (element.toString().equals("Fire") && !PBMethods.getFireAllowed()) return false;
-		if (element.toString().equals("Chi") && !PBMethods.getChiAllowed()) return false;
+		if (getElements().contains(element)) {
+			return false;
+		}
+		if (element.toString().equalsIgnoreCase("Air") && !PBMethods.getAirAllowed()) {
+			return false;
+		}
+		if (element.toString().equalsIgnoreCase("Water") && !PBMethods.getWaterAllowed()) {
+			return false;
+		}
+		if (element.toString().equalsIgnoreCase("Earth") && !PBMethods.getEarthAllowed()) {
+			return false;
+		}
+		if (element.toString().equalsIgnoreCase("Fire") && !PBMethods.getFireAllowed()) {
+			return false;
+		}
+		if (element.toString().equalsIgnoreCase("Chi") && !PBMethods.getChiAllowed()) {
+			return false;
+		}
 		
 		if (hasAirbender() && getAirbender().equals(player)) setAirbender(null);
 		if (hasWaterbender() && getWaterbender().equals(player)) setWaterbender(null);
@@ -264,23 +276,23 @@ public class Team {
 		if (hasFirebender() && getFirebender().equals(player)) setFirebender(null);
 		if (hasChiblocker() && getChiblocker().equals(player)) setChiblocker(null);
 		
-		if (element.toString().equalsIgnoreCase("Air")) {
+		if (element.getName().equalsIgnoreCase("Air")) {
 			setAirbender(player);
 			return true;
 		}
-		if (element.toString().equalsIgnoreCase("Water")) {
+		if (element.getName().equalsIgnoreCase("Water")) {
 			setWaterbender(player);
 			return true;
 		}
-		if (element.toString().equalsIgnoreCase("Earth")) {
+		if (element.getName().equalsIgnoreCase("Earth")) {
 			setEarthbender(player);
 			return true;
 		}
-		if (element.toString().equalsIgnoreCase("Fire")) {
+		if (element.getName().equalsIgnoreCase("Fire")) {
 			setFirebender(player);
 			return true;
 		}
-		if (element.toString().equalsIgnoreCase("Chi")) {
+		if (element.getName().equalsIgnoreCase("Chi")) {
 			setChiblocker(player);
 			return true;
 		}
