@@ -462,6 +462,7 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onElementChange(PlayerChangeElementEvent event) {
 		Player player = event.getTarget();
+		if (player == null) return;
 		Team team = PBMethods.getPlayerTeam(player.getUniqueId());
 		if (team != null) {
 			String teamElement = PBMethods.getPlayerElementInTeam(player.getUniqueId(), team.getName());
