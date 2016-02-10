@@ -13,6 +13,7 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -462,6 +463,7 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onElementChange(PlayerChangeElementEvent event) {
 		Player player = event.getTarget();
+		if (player == null) return;
 		Team team = PBMethods.getPlayerTeam(player.getUniqueId());
 		if (team != null) {
 			String teamElement = PBMethods.getPlayerElementInTeam(player.getUniqueId(), team.getName());
@@ -483,7 +485,7 @@ public class PlayerListener implements Listener {
 				return;
 			}
 			if ((event.getResult().equals(PlayerChangeElementEvent.Result.REMOVE) 
-					&& (event.getElement() == null || event.getElement().toString().equalsIgnoreCase(teamElement)))
+					&& (event.getElement() == null || ChatColor.stripColor(event.getElement().toString()).equalsIgnoreCase(teamElement)))
 					|| event.getResult().equals(PlayerChangeElementEvent.Result.PERMAREMOVE)) {
 				player.sendMessage(PBMethods.Prefix + PBMethods.RemovedFromTeamBecauseNoElement);
 				team.removePlayer(player.getUniqueId());
