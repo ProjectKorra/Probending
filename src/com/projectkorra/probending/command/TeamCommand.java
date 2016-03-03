@@ -27,7 +27,7 @@ public class TeamCommand extends PBCommand {
 		List<String> strings = new ArrayList<String>();
 		for (PBCommand command : instances.values()) {
 			if (command.isChild() && Arrays.asList(command.getParentAliases()).contains("team")
-					&& sender.hasPermission("probending.command.team." + command.getName())) {
+					&& sender.hasPermission("probending.command.team." + command.getName().replaceFirst("team\\-", ""))) {
 				strings.add(command.getProperUse() + ChatColor.WHITE + " - " + command.getDescription());
 			}
 		}

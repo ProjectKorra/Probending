@@ -136,5 +136,6 @@ public class Commands {
 			}
 		};
 		pbcmd.setExecutor(exe);
+		pbcmd.setTabCompleter(new PBTabCompleter());
 	}
 }
