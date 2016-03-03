@@ -18,7 +18,7 @@ import java.util.UUID;
 public class InfoCommand extends PBCommand {
 	
 	public InfoCommand() {
-		super ("team-info", "/pb team info", "View info on a team.", new String[] {"info"}, true, Commands.teamaliases);
+		super ("team-info", "/pb team info [Team]", "View info on a team.", new String[] {"info"}, true, Commands.teamaliases);
 	}
 
 	@Override

@@ -27,7 +27,7 @@ public class ArenaCommand extends PBCommand {
 		List<String> strings = new ArrayList<String>();
 		for (PBCommand command : instances.values()) {
 			if (command.isChild() && Arrays.asList(command.getParentAliases()).contains("arena")
-					&& sender.hasPermission("probending.command.arena." + command.getName())) {
+					&& sender.hasPermission("probending.command.arena." + command.getName().replaceFirst("arena\\-", ""))) {
 				strings.add(command.getProperUse() + ChatColor.WHITE + " - " + command.getDescription());
 			}
 		}

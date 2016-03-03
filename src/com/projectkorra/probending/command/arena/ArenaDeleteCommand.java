@@ -13,7 +13,7 @@ import com.projectkorra.probending.objects.Arena;
 public class ArenaDeleteCommand extends PBCommand {
 	
 	public ArenaDeleteCommand() {
-		super ("arena-delete", "/pb arena delete <Arena>", "Deletes a Probending arena.", new String[] {"delete", "del"}, true, Commands.arenaaliases);
+		super ("arena-delete", "/pb arena delete <Arena>", "Deletes a Probending arena.", new String[] {"delete", "del", "d"}, true, Commands.arenaaliases);
 	}
 
 	@Override
