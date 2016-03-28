@@ -501,7 +501,7 @@ public class PlayerListener implements Listener {
 		PBMethods.createPlayer(player.getUniqueId());
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer == null) return;
-		if (!(bPlayer.getElements().size() > 1)) {
+		if (!(bPlayer.getElements().size() > 1) && PBMethods.getPlayerTeam(player.getUniqueId()) != null) {
 			String t = PBMethods.getPlayerTeam(player.getUniqueId()).getName();
 			Team team = PBMethods.getTeam(t);
 			if (team != null) {
