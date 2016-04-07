@@ -1,6 +1,6 @@
 name: Probending
 author: ProjectKorra
-version: 1.1.0 - BETA PRIVATE BUILD
+version: 1.1.0
 main: com.projectkorra.probending.Probending
 depend: [ProjectKorra]
 softdepend: [Vault, WorldGuard]
