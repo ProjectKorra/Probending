@@ -1,4 +1,4 @@
-package com.projectkorra.probending.game;
+package com.projectkorra.probending.game.field;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +32,7 @@ public class ProbendingField {
             Location team2Location1, Location team2Location2, Location team2Location3, Location team2KnockedOffLocation,
             String team1Field1, String team1Field2, String team1Field3, String team2Field1, String team2Field2, String team2Field3,
             String kockOffArea) {
-        this.fieldNumber = INDEX;
+        this.fieldNumber = fieldNumber;
         this.team1StartLocs = team1StartLocs;
         this.team2StartLocs = team2StartLocs;
         this.team1Location1 = team1Location1;
@@ -50,7 +50,9 @@ public class ProbendingField {
         this.team2Field2 = team2Field2;
         this.team2Field3 = team2Field3;
         this.kockOffArea = kockOffArea;
-        INDEX++;
+        if (fieldNumber >= INDEX) {
+            INDEX = fieldNumber + 1;
+        }
     }
 
     public Integer FieldNumber() {

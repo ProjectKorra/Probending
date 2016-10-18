@@ -1,5 +1,6 @@
 package com.projectkorra.probending.game.round;
 
+import com.projectkorra.probending.game.Game;
 import com.projectkorra.probending.libraries.Timer;
 import java.util.Set;
 import org.bukkit.entity.Player;
@@ -7,7 +8,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Round {
 
-    private JavaPlugin plugin;
+    private final JavaPlugin plugin;
+    private final Game game;
+    
     private Timer timer;
 
     private Set<Player> team1;
@@ -20,10 +23,11 @@ public class Round {
 
     private PBScoreboard pbScoreboard;
 
-    public Round(JavaPlugin plugin, Set<Player> team1, Set<Player> team2) {
+    public Round(JavaPlugin plugin, Game game) {
         this.plugin = plugin;
-        this.team1 = team1;
-        this.team2 = team2;
+        this.game = game;
+        this.team1 = game.getTeam1();
+        this.team2 = game.getTeam2();
         this.isPaused = false;
         this.isOnCountdown = true;
         this.countdownDuration = 5;
@@ -56,7 +60,6 @@ public class Round {
                     isOnCountdown = false;
                     this.setTime(roundDuration);
                 } else {
-                    //Game has ended!
                     super.stop();
                 }
             }
@@ -65,6 +68,7 @@ public class Round {
     }
 
     public void stop() {
+        game.timerEnded();
         timer.stop();
     }
 

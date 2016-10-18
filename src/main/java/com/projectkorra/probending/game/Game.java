@@ -1,5 +1,7 @@
 package com.projectkorra.probending.game;
 
+import com.projectkorra.probending.game.field.ProbendingField;
+import com.projectkorra.probending.game.field.FieldManager;
 import com.projectkorra.probending.managers.ProbendingHandler;
 import com.projectkorra.probending.game.round.Round;
 import java.util.Set;
@@ -71,11 +73,11 @@ public class Game {
             round.forceStop();
         }
         fieldManager.reset();
-        round = new Round(plugin, team1, team2);
+        round = new Round(plugin, this);
         round.start();
     }
 
-    protected void timerEnded() {
+    public void timerEnded() {
         String winningTeam = fieldManager.getWinningTeam();
         endRound(winningTeam);
     }
@@ -83,7 +85,7 @@ public class Game {
     /**
      * The field will trigger this function as soon as a team wins the game!
      */
-    protected void endRound(String winningTeam) {
+    public void endRound(String winningTeam) {
         round = null;
         if (winningTeam.equalsIgnoreCase("team1")) {
             team1Score++;

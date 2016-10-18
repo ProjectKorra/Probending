@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.projectkorra.probending.game;
+package com.projectkorra.probending.game.field;
 
+import com.projectkorra.probending.game.Game;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import java.util.HashMap;

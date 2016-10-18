@@ -6,7 +6,7 @@
 package com.projectkorra.probending.managers;
 
 import com.projectkorra.probending.game.Game;
-import com.projectkorra.probending.game.ProbendingField;
+import com.projectkorra.probending.game.field.ProbendingField;
 import com.projectkorra.probending.objects.PBPlayer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,8 +28,7 @@ public class ProbendingHandler {
     private final JavaPlugin plugin;
 
     private Map<UUID, PBPlayer> players;
-
-    private Set<ProbendingField> fields;
+    
     private List<ProbendingField> availableFields;
     private Set<Game> games;
 
@@ -44,7 +43,6 @@ public class ProbendingHandler {
         this.plugin = plugin;
         this.curTime = System.currentTimeMillis();
         this.players = new HashMap<>();
-        this.fields = new HashSet<>();
         this.availableFields = new ArrayList<>();
         this.games = new HashSet<>();
         this.queuedUpPlayers = new HashSet<>();
@@ -55,9 +53,6 @@ public class ProbendingHandler {
     }
 
     public boolean addField(ProbendingField field) {
-        if (!fields.contains(field)) {
-            fields.add(field);
-        }
         if (!availableFields.contains(field)) {
             availableFields.add(field);
         }
@@ -65,9 +60,6 @@ public class ProbendingHandler {
     }
 
     public boolean removeField(ProbendingField field) {
-        if (fields.contains(field)) {
-            fields.remove(field);
-        }
         if (availableFields.contains(field)) {
             availableFields.remove(field);
         }
@@ -79,7 +71,7 @@ public class ProbendingHandler {
     }
 
     public void quePlayer(Player player, GameMode gameMode) {
-        if (!players.containsKey(player) || gameMode == null) {
+        if (!players.containsKey(player.getUniqueId()) || gameMode == null) {
             return;
         }
         PBPlayer pbPlayer = players.get(player.getUniqueId());
@@ -198,6 +190,7 @@ public class ProbendingHandler {
 
     public void gameEnded(Game game, Integer team1Score, Integer team2Score) {
         if (games.contains(game)) {
+            availableFields.add(game.Field());
             games.remove(game);
         }
         tryStartGame();
