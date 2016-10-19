@@ -2,7 +2,9 @@ package com.projectkorra.probending.game.round;
 
 import com.projectkorra.probending.game.Game;
 import com.projectkorra.probending.libraries.Timer;
+import com.projectkorra.probending.libraries.Title;
 import java.util.Set;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -10,7 +12,7 @@ public class Round {
 
     private final JavaPlugin plugin;
     private final Game game;
-    
+
     private Timer timer;
 
     private Set<Player> team1;
@@ -46,11 +48,22 @@ public class Round {
     }
 
     public void start() {
+        for (Player p : team1) {
+            pbScoreboard.addPlayerToScoreboard(p);
+            pbScoreboard.addPlayerToTeam1(p);
+        }
+        for (Player p : team2) {
+            pbScoreboard.addPlayerToScoreboard(p);
+            pbScoreboard.addPlayerToTeam2(p);
+        }
         timer = new Timer(plugin) {
 
             @Override
             public void secondExecute(int curTime) {
                 pbScoreboard.setNewTime(curTime);
+                if (curTime <= 3) {
+                    sendTitle(ChatColor.RED + "" + curTime);
+                }
             }
 
             @Override
@@ -59,21 +72,44 @@ public class Round {
                     //Game has started!
                     isOnCountdown = false;
                     this.setTime(roundDuration);
+                    pbScoreboard.setNewTime(roundDuration);
+                    sendTitle(ChatColor.GREEN + "FIGHT!");
                 } else {
-                    super.stop();
+                    stopGame();
                 }
             }
         };
         timer.start(countdownDuration, 20l);
     }
+    
+    private void sendTitle(String message) {
+        Title title = new Title("", message, 0, 1, 0);
+        for (Player p : team1) {
+            title.send(p);
+        }
+        for (Player p : team2) {
+            title.send(p);
+        }
+    }
 
-    public void stop() {
+    private void resetPlayers() {
+        for (Player p : team1) {
+            pbScoreboard.removePlayerFromScorebard(p);
+        }
+        for (Player p : team2) {
+            pbScoreboard.removePlayerFromScorebard(p);
+        }
+    }
+
+    public void stopGame() {
+        resetPlayers();
         game.timerEnded();
         timer.stop();
     }
 
     public void forceStop() {
         //FORCESTOP SHOULD BE IMPLEMENTED!
+        resetPlayers();
         timer.stop();
     }
 

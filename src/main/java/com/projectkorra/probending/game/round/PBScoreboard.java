@@ -43,8 +43,8 @@ public class PBScoreboard {
     }
 
     private void setData() {
-        sideBar.getScore(ChatColor.BOLD + "Game information:").setScore(2);
-        oldText = ChatColor.GOLD + "Time:" + ChatColor.AQUA + "?";
+        sideBar.getScore(ChatColor.RED + "Information:").setScore(2);
+        oldText = ChatColor.GOLD + "Time: " + ChatColor.AQUA + "?";
         sideBar.getScore(oldText).setScore(1);
     }
 
@@ -70,7 +70,7 @@ public class PBScoreboard {
 
     public void setNewTime(Integer time) {
         board.resetScores(oldText);
-        oldText = ChatColor.GOLD + "Time:" + ChatColor.AQUA + time;
+        oldText = ChatColor.GOLD + "Time: " + ChatColor.AQUA + time;
         sideBar.getScore(oldText).setScore(1);
     }
 

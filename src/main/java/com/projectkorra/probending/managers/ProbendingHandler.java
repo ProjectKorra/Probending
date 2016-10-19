@@ -5,6 +5,7 @@
  */
 package com.projectkorra.probending.managers;
 
+import com.projectkorra.probending.database.DBProbendingField;
 import com.projectkorra.probending.game.Game;
 import com.projectkorra.probending.game.field.ProbendingField;
 import com.projectkorra.probending.objects.PBPlayer;
@@ -54,6 +55,7 @@ public class ProbendingHandler {
 
     public boolean addField(ProbendingField field) {
         if (!availableFields.contains(field)) {
+            DBProbendingField.insertField(field);
             availableFields.add(field);
         }
         return true;
@@ -67,7 +69,7 @@ public class ProbendingHandler {
     }
 
     private void loadFields() {
-        //DATABASE
+        availableFields = DBProbendingField.getFields();
     }
 
     public void quePlayer(Player player, GameMode gameMode) {

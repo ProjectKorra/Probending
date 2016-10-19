@@ -55,7 +55,7 @@ public class ProbendingField {
         }
     }
 
-    public Integer FieldNumber() {
+    public Integer getFieldNumber() {
         return fieldNumber;
     }
 
@@ -83,6 +83,14 @@ public class ProbendingField {
             return team2StartLocs.get(pNR);
         }
         return null;
+    }
+
+    public Map<Integer, Location> getTeam1StartLocs() {
+        return team1StartLocs;
+    }
+
+    public Map<Integer, Location> getTeam2StartLocs() {
+        return team2StartLocs;
     }
 
     public Location getTeam1Location1() {

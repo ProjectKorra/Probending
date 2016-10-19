@@ -6,9 +6,11 @@
 package com.projectkorra.probending.game.field;
 
 import com.projectkorra.probending.game.Game;
+import com.projectkorra.probending.game.WinningType;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -54,7 +56,6 @@ public class FieldManager {
                         || field.getTeam2Field2().equalsIgnoreCase(regionName) || field.getTeam2Field3().equalsIgnoreCase(regionName)
                         || field.getKockOffArea().equalsIgnoreCase(regionName)) {
                     gamePlaces(player, regionName);
-                    return;
                 }
             }
         }
@@ -95,7 +96,7 @@ public class FieldManager {
         }
     }
 
-    public String getWinningTeam() {
+    public WinningType getWinningTeam() {
         int team2loc = 0;
         int team1loc = 0;
         for (Player p : game.getTeam1()) {
@@ -109,11 +110,11 @@ public class FieldManager {
             }
         }
         if (team1loc > team2loc) {
-            return "team1";
+            return WinningType.TEAM1;
         } else if (team1loc < team2loc) {
-            return "team2";
+            return WinningType.TEAM2;
         } else {
-            return "draw";
+            return WinningType.DRAW;
         }
     }
 
@@ -144,7 +145,7 @@ public class FieldManager {
                 if (toPlace >= 1 && toPlace <= 6) {
                     if (toPlace == fromPlace - fDir) {//Hit line behind!
                         setPlayerLocation(player, toPlace);
-//                        broadcast(ChatColor.GOLD + "Player: " + ChatColor.BLUE + player.getDisplayName() + ChatColor.GOLD + " moved 1 place back!");
+                        broadcast(ChatColor.GOLD + "Player: " + ChatColor.BLUE + player.getDisplayName() + ChatColor.GOLD + " moved 1 place back!");
                     } else if (toPlace == fromPlace + fDir) {//Hit line infront!
                         frontLineHit(player, fromPlace - fDir, fromPlace);
                     } else if (fromPlace - toPlace == 0) {//Player gets teleported!
@@ -168,10 +169,10 @@ public class FieldManager {
                 }
             }
             if (extremeLocation(teamName) == 0) {
-                if (teamName == "team1") {
-                    game.endRound(teamName);
-                } else if (teamName == "team2") {
-                    game.endRound(teamName);
+                if (teamName.equalsIgnoreCase("team1")) {
+                    game.endRound(WinningType.TEAM1);
+                } else if (teamName.equalsIgnoreCase("team2")) {
+                    game.endRound(WinningType.TEAM2);
                 }
             }
         } else {
@@ -184,13 +185,11 @@ public class FieldManager {
         playerFaults.put(player.getUniqueId(), (playerFaults.get(player.getUniqueId()) + 1));
         if (playerFaults.get(player.getUniqueId()) < 3) {
             setPlayerLocation(player, fromPlace);
-//            BROADCAST TO PLAYERS
-//            broadcast(ChatColor.GOLD + "Player: " + ChatColor.BLUE + player.getDisplayName() + ChatColor.GOLD
-//                    + " has now " + ChatColor.DARK_RED + playerFaults.get(player.getUniqueId()) + ChatColor.GOLD + " faults!");
+            broadcast(ChatColor.GOLD + "Player: " + ChatColor.BLUE + player.getDisplayName() + ChatColor.GOLD
+                    + " has now " + ChatColor.DARK_RED + playerFaults.get(player.getUniqueId()) + ChatColor.GOLD + " faults!");
         } else {
-//            BROADCAST TO PLAYERS
-//            broadcast(ChatColor.GOLD + "Player: " + ChatColor.BLUE + player.getDisplayName() + ChatColor.GOLD
-//                    + " has now " + ChatColor.DARK_RED + playerFaults.get(player.getUniqueId()) + ChatColor.GOLD + " faults and will be teleported 1 place back!");
+            broadcast(ChatColor.GOLD + "Player: " + ChatColor.BLUE + player.getDisplayName() + ChatColor.GOLD
+                    + " now has " + ChatColor.DARK_RED + playerFaults.get(player.getUniqueId()) + ChatColor.GOLD + " faults and will be teleported 1 place back!");
             setPlayerLocation(player, iplace);
             playerFaults.put(player.getUniqueId(), 0);
         }
@@ -283,23 +282,50 @@ public class FieldManager {
                 break;
             case 1:
                 l = field.getTeam2Location3().clone();
+                if (teamName.equals("team1")) {
+                    l.setDirection(field.getTeam2Location3().clone().getDirection().multiply(-1).setY(0));
+                }
                 break;
             case 2:
                 l = field.getTeam2Location2().clone();
+                if (teamName.equals("team1")) {
+                    l.setDirection(field.getTeam2Location2().clone().getDirection().multiply(-1).setY(0));
+                }
                 break;
             case 3:
                 l = field.getTeam2Location1().clone();
+                if (teamName.equals("team1")) {
+                    l.setDirection(field.getTeam2Location1().clone().getDirection().multiply(-1).setY(0));
+                }
                 break;
             case 4:
                 l = field.getTeam1Location1().clone();
+                if (teamName.equals("team2")) {
+                    l.setDirection(field.getTeam1Location1().clone().getDirection().multiply(-1).setY(0));
+                }
                 break;
             case 5:
                 l = field.getTeam1Location2().clone();
+                if (teamName.equals("team2")) {
+                    l.setDirection(field.getTeam1Location2().clone().getDirection().multiply(-1).setY(0));
+                }
                 break;
             case 6:
                 l = field.getTeam1Location3().clone();
+                if (teamName.equals("team2")) {
+                    l.setDirection(field.getTeam1Location3().clone().getDirection().multiply(-1).setY(0));
+                }
                 break;
         }
         return l;
+    }
+
+    private void broadcast(String message) {
+        Set<Player> players = new HashSet<>();
+        players.addAll(game.getTeam1());
+        players.addAll(game.getTeam2());
+        for (Player p : players) {
+            p.sendMessage(message);
+        }
     }
 }

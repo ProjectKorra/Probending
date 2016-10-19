@@ -1,5 +1,6 @@
 package com.projectkorra.probending;
 
+import com.projectkorra.probending.database.DatabaseHandler;
 import com.projectkorra.probending.managers.FieldCreationManager;
 import com.projectkorra.probending.managers.ProbendingHandler;
 import java.io.IOException;
@@ -23,6 +24,8 @@ public class Probending extends JavaPlugin {
         } catch (IOException ex) {
             Logger.getLogger(Probending.class.getName()).log(Level.SEVERE, null, ex);
         }
+        DatabaseHandler.init(this); //OPEN THE DATABASE! 
+        
         pHandler = new ProbendingHandler(this);
         cManager = new FieldCreationManager(this, pHandler);
         this.getServer().getPluginManager().registerEvents(cManager, this);

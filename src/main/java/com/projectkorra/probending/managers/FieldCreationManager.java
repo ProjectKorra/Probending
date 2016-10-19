@@ -23,7 +23,7 @@ public class FieldCreationManager implements Listener {
 
     private final JavaPlugin plugin;
     private final ProbendingHandler pHandler;
-   
+
     private Player creator;
     private ProbendingField field;
 
@@ -54,8 +54,11 @@ public class FieldCreationManager implements Listener {
         switch (bigStep) {
             case 0:
                 if (arg == null) {
-                    sendMessage(player, "Are you sure you want to create an arena?");
-                    sendMessage(player, "When you create an arena, you cannot talk!");
+                    sendMessage(player, ChatColor.YELLOW + "Are you sure you want to create an arena?");
+                    sendMessage(player, ChatColor.YELLOW + "When you create an arena, you cannot talk!");
+                    sendMessage(player, ChatColor.YELLOW + "If you have a " + ChatColor.RED + "red" + ChatColor.YELLOW
+                            + " and " + ChatColor.BLUE + "blue" + ChatColor.YELLOW + " probending field, keep in mind, "
+                            + ChatColor.BLUE + "team1 is blue" + ChatColor.YELLOW + " and " + ChatColor.RED + "team 2 is red");
                     sendMessage(player, "Options: [yes, no]");
                 } else {
                     if (arg.equalsIgnoreCase("yes")) {
@@ -66,76 +69,50 @@ public class FieldCreationManager implements Listener {
                         stopCreating(player);
                     } else {
                         sendMessage(player, "Options: [yes, no]");
-                        createFieldStep(player, null);
                     }
                 }
                 break;
             case 1:
                 if (arg == null) {
                     sendMessage(player, ChatColor.YELLOW + "Stand on the location of team " + ChatColor.RED + "1" + ChatColor.YELLOW
-                            + " spawn of player " + smallStep + ", and type 'here'");
+                            + " spawn of player " + ChatColor.RED + smallStep + ChatColor.YELLOW + ", and type 'here'");
                 } else {
                     if (arg.equalsIgnoreCase("here")) {
+                        field.setStartPointTeam1(smallStep, player.getLocation());
+                        smallStep++;
                         if (smallStep > 3) {
                             bigStep++;
                             smallStep = 1;
-                            createFieldStep(player, null);
-                            return;
                         }
-                        field.setStartPointTeam1(smallStep, player.getLocation());
-                        smallStep++;
+                        createFieldStep(player, null);
                     } else {
                         sendMessage(player, "Options: [here]");
-                        createFieldStep(player, null);
                     }
                 }
                 break;
             case 2:
                 if (arg == null) {
                     sendMessage(player, ChatColor.YELLOW + "Stand on the location of team " + ChatColor.RED + "2" + ChatColor.YELLOW
-                            + " spawn of player " + smallStep + ", and type 'here'");
+                            + " spawn of player " + ChatColor.RED + smallStep + ChatColor.YELLOW + ", and type 'here'");
                 } else {
                     if (arg.equalsIgnoreCase("here")) {
+                        field.setStartPointTeam2(smallStep, player.getLocation());
+                        smallStep++;
                         if (smallStep > 3) {
                             bigStep++;
                             smallStep = 1;
-                            createFieldStep(player, null);
-                            return;
                         }
-                        field.setStartPointTeam2(smallStep, player.getLocation());
-                        smallStep++;
+                        createFieldStep(player, null);
                     } else {
                         sendMessage(player, "Options: [here]");
-                        createFieldStep(player, null);
                     }
                 }
                 break;
             case 3:
                 if (arg == null) {
-                    sendMessage(player, ChatColor.YELLOW + "Stand on the location of team " + ChatColor.RED + "2" + ChatColor.YELLOW
-                            + " spawn of player " + smallStep + ", and type 'here'");
-                } else {
-                    if (arg.equalsIgnoreCase("here")) {
-                        if (smallStep > 3) {
-                            bigStep++;
-                            smallStep = 1;
-                            createFieldStep(player, null);
-                            return;
-                        }
-                        field.setStartPointTeam2(smallStep, player.getLocation());
-                        smallStep++;
-                        createFieldStep(player, null);
-                    } else {
-                        sendMessage(player, "Options: [here]");
-                        createFieldStep(player, null);
-                    }
-                }
-                break;
-            case 4:
-                if (arg == null) {
-                    sendMessage(player, ChatColor.YELLOW + "Now tell me, where is the teleport location " + smallStep + "/region for team "
+                    sendMessage(player, ChatColor.YELLOW + "Now tell me, where is the teleport location " + ChatColor.RED + smallStep + ChatColor.YELLOW + "/region for team "
                             + ChatColor.RED + "1");
-                    sendMessage(player, ChatColor.YELLOW + "region 1 = The nearest to the middle, region 3 = the last part before they fall off, "
+                    sendMessage(player, ChatColor.GRAY + "region 1 = The nearest to the middle, region 3 = the last part before they fall off, "
                             + "region 4 = the location where they should be teleported then they fall off!");
                 } else {
                     if (arg.equalsIgnoreCase("here")) {
@@ -164,15 +141,14 @@ public class FieldCreationManager implements Listener {
                         }
                     } else {
                         sendMessage(player, "Options: [here]");
-                        createFieldStep(player, null);
                     }
                 }
                 break;
-            case 5:
+            case 4:
                 if (arg == null) {
-                    sendMessage(player, ChatColor.YELLOW + "Now tell me, where is the teleport location " + smallStep + "/region for team "
+                    sendMessage(player, ChatColor.YELLOW + "Now tell me, where is the teleport location " + ChatColor.RED + smallStep + ChatColor.YELLOW + "/region for team "
                             + ChatColor.RED + "2");
-                    sendMessage(player, ChatColor.YELLOW + "region 1 = The nearest to the middle, region 3 = the last part before they fall off, "
+                    sendMessage(player, ChatColor.GRAY + "region 1 = The nearest to the middle, region 3 = the last part before they fall off, "
                             + "region 4 = the location where they should be teleported then they fall off!");
                 } else {
                     if (arg.equalsIgnoreCase("here")) {
@@ -201,75 +177,73 @@ public class FieldCreationManager implements Listener {
                         }
                     } else {
                         sendMessage(player, "Options: [here]");
-                        createFieldStep(player, null);
                     }
                 }
                 break;
-            case 6:
+            case 5:
                 if (arg == null) {
                     sendMessage(player, ChatColor.YELLOW + "What's the name of team 1, region 1. [WG region, example: 'PB1Team1RG1']");
-                    sendMessage(player, ChatColor.YELLOW + "region 1 = The nearest to the middle, region 3 = the last part before they fall off");
+                    sendMessage(player, ChatColor.GRAY + "region 1 = The nearest to the middle, region 3 = the last part before they fall off");
                 } else {
                     field.setTeam1Field1(arg);
                     bigStep++;
                     createFieldStep(player, null);
                 }
                 break;
-            case 7:
+            case 6:
                 if (arg == null) {
                     sendMessage(player, ChatColor.YELLOW + "What's the name of team 1, region 2. [WG region, example: 'PB1Team1RG2']");
-                    sendMessage(player, ChatColor.YELLOW + "region 1 = The nearest to the middle, region 3 = the last part before they fall off");
+                    sendMessage(player, ChatColor.GRAY + "region 1 = The nearest to the middle, region 3 = the last part before they fall off");
                 } else {
                     field.setTeam1Field2(arg);
                     bigStep++;
                     createFieldStep(player, null);
                 }
                 break;
-            case 8:
+            case 7:
                 if (arg == null) {
                     sendMessage(player, ChatColor.YELLOW + "What's the name of team 1, region 3. [WG region, example: 'PB1Team1RG3']");
-                    sendMessage(player, ChatColor.YELLOW + "region 1 = The nearest to the middle, region 3 = the last part before they fall off");
+                    sendMessage(player, ChatColor.GRAY + "region 1 = The nearest to the middle, region 3 = the last part before they fall off");
                 } else {
                     field.setTeam1Field3(arg);
                     bigStep++;
                     createFieldStep(player, null);
                 }
                 break;
-            case 9:
+            case 8:
                 if (arg == null) {
                     sendMessage(player, ChatColor.YELLOW + "What's the name of team 2, region 1. [WG region, example: 'PB1Team2RG1']");
-                    sendMessage(player, ChatColor.YELLOW + "region 1 = The nearest to the middle, region 3 = the last part before they fall off");
+                    sendMessage(player, ChatColor.GRAY + "region 1 = The nearest to the middle, region 3 = the last part before they fall off");
                 } else {
                     field.setTeam2Field1(arg);
                     bigStep++;
                     createFieldStep(player, null);
                 }
                 break;
-            case 10:
+            case 9:
                 if (arg == null) {
                     sendMessage(player, ChatColor.YELLOW + "What's the name of team 2, region 2. [WG region, example: 'PB1Team2RG2']");
-                    sendMessage(player, ChatColor.YELLOW + "region 1 = The nearest to the middle, region 3 = the last part before they fall off");
+                    sendMessage(player, ChatColor.GRAY + "region 1 = The nearest to the middle, region 3 = the last part before they fall off");
                 } else {
                     field.setTeam2Field2(arg);
                     bigStep++;
                     createFieldStep(player, null);
                 }
                 break;
-            case 11:
+            case 10:
                 if (arg == null) {
                     sendMessage(player, ChatColor.YELLOW + "What's the name of team 2, region 3. [WG region, example: 'PB1Team2RG3']");
-                    sendMessage(player, ChatColor.YELLOW + "region 1 = The nearest to the middle, region 3 = the last part before they fall off");
+                    sendMessage(player, ChatColor.GRAY + "region 1 = The nearest to the middle, region 3 = the last part before they fall off");
                 } else {
                     field.setTeam2Field3(arg);
                     bigStep++;
                     createFieldStep(player, null);
                 }
                 break;
-            case 12:
+            case 11:
                 if (arg == null) {
                     sendMessage(player, ChatColor.YELLOW + "What's the name of the knocked off region. [WG region, example: 'PB1KnockOff']");
-                    sendMessage(player, ChatColor.YELLOW + "region 1 = The nearest to the middle, region 3 = the last part before they fall off, "
-                            + "region 4 = the location where they should be teleported then they fall off!");
+                    sendMessage(player, ChatColor.GRAY + "A region below the arena, where they fall through");
                 } else {
                     field.setKockOffArea(arg);
                     finishCreating(player);
@@ -286,6 +260,7 @@ public class FieldCreationManager implements Listener {
     private void finishCreating(Player player) {
         sendMessage(player, "Awesome, thank you so much for creating the probending arena!");
         this.pHandler.addField(field);
+        this.creator = null;
     }
 
     private void sendMessage(Player player, String message) {
@@ -294,8 +269,12 @@ public class FieldCreationManager implements Listener {
 
     @EventHandler
     public void playerTalk(AsyncPlayerChatEvent event) {
+        if (creator == null) {
+            return;
+        }
         if (creator.equals(event.getPlayer())) {
             createFieldStep(event.getPlayer(), event.getMessage());
+            event.setCancelled(true);
         }
     }
 }

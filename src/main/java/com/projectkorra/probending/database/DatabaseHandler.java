@@ -9,6 +9,9 @@ import com.projectkorra.probending.config.ConfigManager;
 import com.projectkorra.probending.libraries.database.Database;
 import com.projectkorra.probending.libraries.database.MySQL;
 import com.projectkorra.probending.libraries.database.SQLite;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -20,7 +23,7 @@ public class DatabaseHandler {
     private static Database database;
     private static Boolean useMySQL = false;
 
-    public static Database getDababase(JavaPlugin plugin) {
+    public static void init(JavaPlugin plugin) {
         if (database == null) {
             if (!useMySQL) {
                 database = new SQLite(plugin.getLogger(), "Probending", plugin.getDataFolder().getAbsolutePath());
@@ -33,10 +36,13 @@ public class DatabaseHandler {
                 database = new MySQL(plugin.getLogger(), hostname, port, databaseName, username, password);
             }
         }
+    }
+
+    public static Database getDababase() {
         return database;
     }
-    
-    public static Boolean isMysql(){
+
+    public static Boolean isMysql() {
         return useMySQL;
     }
 }

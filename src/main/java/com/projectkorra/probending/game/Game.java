@@ -4,7 +4,9 @@ import com.projectkorra.probending.game.field.ProbendingField;
 import com.projectkorra.probending.game.field.FieldManager;
 import com.projectkorra.probending.managers.ProbendingHandler;
 import com.projectkorra.probending.game.round.Round;
+import com.projectkorra.probending.libraries.Title;
 import java.util.Set;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,7 +24,9 @@ public class Game {
     private Integer rounds;
     private Integer curRound;
     private Integer playTime;
+
     private Boolean suddenDeath;
+    private Boolean hasSuddenDeath;
     private Boolean forcedSuddenDeath;
 
     private Set<Player> team1;
@@ -40,8 +44,9 @@ public class Game {
         this.rounds = type.getRounds();
         this.curRound = 1;
         this.playTime = type.getPlayTime();
-        this.suddenDeath = type.hasSuddenDeath();
+        this.hasSuddenDeath = type.hasSuddenDeath();
         this.forcedSuddenDeath = type.isForcedSuddenDeath();
+        this.suddenDeath = false;
         this.field = field;
         this.team1 = team1;
         this.team2 = team2;
@@ -65,6 +70,9 @@ public class Game {
     }
 
     public Boolean isSuddenDeath() {
+        if (forcedSuddenDeath) {
+            return true;
+        }
         return suddenDeath;
     }
 
@@ -73,26 +81,45 @@ public class Game {
             round.forceStop();
         }
         fieldManager.reset();
-        round = new Round(plugin, this);
-        round.start();
+        if (!isSuddenDeath()) {
+            round = new Round(plugin, this);
+            round.start();
+        }
     }
 
     public void timerEnded() {
-        String winningTeam = fieldManager.getWinningTeam();
-        endRound(winningTeam);
+        WinningType winningTeam = fieldManager.getWinningTeam();
+        manageEnd(winningTeam);
     }
 
     /**
      * The field will trigger this function as soon as a team wins the game!
      */
-    public void endRound(String winningTeam) {
+    public void endRound(WinningType winningTeam) {
+        round.forceStop();
+        manageEnd(winningTeam);
+    }
+
+    private void manageEnd(WinningType winningTeam) {
         round = null;
-        if (winningTeam.equalsIgnoreCase("team1")) {
+        if (winningTeam.equals(WinningType.TEAM1)) {
             team1Score++;
-        } else if (winningTeam.equalsIgnoreCase("team2")) {
+        } else if (winningTeam.equals(WinningType.TEAM2)) {
             team2Score++;
+        } else {
+            //Should be implemented soon!
+//            suddenDeath = true;
+//            startNewRound();
+//            return;
         }
         curRound++;
+        Title title = new Title(ChatColor.RED + "" + team1Score + ChatColor.WHITE + " - " + ChatColor.BLUE + "" + team2Score, "", 1, 1, 1);
+        for (Player p : team1) {
+            title.send(p);
+        }
+        for (Player p : team2) {
+            title.send(p);
+        }
         if (curRound > rounds) {
             handler.gameEnded(this, team1Score, team2Score);
             return;
@@ -130,13 +157,13 @@ public class Game {
 
         private Integer rounds;
         private Integer playTime;
-        private Boolean suddenDeath;
+        private Boolean hasSuddenDeath;
         private Boolean forcedSuddenDeath;
 
-        private GameType(Integer rounds, Integer playTime, Boolean suddenDeath, Boolean forcedSuddenDeath) {
+        private GameType(Integer rounds, Integer playTime, Boolean hasSuddenDeath, Boolean forcedSuddenDeath) {
             this.rounds = rounds;
             this.playTime = playTime;
-            this.suddenDeath = suddenDeath;
+            this.hasSuddenDeath = hasSuddenDeath;
             this.forcedSuddenDeath = forcedSuddenDeath;
         }
 
@@ -149,7 +176,7 @@ public class Game {
         }
 
         public Boolean hasSuddenDeath() {
-            return suddenDeath;
+            return hasSuddenDeath;
         }
 
         public Boolean isForcedSuddenDeath() {
