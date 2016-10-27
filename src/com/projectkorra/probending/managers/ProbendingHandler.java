@@ -1,14 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.projectkorra.probending.managers;
 
-import com.projectkorra.probending.database.DBProbendingField;
-import com.projectkorra.probending.game.Game;
-import com.projectkorra.probending.game.field.ProbendingField;
-import com.projectkorra.probending.objects.PBPlayer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,16 +7,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-/**
- *
- * @author Ivo
- */
-public class ProbendingHandler {
+import com.projectkorra.probending.game.Game;
+import com.projectkorra.probending.game.field.ProbendingField;
+import com.projectkorra.probending.libraries.database.Callback;
+import com.projectkorra.probending.objects.PBPlayer;
+import com.projectkorra.probending.storage.DBProbendingPlayer;
+import com.projectkorra.probending.storage.FFProbendingField;
 
+public class ProbendingHandler
+{
     private final JavaPlugin plugin;
 
     private Map<UUID, PBPlayer> players;
@@ -39,8 +35,12 @@ public class ProbendingHandler {
 
     private long informDelay = 2000;
     private long curTime;
+    
+    private FFProbendingField _fieldStorage;
+    private DBProbendingPlayer _playerStorage;
 
-    public ProbendingHandler(JavaPlugin plugin) {
+    public ProbendingHandler(JavaPlugin plugin)
+    {
         this.plugin = plugin;
         this.curTime = System.currentTimeMillis();
         this.players = new HashMap<>();
@@ -49,27 +49,35 @@ public class ProbendingHandler {
         this.queuedUpPlayers = new HashSet<>();
         this.playerMode1P = new ArrayList<>();
         this.playerMode3P = new ArrayList<>();
+        _fieldStorage = new FFProbendingField(plugin);
+        _playerStorage = new DBProbendingPlayer(plugin);
         plugin.getServer().getPluginManager().registerEvents(new PBHandlerListener(this), plugin);
         loadFields();
     }
 
-    public boolean addField(ProbendingField field) {
-        if (!availableFields.contains(field)) {
-            DBProbendingField.insertField(field);
+    public boolean addField(ProbendingField field)
+    {
+        if (!availableFields.contains(field))
+        {
+        	_fieldStorage.insertField(field);
             availableFields.add(field);
         }
         return true;
     }
 
-    public boolean removeField(ProbendingField field) {
-        if (availableFields.contains(field)) {
+    public boolean removeField(ProbendingField field)
+    {
+        if (availableFields.contains(field))
+        {
             availableFields.remove(field);
+            _fieldStorage.deleteField(field);
         }
         return true;
     }
 
-    private void loadFields() {
-        availableFields = DBProbendingField.getFields();
+    private void loadFields()
+    {
+        availableFields = _fieldStorage.loadFields();
     }
 
     public void quePlayer(Player player, GameMode gameMode) {
@@ -100,7 +108,7 @@ public class ProbendingHandler {
         tryStartGame();
     }
 
-    public void removePlayerFromQue(Player player) {
+    public void removePlayerFromQueue(Player player) {
         if (!players.containsKey(player)) {
             return;
         }
@@ -122,12 +130,16 @@ public class ProbendingHandler {
         informPlayers();
     }
 
-    private void informPlayers() {
-        if (curTime + informDelay < System.currentTimeMillis()) {
+    private void informPlayers()
+    {
+        if (curTime + informDelay < System.currentTimeMillis())
+        {
             curTime = System.currentTimeMillis();
-            for (PBPlayer pbPlayer : queuedUpPlayers) {
-                if (pbPlayer.getPlayer().isOnline()) {
-                    Player p = (Player) pbPlayer.getPlayer();
+            for (PBPlayer pbPlayer : queuedUpPlayers)
+            {
+                if (Bukkit.getPlayer(pbPlayer.getUUID()) != null)
+                {
+                    Player p = Bukkit.getPlayer(pbPlayer.getUUID());
                     p.sendMessage(ChatColor.GRAY + "===================");
                     p.sendMessage(ChatColor.YELLOW + "1v1: " + ChatColor.AQUA + playerMode1P.size() + ChatColor.GRAY + "/2");
                     p.sendMessage(ChatColor.YELLOW + "3v3: " + ChatColor.AQUA + playerMode3P.size() + ChatColor.GRAY + "/6");
@@ -149,15 +161,15 @@ public class ProbendingHandler {
             Set<Player> team1 = new HashSet<>();
             Set<Player> team2 = new HashSet<>();
             if (PlayersQueued3v3 < 6 && PlayersQueued1v1 > 1) {
-                team1.add(playerMode1P.get(0).getPlayer().getPlayer());
-                team2.add(playerMode1P.get(1).getPlayer().getPlayer());
+                team1.add(Bukkit.getPlayer(playerMode1P.get(0).getUUID()));
+                team2.add(Bukkit.getPlayer(playerMode1P.get(1).getUUID()));
             } else if (PlayersQueued3v3 >= 6) {
-                team1.add(playerMode3P.get(0).getPlayer().getPlayer());
-                team1.add(playerMode3P.get(1).getPlayer().getPlayer());
-                team1.add(playerMode3P.get(2).getPlayer().getPlayer());
-                team2.add(playerMode3P.get(3).getPlayer().getPlayer());
-                team2.add(playerMode3P.get(4).getPlayer().getPlayer());
-                team2.add(playerMode3P.get(5).getPlayer().getPlayer());
+                team1.add(Bukkit.getPlayer(playerMode3P.get(0).getUUID()));
+                team1.add(Bukkit.getPlayer(playerMode3P.get(1).getUUID()));
+                team1.add(Bukkit.getPlayer(playerMode3P.get(2).getUUID()));
+                team2.add(Bukkit.getPlayer(playerMode3P.get(3).getUUID()));
+                team2.add(Bukkit.getPlayer(playerMode3P.get(4).getUUID()));
+                team2.add(Bukkit.getPlayer(playerMode3P.get(5).getUUID()));
             }
             game = new Game(plugin, this, Game.GameType.DEFAULT, availableFields.get(0), team1, team2);
             games.add(game);
@@ -198,12 +210,21 @@ public class ProbendingHandler {
         tryStartGame();
     }
 
-    protected void playerLogin(Player player) {
-        players.put(player.getUniqueId(), new PBPlayer(player.getUniqueId(), null, 0.0));
+    protected void playerLogin(final Player player)
+    {
+    	_playerStorage.loadPBPlayerAsync(player.getUniqueId(), new Callback<PBPlayer>()
+    	{
+    		public void run(PBPlayer pbPlayer)
+    		{
+    			players.put(player.getUniqueId(), pbPlayer);
+    		}
+    	});
     }
 
-    protected void playerLogout(Player player) {
-        if (players.containsKey(player)) {
+    protected void playerLogout(Player player)
+    {
+        if (players.containsKey(player))
+        {
             players.remove(player);
         }
     }
