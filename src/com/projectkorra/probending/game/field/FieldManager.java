@@ -54,7 +54,7 @@ public class FieldManager {
                 if (field.getTeam1Field1().equalsIgnoreCase(regionName) || field.getTeam1Field2().equalsIgnoreCase(regionName)
                         || field.getTeam1Field3().equalsIgnoreCase(regionName) || field.getTeam2Field1().equalsIgnoreCase(regionName)
                         || field.getTeam2Field2().equalsIgnoreCase(regionName) || field.getTeam2Field3().equalsIgnoreCase(regionName)
-                        || field.getKockOffArea().equalsIgnoreCase(regionName)) {
+                        || field.getKnockOffArea().equalsIgnoreCase(regionName)) {
                     gamePlaces(player, regionName);
                 }
             }
@@ -251,7 +251,7 @@ public class FieldManager {
     }
 
     private int fromRegionToNumber(String strPlace) {
-        if (strPlace.equalsIgnoreCase(field.getKockOffArea())) {
+        if (strPlace.equalsIgnoreCase(field.getKnockOffArea())) {
             return 0;
         } else if (strPlace.equalsIgnoreCase(field.getTeam2Field3())) {
             return 1;
