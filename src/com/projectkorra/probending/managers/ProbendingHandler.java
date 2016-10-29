@@ -79,6 +79,17 @@ public class ProbendingHandler
     {
         availableFields = _fieldStorage.loadFields();
     }
+    
+    public void getPointsEarned(UUID uuid, final Callback<Double> callback)
+    {
+    	_playerStorage.loadPBPlayerAsync(uuid, new Callback<PBPlayer>()
+    	{
+    		public void run(PBPlayer player)
+    		{
+    			callback.run(player.getPointsEarned());
+    		}
+    	});
+    }
 
     public void quePlayer(Player player, GameMode gameMode) {
         if (!players.containsKey(player.getUniqueId()) || gameMode == null) {

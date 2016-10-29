@@ -19,6 +19,33 @@ public class DBProbendingTeam extends DBInterpreter
 	public DBProbendingTeam(JavaPlugin plugin)
 	{
 		super(plugin);
+		
+		runAsync(new Runnable()
+		{
+			public void run()
+			{
+				if (!DatabaseHandler.getDatabase().tableExists("pb_teams"))
+				{
+					String query = "CREATE TABLE pb_teams (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(100) NOT NULL, leader VARCHAR(100) NOT NULL, PRIMARY KEY (id), UNIQUE INDEX nameIndex (name), UNIQUE INDEX leaderIndex (leader));";
+					if (!DatabaseHandler.isMySQL())
+					{
+						query = "CREATE TABLE pb_teams (id INTEGER PRIMARY KEY NOT NULL AUTOINCREMENT, name TEXT NOT NULL UNIQUE, leader TEXT NOT NULL UNIQUE);";
+					}
+					
+					DatabaseHandler.getDatabase().executeQuery(query);
+				}
+				if (!DatabaseHandler.getDatabase().tableExists("pb_team_members"))
+				{
+					String query = "CREATE TABLE pb_team_members (id INT NOT NULL AUTO_INCREMENT, teamId INT NOT NULL, uuid VARCHAR(100) NOT NULL, role VARCHAR(50) NOT NULL, PRIMARY KEY (id), UNIQUE INDEX uuidIndex (uuid), INDEX teamIndex (teamId), INDEX roleIndex (role));";
+					if (!DatabaseHandler.isMySQL())
+					{
+						query = "CREATE TABLE pb_teams (id INTEGER PRIMARY KEY NOT NULL AUTOINCREMENT, teamId INTEGER NOT NULL, uuid TEXT NOT NULL UNIQUE, role TEXT NOT NULL);CREATE INDEX teamIndex ON pb_players (teamId);CREATE INDEX roleIndex ON pb_players (role);";
+					}
+					
+					DatabaseHandler.getDatabase().executeQuery(query);
+				}
+			}
+		});
 	}
 	
 	public void loadPBTeams(final Callback<List<PBTeam>> callback)

@@ -14,6 +14,23 @@ public class DBProbendingPlayer extends DBInterpreter
 	public DBProbendingPlayer(JavaPlugin plugin)
 	{
 		super(plugin);
+		
+		runAsync(new Runnable()
+		{
+			public void run()
+			{
+				if (!DatabaseHandler.getDatabase().tableExists("pb_players"))
+				{
+					String query = "CREATE TABLE pb_players (id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(100) NOT NULL, points DOUBLE, PRIMARY KEY (id), UNIQUE INDEX uuidIndex (uuid), INDEX pointIndex (points));";
+					if (!DatabaseHandler.isMySQL())
+					{
+						query = "CREATE TABLE pb_players (id INTEGER PRIMARY KEY NOT NULL AUTOINCREMENT, uuid TEXT NOT NULL UNIQUE, points REAL);CREATE INDEX pointIndex ON pb_players (points);";
+					}
+					
+					DatabaseHandler.getDatabase().executeQuery(query);
+				}
+			}
+		});
 	}
 	
 	public void loadPBPlayer(final UUID uuid, final Callback<PBPlayer> callback)
