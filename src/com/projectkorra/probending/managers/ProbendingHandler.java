@@ -1,5 +1,7 @@
 package com.projectkorra.probending.managers;
 
+import com.projectkorra.probending.PBMessager;
+import com.projectkorra.probending.enums.GameMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,18 +16,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.projectkorra.probending.game.Game;
-import com.projectkorra.probending.game.field.ProbendingField;
+import com.projectkorra.probending.objects.ProbendingField;
+import com.projectkorra.probending.game.scoreboard.PBScoreboard;
 import com.projectkorra.probending.libraries.database.Callback;
 import com.projectkorra.probending.objects.PBPlayer;
 import com.projectkorra.probending.storage.DBProbendingPlayer;
 import com.projectkorra.probending.storage.FFProbendingField;
 
-public class ProbendingHandler
-{
+public class ProbendingHandler {
+
     private final JavaPlugin plugin;
 
     private Map<UUID, PBPlayer> players;
-    
+
     private List<ProbendingField> availableFields;
     private Set<Game> games;
 
@@ -35,12 +38,11 @@ public class ProbendingHandler
 
     private long informDelay = 2000;
     private long curTime;
-    
+
     private FFProbendingField _fieldStorage;
     private DBProbendingPlayer _playerStorage;
 
-    public ProbendingHandler(JavaPlugin plugin)
-    {
+    public ProbendingHandler(JavaPlugin plugin) {
         this.plugin = plugin;
         this.curTime = System.currentTimeMillis();
         this.players = new HashMap<>();
@@ -55,40 +57,59 @@ public class ProbendingHandler
         loadFields();
     }
 
-    public boolean addField(ProbendingField field)
-    {
-        if (!availableFields.contains(field))
-        {
-        	_fieldStorage.insertField(field);
+    public boolean addField(ProbendingField field) {
+        if (!availableFields.contains(field)) {
+            _fieldStorage.insertField(field);
             availableFields.add(field);
         }
         return true;
     }
 
-    public boolean removeField(ProbendingField field)
-    {
-        if (availableFields.contains(field))
-        {
+    public void removeField(ProbendingField field) {
+        if (availableFields.contains(field)) {
             availableFields.remove(field);
             _fieldStorage.deleteField(field);
         }
-        return true;
     }
 
-    private void loadFields()
-    {
+    public ProbendingField getField(Player player, String fieldNumber) {
+        for (ProbendingField f : availableFields) {
+            if (f.getFieldName().equals(fieldNumber)) {
+                return f;
+            }
+        }
+        for (Game game : games) {
+            if (game.getField().getFieldName().equals(fieldNumber)) {
+                PBMessager.sendMessage(player, ChatColor.RED + "Field is in use, and cannot be edit!", true);
+                return null;
+            }
+        }
+        PBMessager.sendMessage(player, ChatColor.RED + "Field has not been found!", true);
+        return null;
+    }
+
+    private void loadFields() {
         availableFields = _fieldStorage.loadFields();
     }
-    
-    public void getPointsEarned(UUID uuid, final Callback<Double> callback)
-    {
-    	_playerStorage.loadPBPlayerAsync(uuid, new Callback<PBPlayer>()
-    	{
-    		public void run(PBPlayer player)
-    		{
-    			callback.run(player.getPointsEarned());
-    		}
-    	});
+
+    public void getPointsEarned(UUID uuid, final Callback<Double> callback) {
+        _playerStorage.loadPBPlayerAsync(uuid, new Callback<PBPlayer>() {
+            public void run(PBPlayer player) {
+                callback.run(player.getPointsEarned());
+            }
+        });
+    }
+
+    public void getPlayerInfo(Player player, Player infoPlayer) {
+        if (infoPlayer == null) {
+            PBMessager.sendMessage(player, PBMessager.PBMessage.NOPLAYER);
+            return;
+        }
+        if (players.containsKey(infoPlayer.getUniqueId())) {
+            PBScoreboard.showInformation(player, players.get(infoPlayer.getUniqueId()), plugin);
+        } else {
+            PBMessager.sendMessage(player, PBMessager.PBMessage.ERROR);
+        }
     }
 
     public void quePlayer(Player player, GameMode gameMode) {
@@ -141,15 +162,55 @@ public class ProbendingHandler
         informPlayers();
     }
 
-    private void informPlayers()
-    {
-        if (curTime + informDelay < System.currentTimeMillis())
-        {
+    public void gameEnded(Game game, Integer team1Score, Integer team2Score) {
+        if (games.contains(game)) {
+            availableFields.add(game.getField());
+            games.remove(game);
+        }
+        Set<Player> winners = null;
+        if (team1Score > team2Score) {
+            winners = game.getTeam1();
+        } else if (team2Score > team1Score) {
+            winners = game.getTeam2();
+        } else {
+            winners = new HashSet<>();
+        }
+        //TODO: Create spawn....
+        for (Player p : game.getTeam1()) {
+            if (p.isOnline()) {
+                p.teleport(p.getWorld().getSpawnLocation());
+                if (winners.isEmpty()) {
+                    PBMessager.sendMessage(p, "It's a draw!", true);
+                } else {
+                    PBMessager.sendMessage(p, ChatColor.GOLD + "Winners:", true);
+                    for (Player pl : winners) {
+                        PBMessager.sendMessage(p, ChatColor.GREEN + pl.getName(), true);
+                    }
+                }
+            }
+        }
+        for (Player p : game.getTeam2()) {
+            if (p.isOnline()) {
+                p.teleport(p.getWorld().getSpawnLocation());
+                if (winners.isEmpty()) {
+                    PBMessager.sendMessage(p, "It's a draw!", true);
+                } else {
+                    PBMessager.sendMessage(p, ChatColor.GOLD + "Winners:", true);
+                    for (Player pl : winners) {
+                        PBMessager.sendMessage(p, ChatColor.GREEN + pl.getName(), true);
+                    }
+                }
+            }
+        }
+        //TODO: Add points to winning team and all other statistics!
+        tryStartGame();
+    }
+
+    private void informPlayers() {
+        if (curTime + informDelay < System.currentTimeMillis()) {
             curTime = System.currentTimeMillis();
-            for (PBPlayer pbPlayer : queuedUpPlayers)
-            {
-                if (Bukkit.getPlayer(pbPlayer.getUUID()) != null)
-                {
+            for (PBPlayer pbPlayer : queuedUpPlayers) {
+                if (Bukkit.getPlayer(pbPlayer.getUUID()) != null) {
                     Player p = Bukkit.getPlayer(pbPlayer.getUUID());
                     p.sendMessage(ChatColor.GRAY + "===================");
                     p.sendMessage(ChatColor.YELLOW + "1v1: " + ChatColor.AQUA + playerMode1P.size() + ChatColor.GRAY + "/2");
@@ -213,29 +274,16 @@ public class ProbendingHandler
         }
     }
 
-    public void gameEnded(Game game, Integer team1Score, Integer team2Score) {
-        if (games.contains(game)) {
-            availableFields.add(game.Field());
-            games.remove(game);
-        }
-        tryStartGame();
+    protected void playerLogin(final Player player) {
+        _playerStorage.loadPBPlayerAsync(player.getUniqueId(), new Callback<PBPlayer>() {
+            public void run(PBPlayer pbPlayer) {
+                players.put(player.getUniqueId(), pbPlayer);
+            }
+        });
     }
 
-    protected void playerLogin(final Player player)
-    {
-    	_playerStorage.loadPBPlayerAsync(player.getUniqueId(), new Callback<PBPlayer>()
-    	{
-    		public void run(PBPlayer pbPlayer)
-    		{
-    			players.put(player.getUniqueId(), pbPlayer);
-    		}
-    	});
-    }
-
-    protected void playerLogout(Player player)
-    {
-        if (players.containsKey(player))
-        {
+    protected void playerLogout(Player player) {
+        if (players.containsKey(player)) {
             players.remove(player);
         }
     }

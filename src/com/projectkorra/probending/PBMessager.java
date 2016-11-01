@@ -16,7 +16,7 @@ public class PBMessager {
 
     public static void sendMessage(Player player, String message, Boolean prefix) {
         if (prefix) {
-            player.sendMessage(ChatColor.DARK_RED + "[" + ChatColor.RED + "Probending" + ChatColor.DARK_RED + "]" +  ChatColor.GRAY + " " + message);
+            player.sendMessage(ChatColor.DARK_RED + "[" + ChatColor.RED + "Probending" + ChatColor.DARK_RED + "]" + ChatColor.GRAY + " " + message);
         } else {
             player.sendMessage(ChatColor.GRAY + message);
         }
@@ -33,8 +33,12 @@ public class PBMessager {
     public enum PBMessage {
 
         BLANK("", false),
-        DEFAULT_LINE(ChatColor.GOLD + "--------------------------------------------------", false);
-        
+        DEFAULT_LINE(ChatColor.GOLD + "--------------------------------------------------", false),
+        ERROR(ChatColor.RED + "ERROR, something went wrong!", true),
+        NOPLAYER(ChatColor.RED + "No such player!", true),
+        NOPERMS(ChatColor.RED + "You do not have enough permissions!", true),
+        WRONGFORMAT(ChatColor.RED + "Incorrect usage!", true);
+
         private Boolean prefix;
         private String message;
 

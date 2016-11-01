@@ -1,6 +1,7 @@
 package com.projectkorra.probending.game;
 
-import com.projectkorra.probending.game.field.ProbendingField;
+import com.projectkorra.probending.enums.WinningType;
+import com.projectkorra.probending.objects.ProbendingField;
 import com.projectkorra.probending.game.field.FieldManager;
 import com.projectkorra.probending.managers.ProbendingHandler;
 import com.projectkorra.probending.game.round.Round;
@@ -57,7 +58,7 @@ public class Game {
         plugin.getServer().getPluginManager().registerEvents(listener, plugin);
     }
 
-    public ProbendingField Field() {
+    public ProbendingField getField() {
         return field;
     }
 

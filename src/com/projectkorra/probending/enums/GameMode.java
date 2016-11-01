@@ -3,15 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.projectkorra.probending.game;
+package com.projectkorra.probending.enums;
 
 /**
  *
- * @author runef
+ * @author Ivo
  */
-public enum WinningType {
+public enum GameMode {
 
-    DRAW,
-    TEAM1,
-    TEAM2;
+    ANY,
+    SINGLE,
+    TRIPLE,
+    TEAM;
 }
