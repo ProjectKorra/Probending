@@ -24,18 +24,18 @@ public class DBProbendingTeam extends DBInterpreter {
                 if (!DatabaseHandler.getDatabase().tableExists("pb_teams")) {
                     String query = "CREATE TABLE pb_teams (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(100) NOT NULL, leader VARCHAR(100) NOT NULL, PRIMARY KEY (id), UNIQUE INDEX nameIndex (name), UNIQUE INDEX leaderIndex (leader));";
                     if (!DatabaseHandler.isMySQL()) {
-                        query = "CREATE TABLE pb_teams (id INTEGER PRIMARY KEY NOT NULL AUTOINCREMENT, name TEXT NOT NULL UNIQUE, leader TEXT NOT NULL UNIQUE);";
+                        query = "CREATE TABLE pb_teams (id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE, leader TEXT NOT NULL UNIQUE);";
                     }
 
-                    DatabaseHandler.getDatabase().executeQuery(query);
+                    DatabaseHandler.getDatabase().executeUpdate(query);
                 }
                 if (!DatabaseHandler.getDatabase().tableExists("pb_team_members")) {
                     String query = "CREATE TABLE pb_team_members (id INT NOT NULL AUTO_INCREMENT, teamId INT NOT NULL, uuid VARCHAR(100) NOT NULL, role VARCHAR(50) NOT NULL, PRIMARY KEY (id), UNIQUE INDEX uuidIndex (uuid), INDEX teamIndex (teamId), INDEX roleIndex (role));";
                     if (!DatabaseHandler.isMySQL()) {
-                        query = "CREATE TABLE pb_teams (id INTEGER PRIMARY KEY NOT NULL AUTOINCREMENT, teamId INTEGER NOT NULL, uuid TEXT NOT NULL UNIQUE, role TEXT NOT NULL);CREATE INDEX teamIndex ON pb_players (teamId);CREATE INDEX roleIndex ON pb_players (role);";
+                        query = "CREATE TABLE pb_teams (id INTEGER PRIMARY KEY, teamId INTEGER NOT NULL, uuid TEXT NOT NULL UNIQUE, role TEXT NOT NULL);CREATE INDEX teamIndex ON pb_players (teamId);CREATE INDEX roleIndex ON pb_players (role);";
                     }
 
-                    DatabaseHandler.getDatabase().executeQuery(query);
+                    DatabaseHandler.getDatabase().executeUpdate(query);
                 }
             }
         });
@@ -44,21 +44,29 @@ public class DBProbendingTeam extends DBInterpreter {
     public void loadPBTeams(final Callback<List<PBTeam>> callback) {
         DatabaseHandler.getDatabase().executeQuery("SELECT * FROM pb_teams;", new Callback<ResultSet>() {
             public void run(ResultSet rs) {
-                List<PBTeam> teams = Lists.newArrayList();
+                final List<PBTeam> teams = Lists.newArrayList();
                 try {
                     while (rs.next()) {
-                        int id = rs.getInt("id");
-                        String name = rs.getString("name");
-                        UUID leader = UUID.fromString(rs.getString("leader"));
-                        Map<UUID, TeamMemberRole> members = new HashMap<>();
-                        ResultSet memberSet = DatabaseHandler.getDatabase().executeQuery("SELECT * FROM pb_team_members WHERE teamId=?;", id);
-                        while (memberSet.next()) {
-                            UUID uuid = UUID.fromString(memberSet.getString("uuid"));
-                            TeamMemberRole role = TeamMemberRole.parseRole(memberSet.getString("role"));
-                            members.put(uuid, role);
-                        }
-                        PBTeam team = new PBTeam(id, name, leader, members);
-                        teams.add(team);
+                        final int id = rs.getInt("id");
+                        final String name = rs.getString("name");
+                        final UUID leader = UUID.fromString(rs.getString("leader"));
+                        DatabaseHandler.getDatabase().executeQuery("SELECT * FROM pb_team_members WHERE teamId=?;", new Callback<ResultSet>() {
+                        	public void run(ResultSet memberSet)
+                        	{
+                        		final Map<UUID, TeamMemberRole> members = new HashMap<>();
+                                try {
+									while (memberSet.next()) {
+									    UUID uuid = UUID.fromString(memberSet.getString("uuid"));
+									    TeamMemberRole role = TeamMemberRole.parseRole(memberSet.getString("role"));
+									    members.put(uuid, role);
+									}
+								} catch (SQLException e) {
+									e.printStackTrace();
+								}
+                                PBTeam team = new PBTeam(id, name, leader, members);
+                                teams.add(team);
+                        	}
+                        }, id);
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -86,7 +94,7 @@ public class DBProbendingTeam extends DBInterpreter {
     }
 
     public void updatePBTeam(final PBTeam team) {
-        DatabaseHandler.getDatabase().executeQuery("UPDATE pb_teams SET name=?, leader=? WHERE id=?;", null, team.getTeamName(), team.getLeader().toString(), team.getID());
+        DatabaseHandler.getDatabase().executeUpdate("UPDATE pb_teams SET name=?, leader=? WHERE id=?;", team.getTeamName(), team.getLeader().toString(), team.getID());
     }
 
     public void updatePBTeamAsync(final PBTeam team) {
@@ -98,7 +106,7 @@ public class DBProbendingTeam extends DBInterpreter {
     }
 
     public void joinTeam(final UUID uuid, final TeamMemberRole role, final PBTeam team) {
-        DatabaseHandler.getDatabase().executeQuery("INSERT INTO pb_team_members (uuid, teamId, role) VALUES (?, ?, ?) ON DUPLICATE KEY SET teamId=VALUES(teamId), role=VALUES(role);", null, uuid.toString(), team.getID(), role.toString());
+        DatabaseHandler.getDatabase().executeUpdate("INSERT INTO pb_team_members (uuid, teamId, role) VALUES (?, ?, ?) ON DUPLICATE KEY SET teamId=VALUES(teamId), role=VALUES(role);", uuid.toString(), team.getID(), role.toString());
     }
 
     public void joinTeamAsync(final UUID uuid, final TeamMemberRole role, final PBTeam team) {
@@ -110,7 +118,7 @@ public class DBProbendingTeam extends DBInterpreter {
     }
 
     public void leaveTeam(final UUID uuid, final PBTeam team) {
-        DatabaseHandler.getDatabase().executeQuery("DELETE FROM pb_team_members WHERE uuid=? AND teamId=?;", null, uuid.toString(), team.getID());
+        DatabaseHandler.getDatabase().executeUpdate("DELETE FROM pb_team_members WHERE uuid=? AND teamId=?;", uuid.toString(), team.getID());
     }
 
     public void leaveTeamAsync(final UUID uuid, final PBTeam team) {
@@ -122,7 +130,8 @@ public class DBProbendingTeam extends DBInterpreter {
     }
 
     public void createTeam(final UUID creator, final String teamName, final TeamMemberRole creatorRole, final Callback<PBTeam> callback) {
-        DatabaseHandler.getDatabase().executeQuery("INSERT INTO pb_teams (name, leader) VALUES (?, ?);", new Callback<ResultSet>() {
+    	DatabaseHandler.getDatabase().executeUpdate("INSERT INTO pb_teams (name, leader) VALUES (?, ?);", teamName, creator.toString());
+        DatabaseHandler.getDatabase().executeQuery("SELECT id FROM pb_teams WHERE name=? AND leader=?;", new Callback<ResultSet>() {
             public void run(ResultSet rs) {
                 try {
                     if (rs.next()) {
@@ -159,8 +168,8 @@ public class DBProbendingTeam extends DBInterpreter {
     }
 
     public void deleteTeam(PBTeam team) {
-        DatabaseHandler.getDatabase().executeQuery("DELETE FROM pb_teams WHERE id=?;", null, team.getID());
-        DatabaseHandler.getDatabase().executeQuery("DELETE FROM pb_team_members WHERE teamId=?;", null, team.getID());
+        DatabaseHandler.getDatabase().executeUpdate("DELETE FROM pb_teams WHERE id=?;", team.getID());
+        DatabaseHandler.getDatabase().executeUpdate("DELETE FROM pb_team_members WHERE teamId=?;", team.getID());
     }
 
     public void deleteTeamAsync(final PBTeam team) {
