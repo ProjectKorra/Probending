@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
  *
  * @author Ivo
  */
-public class PBMessager {
+public class PBMessenger {
 
     public static void sendMessage(Player player, String message, Boolean prefix) {
         if (prefix) {

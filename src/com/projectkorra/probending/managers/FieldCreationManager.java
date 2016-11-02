@@ -5,7 +5,7 @@
  */
 package com.projectkorra.probending.managers;
 
-import com.projectkorra.probending.PBMessager;
+import com.projectkorra.probending.PBMessenger;
 import com.projectkorra.probending.objects.ProbendingField;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -51,7 +51,7 @@ public class FieldCreationManager implements Listener {
                             //TODO: DB > Save data
                             break;
                         default:
-                            PBMessager.sendMessage(player, "No such region, 1, 2 and 3 are the options!", true);
+                            PBMessenger.sendMessage(player, "No such region, 1, 2 and 3 are the options!", true);
                             return;
                     }
                     break;
@@ -70,15 +70,15 @@ public class FieldCreationManager implements Listener {
                             //TODO: DB > Save data
                             break;
                         default:
-                            PBMessager.sendMessage(player, "No such region, 1, 2 and 3 are the options!", true);
+                            PBMessenger.sendMessage(player, "No such region, 1, 2 and 3 are the options!", true);
                             return;
                     }
                     break;
                 default:
-                    PBMessager.sendMessage(player, "No such team, try 1 or 2 for [team]", true);
+                    PBMessenger.sendMessage(player, "No such team, try 1 or 2 for [team]", true);
                     return;
             }
-            PBMessager.sendMessage(player, "Data has been succesfully set!", true);
+            PBMessenger.sendMessage(player, "Data has been succesfully set!", true);
         }
     }
 
@@ -101,7 +101,7 @@ public class FieldCreationManager implements Listener {
                             //TODO: DB > Save data
                             break;
                         default:
-                            PBMessager.sendMessage(player, "No such region, 1, 2 and 3 are the options!", true);
+                            PBMessenger.sendMessage(player, "No such region, 1, 2 and 3 are the options!", true);
                             return;
                     }
                     break;
@@ -120,15 +120,15 @@ public class FieldCreationManager implements Listener {
                             //TODO: DB > Save data
                             break;
                         default:
-                            PBMessager.sendMessage(player, "No such region, 1, 2 and 3 are the options!", true);
+                            PBMessenger.sendMessage(player, "No such region, 1, 2 and 3 are the options!", true);
                             return;
                     }
                     break;
                 default:
-                    PBMessager.sendMessage(player, "No such team, try 1 or 2 for [team]", true);
+                    PBMessenger.sendMessage(player, "No such team, try 1 or 2 for [team]", true);
                     return;
             }
-            PBMessager.sendMessage(player, "Data has been succesfully set!", true);
+            PBMessenger.sendMessage(player, "Data has been succesfully set!", true);
         }
     }
 
@@ -151,7 +151,7 @@ public class FieldCreationManager implements Listener {
                             //TODO: DB > Save data
                             break;
                         default:
-                            PBMessager.sendMessage(player, "No such region, 1, 2 and 3 are the options!", true);
+                            PBMessenger.sendMessage(player, "No such region, 1, 2 and 3 are the options!", true);
                             return;
                     }
                     break;
@@ -170,15 +170,15 @@ public class FieldCreationManager implements Listener {
                             //TODO: DB > Save data
                             break;
                         default:
-                            PBMessager.sendMessage(player, "No such region, 1, 2 and 3 are the options!", true);
+                            PBMessenger.sendMessage(player, "No such region, 1, 2 and 3 are the options!", true);
                             return;
                     }
                     break;
                 default:
-                    PBMessager.sendMessage(player, "No such team, try 1 or 2 for [team]", true);
+                    PBMessenger.sendMessage(player, "No such team, try 1 or 2 for [team]", true);
                     return;
             }
-            PBMessager.sendMessage(player, "Data has been succesfully set!", true);
+            PBMessenger.sendMessage(player, "Data has been succesfully set!", true);
         }
     }
 
@@ -186,21 +186,21 @@ public class FieldCreationManager implements Listener {
         ProbendingField f = pHandler.getField(player, field);
         if (f != null) {
             f.setKnockOffArea(name);
-            PBMessager.sendMessage(player, "Data has been succesfully set!", true);
+            PBMessenger.sendMessage(player, "Data has been succesfully set!", true);
             //TODO: DB > Save data
         }
     }
 
     //TODO: ALL FIELD, THE ONE IN USE AND NOT IN USE!
     public void getFields(Player player) {
-        PBMessager.sendMessage(player, "NOT IMPLEMENTED YET!", true);
+        PBMessenger.sendMessage(player, "NOT IMPLEMENTED YET!", true);
     }
 
     //TODO: GET ALL FIELD INFO NICE IN CHAT!
     public void getFieldInfo(Player player, String field) {
         ProbendingField f = pHandler.getField(player, field);
         if (f != null) {
-            PBMessager.sendMessage(player, "NOT IMPLEMENTED YET!", true);
+            PBMessenger.sendMessage(player, "NOT IMPLEMENTED YET!", true);
         }
     }
 
@@ -208,7 +208,7 @@ public class FieldCreationManager implements Listener {
         ProbendingField f = pHandler.getField(player, field);
         if (f != null) {
             pHandler.removeField(f);
-            PBMessager.sendMessage(player, "Field has been succesfully deleted", true);
+            PBMessenger.sendMessage(player, "Field has been succesfully deleted", true);
         }
     }
 

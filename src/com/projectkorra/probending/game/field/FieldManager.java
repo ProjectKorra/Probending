@@ -65,10 +65,10 @@ public class FieldManager {
     public void reset() {
         int i = 1;
         boolean differentSpawnPoints = false;
-        if (field.getStartPointTeam1(game.getTeam1().size()) != null) {
+        if (field.getStartPointTeam1(game.getTeam1Players().size()) != null) {
             differentSpawnPoints = true;
         }
-        for (Player p : game.getTeam1()) {
+        for (Player p : game.getTeam1Players()) {
             playerLocation.put(p.getUniqueId(), 4);
             playerFaults.put(p.getUniqueId(), 0);
             Location loc = field.getStartPointTeam1(i);
@@ -81,10 +81,10 @@ public class FieldManager {
         }
         i = 1;
         differentSpawnPoints = false;
-        if (field.getStartPointTeam2(game.getTeam2().size()) != null) {
+        if (field.getStartPointTeam2(game.getTeam2Players().size()) != null) {
             differentSpawnPoints = true;
         }
-        for (Player p : game.getTeam2()) {
+        for (Player p : game.getTeam2Players()) {
             playerLocation.put(p.getUniqueId(), 3);
             playerFaults.put(p.getUniqueId(), 0);
             Location loc = field.getStartPointTeam2(i);
@@ -100,12 +100,12 @@ public class FieldManager {
     public WinningType getWinningTeam() {
         int team2loc = 0;
         int team1loc = 0;
-        for (Player p : game.getTeam1()) {
+        for (Player p : game.getTeam1Players()) {
             if (playerLocation.get(p.getUniqueId()) > 0) {
                 team1loc = team1loc + (7 - playerLocation.get(p.getUniqueId()));
             }
         }
-        for (Player p : game.getTeam2()) {
+        for (Player p : game.getTeam2Players()) {
             if (playerLocation.get(p.getUniqueId()) > 0) {
                 team2loc = team2loc + playerLocation.get(p.getUniqueId());
             }
@@ -128,14 +128,14 @@ public class FieldManager {
         Set<Player> enemyTeam;
         int fDir = 0;
         String teamName = "N/A";
-        if (game.getTeam1().contains(player)) {
+        if (game.getTeam1Players().contains(player)) {
             fDir = -1;
             teamName = "team1";
-            enemyTeam = game.getTeam2();
-        } else if (game.getTeam2().contains(player)) {
+            enemyTeam = game.getTeam2Players();
+        } else if (game.getTeam2Players().contains(player)) {
             fDir = 1;
             teamName = "team2";
-            enemyTeam = game.getTeam1();
+            enemyTeam = game.getTeam1Players();
         } else {
             return;
         }
@@ -161,9 +161,9 @@ public class FieldManager {
                 }
             } else {
                 if (toPlace == 0) {
-                    if (game.getTeam1().contains(player)) {
+                    if (game.getTeam1Players().contains(player)) {
                         setPlayerLocation(player, getRegionWarp(toPlace, "team1"));
-                    } else if (game.getTeam2().contains(player)) {
+                    } else if (game.getTeam2Players().contains(player)) {
                         setPlayerLocation(player, getRegionWarp(toPlace, "team2"));
                     }
                     player.sendMessage(ChatColor.RED + "Please be patient till the game has ended! (Or use /pb leave, this might have consequences!)");
@@ -201,9 +201,9 @@ public class FieldManager {
             iplace = 0;
         }
         playerLocation.put(player.getUniqueId(), iplace);
-        if (game.getTeam1().contains(player)) {
+        if (game.getTeam1Players().contains(player)) {
             setPlayerLocation(player, getRegionWarp(iplace, "team1"));
-        } else if (game.getTeam2().contains(player)) {
+        } else if (game.getTeam2Players().contains(player)) {
             setPlayerLocation(player, getRegionWarp(iplace, "team2"));
         }
     }
@@ -227,9 +227,9 @@ public class FieldManager {
         int extremeLoc = 0;
         Set<Player> team = null;
         if (teamName == "team1") {
-            team = game.getTeam1();
+            team = game.getTeam1Players();
         } else if (teamName == "team2") {
-            team = game.getTeam2();
+            team = game.getTeam2Players();
         }
         if (team != null) {
             for (Player p : team) {
@@ -323,8 +323,8 @@ public class FieldManager {
 
     private void broadcast(String message) {
         Set<Player> players = new HashSet<>();
-        players.addAll(game.getTeam1());
-        players.addAll(game.getTeam2());
+        players.addAll(game.getTeam1Players());
+        players.addAll(game.getTeam2Players());
         for (Player p : players) {
             p.sendMessage(message);
         }
