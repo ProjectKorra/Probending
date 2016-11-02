@@ -1,5 +1,6 @@
 package com.projectkorra.probending.game.round;
 
+import com.projectkorra.probending.game.scoreboard.PBScoreboard;
 import com.projectkorra.probending.game.Game;
 import com.projectkorra.probending.libraries.Timer;
 import com.projectkorra.probending.libraries.Title;

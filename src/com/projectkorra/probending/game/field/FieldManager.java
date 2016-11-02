@@ -5,8 +5,9 @@
  */
 package com.projectkorra.probending.game.field;
 
+import com.projectkorra.probending.objects.ProbendingField;
 import com.projectkorra.probending.game.Game;
-import com.projectkorra.probending.game.WinningType;
+import com.projectkorra.probending.enums.WinningType;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import java.util.HashMap;

@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.projectkorra.probending.game.round;
+package com.projectkorra.probending.game.scoreboard;
 
+import com.projectkorra.probending.objects.PBPlayer;
 import java.util.HashMap;
 import java.util.Map;
 import org.bukkit.Bukkit;
@@ -74,15 +75,14 @@ public class PBScoreboard {
         sideBar.getScore(oldText).setScore(1);
     }
 
-    //SHOULD BE IMPLEMENTED NEXT TIME!
-    public static void showInformation(final Player player, JavaPlugin plugin) {
+    public static void showInformation(final Player player, PBPlayer pbPlayer, JavaPlugin plugin) {
         final Scoreboard oldBoard = player.getScoreboard();
 
         Scoreboard newBoard = Bukkit.getScoreboardManager().getNewScoreboard();
         player.setScoreboard(newBoard);
         Objective objectiveSidebar = newBoard.registerNewObjective("sidebar", "dummy");
         objectiveSidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
-        objectiveSidebar.getScore(ChatColor.BOLD + "Your profile:").setScore(10);
+        objectiveSidebar.getScore(ChatColor.BOLD + Bukkit.getOfflinePlayer(pbPlayer.getUUID()).getName() + " profile:").setScore(10);
         objectiveSidebar.getScore(ChatColor.YELLOW + "Wins1: " + ChatColor.AQUA + "0").setScore(9);
         objectiveSidebar.getScore(ChatColor.YELLOW + "Wins3: " + ChatColor.AQUA + "0").setScore(8);
         objectiveSidebar.getScore(ChatColor.YELLOW + "Games: " + ChatColor.AQUA + "0").setScore(7);
