@@ -19,10 +19,10 @@ public class DBProbendingPlayer extends DBInterpreter {
                 if (!DatabaseHandler.getDatabase().tableExists("pb_players")) {
                     String query = "CREATE TABLE pb_players (id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(100) NOT NULL, points DOUBLE, PRIMARY KEY (id), UNIQUE INDEX uuidIndex (uuid), INDEX pointIndex (points));";
                     if (!DatabaseHandler.isMySQL()) {
-                        query = "CREATE TABLE pb_players (id INTEGER PRIMARY KEY NOT NULL AUTOINCREMENT, uuid TEXT NOT NULL UNIQUE, points REAL);CREATE INDEX pointIndex ON pb_players (points);";
+                        query = "CREATE TABLE pb_players (id INTEGER PRIMARY KEY, uuid TEXT NOT NULL UNIQUE, points REAL);CREATE INDEX pointIndex ON pb_players (points);";
                     }
 
-                    DatabaseHandler.getDatabase().executeQuery(query);
+                    DatabaseHandler.getDatabase().executeUpdate(query);
                 }
             }
         });
@@ -38,11 +38,19 @@ public class DBProbendingPlayer extends DBInterpreter {
 
                         callback.run(new PBPlayer(id, uuid, points));
                     } else {
-                        ResultSet rs2 = DatabaseHandler.getDatabase().executeQuery("INSERT INTO pb_players (uuid, points) VALUES(?, ?);", uuid.toString(), 0D);
-                        rs2.next();
-                        int id = rs2.getInt(1);
-                        double points = 0D;
-                        callback.run(new PBPlayer(id, uuid, points));
+                    	DatabaseHandler.getDatabase().executeUpdate("INSERT INTO pb_players (uuid, points) VALUES(?, ?);", uuid.toString(), 0D);
+                        DatabaseHandler.getDatabase().executeQuery("SELECT id FROM pb_players WHERE uuid=?;", new Callback<ResultSet>() {
+                        	public void run(ResultSet rs2) {
+                        		try {
+									rs2.next();
+									int id = rs2.getInt(1);
+	                                double points = 0D;
+	                                callback.run(new PBPlayer(id, uuid, points));
+								} catch (SQLException e) {
+									e.printStackTrace();
+								}
+                        	}
+                        }, uuid.toString());
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -69,7 +77,7 @@ public class DBProbendingPlayer extends DBInterpreter {
     }
 
     public void updatePBPlayer(final PBPlayer player) {
-        DatabaseHandler.getDatabase().executeQuery("UPDATE pb_players SET points=? WHERE id=?;", null, player.getPointsEarned(), player.getID());
+        DatabaseHandler.getDatabase().executeUpdate("UPDATE pb_players SET points=? WHERE id=?;", player.getPointsEarned(), player.getID());
     }
 
     public void updatePBPlayerAsync(final PBPlayer player) {

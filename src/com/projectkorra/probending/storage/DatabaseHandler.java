@@ -20,7 +20,7 @@ public class DatabaseHandler {
         }
 
         if (!_useMySQL) {
-            _database = new SQLiteDatabase(plugin.getLogger(), "Probending", plugin.getDataFolder().getAbsolutePath());
+            _database = new SQLiteDatabase(plugin.getLogger(), "probending.db", plugin.getDataFolder().getAbsolutePath());
         } else {
             String hostname = ConfigManager.defaultConfig.get().getString("Database.MySQL.Hostname");
             String port = ConfigManager.defaultConfig.get().getString("Database.MySQL.Port");
