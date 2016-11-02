@@ -1,7 +1,6 @@
 package com.projectkorra.probending.libraries.database;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,15 +56,14 @@ public abstract class AbstractDatabase {
      * @param values - The data to be used in this query
      */
     public abstract void executeQuery(String query, Callback<ResultSet> callback, Object... values);
-
+    
     /**
-     * Executes a query
+     * Executes an update (CREATE, INSERT, UPDATE, DELETE)
      *
-     * @param query - The SQL Query to execute
-     * @param values - The data to be used in this query
-     * @return The ResultSet of this query
+     * @param query - The SQL Update to execute
+     * @param values - The data to be used in this update
      */
-    public abstract ResultSet executeQuery(String query, Object... values);
+    public abstract void executeUpdate(String query, Object... values);
 
     /**
      * Check database to see if a table exists
@@ -73,19 +71,5 @@ public abstract class AbstractDatabase {
      * @param table Table name to check
      * @return True if table exists, else false
      */
-    public boolean tableExists(String table) {
-        try (Connection connection = getConnection()) {
-            DatabaseMetaData dmd = connection.getMetaData();
-            ResultSet rs = dmd.getTables(null, null, table, null);
-
-            if (rs.next()) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+    public abstract boolean tableExists(String table);
 }

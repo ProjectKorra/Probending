@@ -1,6 +1,7 @@
 package com.projectkorra.probending.libraries.database;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,29 +45,53 @@ public class MySQLDatabase extends AbstractDatabase {
     }
 
     @Override
-    public ResultSet executeQuery(String query, Object... values) {
+    public void executeQuery(String query, Callback<ResultSet> callback, Object... values) {
         try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
             for (int i = 0; i < values.length; i++) {
                 statement.setObject(i + 1, values[i]);
             }
-
+            
             try (ResultSet result = statement.executeQuery()) {
-                return result;
+            	if (callback != null) {
+                    callback.run(result);
+                }
             }
         } catch (SQLException exception) {
-            exception.printStackTrace();
-            return null;
+        	exception.printStackTrace();
         } catch (Exception exception) {
             exception.printStackTrace();
-            return null;
         }
     }
-
+    
     @Override
-    public void executeQuery(String query, Callback<ResultSet> callback, Object... values) {
-        ResultSet rs = executeQuery(query, values);
-        if (callback != null) {
-            callback.run(rs);
+    public void executeUpdate(String query, Object... values) {
+        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+            for (int i = 0; i < values.length; i++) {
+                statement.setObject(i + 1, values[i]);
+            }
+            
+            statement.executeUpdate();
+        } catch (SQLException exception) {
+        	exception.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+    
+    @Override
+    public boolean tableExists(String table) {
+        try (Connection connection = getConnection()) {
+            DatabaseMetaData dmd = connection.getMetaData();
+            ResultSet rs = dmd.getTables(null, null, table, null);
+
+            if (rs.next()) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }
