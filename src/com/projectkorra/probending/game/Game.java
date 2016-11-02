@@ -1,16 +1,19 @@
 package com.projectkorra.probending.game;
 
-import com.projectkorra.probending.enums.WinningType;
-import com.projectkorra.probending.objects.ProbendingField;
-import com.projectkorra.probending.game.field.FieldManager;
-import com.projectkorra.probending.managers.ProbendingHandler;
-import com.projectkorra.probending.game.round.Round;
-import com.projectkorra.probending.libraries.Title;
 import java.util.Set;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.projectkorra.probending.enums.GameMode;
+import com.projectkorra.probending.enums.WinningType;
+import com.projectkorra.probending.game.field.FieldManager;
+import com.projectkorra.probending.game.round.Round;
+import com.projectkorra.probending.libraries.Title;
+import com.projectkorra.probending.managers.ProbendingHandler;
+import com.projectkorra.probending.objects.ProbendingField;
 
 public class Game {
 
@@ -27,47 +30,67 @@ public class Game {
     private Integer playTime;
 
     private Boolean suddenDeath;
-    private Boolean hasSuddenDeath;
     private Boolean forcedSuddenDeath;
+    private boolean _1v1;
 
-    private Set<Player> team1;
-    private Set<Player> team2;
+    private Set<Player> team1Players;
+    private Set<Player> team2Players;
 
     private Integer team1Score;
     private Integer team2Score;
 
     private Round round;
+    
+    private GameType type;
+    private GameMode mode;
 
-    public Game(JavaPlugin plugin, ProbendingHandler handler, GameType type,
+    public Game(JavaPlugin plugin, ProbendingHandler handler, GameType type, GameMode mode,
             ProbendingField field, Set<Player> team1, Set<Player> team2) {
         this.plugin = plugin;
         this.handler = handler;
+        this.type = type;
+        this.mode = mode;
         this.rounds = type.getRounds();
         this.curRound = 1;
         this.playTime = type.getPlayTime();
-        this.hasSuddenDeath = type.hasSuddenDeath();
         this.forcedSuddenDeath = type.isForcedSuddenDeath();
         this.suddenDeath = false;
         this.field = field;
-        this.team1 = team1;
-        this.team2 = team2;
+        this.team1Players = team1;
+        this.team2Players = team2;
         this.team1Score = 0;
         this.team2Score = 0;
         this.fieldManager = new FieldManager(this, field);
         this.listener = new GameListener(this);
         plugin.getServer().getPluginManager().registerEvents(listener, plugin);
     }
+    
+    public GameType getGameType() {
+    	return type;
+    }
+    
+    public GameMode getGameMode() {
+    	return mode;
+    }
 
     public ProbendingField getField() {
         return field;
     }
 
-    public Set<Player> getTeam1() {
-        return team1;
+    public Set<Player> getTeam1Players() {
+        return team1Players;
     }
 
-    public Set<Player> getTeam2() {
-        return team2;
+    public Set<Player> getTeam2Players() {
+        return team2Players;
+    }
+    
+    /**
+     * 
+     * @return The amount of time in {@link Integer} that the match can run.
+     */
+    public Integer getPlayTime() {
+    	return playTime;
     }
 
     public Boolean isSuddenDeath() {
@@ -115,10 +138,10 @@ public class Game {
         }
         curRound++;
         Title title = new Title(ChatColor.RED + "" + team1Score + ChatColor.WHITE + " - " + ChatColor.BLUE + "" + team2Score, "", 1, 1, 1);
-        for (Player p : team1) {
+        for (Player p : team1Players) {
             title.send(p);
         }
-        for (Player p : team2) {
+        for (Player p : team2Players) {
             title.send(p);
         }
         if (curRound > rounds) {
@@ -129,14 +152,14 @@ public class Game {
     }
 
     protected boolean isPlayerAProbender(Player player) {
-        if (team1.contains(player) || team2.contains(player)) {
+        if (team1Players.contains(player) || team2Players.contains(player)) {
             return true;
         }
         return false;
     }
 
     protected boolean canPlayerMove(Player player) {
-        if (team1.contains(player) || team2.contains(player)) {
+        if (team1Players.contains(player) || team2Players.contains(player)) {
             if (round != null) {
                 return round.canDoSomething();
             }
@@ -148,6 +171,10 @@ public class Game {
         if (round != null) {
             fieldManager.playerMove(player, from, to);
         }
+    }
+    
+    public boolean is1v1() {
+    	return _1v1;
     }
 
     public enum GameType {

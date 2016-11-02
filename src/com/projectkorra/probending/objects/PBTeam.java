@@ -3,6 +3,7 @@ package com.projectkorra.probending.objects;
 import java.util.Map;
 import java.util.UUID;
 
+import com.projectkorra.probending.game.Game;
 import com.projectkorra.projectkorra.Element;
 
 public class PBTeam {
@@ -11,6 +12,9 @@ public class PBTeam {
     private String _name;
     private UUID _leader;
     private Map<UUID, TeamMemberRole> _members;
+    
+    private int _wins, _gamesPlayed;
+    private long _rating;
 
     public PBTeam(int id, String name, UUID leader, Map<UUID, TeamMemberRole> members) {
         _id = id;
@@ -33,6 +37,21 @@ public class PBTeam {
 
     public Map<UUID, TeamMemberRole> getMembers() {
         return _members;
+    }
+    
+    public int getGamesPlayed() {
+    	return _gamesPlayed;
+    }
+    
+    public int getWins() {
+    	return _wins;
+    }
+    
+    public void updateAfterGame(Game game, boolean win) {
+    	_gamesPlayed += 1;
+    	if (win) {
+    		_wins += 1;
+    	}
     }
 
     public static enum TeamMemberRole {

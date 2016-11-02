@@ -29,8 +29,8 @@ public class Round {
     public Round(JavaPlugin plugin, Game game) {
         this.plugin = plugin;
         this.game = game;
-        this.team1 = game.getTeam1();
-        this.team2 = game.getTeam2();
+        this.team1 = game.getTeam1Players();
+        this.team2 = game.getTeam2Players();
         this.isPaused = false;
         this.isOnCountdown = true;
         this.countdownDuration = 5;

@@ -1,7 +1,5 @@
 package com.projectkorra.probending.managers;
 
-import com.projectkorra.probending.PBMessager;
-import com.projectkorra.probending.enums.GameMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,11 +13,16 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.projectkorra.probending.PBMessenger;
+import com.projectkorra.probending.Probending;
+import com.projectkorra.probending.enums.GameMode;
 import com.projectkorra.probending.game.Game;
-import com.projectkorra.probending.objects.ProbendingField;
+import com.projectkorra.probending.game.TeamGame;
 import com.projectkorra.probending.game.scoreboard.PBScoreboard;
 import com.projectkorra.probending.libraries.database.Callback;
 import com.projectkorra.probending.objects.PBPlayer;
+import com.projectkorra.probending.objects.PBTeam;
+import com.projectkorra.probending.objects.ProbendingField;
 import com.projectkorra.probending.storage.DBProbendingPlayer;
 import com.projectkorra.probending.storage.FFProbendingField;
 
@@ -80,11 +83,11 @@ public class ProbendingHandler {
         }
         for (Game game : games) {
             if (game.getField().getFieldName().equals(fieldNumber)) {
-                PBMessager.sendMessage(player, ChatColor.RED + "Field is in use, and cannot be edit!", true);
+                PBMessenger.sendMessage(player, ChatColor.RED + "Field is in use, and cannot be edit!", true);
                 return null;
             }
         }
-        PBMessager.sendMessage(player, ChatColor.RED + "Field has not been found!", true);
+        PBMessenger.sendMessage(player, ChatColor.RED + "Field has not been found!", true);
         return null;
     }
 
@@ -102,13 +105,13 @@ public class ProbendingHandler {
 
     public void getPlayerInfo(Player player, Player infoPlayer) {
         if (infoPlayer == null) {
-            PBMessager.sendMessage(player, PBMessager.PBMessage.NOPLAYER);
+            PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPLAYER);
             return;
         }
         if (players.containsKey(infoPlayer.getUniqueId())) {
             PBScoreboard.showInformation(player, players.get(infoPlayer.getUniqueId()), plugin);
         } else {
-            PBMessager.sendMessage(player, PBMessager.PBMessage.ERROR);
+            PBMessenger.sendMessage(player, PBMessenger.PBMessage.ERROR);
         }
     }
 
@@ -167,42 +170,90 @@ public class ProbendingHandler {
             availableFields.add(game.getField());
             games.remove(game);
         }
-        Set<Player> winners = null;
-        if (team1Score > team2Score) {
-            winners = game.getTeam1();
-        } else if (team2Score > team1Score) {
-            winners = game.getTeam2();
+        if (game.getGameMode() == GameMode.TEAM) {
+        	TeamGame tGame = (TeamGame) game;
+        	PBTeam team1 = tGame.getTeam1();
+        	PBTeam team2 = tGame.getTeam2();
+        	PBTeam winningTeam = null;
+        	if (team1Score > team2Score) {
+        		team1.updateAfterGame(tGame, true);
+        		team2.updateAfterGame(tGame, false);
+        		winningTeam = team1;
+        	} else if (team1Score < team2Score) {
+        		team1.updateAfterGame(tGame, false);
+        		team2.updateAfterGame(tGame, true);
+        		winningTeam = team2;
+        	} else {
+        		team1.updateAfterGame(tGame, false);
+        		team2.updateAfterGame(tGame, false);
+        	}
+        	
+        	Set<Player> players = new HashSet<>();
+        	players.addAll(tGame.getTeam1Players());
+        	players.addAll(tGame.getTeam2Players());
+        	
+        	for (Player p : players) {
+        		if (p.isOnline()) {
+	        		if (this.players.containsKey(p)) {
+	        			PBPlayer pbPlayer = this.players.get(p);
+		    			p.teleport(p.getWorld().getSpawnLocation());
+		    			if (winningTeam == null) {
+		    				PBMessenger.sendMessage(p, "It's a draw!", true);
+		    			} else {
+		    				PBMessenger.sendMessage(p, ChatColor.GOLD + "Winning Team: " + winningTeam.getTeamName(), true);
+		    			}
+		    			pbPlayer.updateTeamStats(tGame, winningTeam);
+	        		}
+        		}
+        	}
         } else {
-            winners = new HashSet<>();
-        }
-        //TODO: Create spawn....
-        for (Player p : game.getTeam1()) {
-            if (p.isOnline()) {
-                p.teleport(p.getWorld().getSpawnLocation());
-                if (winners.isEmpty()) {
-                    PBMessager.sendMessage(p, "It's a draw!", true);
-                } else {
-                    PBMessager.sendMessage(p, ChatColor.GOLD + "Winners:", true);
-                    for (Player pl : winners) {
-                        PBMessager.sendMessage(p, ChatColor.GREEN + pl.getName(), true);
-                    }
-                }
-            }
-        }
-        for (Player p : game.getTeam2()) {
-            if (p.isOnline()) {
-                p.teleport(p.getWorld().getSpawnLocation());
-                if (winners.isEmpty()) {
-                    PBMessager.sendMessage(p, "It's a draw!", true);
-                } else {
-                    PBMessager.sendMessage(p, ChatColor.GOLD + "Winners:", true);
-                    for (Player pl : winners) {
-                        PBMessager.sendMessage(p, ChatColor.GREEN + pl.getName(), true);
-                    }
-                }
-            }
-        }
-        //TODO: Add points to winning team and all other statistics!
+	        Set<Player> winners = null;
+	        if (team1Score > team2Score) {
+	            winners = game.getTeam1Players();
+	        } else if (team2Score > team1Score) {
+	            winners = game.getTeam2Players();
+	        } else {
+	            winners = new HashSet<>();
+	        }
+	        //TODO: Create spawn....
+			for (Player p : game.getTeam1Players()) {
+				if (p.isOnline()) {
+					if (players.containsKey(p)) {
+						players.get(p).updateIndividualStats(p, game, winners);
+					} else {
+						continue;
+					}
+					p.teleport(p.getWorld().getSpawnLocation());
+					if (winners.isEmpty()) {
+						PBMessenger.sendMessage(p, "It's a draw!", true);
+					} else {
+						PBMessenger.sendMessage(p, ChatColor.GOLD + "Winners:", true);
+						for (Player pl : winners) {
+							PBMessenger.sendMessage(p, ChatColor.GREEN + pl.getName(), true);
+						}
+					}
+
+				}
+			}
+			for (Player p : game.getTeam2Players()) {
+				if (p.isOnline()) {
+					if (players.containsKey(p)) {
+						players.get(p).updateIndividualStats(p, game, winners);
+					} else {
+						continue;
+					}
+					p.teleport(p.getWorld().getSpawnLocation());
+					if (winners.isEmpty()) {
+						PBMessenger.sendMessage(p, "It's a draw!", true);
+					} else {
+						PBMessenger.sendMessage(p, ChatColor.GOLD + "Winners:", true);
+						for (Player pl : winners) {
+							PBMessenger.sendMessage(p, ChatColor.GREEN + pl.getName(), true);
+						}
+					}
+				}
+			}
+		}
         tryStartGame();
     }
 
@@ -232,9 +283,11 @@ public class ProbendingHandler {
             int PlayersQueued3v3 = playerMode3P.size();
             Set<Player> team1 = new HashSet<>();
             Set<Player> team2 = new HashSet<>();
+            GameMode mode = GameMode.ANY;
             if (PlayersQueued3v3 < 6 && PlayersQueued1v1 > 1) {
                 team1.add(Bukkit.getPlayer(playerMode1P.get(0).getUUID()));
                 team2.add(Bukkit.getPlayer(playerMode1P.get(1).getUUID()));
+                mode = GameMode.SINGLE;
             } else if (PlayersQueued3v3 >= 6) {
                 team1.add(Bukkit.getPlayer(playerMode3P.get(0).getUUID()));
                 team1.add(Bukkit.getPlayer(playerMode3P.get(1).getUUID()));
@@ -242,8 +295,9 @@ public class ProbendingHandler {
                 team2.add(Bukkit.getPlayer(playerMode3P.get(3).getUUID()));
                 team2.add(Bukkit.getPlayer(playerMode3P.get(4).getUUID()));
                 team2.add(Bukkit.getPlayer(playerMode3P.get(5).getUUID()));
+                mode = GameMode.TRIPLE;
             }
-            game = new Game(plugin, this, Game.GameType.DEFAULT, availableFields.get(0), team1, team2);
+            game = new Game(plugin, this, Game.GameType.DEFAULT, mode, availableFields.get(0), team1, team2);
             games.add(game);
             availableFields.remove(0);
             for (Player p : team1) {
