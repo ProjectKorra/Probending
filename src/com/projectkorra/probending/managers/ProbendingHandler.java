@@ -14,8 +14,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.projectkorra.probending.PBMessenger;
-import com.projectkorra.probending.Probending;
-import com.projectkorra.probending.enums.GameMode;
+import com.projectkorra.probending.enums.GamePlayerMode;
+import com.projectkorra.probending.enums.GameType;
+import com.projectkorra.probending.enums.WinningType;
 import com.projectkorra.probending.game.Game;
 import com.projectkorra.probending.game.TeamGame;
 import com.projectkorra.probending.game.scoreboard.PBScoreboard;
@@ -115,7 +116,7 @@ public class ProbendingHandler {
         }
     }
 
-    public void quePlayer(Player player, GameMode gameMode) {
+    public void quePlayer(Player player, GamePlayerMode gameMode) {
         if (!players.containsKey(player.getUniqueId()) || gameMode == null) {
             return;
         }
@@ -126,12 +127,12 @@ public class ProbendingHandler {
         }
         if (!queuedUpPlayers.contains(pbPlayer)) {
             queuedUpPlayers.add(pbPlayer);
-            if (gameMode.equals(GameMode.ANY)) {
+            if (gameMode.equals(GamePlayerMode.ANY)) {
                 playerMode1P.add(pbPlayer);
                 playerMode3P.add(pbPlayer);
-            } else if (gameMode.equals(GameMode.SINGLE)) {
+            } else if (gameMode.equals(GamePlayerMode.SINGLE)) {
                 playerMode1P.add(pbPlayer);
-            } else if (gameMode.equals(GameMode.TRIPLE)) {
+            } else if (gameMode.equals(GamePlayerMode.TRIPLE)) {
                 playerMode3P.add(pbPlayer);
             }
             player.sendMessage(ChatColor.GREEN + "You queued up!");
@@ -165,95 +166,95 @@ public class ProbendingHandler {
         informPlayers();
     }
 
-    public void gameEnded(Game game, Integer team1Score, Integer team2Score) {
+    public void gameEnded(Game game, WinningType winners) {
         if (games.contains(game)) {
             availableFields.add(game.getField());
             games.remove(game);
         }
-        if (game.getGameMode() == GameMode.TEAM) {
-        	TeamGame tGame = (TeamGame) game;
-        	PBTeam team1 = tGame.getTeam1();
-        	PBTeam team2 = tGame.getTeam2();
-        	PBTeam winningTeam = null;
-        	if (team1Score > team2Score) {
-        		team1.updateAfterGame(tGame, true);
-        		team2.updateAfterGame(tGame, false);
-        		winningTeam = team1;
-        	} else if (team1Score < team2Score) {
-        		team1.updateAfterGame(tGame, false);
-        		team2.updateAfterGame(tGame, true);
-        		winningTeam = team2;
-        	} else {
-        		team1.updateAfterGame(tGame, false);
-        		team2.updateAfterGame(tGame, false);
-        	}
-        	
-        	Set<Player> players = new HashSet<>();
-        	players.addAll(tGame.getTeam1Players());
-        	players.addAll(tGame.getTeam2Players());
-        	
-        	for (Player p : players) {
-        		if (p.isOnline()) {
-	        		if (this.players.containsKey(p)) {
-	        			PBPlayer pbPlayer = this.players.get(p);
-		    			p.teleport(p.getWorld().getSpawnLocation());
-		    			if (winningTeam == null) {
-		    				PBMessenger.sendMessage(p, "It's a draw!", true);
-		    			} else {
-		    				PBMessenger.sendMessage(p, ChatColor.GOLD + "Winning Team: " + winningTeam.getTeamName(), true);
-		    			}
-		    			pbPlayer.updateTeamStats(tGame, winningTeam);
-	        		}
-        		}
-        	}
-        } else {
-	        Set<Player> winners = null;
-	        if (team1Score > team2Score) {
-	            winners = game.getTeam1Players();
-	        } else if (team2Score > team1Score) {
-	            winners = game.getTeam2Players();
-	        } else {
-	            winners = new HashSet<>();
-	        }
-	        //TODO: Create spawn....
-			for (Player p : game.getTeam1Players()) {
-				if (p.isOnline()) {
-					if (players.containsKey(p)) {
-						players.get(p).updateIndividualStats(p, game, winners);
-					} else {
-						continue;
-					}
-					p.teleport(p.getWorld().getSpawnLocation());
-					if (winners.isEmpty()) {
-						PBMessenger.sendMessage(p, "It's a draw!", true);
-					} else {
-						PBMessenger.sendMessage(p, ChatColor.GOLD + "Winners:", true);
-						for (Player pl : winners) {
-							PBMessenger.sendMessage(p, ChatColor.GREEN + pl.getName(), true);
-						}
-					}
+        if (game.getGamePlayerMode() == GamePlayerMode.TEAM) {
+            TeamGame tGame = (TeamGame) game;
+            PBTeam team1 = tGame.getTeam1();
+            PBTeam team2 = tGame.getTeam2();
+            PBTeam winningTeam = null;
+            if (winners.equals(WinningType.TEAM1)) {
+                team1.updateAfterGame(tGame, true);
+                team2.updateAfterGame(tGame, false);
+                winningTeam = team1;
+            } else if (winners.equals(WinningType.TEAM2)) {
+                team1.updateAfterGame(tGame, false);
+                team2.updateAfterGame(tGame, true);
+                winningTeam = team2;
+            } else {
+                team1.updateAfterGame(tGame, false);
+                team2.updateAfterGame(tGame, false);
+            }
 
-				}
-			}
-			for (Player p : game.getTeam2Players()) {
-				if (p.isOnline()) {
-					if (players.containsKey(p)) {
-						players.get(p).updateIndividualStats(p, game, winners);
-					} else {
-						continue;
-					}
-					p.teleport(p.getWorld().getSpawnLocation());
-					if (winners.isEmpty()) {
-						PBMessenger.sendMessage(p, "It's a draw!", true);
-					} else {
-						PBMessenger.sendMessage(p, ChatColor.GOLD + "Winners:", true);
-						for (Player pl : winners) {
-							PBMessenger.sendMessage(p, ChatColor.GREEN + pl.getName(), true);
-						}
-					}
-				}
-			}
-		}
+            Set<Player> players = new HashSet<>();
+            players.addAll(tGame.getTeam1Players());
+            players.addAll(tGame.getTeam2Players());
+
+            for (Player p : players) {
+                if (p.isOnline()) {
+                    if (this.players.containsKey(p.getUniqueId())) {
+                        PBPlayer pbPlayer = this.players.get(p.getUniqueId());
+                        p.teleport(p.getWorld().getSpawnLocation());
+                        if (winningTeam == null) {
+                            PBMessenger.sendMessage(p, "It's a draw!", true);
+                        } else {
+                            PBMessenger.sendMessage(p, ChatColor.GOLD + "Winning Team: " + winningTeam.getTeamName(), true);
+                        }
+                        pbPlayer.updateTeamStats(tGame, winningTeam);
+                    }
+                }
+            }
+        } else {
+            Set<Player> winningPlayers = null;
+            if (winners.equals(WinningType.TEAM1)) {
+                //TODO: get the correct team... Calculation now is team 1 = team 2 and team 2 = team 1
+                winningPlayers = game.getTeam2Players();
+            } else if (winners.equals(WinningType.TEAM2)) {
+                winningPlayers = game.getTeam1Players();
+            } else {
+                winningPlayers = new HashSet<>();
+            }
+            //TODO: Create spawn....
+            for (Player p : game.getTeam1Players()) {
+                if (p.isOnline()) {
+                    if (players.containsKey(p.getUniqueId())) {
+                        players.get(p.getUniqueId()).updateIndividualStats(p, game, winningPlayers);
+                    } else {
+                        continue;
+                    }
+                    p.teleport(p.getWorld().getSpawnLocation());
+                    if (winningPlayers.isEmpty()) {
+                        PBMessenger.sendMessage(p, "It's a draw!", true);
+                    } else {
+                        PBMessenger.sendMessage(p, ChatColor.GOLD + "Winners:", true);
+                        for (Player pl : winningPlayers) {
+                            PBMessenger.sendMessage(p, ChatColor.GREEN + pl.getName(), true);
+                        }
+                    }
+                }
+            }
+            for (Player p : game.getTeam2Players()) {
+                if (p.isOnline()) {
+                    if (players.containsKey(p.getUniqueId())) {
+                        players.get(p.getUniqueId()).updateIndividualStats(p, game, winningPlayers);
+                    } else {
+                        continue;
+                    }
+                    p.teleport(p.getWorld().getSpawnLocation());
+                    if (winningPlayers.isEmpty()) {
+                        PBMessenger.sendMessage(p, "It's a draw!", true);
+                    } else {
+                        PBMessenger.sendMessage(p, ChatColor.GOLD + "Winners:", true);
+                        for (Player pl : winningPlayers) {
+                            PBMessenger.sendMessage(p, ChatColor.GREEN + pl.getName(), true);
+                        }
+                    }
+                }
+            }
+        }
         tryStartGame();
     }
 
@@ -283,11 +284,11 @@ public class ProbendingHandler {
             int PlayersQueued3v3 = playerMode3P.size();
             Set<Player> team1 = new HashSet<>();
             Set<Player> team2 = new HashSet<>();
-            GameMode mode = GameMode.ANY;
+            GamePlayerMode mode = GamePlayerMode.ANY;
             if (PlayersQueued3v3 < 6 && PlayersQueued1v1 > 1) {
                 team1.add(Bukkit.getPlayer(playerMode1P.get(0).getUUID()));
                 team2.add(Bukkit.getPlayer(playerMode1P.get(1).getUUID()));
-                mode = GameMode.SINGLE;
+                mode = GamePlayerMode.SINGLE;
             } else if (PlayersQueued3v3 >= 6) {
                 team1.add(Bukkit.getPlayer(playerMode3P.get(0).getUUID()));
                 team1.add(Bukkit.getPlayer(playerMode3P.get(1).getUUID()));
@@ -295,9 +296,9 @@ public class ProbendingHandler {
                 team2.add(Bukkit.getPlayer(playerMode3P.get(3).getUUID()));
                 team2.add(Bukkit.getPlayer(playerMode3P.get(4).getUUID()));
                 team2.add(Bukkit.getPlayer(playerMode3P.get(5).getUUID()));
-                mode = GameMode.TRIPLE;
+                mode = GamePlayerMode.TRIPLE;
             }
-            game = new Game(plugin, this, Game.GameType.DEFAULT, mode, availableFields.get(0), team1, team2);
+            game = new Game(plugin, this, GameType.DEFAULT, mode, availableFields.get(0), team1, team2);
             games.add(game);
             availableFields.remove(0);
             for (Player p : team1) {
@@ -338,6 +339,7 @@ public class ProbendingHandler {
 
     protected void playerLogout(Player player) {
         if (players.containsKey(player)) {
+            removePlayerFromQueue(player);
             players.remove(player);
         }
     }
