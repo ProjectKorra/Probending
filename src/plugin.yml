@@ -1,0 +1,21 @@
+name: Probending
+author: ProjectKorra
+version: 1.0.0
+main: com.projectkorra.probending.Probending
+depend: [ProjectKorra]
+softdepend: [Vault, WorldGuard]
+commands:
+  probending:
+    aliases: [pb]
+permissions:
+  probending.admin:
+    default: op
+    children:
+      probending.command.arena.create: true
+      probending.command.arena.delete: true
+      probending.user: true
+  probending.user:
+    default: true
+    children:
+      probending.command.join: true
+      probending.command.info: true
