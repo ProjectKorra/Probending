@@ -7,7 +7,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.projectkorra.probending.enums.GameMode;
+import com.projectkorra.probending.enums.GamePlayerMode;
+import com.projectkorra.probending.enums.GameType;
 import com.projectkorra.probending.enums.WinningType;
 import com.projectkorra.probending.game.field.FieldManager;
 import com.projectkorra.probending.game.round.Round;
@@ -31,7 +32,6 @@ public class Game {
 
     private Boolean suddenDeath;
     private Boolean forcedSuddenDeath;
-    private boolean _1v1;
 
     private Set<Player> team1Players;
     private Set<Player> team2Players;
@@ -40,11 +40,11 @@ public class Game {
     private Integer team2Score;
 
     private Round round;
-    
-    private GameType type;
-    private GameMode mode;
 
-    public Game(JavaPlugin plugin, ProbendingHandler handler, GameType type, GameMode mode,
+    private GameType type;
+    private GamePlayerMode mode;
+
+    public Game(JavaPlugin plugin, ProbendingHandler handler, GameType type, GamePlayerMode mode,
             ProbendingField field, Set<Player> team1, Set<Player> team2) {
         this.plugin = plugin;
         this.handler = handler;
@@ -64,13 +64,13 @@ public class Game {
         this.listener = new GameListener(this);
         plugin.getServer().getPluginManager().registerEvents(listener, plugin);
     }
-    
+
     public GameType getGameType() {
-    	return type;
+        return type;
     }
-    
-    public GameMode getGameMode() {
-    	return mode;
+
+    public GamePlayerMode getGamePlayerMode() {
+        return mode;
     }
 
     public ProbendingField getField() {
@@ -84,13 +84,13 @@ public class Game {
     public Set<Player> getTeam2Players() {
         return team2Players;
     }
-    
+
     /**
-     * 
+     *
      * @return The amount of time in {@link Integer} that the match can run.
      */
     public Integer getPlayTime() {
-    	return playTime;
+        return playTime;
     }
 
     public Boolean isSuddenDeath() {
@@ -116,9 +116,6 @@ public class Game {
         manageEnd(winningTeam);
     }
 
-    /**
-     * The field will trigger this function as soon as a team wins the game!
-     */
     public void endRound(WinningType winningTeam) {
         round.forceStop();
         manageEnd(winningTeam);
@@ -131,7 +128,7 @@ public class Game {
         } else if (winningTeam.equals(WinningType.TEAM2)) {
             team2Score++;
         } else {
-            //Should be implemented soon!
+//            Should be implemented soon!
 //            suddenDeath = true;
 //            startNewRound();
 //            return;
@@ -145,7 +142,13 @@ public class Game {
             title.send(p);
         }
         if (curRound > rounds) {
-            handler.gameEnded(this, team1Score, team2Score);
+            WinningType winners = WinningType.DRAW;
+            if (team1Score > team2Score) {
+                winners = WinningType.TEAM1;
+            } else if (team2Score > team1Score) {
+                winners = WinningType.TEAM2;
+            }
+            handler.gameEnded(this, winners);
             return;
         }
         startNewRound();
@@ -170,45 +173,6 @@ public class Game {
     protected void playerMove(Player player, Location from, Location to) {
         if (round != null) {
             fieldManager.playerMove(player, from, to);
-        }
-    }
-    
-    public boolean is1v1() {
-    	return _1v1;
-    }
-
-    public enum GameType {
-
-        DEFAULT(1, 180, false, false),
-        PRACTICE(1, 90, false, false),
-        RANKED(5, 180, true, false);
-
-        private Integer rounds;
-        private Integer playTime;
-        private Boolean hasSuddenDeath;
-        private Boolean forcedSuddenDeath;
-
-        private GameType(Integer rounds, Integer playTime, Boolean hasSuddenDeath, Boolean forcedSuddenDeath) {
-            this.rounds = rounds;
-            this.playTime = playTime;
-            this.hasSuddenDeath = hasSuddenDeath;
-            this.forcedSuddenDeath = forcedSuddenDeath;
-        }
-
-        public Integer getRounds() {
-            return rounds;
-        }
-
-        public Integer getPlayTime() {
-            return playTime;
-        }
-
-        public Boolean hasSuddenDeath() {
-            return hasSuddenDeath;
-        }
-
-        public Boolean isForcedSuddenDeath() {
-            return forcedSuddenDeath;
         }
     }
 }
