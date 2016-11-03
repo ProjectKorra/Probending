@@ -1,0 +1,102 @@
+General:
+  Storage: sqlite
+MySQL:
+  Host: localhost
+  Port: 3306
+  User: root
+  Pass: ""
+  DB: minecraft
+RoundSettings:
+  Time: 180
+  WinValue: 2
+  LossValue: 1
+  AllowedMoves:
+  - AirSwipe
+  - WaterManipulation
+  - EarthBlast
+  - FireBlast
+WorldGuard:
+  EnableSupport: true
+  AutomateMatches: true
+  DisableBuildOnField: true
+TeamSettings:
+  AllowFire: true
+  AllowAir: false
+  AllowWater: true
+  AllowEarth: true
+  AllowChi: false
+  MaxTeamSize: 4
+  MinTeamSize: 2
+Economy:
+  Enabled: false
+  ServerAccount: Server
+  TeamCreationFee: 350.0
+  TeamRenameFee: 150.0
+Messages:
+  General:
+    Prefix: '&7[&6Probending&7] '
+    NoPermission: '&cYou dont have permission to do that.'
+    ConfigReloaded: '&aConfiguration reloaded.'
+    NoTeamPermissions: '&cYou dont have permission for any team commands.'
+  Player:
+    NoBendingType: '&cPlayer does not have a Bending Type.'
+    MultipleBendingTypes: '&cPlayer has more than one element, please specify what element you would like to use.'
+    PlayerNotElement: '&cYou can''t bend that element.'
+    PlayerAlreadyInTeam: '&cThat player is already in a team.'
+    ElementNotAllowed: '&c%element are not allowed to participate in Probending events.'
+    PlayerNotInTeam: '&cYou do not have a team.'
+    PlayerNotOnline: '&cThat player is not online.'
+    PlayerInviteSent: '&aYou have invited &e%player &ato join &e%team.'
+    PlayerInviteReceived: '&aYou have been invited to join &e%team.'
+    InviteInstructions: '&aAccept this invitation using &3/pb team join %team&a.'
+    NoInviteFromTeam: '&cYou dont have an invite from that team.' 
+    YouHaveBeenBooted: '&cYou have been booted from &3%team&c.'
+    YouHaveQuit: '&cYou have quit &e%team&c.'
+    RemovedFromTeamBecauseDifferentElement: '&cYou have been removed from your team because your element has changed.'
+    RemovedFromTeamBecauseNoElement: '&cYou have been removed from your team because your element(s) was removed.'
+    ElementChanged: '&cYour team element has been changed.'
+    PlayerAddedElement: '&cYou have added an element, however you will still use the element you joined your team with.'
+  Team:
+    TeamAlreadyExists: '&cThat team already exists.'
+    TeamCreated: '&e%team &ahas been created.'
+    NotOwnerOfTeam: '&cYou dont own this team.'
+    MaxSizeReached: '&cThis team has reached the maximum size.'
+    TeamAlreadyHasElement: '&cThis team already has this type of Bender.'
+    TeamDoesNotExist: '&cThat team does not exist.'
+    PlayerJoinedTeam: '&e%player &ahas joined &e%team&a.'
+    CantBootFromOwnTeam: '&cYou cant boot yourself from your own team.'
+    PlayerNotOnThisTeam: '&cThat player is not on this team.'
+    PlayerHasBeenBooted: '&e%player &chas been booted from &e%team&c.'
+    PlayerHasQuit: '&e%player &chas quit &e%team&c.'
+    TeamDisbanded: '&e%team &chas been disbanded.'
+    NameTooLong: '&cTeam names cant be more than 15 characters long.'
+    TeamRenamed: '&aYour team has been renamed to &e%newname&a.'
+    TeamAlreadyNamedThat: '&aYour team is already named &e%newname&a.'
+    OwnerNotOnline: '&aThe owner of that team is not online.'
+  Economy:
+    NotEnoughMoney: '&cYou do not have the &e%amount %currency &crequired to do that.'
+    MoneyWithdrawn: '&e%amount %currency &awithdrawn from your account.'
+  Round:
+    OneMinuteRemaining: '&cThere is one minute remaining in this round.'
+    RoundComplete: '&cThis round is now complete.'
+    RoundAlreadyGoing: '&cThere is already a round going.'
+    InvalidTeamSize: '&cThe size of the team is invalid.'
+    RoundStarted: '&aA round has been started between &e%team1 &aand &e%team2&a for &e%seconds seconds&a.'
+    RoundStopped: '&cThe ongoing round in &e%arena &chas ended.'
+    RoundPaused: '&cThe ongoing round has been paused with &e%seconds seconds &cleft.'
+    RoundResumed: '&cThe ongoing round has been resumed with &3%seconds seconds &cleft.'
+    NoOngoingRound: '&cThere is no ongoing round.'
+    PlayerEliminated: '&4&l%player &r&chas been eliminated.'
+    PlayerFouled: '&4&lFOUL: &r&e%player &cmust move back to &3%zone&c.'
+    RoundEnded: '&cThis probending round has ended.'
+    TeamWon: '&e%team1 &chas won the round against &e%team2&c.'
+    MoveUpOneZone: '&aYou may move up to %zone.'
+    CantEnterField: '&cYou are not allowed to enter the field during a match.'
+    CantTeleportDuringMatch: '&cYou are not allowed to teleport during a match.'
+    MoveNotAllowed: '&cYou are not allowed to use &e%ability &cduring a Probending match.'
+  Misc:
+    ChatEnabled: '&aYou have enabled Probending Chat. To disable it, run the command again.'
+    ChatDisabled: '&cYou have disabled Probending Chat.'
+    WinAddedToTeam: '&aAdded one win to &3%team&a.'
+    LossAddedToTeam: '&aAdded one loss to &3%team&a.'
+    TeamSpawnSet: '&aSet spawn for &e%team&a.'
