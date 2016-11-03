@@ -208,7 +208,7 @@ public class ProbendingHandler {
                         } else {
                             PBMessenger.sendMessage(p, ChatColor.GOLD + "Winning Team: " + winningTeam.getTeamName(), true);
                         }
-                        pbPlayer.updateTeamStats(tGame, winningTeam);
+                        pbPlayer.updateTeamStats(tGame, winningTeam != null ? winningTeam.getMembers().containsKey(pbPlayer.getUUID()) : false);
                     }
                 }
             }
@@ -344,6 +344,9 @@ public class ProbendingHandler {
     }
 
     protected void playerLogout(Player player) {
+		if (players.containsKey(player.getUniqueId())) {
+			removePlayerFromQueue(player);
+		}
     	players.remove(player.getUniqueId());
     	Probending.get().getTeamManager().updatePlayerMapsForLogout(player);
     }

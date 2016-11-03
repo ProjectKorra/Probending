@@ -6,7 +6,7 @@
 package com.projectkorra.probending;
 
 import com.projectkorra.probending.managers.FieldCreationManager;
-import com.projectkorra.probending.enums.GameMode;
+import com.projectkorra.probending.enums.GamePlayerMode;
 import com.projectkorra.probending.managers.ProbendingHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -45,7 +45,14 @@ public class Commands {
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    pHandler.quePlayer(player, GameMode.ANY);
+                    pHandler.quePlayer(player, GamePlayerMode.ANY);
+                    return;
+                case "leave":
+                    if (!player.hasPermission("probending.command.join")) {
+                        PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
+                        return;
+                    }
+                    pHandler.removePlayerFromQueue(player);
                     return;
             }
         } else if (args.length == 2) {
@@ -56,9 +63,9 @@ public class Commands {
                         return;
                     }
                     if (args[1].equalsIgnoreCase("1")) {
-                        pHandler.quePlayer(player, GameMode.SINGLE);
+                        pHandler.quePlayer(player, GamePlayerMode.SINGLE);
                     } else if (args[1].equalsIgnoreCase("3")) {
-                        pHandler.quePlayer(player, GameMode.TRIPLE);
+                        pHandler.quePlayer(player, GamePlayerMode.TRIPLE);
                     } else {
                         PBMessenger.sendMessage(player, "Either try 1, or 3!", true);
                     }
@@ -74,8 +81,8 @@ public class Commands {
         }
         PBMessenger.sendMessage(player, PBMessenger.PBMessage.DEFAULT_LINE);
         PBMessenger.sendMessage(player, ChatColor.GOLD + "/probending queue {1/3}" + ChatColor.DARK_RED + " - " + ChatColor.YELLOW + "Queue up!", false);
+        PBMessenger.sendMessage(player, ChatColor.GOLD + "/probending leave" + ChatColor.DARK_RED + " - " + ChatColor.YELLOW + "Leave the queue!", false);
         PBMessenger.sendMessage(player, ChatColor.GOLD + "/probending info [PLAYER]" + ChatColor.DARK_RED + " - " + ChatColor.YELLOW + "Statistics of player!", false);
-        PBMessenger.sendMessage(player, PBMessenger.PBMessage.BLANK);
         PBMessenger.sendMessage(player, PBMessenger.PBMessage.BLANK);
         PBMessenger.sendMessage(player, PBMessenger.PBMessage.BLANK);
         PBMessenger.sendMessage(player, PBMessenger.PBMessage.BLANK);

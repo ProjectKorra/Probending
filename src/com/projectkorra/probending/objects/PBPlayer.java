@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 
 import com.projectkorra.probending.Probending;
+import com.projectkorra.probending.enums.GamePlayerMode;
 import com.projectkorra.probending.game.Game;
 import com.projectkorra.probending.game.TeamGame;
 
@@ -34,23 +35,24 @@ public class PBPlayer {
     }
     
     public int getGamesPlayed() {
-    	return _gamesPlayed;
+        return _gamesPlayed;
     }
-    
+
     public int getTeamGamesPlayed() {
-    	return _teamGamesPlayed;
+        return _teamGamesPlayed;
     }
-    
+
     public int getTeamWins() {
-    	return _teamWins;
+        return _teamWins;
     }
     
     public int getRating() {
     	return _rating;
-    }
-    
+	}
+
     /**
      * Currently does nothing, added for future use.
+     *
      * @param ending 1:lose|2:win|3:draw
      * @param input some score that will be put into an algorithm
      */
@@ -58,29 +60,29 @@ public class PBPlayer {
     	//Put some rating algorithm here
     	//Probending.get().getProbendingHandler().updatePBPlayer(this);
     }
-    
+
     public int getIndividualWins(boolean _1v1) {
-    	if (_1v1) {
-    		return _1v1_wins;
-    	} else {
-    		return _3v3_wins;
-    	}
+        if (_1v1) {
+            return _1v1_wins;
+        } else {
+            return _3v3_wins;
+        }
     }
-    
+
     public void updateIndividualStats(Player player, Game game, Set<Player> winners) {
     	_gamesPlayed += 1;
-    	int ending = 1;
-    	if (winners.contains(player)) {
-    		ending = 2;
-    		if (game.is1v1()) {
-    			_1v1_wins += 1;
-    		} else {
-    			_3v3_wins += 1;
-    		}
-    	} else if (winners.isEmpty()) {
-    		ending = 3;
-    	}
-    	//adjustRating(ending, input);
+        int ending = 1;
+        if (winners.contains(player)) {
+            ending = 2;
+            if (game.getGamePlayerMode().equals(GamePlayerMode.SINGLE)) {
+                _1v1_wins += 1;
+            } else {
+                _3v3_wins += 1;
+            }
+        } else if (winners.isEmpty()) {
+            ending = 3;
+        }
+        //adjustRating(ending, input);
     	Probending.get().getProbendingHandler().updatePBPlayer(this);
     }
     

@@ -46,10 +46,16 @@ public class FieldManager {
         WorldGuardPlugin wg = (WorldGuardPlugin) wgp;
         Set<ProtectedRegion> toRegions = wg.getRegionContainer().get(player.getWorld()).getApplicableRegions(to).getRegions();
         Set<ProtectedRegion> fromRegions = wg.getRegionContainer().get(player.getWorld()).getApplicableRegions(from).getRegions();
-        if (fromRegions == toRegions) {
+        Set<ProtectedRegion> newRegions = toRegions;
+        for (ProtectedRegion rg : fromRegions) {
+            if (newRegions.contains(rg)) {
+                newRegions.remove(rg);
+            }
+        }
+        if (newRegions.isEmpty()) {
             return;
         }
-        for (ProtectedRegion rg : toRegions) {
+        for (ProtectedRegion rg : newRegions) {
             if (playerLocation.containsKey(player.getUniqueId())) {
                 String regionName = rg.getId();
                 if (field.getTeam1Field1().equalsIgnoreCase(regionName) || field.getTeam1Field2().equalsIgnoreCase(regionName)
@@ -110,9 +116,9 @@ public class FieldManager {
                 team2loc = team2loc + playerLocation.get(p.getUniqueId());
             }
         }
-        if (team1loc > team2loc) {
+        if (team1loc < team2loc) {
             return WinningType.TEAM1;
-        } else if (team1loc < team2loc) {
+        } else if (team1loc > team2loc) {
             return WinningType.TEAM2;
         } else {
             return WinningType.DRAW;
