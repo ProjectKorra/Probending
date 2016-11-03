@@ -15,16 +15,18 @@ import com.projectkorra.probending.objects.PBTeam;
 import com.projectkorra.probending.objects.PBTeam.TeamMemberRole;
 
 public class DBProbendingTeam extends DBInterpreter {
-
+	
+	private static final int INITIAL_RATING = 1000;
+	
     public DBProbendingTeam(JavaPlugin plugin) {
         super(plugin);
 
         runAsync(new Runnable() {
             public void run() {
                 if (!DatabaseHandler.getDatabase().tableExists("pb_teams")) {
-                    String query = "CREATE TABLE pb_teams (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(100) NOT NULL, leader VARCHAR(100) NOT NULL, PRIMARY KEY (id), UNIQUE INDEX nameIndex (name), UNIQUE INDEX leaderIndex (leader));";
+                    String query = "CREATE TABLE pb_teams (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(100) NOT NULL, leader VARCHAR(100) NOT NULL, wins INT NOT NULL, gamesPlayed INT NOT NULL, rating INT NOT NULL, PRIMARY KEY (id), UNIQUE INDEX nameIndex (name), UNIQUE INDEX leaderIndex (leader), INDEX winIndex (wins), INDEX gameIndex (games), INDEX ratingIndex (rating));";
                     if (!DatabaseHandler.isMySQL()) {
-                        query = "CREATE TABLE pb_teams (id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE, leader TEXT NOT NULL UNIQUE);";
+                        query = "CREATE TABLE pb_teams (id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE, leader TEXT NOT NULL UNIQUE, wins INTEGER NOT NULL, games INTEGER NOT NULL, rating INTEGER NOT NULL);CREATE INDEX winIndex ON pb_team_members (wins);CREATE INDEX gameIndex ON pb_team_members (games);CREATE INDEX ratingIndex ON pb_team_members (rating);";
                     }
 
                     DatabaseHandler.getDatabase().executeUpdate(query);
@@ -32,7 +34,7 @@ public class DBProbendingTeam extends DBInterpreter {
                 if (!DatabaseHandler.getDatabase().tableExists("pb_team_members")) {
                     String query = "CREATE TABLE pb_team_members (id INT NOT NULL AUTO_INCREMENT, teamId INT NOT NULL, uuid VARCHAR(100) NOT NULL, role VARCHAR(50) NOT NULL, PRIMARY KEY (id), UNIQUE INDEX uuidIndex (uuid), INDEX teamIndex (teamId), INDEX roleIndex (role));";
                     if (!DatabaseHandler.isMySQL()) {
-                        query = "CREATE TABLE pb_teams (id INTEGER PRIMARY KEY, teamId INTEGER NOT NULL, uuid TEXT NOT NULL UNIQUE, role TEXT NOT NULL);CREATE INDEX teamIndex ON pb_players (teamId);CREATE INDEX roleIndex ON pb_players (role);";
+                        query = "CREATE TABLE pb_team_members (id INTEGER PRIMARY KEY, teamId INTEGER NOT NULL, uuid TEXT NOT NULL UNIQUE, role TEXT NOT NULL);CREATE INDEX teamIndex ON pb_team_members (teamId);CREATE INDEX roleIndex ON pb_team_members (role);";
                     }
 
                     DatabaseHandler.getDatabase().executeUpdate(query);
@@ -50,6 +52,9 @@ public class DBProbendingTeam extends DBInterpreter {
                         final int id = rs.getInt("id");
                         final String name = rs.getString("name");
                         final UUID leader = UUID.fromString(rs.getString("leader"));
+                        final int wins = rs.getInt("wins");
+                        final int gamesPlayed = rs.getInt("games");
+                        final int rating = rs.getInt("rating");
                         DatabaseHandler.getDatabase().executeQuery("SELECT * FROM pb_team_members WHERE teamId=?;", new Callback<ResultSet>() {
                         	public void run(ResultSet memberSet)
                         	{
@@ -63,7 +68,7 @@ public class DBProbendingTeam extends DBInterpreter {
 								} catch (SQLException e) {
 									e.printStackTrace();
 								}
-                                PBTeam team = new PBTeam(id, name, leader, members);
+                                PBTeam team = new PBTeam(id, name, leader, members, wins, gamesPlayed, rating);
                                 teams.add(team);
                         	}
                         }, id);
@@ -94,7 +99,7 @@ public class DBProbendingTeam extends DBInterpreter {
     }
 
     public void updatePBTeam(final PBTeam team) {
-        DatabaseHandler.getDatabase().executeUpdate("UPDATE pb_teams SET name=?, leader=? WHERE id=?;", team.getTeamName(), team.getLeader().toString(), team.getID());
+        DatabaseHandler.getDatabase().executeUpdate("UPDATE pb_teams SET name=?, leader=?, wins=?, games=?, rating=? WHERE id=?;", team.getTeamName(), team.getLeader().toString(), team.getWins(), team.getGamesPlayed(), team.getRating(), team.getID());
     }
 
     public void updatePBTeamAsync(final PBTeam team) {
@@ -130,16 +135,16 @@ public class DBProbendingTeam extends DBInterpreter {
     }
 
     public void createTeam(final UUID creator, final String teamName, final TeamMemberRole creatorRole, final Callback<PBTeam> callback) {
-    	DatabaseHandler.getDatabase().executeUpdate("INSERT INTO pb_teams (name, leader) VALUES (?, ?);", teamName, creator.toString());
+    	DatabaseHandler.getDatabase().executeUpdate("INSERT INTO pb_teams (name, leader, wins, games, rating) VALUES (?, ?, 0, 0, ?);", teamName, creator.toString(), INITIAL_RATING);
         DatabaseHandler.getDatabase().executeQuery("SELECT id FROM pb_teams WHERE name=? AND leader=?;", new Callback<ResultSet>() {
             public void run(ResultSet rs) {
                 try {
                     if (rs.next()) {
                         final int id = rs.getInt(1);
-                        joinTeam(creator, creatorRole, new PBTeam(id, "", creator, new HashMap<UUID, TeamMemberRole>()));
+                        joinTeam(creator, creatorRole, new PBTeam(id, "", creator, new HashMap<UUID, TeamMemberRole>(), 0, 0, 0));
                         Map<UUID, TeamMemberRole> members = new HashMap<>();
                         members.put(creator, creatorRole);
-                        callback.run(new PBTeam(id, teamName, creator, members));
+                        callback.run(new PBTeam(id, teamName, creator, members, 0, 0, INITIAL_RATING));
                     } else {
                         callback.run(null);
                     }
@@ -176,6 +181,43 @@ public class DBProbendingTeam extends DBInterpreter {
         runAsync(new Runnable() {
             public void run() {
                 deleteTeam(team);
+            }
+        });
+    }
+    
+    public void getTeamIdByMember(final UUID uuid, final Callback<Integer> callback) {
+    	DatabaseHandler.getDatabase().executeQuery("SELECT teamId FROM pb_team_members WHERE uuid=?;", new Callback<ResultSet>() {
+    		public void run(ResultSet rs) {
+    			try {
+					if (rs.next())
+					{
+						callback.run(rs.getInt("teamId"));
+					}
+					else
+					{
+						callback.run(-1);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+					callback.run(-1);
+				}
+    		}
+    	}, uuid.toString());
+    }
+    
+    public void getTeamIdByMemberAsync(final UUID uuid, final Callback<Integer> callback) {
+        runAsync(new Runnable() {
+            public void run() {
+                getTeamIdByMember(uuid, new Callback<Integer>() {
+                    public void run(Integer id) {
+                        final Integer teamId = id;
+                        runSync(new Runnable() {
+                            public void run() {
+                                callback.run(teamId);
+                            }
+                        });
+                    }
+                });
             }
         });
     }
