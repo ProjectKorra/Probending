@@ -9,7 +9,7 @@ package com.projectkorra.probending.enums;
  *
  * @author Ivo
  */
-public enum GameMode {
+public enum GamePlayerMode {
 
     ANY,
     SINGLE,
