@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.projectkorra.probending.PBMessenger;
+import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.enums.GamePlayerMode;
 import com.projectkorra.probending.enums.GameType;
 import com.projectkorra.probending.enums.WinningType;
@@ -96,12 +97,16 @@ public class ProbendingHandler {
         availableFields = _fieldStorage.loadFields();
     }
 
-    public void getPointsEarned(UUID uuid, final Callback<Double> callback) {
+    public void getOfflinePBPlayer(UUID uuid, final Callback<PBPlayer> callback) {
         _playerStorage.loadPBPlayerAsync(uuid, new Callback<PBPlayer>() {
             public void run(PBPlayer player) {
-                callback.run(player.getPointsEarned());
+                callback.run(player);
             }
         });
+    }
+    
+    public void updatePBPlayer(PBPlayer player) {
+    	_playerStorage.updatePBPlayerAsync(player);
     }
 
     public void getPlayerInfo(Player player, Player infoPlayer) {
@@ -203,7 +208,7 @@ public class ProbendingHandler {
                         } else {
                             PBMessenger.sendMessage(p, ChatColor.GOLD + "Winning Team: " + winningTeam.getTeamName(), true);
                         }
-                        pbPlayer.updateTeamStats(tGame, winningTeam);
+                        pbPlayer.updateTeamStats(tGame, winningTeam != null ? winningTeam.getMembers().containsKey(pbPlayer.getUUID()) : false);
                     }
                 }
             }
@@ -335,12 +340,14 @@ public class ProbendingHandler {
                 players.put(player.getUniqueId(), pbPlayer);
             }
         });
+        Probending.get().getTeamManager().updatePlayerMapsForLogin(player);
     }
 
     protected void playerLogout(Player player) {
-        if (players.containsKey(player)) {
-            removePlayerFromQueue(player);
-            players.remove(player);
-        }
+		if (players.containsKey(player.getUniqueId())) {
+			removePlayerFromQueue(player);
+		}
+    	players.remove(player.getUniqueId());
+    	Probending.get().getTeamManager().updatePlayerMapsForLogout(player);
     }
 }
