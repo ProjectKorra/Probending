@@ -82,6 +82,7 @@ public class PBScoreboard {
         player.setScoreboard(newBoard);
         Objective objectiveSidebar = newBoard.registerNewObjective("sidebar", "dummy");
         objectiveSidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
+        objectiveSidebar.setDisplayName("Probending Scoreboard");
         objectiveSidebar.getScore(ChatColor.BOLD + Bukkit.getOfflinePlayer(pbPlayer.getUUID()).getName() + " profile:").setScore(10);
         objectiveSidebar.getScore(ChatColor.YELLOW + "Wins1: " + ChatColor.AQUA + "0").setScore(9);
         objectiveSidebar.getScore(ChatColor.YELLOW + "Wins3: " + ChatColor.AQUA + "0").setScore(8);

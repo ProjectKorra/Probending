@@ -85,7 +85,7 @@ public class DBProbendingPlayer extends DBInterpreter {
 							}
 						}, id);
                     } else {
-                    	DatabaseHandler.getDatabase().executeUpdate("INSERT INTO pb_players (uuid) VALUES(?);", uuid.toString(), 0D);
+                    	DatabaseHandler.getDatabase().executeUpdate("INSERT INTO pb_players (uuid) VALUES(?);", uuid.toString());
                         DatabaseHandler.getDatabase().executeQuery("SELECT id FROM pb_players WHERE uuid=?;", new Callback<ResultSet>() {
                         	public void run(ResultSet rs2) {
                         		try {
