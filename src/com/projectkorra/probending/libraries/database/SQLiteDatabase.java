@@ -52,8 +52,10 @@ public class SQLiteDatabase extends AbstractDatabase {
 	@Override
 	public void executeQuery(String query, Callback<ResultSet> callback, Object... values) {
 		try (PreparedStatement statement = getConnection().prepareStatement(query)) {
-			for (int i = 0; i < values.length; i++) {
-				statement.setObject(i + 1, values[i]);
+			if (values.length > 0) {
+				for (int i = 0; i < values.length; i++) {
+					statement.setObject(i + 1, values[i]);
+				}
 			}
 			
 			try (ResultSet result = statement.executeQuery()) {
@@ -71,10 +73,12 @@ public class SQLiteDatabase extends AbstractDatabase {
 	@Override
 	public void executeUpdate(String query, Object... values) {
 		try (PreparedStatement statement = getConnection().prepareStatement(query)) {
-			for (int i = 0; i < values.length; i++) {
-				statement.setObject(i + 1, values[i]);
+			if (values.length > 0) {
+				for (int i = 0; i < values.length; i++) {
+					statement.setObject(i + 1, values[i]);
+				}
 			}
-
+			
 			statement.executeUpdate();
 		} catch (SQLException exception) {
 			exception.printStackTrace();
