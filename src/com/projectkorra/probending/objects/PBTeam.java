@@ -3,6 +3,7 @@ package com.projectkorra.probending.objects;
 import java.util.Map;
 import java.util.UUID;
 
+import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.game.Game;
 import com.projectkorra.projectkorra.Element;
 
@@ -13,14 +14,16 @@ public class PBTeam {
     private UUID _leader;
     private Map<UUID, TeamMemberRole> _members;
     
-    private int _wins, _gamesPlayed;
-    private long _rating;
+    private int _wins, _gamesPlayed, _rating;
 
-    public PBTeam(int id, String name, UUID leader, Map<UUID, TeamMemberRole> members) {
+    public PBTeam(int id, String name, UUID leader, Map<UUID, TeamMemberRole> members, int wins, int gamesPlayed, int rating) {
         _id = id;
         _name = name;
         _leader = leader;
         _members = members;
+        _wins = wins;
+        _gamesPlayed = gamesPlayed;
+        _rating = rating;
     }
 
     public int getID() {
@@ -47,27 +50,44 @@ public class PBTeam {
     	return _wins;
     }
     
+    public int getRating() {
+    	return _rating;
+    }
+    
+    /**
+     * Currently does nothing, added for future use.
+     * @param ending 1:lose|2:win|3:draw
+     * @param input some score that will be put into an algorithm
+     */
+    public void adjustRating(int ending, long input) {
+    	//Put some rating algorithm here
+    	//Probending.get().getTeamManager().updateTeam(this);
+    }
+    
     public void updateAfterGame(Game game, boolean win) {
     	_gamesPlayed += 1;
     	if (win) {
     		_wins += 1;
     	}
+    	Probending.get().getTeamManager().updateTeam(this);
     }
 
     public static enum TeamMemberRole {
 
-        WATER(Element.WATER.getColor() + "Waterbender", true),
-        AIR(Element.AIR.getColor() + "Airbender", false),
-        FIRE(Element.FIRE.getColor() + "Firebender", true),
-        EARTH(Element.EARTH.getColor() + "Earthbender", true),
-        CHI(Element.CHI.getColor() + "Chiblocker", false);
+        WATER(Element.WATER.getColor() + "Waterbender", Element.WATER, true),
+        AIR(Element.AIR.getColor() + "Airbender", Element.AIR, false),
+        FIRE(Element.FIRE.getColor() + "Firebender", Element.FIRE, true),
+        EARTH(Element.EARTH.getColor() + "Earthbender", Element.EARTH, true),
+        CHI(Element.CHI.getColor() + "Chiblocker", Element.CHI, false);
 
         private String _display;
         private boolean _enabled;
+        private Element _element;
 
-        private TeamMemberRole(String display, boolean enabled) {
+        private TeamMemberRole(String display, Element element, boolean enabled) {
             _display = display;
             _enabled = enabled;
+            _element = element;
         }
 
         public String getDisplay() {
@@ -76,6 +96,10 @@ public class PBTeam {
 
         public boolean isEnabled() {
             return _enabled;
+        }
+        
+        public Element getElement() {
+        	return _element;
         }
 
         public static TeamMemberRole parseRole(String role) {

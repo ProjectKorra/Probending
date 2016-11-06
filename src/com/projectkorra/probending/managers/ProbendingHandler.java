@@ -14,9 +14,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.projectkorra.probending.PBMessenger;
+import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.enums.GamePlayerMode;
 import com.projectkorra.probending.enums.GameType;
 import com.projectkorra.probending.enums.WinningType;
+import com.projectkorra.probending.events.PlayerJoinQueueEvent;
+import com.projectkorra.probending.events.PlayerLeaveQueueEvent;
 import com.projectkorra.probending.game.Game;
 import com.projectkorra.probending.game.TeamGame;
 import com.projectkorra.probending.game.scoreboard.PBScoreboard;
@@ -96,12 +99,16 @@ public class ProbendingHandler {
         availableFields = _fieldStorage.loadFields();
     }
 
-    public void getPointsEarned(UUID uuid, final Callback<Double> callback) {
+    public void getOfflinePBPlayer(UUID uuid, final Callback<PBPlayer> callback) {
         _playerStorage.loadPBPlayerAsync(uuid, new Callback<PBPlayer>() {
             public void run(PBPlayer player) {
-                callback.run(player.getPointsEarned());
+                callback.run(player);
             }
         });
+    }
+    
+    public void updatePBPlayer(PBPlayer player) {
+    	_playerStorage.updatePBPlayerAsync(player);
     }
 
     public void getPlayerInfo(Player player, Player infoPlayer) {
@@ -126,16 +133,20 @@ public class ProbendingHandler {
             return;
         }
         if (!queuedUpPlayers.contains(pbPlayer)) {
-            queuedUpPlayers.add(pbPlayer);
-            if (gameMode.equals(GamePlayerMode.ANY)) {
-                playerMode1P.add(pbPlayer);
-                playerMode3P.add(pbPlayer);
-            } else if (gameMode.equals(GamePlayerMode.SINGLE)) {
-                playerMode1P.add(pbPlayer);
-            } else if (gameMode.equals(GamePlayerMode.TRIPLE)) {
-                playerMode3P.add(pbPlayer);
-            }
-            player.sendMessage(ChatColor.GREEN + "You queued up!");
+        	PlayerJoinQueueEvent event = new PlayerJoinQueueEvent(player, gameMode);
+        	Probending.get().getServer().getPluginManager().callEvent(event);
+        	if (!event.isCancelled()) {
+	            queuedUpPlayers.add(pbPlayer);
+	            if (gameMode.equals(GamePlayerMode.ANY)) {
+	                playerMode1P.add(pbPlayer);
+	                playerMode3P.add(pbPlayer);
+	            } else if (gameMode.equals(GamePlayerMode.SINGLE)) {
+	                playerMode1P.add(pbPlayer);
+	            } else if (gameMode.equals(GamePlayerMode.TRIPLE)) {
+	                playerMode3P.add(pbPlayer);
+	            }
+	            player.sendMessage(ChatColor.GREEN + "You queued up!");
+        	}
         } else {
             player.sendMessage(ChatColor.RED + "You are already queued up!");
             return;
@@ -145,7 +156,7 @@ public class ProbendingHandler {
     }
 
     public void removePlayerFromQueue(Player player) {
-        if (!players.containsKey(player)) {
+        if (!players.containsKey(player.getUniqueId())) {
             return;
         }
         PBPlayer pbPlayer = players.get(player.getUniqueId());
@@ -154,14 +165,21 @@ public class ProbendingHandler {
             return;
         }
         if (queuedUpPlayers.contains(pbPlayer)) {
-            queuedUpPlayers.remove(pbPlayer);
-            if (playerMode1P.contains(pbPlayer)) {
-                playerMode1P.remove(pbPlayer);
-            }
-            if (playerMode3P.contains(pbPlayer)) {
-                playerMode3P.remove(pbPlayer);
-            }
-            player.sendMessage(ChatColor.RED + "You left the queue");
+        	PlayerLeaveQueueEvent event = new PlayerLeaveQueueEvent(player);
+        	Probending.get().getServer().getPluginManager().callEvent(event);
+        	if (!event.isCancelled()) {
+	            queuedUpPlayers.remove(pbPlayer);
+	            if (playerMode1P.contains(pbPlayer)) {
+	                playerMode1P.remove(pbPlayer);
+	            }
+	            if (playerMode3P.contains(pbPlayer)) {
+	                playerMode3P.remove(pbPlayer);
+	            }
+	            player.sendMessage(ChatColor.RED + "You left the queue");
+        	}
+        } else {
+        	player.sendMessage(ChatColor.RED + "You are not queued up!");
+        	return;
         }
         informPlayers();
     }
@@ -203,7 +221,7 @@ public class ProbendingHandler {
                         } else {
                             PBMessenger.sendMessage(p, ChatColor.GOLD + "Winning Team: " + winningTeam.getTeamName(), true);
                         }
-                        pbPlayer.updateTeamStats(tGame, winningTeam);
+                        pbPlayer.updateTeamStats(tGame, winningTeam != null ? winningTeam.getMembers().containsKey(pbPlayer.getUUID()) : false);
                     }
                 }
             }
@@ -211,9 +229,9 @@ public class ProbendingHandler {
             Set<Player> winningPlayers = null;
             if (winners.equals(WinningType.TEAM1)) {
                 //TODO: get the correct team... Calculation now is team 1 = team 2 and team 2 = team 1
-                winningPlayers = game.getTeam2Players();
-            } else if (winners.equals(WinningType.TEAM2)) {
                 winningPlayers = game.getTeam1Players();
+            } else if (winners.equals(WinningType.TEAM2)) {
+                winningPlayers = game.getTeam2Players();
             } else {
                 winningPlayers = new HashSet<>();
             }
@@ -335,12 +353,18 @@ public class ProbendingHandler {
                 players.put(player.getUniqueId(), pbPlayer);
             }
         });
+        Probending.get().getTeamManager().updatePlayerMapsForLogin(player);
     }
 
     protected void playerLogout(Player player) {
-        if (players.containsKey(player)) {
-            removePlayerFromQueue(player);
-            players.remove(player);
-        }
+		if (players.containsKey(player.getUniqueId())) {
+			removePlayerFromQueue(player);
+		}
+    	players.remove(player.getUniqueId());
+    	Probending.get().getTeamManager().updatePlayerMapsForLogout(player);
+    }
+    
+    public PBPlayer getPBPlayer(UUID uuid) {
+    	return players.containsKey(uuid) ? players.get(uuid) : null;
     }
 }

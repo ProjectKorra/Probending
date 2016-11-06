@@ -1,14 +1,14 @@
 package com.projectkorra.probending.managers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import com.projectkorra.probending.libraries.database.Callback;
 import com.projectkorra.probending.objects.PBTeam;
 import com.projectkorra.probending.storage.DBProbendingTeam;
 
@@ -16,7 +16,6 @@ public class PBTeamManager {
 	
 	private DBProbendingTeam teamStorage;
 	private Map<Player, PBTeam> teamsByOnlinePlayer = new HashMap<>();
-	private Map<OfflinePlayer, PBTeam> teamsByOfflinePlayer = new HashMap<>();
 	private Map<Integer, PBTeam> teamsByID = new HashMap<>();
 	private Map<String, PBTeam> teamsByName = new HashMap<>();
 
@@ -25,41 +24,38 @@ public class PBTeamManager {
 		populateTeamMap();
 	}
 	
-	public void populateTeamMap() {
-		Map<Player, PBTeam> playerMap = new HashMap<>();
-		Map<OfflinePlayer, PBTeam> oPlayerMap = new HashMap<>();
-		Map<Integer, PBTeam> idMap = new HashMap<>();
-		Map<String, PBTeam> nameMap = new HashMap<>();
-		//Replace the ArrayList with loading teams
-		for (PBTeam team : new ArrayList<PBTeam>()) {
-			for (UUID uuid : team.getMembers().keySet()) {
-				OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-				if (player.isOnline()) {
-					Player p = (Player) player;
-					playerMap.put(p, team);
-				} else {
-					oPlayerMap.put(player, team);
-				}
-			}
-			idMap.put(team.getID(), team);
-			nameMap.put(team.getTeamName(), team);
-		}
+	public void updateTeam(PBTeam team) {
+		this.teamStorage.updatePBTeamAsync(team);
 	}
 	
-	public void updatePlayerMapsForLogin(Player player) {
-		OfflinePlayer oPlayer = Bukkit.getOfflinePlayer(player.getUniqueId());
-		if (teamsByOfflinePlayer.containsKey(oPlayer)) {
-			teamsByOnlinePlayer.put(player, teamsByOfflinePlayer.get(oPlayer));
-			teamsByOfflinePlayer.remove(oPlayer);
-		}
+	public void populateTeamMap() {
+		teamStorage.loadPBTeamsAsync(new Callback<List<PBTeam>>() {
+			public void run(List<PBTeam> teams) {
+				for (PBTeam team : teams) {
+					teamsByID.put(team.getID(), team);
+					teamsByName.put(team.getTeamName(), team);
+					for (Player player : Bukkit.getOnlinePlayers()) {
+						if (team.getMembers().containsKey(player.getUniqueId())) {
+							teamsByOnlinePlayer.put(player, team);
+						}
+					}
+				}
+			}
+		});
+	}
+	
+	public void updatePlayerMapsForLogin(final Player player) {
+		getTeamFromUUIDAsync(player.getUniqueId(), new Callback<PBTeam>() {
+			public void run(PBTeam team) {
+				if (team != null) {
+					teamsByOnlinePlayer.put(player, team);
+				}
+			}
+		});
 	}
 	
 	public void updatePlayerMapsForLogout(Player player) {
-		OfflinePlayer oPlayer = Bukkit.getOfflinePlayer(player.getUniqueId());
-		if (teamsByOnlinePlayer.containsKey(player)) {
-			teamsByOfflinePlayer.put(oPlayer, teamsByOnlinePlayer.get(player));
-			teamsByOnlinePlayer.remove(player);
-		}
+		teamsByOnlinePlayer.remove(player);
 	}
 	
 	public void updateMapsForNewTeam(PBTeam team) {
@@ -78,8 +74,16 @@ public class PBTeamManager {
 		return teamsByOnlinePlayer.containsKey(player) ? teamsByOnlinePlayer.get(player) : null;
 	}
 	
-	public PBTeam getTeamFromOfflinePlayer(OfflinePlayer oPlayer) {
-		return teamsByOfflinePlayer.containsKey(oPlayer) ? teamsByOfflinePlayer.get(oPlayer) : null;
+	public void getTeamFromUUIDAsync(final UUID uuid, final Callback<PBTeam> callback) {
+		this.teamStorage.getTeamIdByMemberAsync(uuid, new Callback<Integer>() {
+			public void run(Integer teamId) {
+				if (teamId == -1) {
+					callback.run(null);
+				} else {
+					callback.run(teamsByID.get(teamId));
+				}
+			}
+		});
 	}
 	
 	public PBTeam getTeamFromID(int id) {
