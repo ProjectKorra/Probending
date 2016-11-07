@@ -7,6 +7,7 @@ package com.projectkorra.probending.managers;
 
 import com.projectkorra.probending.PBMessenger;
 import com.projectkorra.probending.objects.ProbendingField;
+import java.util.Map;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -193,14 +194,38 @@ public class FieldCreationManager implements Listener {
 
     //TODO: ALL FIELD, THE ONE IN USE AND NOT IN USE!
     public void getFields(Player player) {
-        PBMessenger.sendMessage(player, "NOT IMPLEMENTED YET!", true);
+        Map<ProbendingField, Boolean> fields = pHandler.getAllFields();
+        for (Map.Entry<ProbendingField, Boolean> entry : fields.entrySet()) {
+            ProbendingField field = entry.getKey();
+            if (entry.getValue()) {
+                player.sendMessage(ChatColor.GREEN + field.getFieldName() + ChatColor.WHITE + " > located at: "
+                        + ChatColor.AQUA + ((field.getTeam1Location1().getX() + field.getTeam2Location1().getX()) / 2)
+                        + ChatColor.WHITE + "|"
+                        + ChatColor.AQUA + ((field.getTeam1Location1().getZ() + field.getTeam2Location1().getZ()) / 2));
+            } else {
+                player.sendMessage(ChatColor.RED + field.getFieldName() + ChatColor.WHITE + " > located at: "
+                        + ChatColor.AQUA + ((field.getTeam1Location1().getX() + field.getTeam2Location1().getX()) / 2)
+                        + ChatColor.WHITE + "|"
+                        + ChatColor.AQUA + ((field.getTeam1Location1().getZ() + field.getTeam2Location1().getZ()) / 2));
+            }
+        }
     }
 
     //TODO: GET ALL FIELD INFO NICE IN CHAT!
     public void getFieldInfo(Player player, String field) {
         ProbendingField f = pHandler.getField(player, field);
         if (f != null) {
-            PBMessenger.sendMessage(player, "NOT IMPLEMENTED YET!", true);
+            player.sendMessage(ChatColor.GOLD + "Location: "
+                    + ChatColor.AQUA + ((f.getTeam1Location1().getX() + f.getTeam2Location1().getX()) / 2)
+                    + ChatColor.WHITE + "|"
+                    + ChatColor.AQUA + ((f.getTeam1Location1().getZ() + f.getTeam2Location1().getZ()) / 2));
+            player.sendMessage(ChatColor.GOLD + "Team 1 RG 1: " + ChatColor.AQUA + f.getTeam1Field1());
+            player.sendMessage(ChatColor.GOLD + "Team 1 RG 2: " + ChatColor.AQUA + f.getTeam1Field2());
+            player.sendMessage(ChatColor.GOLD + "Team 1 RG 3: " + ChatColor.AQUA + f.getTeam1Field3());
+            player.sendMessage(ChatColor.GOLD + "Team 2 RG 1: " + ChatColor.AQUA + f.getTeam2Field1());
+            player.sendMessage(ChatColor.GOLD + "Team 2 RG 2: " + ChatColor.AQUA + f.getTeam2Field2());
+            player.sendMessage(ChatColor.GOLD + "Team 2 RG 3: " + ChatColor.AQUA + f.getTeam2Field3());
+            player.sendMessage(ChatColor.GOLD + "Knock Off: " + ChatColor.AQUA + f.getKnockOffArea());
         }
     }
 
