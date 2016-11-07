@@ -30,6 +30,8 @@ public class FieldManager {
     private Game game;
     private ProbendingField field;
 
+    private Map<UUID, Set<ProtectedRegion>> oldPlayerRegions = new HashMap<>();
+
     private Map<UUID, Integer> playerLocation = new HashMap<>();
     private Map<UUID, Integer> playerFaults = new HashMap<>();
 
@@ -45,9 +47,11 @@ public class FieldManager {
         }
         WorldGuardPlugin wg = (WorldGuardPlugin) wgp;
         Set<ProtectedRegion> toRegions = wg.getRegionContainer().get(player.getWorld()).getApplicableRegions(to).getRegions();
-        Set<ProtectedRegion> fromRegions = wg.getRegionContainer().get(player.getWorld()).getApplicableRegions(from).getRegions();
         Set<ProtectedRegion> newRegions = toRegions;
-        for (ProtectedRegion rg : fromRegions) {
+        if (!oldPlayerRegions.containsKey(player.getUniqueId())) {
+            oldPlayerRegions.put(player.getUniqueId(), new HashSet<ProtectedRegion>());
+        }
+        for (ProtectedRegion rg : oldPlayerRegions.get(player.getUniqueId())) {
             if (newRegions.contains(rg)) {
                 newRegions.remove(rg);
             }
@@ -55,6 +59,8 @@ public class FieldManager {
         if (newRegions.isEmpty()) {
             return;
         }
+        oldPlayerRegions.get(player.getUniqueId()).clear();
+        oldPlayerRegions.get(player.getUniqueId()).addAll(toRegions);
         for (ProtectedRegion rg : newRegions) {
             if (playerLocation.containsKey(player.getUniqueId())) {
                 String regionName = rg.getId();
@@ -108,7 +114,11 @@ public class FieldManager {
         int team1loc = 0;
         for (Player p : game.getTeam1Players()) {
             if (playerLocation.get(p.getUniqueId()) > 0) {
-                team1loc = team1loc + (7 - playerLocation.get(p.getUniqueId()));
+                int i = playerLocation.get(p.getUniqueId());
+                if (i == 0) {
+                    i = 7;
+                }
+                team1loc = team1loc + (7 - i);
             }
         }
         for (Player p : game.getTeam2Players()) {
@@ -116,9 +126,9 @@ public class FieldManager {
                 team2loc = team2loc + playerLocation.get(p.getUniqueId());
             }
         }
-        if (team1loc < team2loc) {
+        if (team1loc > team2loc) {
             return WinningType.TEAM1;
-        } else if (team1loc > team2loc) {
+        } else if (team1loc < team2loc) {
             return WinningType.TEAM2;
         } else {
             return WinningType.DRAW;
@@ -177,9 +187,9 @@ public class FieldManager {
             }
             if (extremeLocation(teamName) == 0) {
                 if (teamName.equalsIgnoreCase("team1")) {
-                    game.endRound(WinningType.TEAM1);
-                } else if (teamName.equalsIgnoreCase("team2")) {
                     game.endRound(WinningType.TEAM2);
+                } else if (teamName.equalsIgnoreCase("team2")) {
+                    game.endRound(WinningType.TEAM1);
                 }
             }
         } else {

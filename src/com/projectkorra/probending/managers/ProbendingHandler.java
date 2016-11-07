@@ -95,6 +95,17 @@ public class ProbendingHandler {
         return null;
     }
 
+    public Map<ProbendingField, Boolean> getAllFields() {
+        Map<ProbendingField, Boolean> fields = new HashMap<>();
+        for (ProbendingField f : availableFields) {
+            fields.put(f, true);
+        }
+        for (Game game : games) {
+            fields.put(game.getField(), false);
+        }
+        return fields;
+    }
+
     private void loadFields() {
         availableFields = _fieldStorage.loadFields();
     }
@@ -106,9 +117,9 @@ public class ProbendingHandler {
             }
         });
     }
-    
+
     public void updatePBPlayer(PBPlayer player) {
-    	_playerStorage.updatePBPlayerAsync(player);
+        _playerStorage.updatePBPlayerAsync(player);
     }
 
     public void getPlayerInfo(Player player, Player infoPlayer) {
@@ -133,20 +144,20 @@ public class ProbendingHandler {
             return;
         }
         if (!queuedUpPlayers.contains(pbPlayer)) {
-        	PlayerJoinQueueEvent event = new PlayerJoinQueueEvent(player, gameMode);
-        	Probending.get().getServer().getPluginManager().callEvent(event);
-        	if (!event.isCancelled()) {
-	            queuedUpPlayers.add(pbPlayer);
-	            if (gameMode.equals(GamePlayerMode.ANY)) {
-	                playerMode1P.add(pbPlayer);
-	                playerMode3P.add(pbPlayer);
-	            } else if (gameMode.equals(GamePlayerMode.SINGLE)) {
-	                playerMode1P.add(pbPlayer);
-	            } else if (gameMode.equals(GamePlayerMode.TRIPLE)) {
-	                playerMode3P.add(pbPlayer);
-	            }
-	            player.sendMessage(ChatColor.GREEN + "You queued up!");
-        	}
+            PlayerJoinQueueEvent event = new PlayerJoinQueueEvent(player, gameMode);
+            Probending.get().getServer().getPluginManager().callEvent(event);
+            if (!event.isCancelled()) {
+                queuedUpPlayers.add(pbPlayer);
+                if (gameMode.equals(GamePlayerMode.ANY)) {
+                    playerMode1P.add(pbPlayer);
+                    playerMode3P.add(pbPlayer);
+                } else if (gameMode.equals(GamePlayerMode.SINGLE)) {
+                    playerMode1P.add(pbPlayer);
+                } else if (gameMode.equals(GamePlayerMode.TRIPLE)) {
+                    playerMode3P.add(pbPlayer);
+                }
+                player.sendMessage(ChatColor.GREEN + "You queued up!");
+            }
         } else {
             player.sendMessage(ChatColor.RED + "You are already queued up!");
             return;
@@ -165,21 +176,21 @@ public class ProbendingHandler {
             return;
         }
         if (queuedUpPlayers.contains(pbPlayer)) {
-        	PlayerLeaveQueueEvent event = new PlayerLeaveQueueEvent(player);
-        	Probending.get().getServer().getPluginManager().callEvent(event);
-        	if (!event.isCancelled()) {
-	            queuedUpPlayers.remove(pbPlayer);
-	            if (playerMode1P.contains(pbPlayer)) {
-	                playerMode1P.remove(pbPlayer);
-	            }
-	            if (playerMode3P.contains(pbPlayer)) {
-	                playerMode3P.remove(pbPlayer);
-	            }
-	            player.sendMessage(ChatColor.RED + "You left the queue");
-        	}
+            PlayerLeaveQueueEvent event = new PlayerLeaveQueueEvent(player);
+            Probending.get().getServer().getPluginManager().callEvent(event);
+            if (!event.isCancelled()) {
+                queuedUpPlayers.remove(pbPlayer);
+                if (playerMode1P.contains(pbPlayer)) {
+                    playerMode1P.remove(pbPlayer);
+                }
+                if (playerMode3P.contains(pbPlayer)) {
+                    playerMode3P.remove(pbPlayer);
+                }
+                player.sendMessage(ChatColor.RED + "You left the queue");
+            }
         } else {
-        	player.sendMessage(ChatColor.RED + "You are not queued up!");
-        	return;
+            player.sendMessage(ChatColor.RED + "You are not queued up!");
+            return;
         }
         informPlayers();
     }
@@ -357,14 +368,14 @@ public class ProbendingHandler {
     }
 
     protected void playerLogout(Player player) {
-		if (players.containsKey(player.getUniqueId())) {
-			removePlayerFromQueue(player);
-		}
-    	players.remove(player.getUniqueId());
-    	Probending.get().getTeamManager().updatePlayerMapsForLogout(player);
+        if (players.containsKey(player.getUniqueId())) {
+            removePlayerFromQueue(player);
+        }
+        players.remove(player.getUniqueId());
+        Probending.get().getTeamManager().updatePlayerMapsForLogout(player);
     }
-    
+
     public PBPlayer getPBPlayer(UUID uuid) {
-    	return players.containsKey(uuid) ? players.get(uuid) : null;
+        return players.containsKey(uuid) ? players.get(uuid) : null;
     }
 }

@@ -84,10 +84,10 @@ public class PBScoreboard {
         objectiveSidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
         objectiveSidebar.setDisplayName("Probending Scoreboard");
         objectiveSidebar.getScore(ChatColor.BOLD + Bukkit.getOfflinePlayer(pbPlayer.getUUID()).getName() + " profile:").setScore(10);
-        objectiveSidebar.getScore(ChatColor.YELLOW + "Wins1: " + ChatColor.AQUA + "0").setScore(9);
-        objectiveSidebar.getScore(ChatColor.YELLOW + "Wins3: " + ChatColor.AQUA + "0").setScore(8);
-        objectiveSidebar.getScore(ChatColor.YELLOW + "Games: " + ChatColor.AQUA + "0").setScore(7);
-        objectiveSidebar.getScore(ChatColor.YELLOW + "Rating: " + ChatColor.AQUA + "0").setScore(6);
+        objectiveSidebar.getScore(ChatColor.YELLOW + "Wins1: " + ChatColor.AQUA + pbPlayer.getIndividualWins(true)).setScore(9);
+        objectiveSidebar.getScore(ChatColor.YELLOW + "Wins3: " + ChatColor.AQUA + pbPlayer.getIndividualWins(false)).setScore(8);
+        objectiveSidebar.getScore(ChatColor.YELLOW + "Games: " + ChatColor.AQUA + pbPlayer.getGamesPlayed()).setScore(7);
+        objectiveSidebar.getScore(ChatColor.YELLOW + "Rating: " + ChatColor.AQUA + "N/A").setScore(6);
         objectiveSidebar.getScore(ChatColor.BOLD + "Team profile:").setScore(5);
         objectiveSidebar.getScore(ChatColor.YELLOW + "Element: " + ChatColor.AQUA + "null").setScore(4);
         objectiveSidebar.getScore(ChatColor.YELLOW + "Team: " + ChatColor.AQUA + "null").setScore(3);
