@@ -134,7 +134,7 @@ public class Game {
 //            return;
         }
         curRound++;
-        Title title = new Title(ChatColor.RED + "" + team1Score + ChatColor.WHITE + " - " + ChatColor.BLUE + "" + team2Score, "", 1, 1, 1);
+        Title title = new Title(ChatColor.BLUE + "" + team1Score + ChatColor.WHITE + " - " + ChatColor.RED + "" + team2Score, "", 1, 1, 1);
         for (Player p : team1Players) {
             title.send(p);
         }
