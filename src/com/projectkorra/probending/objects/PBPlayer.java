@@ -53,7 +53,7 @@ public class PBPlayer {
     /**
      * Currently does nothing, added for future use.
      *
-     * @param ending 1:lose|2:win|3:draw
+     * @param ending 1=lose|2=win|3=draw
      * @param input some score that will be put into an algorithm
      */
     public void adjustRating(int ending, long input) {

@@ -1,7 +1,11 @@
 package com.projectkorra.probending.objects;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import org.bukkit.entity.Player;
 
 import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.game.Game;
@@ -13,6 +17,7 @@ public class PBTeam {
     private String _name;
     private UUID _leader;
     private Map<UUID, TeamMemberRole> _members;
+    private Integer[] _color;
     
     private int _wins, _gamesPlayed, _rating;
 
@@ -24,6 +29,17 @@ public class PBTeam {
         _wins = wins;
         _gamesPlayed = gamesPlayed;
         _rating = rating;
+        _color = new Integer[] {10, 10, 10};
+    }
+    
+    public Integer[] getColor() {
+    	return _color;
+    }
+    
+    public void setColor(int r, int g, int b) {
+    	_color[0] = r;
+    	_color[1] = g;
+    	_color[2] = b;
     }
 
     public int getID() {
@@ -71,6 +87,15 @@ public class PBTeam {
     	}
     	Probending.get().getTeamManager().updateTeam(this);
     }
+    
+    public boolean addPlayer(Player player, TeamMemberRole role) {
+    	if (_members.containsKey(player.getUniqueId())) {
+    		return false;
+    	}
+    	_members.put(player.getUniqueId(), role);
+    	Probending.get().getTeamManager().updatePlayerMapForNewMember(this, player);
+    	return true;
+    }
 
     public static enum TeamMemberRole {
 
@@ -110,6 +135,16 @@ public class PBTeam {
             }
 
             return null;
+        }
+        
+        public static List<TeamMemberRole> getEnabledRoles() {
+        	List<TeamMemberRole> enabled = new ArrayList<>();
+        	for (TeamMemberRole role : values()) {
+        		if (role.isEnabled()) {
+        			enabled.add(role);
+        		}
+        	}
+        	return enabled;
         }
     }
 }
