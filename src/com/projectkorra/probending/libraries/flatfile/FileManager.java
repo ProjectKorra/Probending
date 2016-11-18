@@ -22,7 +22,7 @@ public class FileManager {
             File folder = new File(plugin.getDataFolder().getCanonicalPath() + File.separator + path.replace(".", File.separator));
             folder.mkdirs();
             dFile = new File(folder.getCanonicalPath() + File.separator + fileName + ".yml");
-            if (dFile.exists()) {
+            if (!dFile.exists()) {
                 dFile.createNewFile();
             }
 

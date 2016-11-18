@@ -10,7 +10,9 @@ import org.bukkit.entity.Player;
 
 import com.projectkorra.probending.libraries.database.Callback;
 import com.projectkorra.probending.objects.PBTeam;
+import com.projectkorra.probending.objects.PBTeam.TeamMemberRole;
 import com.projectkorra.probending.storage.DBProbendingTeam;
+import com.projectkorra.projectkorra.BendingPlayer;
 
 public class PBTeamManager {
 	
@@ -92,5 +94,33 @@ public class PBTeamManager {
 	
 	public PBTeam getTeamFromName(String name) {
 		return teamsByName.containsKey(name) ? teamsByName.get(name) : null;
+	}
+	
+	public boolean createNewTeam(Player leader, String name, int id, TeamMemberRole leaderRole/*, Integer[] color*/) {
+		if (teamsByID.containsKey(id)) {
+			return false;
+		} else if (teamsByOnlinePlayer.containsKey(leader)){
+			return false;
+		} else if (teamsByName.containsKey(name)) {
+			return false;
+		} else {
+			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(leader);
+			if (bPlayer.getElements().isEmpty()) {
+				return false;
+			}
+			
+			if (!leaderRole.isEnabled()) {
+				return false;
+			}
+			
+			Map<UUID, TeamMemberRole> map = new HashMap<>();
+			map.put(leader.getUniqueId(), leaderRole);
+			PBTeam team = new PBTeam(id, name, leader.getUniqueId(), map, 0, 0, 1000/*, color*/);
+			teamsByName.put(team.getTeamName(), team);
+			teamsByOnlinePlayer.put(leader, team);
+			teamsByID.put(id, team);
+			//TODO: Team stuff with database saving 'n such
+		}
+		return true;
 	}
 }
