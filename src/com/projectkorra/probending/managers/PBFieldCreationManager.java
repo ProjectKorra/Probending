@@ -19,7 +19,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
  *
  * @author Ivo
  */
-public class FieldCreationManager implements Listener {
+public class PBFieldCreationManager implements Listener {
 
     private final ProbendingHandler pHandler;
 
@@ -29,7 +29,7 @@ public class FieldCreationManager implements Listener {
     private Integer bigStep;
     private Integer smallStep;
 
-    public FieldCreationManager(ProbendingHandler pHandler) {
+    public PBFieldCreationManager(ProbendingHandler pHandler) {
         this.pHandler = pHandler;
     }
 

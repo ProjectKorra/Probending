@@ -7,8 +7,9 @@ import java.util.logging.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.projectkorra.probending.commands.Commands;
-import com.projectkorra.probending.managers.FieldCreationManager;
+import com.projectkorra.probending.managers.PBFieldCreationManager;
 import com.projectkorra.probending.managers.InviteManager;
+import com.projectkorra.probending.managers.PBQueueManager;
 import com.projectkorra.probending.managers.PBTeamManager;
 import com.projectkorra.probending.managers.ProbendingHandler;
 import com.projectkorra.probending.storage.DBProbendingTeam;
@@ -19,7 +20,8 @@ public class Probending extends JavaPlugin {
 	private static Probending plugin;
 
 	private ProbendingHandler pHandler;
-	private FieldCreationManager cManager;
+	private PBFieldCreationManager cManager;
+        private PBQueueManager qManager;
 	private PBTeamManager tManager;
 	private InviteManager iManager;
 
@@ -34,9 +36,10 @@ public class Probending extends JavaPlugin {
 		new DatabaseHandler(this);
 
 		pHandler = new ProbendingHandler(this);
-		cManager = new FieldCreationManager(pHandler);
+		cManager = new PBFieldCreationManager(pHandler);
+		qManager = new PBQueueManager(this, pHandler);
 		this.getServer().getPluginManager().registerEvents(cManager, this);
-		new Commands(pHandler, cManager);
+		new Commands(pHandler, cManager, qManager);
 		tManager = new PBTeamManager(new DBProbendingTeam(this));
 		iManager = new InviteManager(this);
 	}
@@ -53,7 +56,7 @@ public class Probending extends JavaPlugin {
 		return pHandler;
 	}
 
-	public FieldCreationManager getFieldCreationManager() {
+	public PBFieldCreationManager getFieldCreationManager() {
 		return cManager;
 	}
 
