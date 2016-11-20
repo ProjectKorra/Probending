@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.projectkorra.probending.Probending;
-import com.projectkorra.probending.managers.FieldCreationManager;
+import com.projectkorra.probending.managers.PBFieldCreationManager;
 import com.projectkorra.probending.managers.ProbendingHandler;
 import com.projectkorra.probending.objects.PBPlayer;
 import com.projectkorra.probending.objects.PBTeam;
@@ -21,7 +21,7 @@ public class InfoCommand extends PBCommand{
 	}
 
 	@Override
-	public void execute(CommandSender sender, List<String> args, ProbendingHandler pHandler, FieldCreationManager cManager) {
+	public void execute(CommandSender sender, List<String> args) {
 		if (!sender.hasPermission("probending.command.info")) {
 			sender.sendMessage(ChatColor.RED + "Insufficient Permissions");
 			return;
@@ -35,9 +35,9 @@ public class InfoCommand extends PBCommand{
 			} else {
 				if (sender instanceof Player) {
 					Player player = (Player) sender;
-					pHandler.getPlayerInfo(player, target);
+					Commands.getpHandler().getPlayerInfo(player, target);
 				} else {
-					PBPlayer pbTarget = pHandler.getPBPlayer(target.getUniqueId());
+					PBPlayer pbTarget = Commands.getpHandler().getPBPlayer(target.getUniqueId());
 					PBTeam team = Probending.get().getTeamManager().getTeamFromPlayer(target);
 					sender.sendMessage("Solo Mode Wins: " + pbTarget.getIndividualWins(true));
 					sender.sendMessage("Triple Mode Wins: " + pbTarget.getIndividualWins(false));

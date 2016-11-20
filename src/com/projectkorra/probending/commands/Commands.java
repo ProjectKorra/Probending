@@ -11,21 +11,24 @@ import org.bukkit.entity.Player;
 
 import com.projectkorra.probending.PBMessenger;
 import com.projectkorra.probending.Probending;
-import com.projectkorra.probending.managers.FieldCreationManager;
+import com.projectkorra.probending.managers.PBFieldCreationManager;
+import com.projectkorra.probending.managers.PBQueueManager;
 import com.projectkorra.probending.managers.ProbendingHandler;
 
 import net.md_5.bungee.api.ChatColor;
 
 public class Commands {
 	
-	private final ProbendingHandler pHandler;
-	private final FieldCreationManager cManager;
+	private static ProbendingHandler pHandler;
+	private static PBFieldCreationManager cManager;
+        private static PBQueueManager qManager;
 	
 	private List<String> help;
 
-	public Commands(ProbendingHandler pHandler, FieldCreationManager cManager) {
-		this.pHandler = pHandler;
-		this.cManager = cManager;
+	public Commands(ProbendingHandler pHandler, PBFieldCreationManager cManager, PBQueueManager qManager) {
+		Commands.pHandler = pHandler;
+		Commands.cManager = cManager;
+                Commands.qManager = qManager;
 		init();
 	}
 	
@@ -63,7 +66,7 @@ public class Commands {
 				List<String> sendingArgs = Arrays.asList(args).subList(1, args.length);
 				for (PBCommand command : PBCommand.getCommands().values()) {
 					if (Arrays.asList(command.getAliases()).contains(args[0].toLowerCase())) {
-						command.execute(sender, sendingArgs, pHandler, cManager);
+						command.execute(sender, sendingArgs);
 						return true;
 					}
 				}
@@ -73,4 +76,16 @@ public class Commands {
 		};
 		probending.setExecutor(exe);
 	}
+
+        public static PBFieldCreationManager getcManager() {
+            return cManager;
+        }
+
+        public static ProbendingHandler getpHandler() {
+            return pHandler;
+        }
+
+        public static PBQueueManager getqManager() {
+            return qManager;
+        }
 }

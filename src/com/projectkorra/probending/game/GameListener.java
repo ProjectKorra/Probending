@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -28,7 +29,7 @@ public class GameListener implements Listener {
         this.game = game;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void PlayerMoveEvent(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         Location from = event.getFrom();
@@ -41,12 +42,12 @@ public class GameListener implements Listener {
                 return;
             }
         }
-        if (from.getBlockX() != to.getBlockX() || from.getBlockZ() != to.getBlockZ()) {
+        if (from.getBlockX() != to.getBlockX() || from.getBlockY() != to.getBlockY() || from.getBlockZ() != to.getBlockZ()) {
             game.playerMove(player, from, to);
         }
     }
-    
-    @EventHandler
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void PlayerAnimationEvent(PlayerAnimationEvent event) {
         Player player = event.getPlayer();
         if (!game.canPlayerMove(player)) {
@@ -54,7 +55,7 @@ public class GameListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void DamgeEvent(EntityDamageEvent event) {
         Entity e = event.getEntity();
         if (e instanceof Player) {
@@ -65,7 +66,7 @@ public class GameListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void FoodLevelChangeEvent(FoodLevelChangeEvent event) {
         Entity e = event.getEntity();
         if (e instanceof Player) {

@@ -10,8 +10,6 @@ import org.bukkit.entity.Player;
 
 import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.libraries.database.Callback;
-import com.projectkorra.probending.managers.FieldCreationManager;
-import com.projectkorra.probending.managers.ProbendingHandler;
 import com.projectkorra.probending.objects.PBTeam;
 import com.projectkorra.probending.objects.PBTeam.TeamMemberRole;
 import com.projectkorra.projectkorra.BendingPlayer;
@@ -25,7 +23,7 @@ public class TeamCommand extends PBCommand{
 	}
 
 	@Override
-	public void execute(CommandSender sender, List<String> args, ProbendingHandler pHandler, FieldCreationManager cManager) {
+	public void execute(CommandSender sender, List<String> args) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage("Only players can use this command!");
 		}

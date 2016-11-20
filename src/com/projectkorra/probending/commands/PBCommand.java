@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.bukkit.command.CommandSender;
 
-import com.projectkorra.probending.managers.FieldCreationManager;
+import com.projectkorra.probending.managers.PBFieldCreationManager;
 import com.projectkorra.probending.managers.ProbendingHandler;
 
 public abstract class PBCommand implements PBSubCommand{
@@ -52,7 +52,7 @@ public abstract class PBCommand implements PBSubCommand{
 	}
 
 	@Override
-	public abstract void execute(CommandSender sender, List<String> args, ProbendingHandler pHandler, FieldCreationManager cManager);
+	public abstract void execute(CommandSender sender, List<String> args);
 
 	public static Map<String, PBCommand> getCommands() {
 		return commands;
