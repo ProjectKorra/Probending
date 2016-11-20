@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.game.Game;
+import com.projectkorra.probending.libraries.database.Callback;
 import com.projectkorra.projectkorra.Element;
 
 public class PBTeam {
@@ -85,16 +86,16 @@ public class PBTeam {
     	if (win) {
     		_wins += 1;
     	}
-    	Probending.get().getTeamManager().updateTeam(this);
+    	Probending.get().getTeamManager().updateTeam(this, null);
     }
     
-    public boolean addPlayer(Player player, TeamMemberRole role) {
+    public void addPlayer(Player player, TeamMemberRole role, Callback<Boolean> successCallback) {
     	if (_members.containsKey(player.getUniqueId())) {
-    		return false;
+    		successCallback.run(false);
+    		return;
     	}
     	_members.put(player.getUniqueId(), role);
-    	Probending.get().getTeamManager().updatePlayerMapForNewMember(this, player);
-    	return true;
+    	Probending.get().getTeamManager().handleJoinTeam(player, this, role, successCallback);
     }
 
     public static enum TeamMemberRole {
@@ -137,14 +138,14 @@ public class PBTeam {
             return null;
         }
         
-        public static List<TeamMemberRole> getEnabledRoles() {
+        public static TeamMemberRole[] getEnabledRoles() {
         	List<TeamMemberRole> enabled = new ArrayList<>();
         	for (TeamMemberRole role : values()) {
         		if (role.isEnabled()) {
         			enabled.add(role);
         		}
         	}
-        	return enabled;
+        	return enabled.toArray(new TeamMemberRole[enabled.size()]);
         }
     }
 }

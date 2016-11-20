@@ -94,10 +94,17 @@ public class PBScoreboard {
         objectiveSidebar.getScore(ChatColor.YELLOW + "Rating: " + ChatColor.AQUA + "N/A").setScore(6);
         objectiveSidebar.getScore(ChatColor.BOLD + "Team profile:").setScore(5);
         PBTeam team = Probending.get().getTeamManager().getTeamFromPlayer(player);
-        objectiveSidebar.getScore(ChatColor.YELLOW + "Role: " + ChatColor.AQUA + (team != null ? team.getMembers().get(player.getUniqueId()).getDisplay() : "No team")).setScore(4);
-        objectiveSidebar.getScore(ChatColor.YELLOW + "Name: " + ChatColor.AQUA + (team != null ? team.getTeamName() : "No team")).setScore(3);
-        objectiveSidebar.getScore(ChatColor.YELLOW + "Wins: " + ChatColor.AQUA + (team != null ? team.getWins() : "No team")).setScore(2);
-        objectiveSidebar.getScore(ChatColor.YELLOW + "TGames: " + ChatColor.AQUA + (team != null ? team.getGamesPlayed() : "No team")).setScore(1);
+        if (team != null)
+        {
+        	objectiveSidebar.getScore(ChatColor.YELLOW + "Role: " + ChatColor.AQUA + team.getMembers().get(player.getUniqueId()).getDisplay()).setScore(4);
+        	objectiveSidebar.getScore(ChatColor.YELLOW + "Name: " + ChatColor.AQUA + team.getTeamName()).setScore(3);
+        	objectiveSidebar.getScore(ChatColor.YELLOW + "Wins: " + ChatColor.AQUA + team.getWins()).setScore(2);
+        	objectiveSidebar.getScore(ChatColor.YELLOW + "TGames: " + ChatColor.AQUA + team.getGamesPlayed()).setScore(1);
+        }
+        else
+        {
+        	objectiveSidebar.getScore(ChatColor.RED + "No Team").setScore(4);;
+        }
         new BukkitRunnable() {
 
             @Override

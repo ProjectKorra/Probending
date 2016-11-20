@@ -365,6 +365,7 @@ public class ProbendingHandler {
             }
         });
         Probending.get().getTeamManager().updatePlayerMapsForLogin(player);
+        Probending.get().getInviteManager().handleJoin(player);
     }
 
     protected void playerLogout(Player player) {
@@ -373,6 +374,7 @@ public class ProbendingHandler {
         }
         players.remove(player.getUniqueId());
         Probending.get().getTeamManager().updatePlayerMapsForLogout(player);
+        Probending.get().getInviteManager().handleQuit(player);
     }
 
     public PBPlayer getPBPlayer(UUID uuid) {
