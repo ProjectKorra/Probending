@@ -37,12 +37,13 @@ public class Probending extends JavaPlugin {
 		cManager = new FieldCreationManager(pHandler);
 		this.getServer().getPluginManager().registerEvents(cManager, this);
 		new Commands(pHandler, cManager);
-		tManager = new PBTeamManager(new DBProbendingTeam(this));
-		iManager = new InviteManager(this);
+		DBProbendingTeam teamDb = new DBProbendingTeam(this);
+		tManager = new PBTeamManager(teamDb);
+		iManager = new InviteManager(this, teamDb);
 	}
 
 	public void onDisable() {
-		iManager.saveToFile();
+		DatabaseHandler.getDatabase().close();
 	}
 
 	public static Probending get() {
