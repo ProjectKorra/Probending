@@ -132,6 +132,7 @@ public class ProbendingHandler implements Listener {
             }
         });
         Probending.get().getTeamManager().updatePlayerMapsForLogin(player);
+        Probending.get().getInviteManager().handleJoin(player);
     }
 
     @EventHandler
@@ -142,5 +143,6 @@ public class ProbendingHandler implements Listener {
         }
         players.remove(player.getUniqueId());
         Probending.get().getTeamManager().updatePlayerMapsForLogout(player);
+        Probending.get().getInviteManager().handleQuit(player);
     }
 }
