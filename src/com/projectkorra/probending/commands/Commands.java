@@ -37,11 +37,13 @@ public class Commands {
 		new InfoCommand();
 		new QueueJoinCommand();
 		new QueueLeaveCommand();
+		new TeamCommand();
 		
 		help = Arrays.asList("&6/probending queue {1/3} &eQueue up!", 
 				"&6/probending leave &eLeave the queue!", 
 				"&6/probending info [player] &eShow the stats of a player!", 
-				"&6/probending admin &eShows administrator commands!");
+				"&6/probending admin &eShows administrator commands!",
+				"&6/probending team &eTeam Command!");
 		
 		CommandExecutor exe = new CommandExecutor() {
 

@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.projectkorra.probending.commands.Commands;
 import com.projectkorra.probending.managers.FieldCreationManager;
+import com.projectkorra.probending.managers.InviteManager;
 import com.projectkorra.probending.managers.PBTeamManager;
 import com.projectkorra.probending.managers.ProbendingHandler;
 import com.projectkorra.probending.storage.DBProbendingTeam;
@@ -20,6 +21,7 @@ public class Probending extends JavaPlugin {
 	private ProbendingHandler pHandler;
 	private FieldCreationManager cManager;
 	private PBTeamManager tManager;
+	private InviteManager iManager;
 
 	public void onEnable() {
 		plugin = this;
@@ -36,9 +38,11 @@ public class Probending extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(cManager, this);
 		new Commands(pHandler, cManager);
 		tManager = new PBTeamManager(new DBProbendingTeam(this));
+		iManager = new InviteManager(this);
 	}
 
 	public void onDisable() {
+		iManager.saveToFile();
 	}
 
 	public static Probending get() {
@@ -55,5 +59,9 @@ public class Probending extends JavaPlugin {
 
 	public PBTeamManager getTeamManager() {
 		return tManager;
+	}
+	
+	public InviteManager getInviteManager() {
+		return iManager;
 	}
 }

@@ -5,9 +5,9 @@
  */
 package com.projectkorra.probending.game.scoreboard;
 
-import com.projectkorra.probending.objects.PBPlayer;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -17,6 +17,10 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+
+import com.projectkorra.probending.Probending;
+import com.projectkorra.probending.objects.PBPlayer;
+import com.projectkorra.probending.objects.PBTeam;
 
 /**
  *
@@ -83,16 +87,17 @@ public class PBScoreboard {
         Objective objectiveSidebar = newBoard.registerNewObjective("sidebar", "dummy");
         objectiveSidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
         objectiveSidebar.setDisplayName("Probending Scoreboard");
-        objectiveSidebar.getScore(ChatColor.BOLD + Bukkit.getOfflinePlayer(pbPlayer.getUUID()).getName() + " profile:").setScore(10);
+        objectiveSidebar.getScore(ChatColor.BOLD + Bukkit.getOfflinePlayer(pbPlayer.getUUID()).getName() + "'s profile:").setScore(10);
         objectiveSidebar.getScore(ChatColor.YELLOW + "Wins1: " + ChatColor.AQUA + pbPlayer.getIndividualWins(true)).setScore(9);
         objectiveSidebar.getScore(ChatColor.YELLOW + "Wins3: " + ChatColor.AQUA + pbPlayer.getIndividualWins(false)).setScore(8);
         objectiveSidebar.getScore(ChatColor.YELLOW + "Games: " + ChatColor.AQUA + pbPlayer.getGamesPlayed()).setScore(7);
         objectiveSidebar.getScore(ChatColor.YELLOW + "Rating: " + ChatColor.AQUA + "N/A").setScore(6);
         objectiveSidebar.getScore(ChatColor.BOLD + "Team profile:").setScore(5);
-        objectiveSidebar.getScore(ChatColor.YELLOW + "Element: " + ChatColor.AQUA + "null").setScore(4);
-        objectiveSidebar.getScore(ChatColor.YELLOW + "Team: " + ChatColor.AQUA + "null").setScore(3);
-        objectiveSidebar.getScore(ChatColor.YELLOW + "Wins: " + ChatColor.AQUA + "0").setScore(2);
-        objectiveSidebar.getScore(ChatColor.YELLOW + "TGames: " + ChatColor.AQUA + "0").setScore(1);
+        PBTeam team = Probending.get().getTeamManager().getTeamFromPlayer(player);
+        objectiveSidebar.getScore(ChatColor.YELLOW + "Role: " + ChatColor.AQUA + (team != null ? team.getMembers().get(player.getUniqueId()).getDisplay() : "No team")).setScore(4);
+        objectiveSidebar.getScore(ChatColor.YELLOW + "Name: " + ChatColor.AQUA + (team != null ? team.getTeamName() : "No team")).setScore(3);
+        objectiveSidebar.getScore(ChatColor.YELLOW + "Wins: " + ChatColor.AQUA + (team != null ? team.getWins() : "No team")).setScore(2);
+        objectiveSidebar.getScore(ChatColor.YELLOW + "TGames: " + ChatColor.AQUA + (team != null ? team.getGamesPlayed() : "No team")).setScore(1);
         new BukkitRunnable() {
 
             @Override
@@ -102,6 +107,6 @@ public class PBScoreboard {
                     player.setScoreboard(oldBoard);
                 }
             }
-        }.runTaskLater(plugin, 100l);
+        }.runTaskLater(plugin, 500l);
     }
 }
