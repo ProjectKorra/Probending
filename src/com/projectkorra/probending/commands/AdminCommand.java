@@ -7,23 +7,21 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.projectkorra.probending.PBMessenger;
-import com.projectkorra.probending.managers.FieldCreationManager;
-import com.projectkorra.probending.managers.ProbendingHandler;
 
-public class AdminCommand extends PBCommand{
+public class AdminCommand extends PBCommand {
 
-	public AdminCommand() {
-		super("admin", "Shows the various admin commands!", "/probending admin", new String[] {"admin", "a"});
-	}
+    public AdminCommand() {
+        super("admin", "Shows the various admin commands!", "/probending admin", new String[]{"admin", "a"});
+    }
 
-	@Override
-	public void execute(CommandSender sender, List<String> args, ProbendingHandler pHandler, FieldCreationManager cManager) {
-		if (!(sender instanceof Player)) {
-			return;
-		}
-		
-		Player player = (Player) sender;
-		if (args.size() == 1) {
+    @Override
+    public void execute(CommandSender sender, List<String> args) {
+        if (!(sender instanceof Player)) {
+            return;
+        }
+
+        Player player = (Player) sender;
+        if (args.size() == 1) {
             switch (args.get(0).toLowerCase()) {
                 case "2":
                     PBMessenger.sendMessage(player, ChatColor.GOLD + "/probending admin setSpawn [FIELD] [team] [point] " + ChatColor.YELLOW + "Set spawn!", false);
@@ -42,14 +40,14 @@ public class AdminCommand extends PBCommand{
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    cManager.createField(player);
+                    Commands.getcManager().createField(player);
                     return;
                 case "list":
                     if (!player.hasPermission("probending.command.arena.list")) {
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    cManager.getFields(player);
+                    Commands.getcManager().getFields(player);
                     return;
             }
         } else if (args.size() == 2) {
@@ -59,14 +57,14 @@ public class AdminCommand extends PBCommand{
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    cManager.getFieldInfo(player, args.get(1));
+                    Commands.getcManager().getFieldInfo(player, args.get(1));
                     return;
                 case "delete":
                     if (!player.hasPermission("probending.command.arena.delete")) {
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    cManager.deleteField(player, args.get(1));
+                    Commands.getcManager().deleteField(player, args.get(1));
                     return;
             }
         } else if (args.size() == 3) {
@@ -76,7 +74,7 @@ public class AdminCommand extends PBCommand{
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    cManager.setKnockOffName(player, args.get(1), args.get(2));
+                    Commands.getcManager().setKnockOffName(player, args.get(1), args.get(2));
                     return;
             }
         } else if (args.size() == 4) {
@@ -86,14 +84,14 @@ public class AdminCommand extends PBCommand{
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    cManager.setFieldSpawn(player, args.get(1), args.get(2), args.get(3));
+                    Commands.getcManager().setFieldSpawn(player, args.get(1), args.get(2), args.get(3));
                     return;
                 case "setfieldspawn":
                     if (!player.hasPermission("probending.command.arena.setfieldspawn")) {
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    cManager.setFieldRegionSpawn(player, args.get(1), args.get(2), args.get(3));
+                    Commands.getcManager().setFieldRegionSpawn(player, args.get(1), args.get(2), args.get(3));
                     return;
 
             }
@@ -104,7 +102,7 @@ public class AdminCommand extends PBCommand{
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    cManager.setFieldRegionName(player, args.get(1), args.get(2), args.get(3), args.get(4));
+                    Commands.getcManager().setFieldRegionName(player, args.get(1), args.get(2), args.get(3), args.get(4));
                     return;
             }
         }
@@ -113,5 +111,5 @@ public class AdminCommand extends PBCommand{
         PBMessenger.sendMessage(player, ChatColor.GOLD + "/probending admin info [FIELD] " + ChatColor.YELLOW + "Get info about a field!", false);
         PBMessenger.sendMessage(player, ChatColor.GOLD + "/probending admin delete [FIELD] " + ChatColor.YELLOW + "Delete a field!", false);
         PBMessenger.sendMessage(player, ChatColor.GOLD + "/probending admin 2 " + ChatColor.YELLOW + "Page 2 of admin commands!", false);
-	}
+    }
 }

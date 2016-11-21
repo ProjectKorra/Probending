@@ -13,13 +13,14 @@ import com.projectkorra.probending.enums.WinningType;
 import com.projectkorra.probending.game.field.FieldManager;
 import com.projectkorra.probending.game.round.Round;
 import com.projectkorra.probending.libraries.Title;
+import com.projectkorra.probending.managers.PBQueueManager;
 import com.projectkorra.probending.managers.ProbendingHandler;
 import com.projectkorra.probending.objects.ProbendingField;
 
 public class Game {
 
     private JavaPlugin plugin;
-    private ProbendingHandler handler;
+    private PBQueueManager handler;
 
     private ProbendingField field;
     private FieldManager fieldManager;
@@ -44,7 +45,7 @@ public class Game {
     private GameType type;
     private GamePlayerMode mode;
 
-    public Game(JavaPlugin plugin, ProbendingHandler handler, GameType type, GamePlayerMode mode,
+    public Game(JavaPlugin plugin, PBQueueManager handler, GameType type, GamePlayerMode mode,
             ProbendingField field, Set<Player> team1, Set<Player> team2) {
         this.plugin = plugin;
         this.handler = handler;
@@ -122,6 +123,7 @@ public class Game {
     }
 
     private void manageEnd(WinningType winningTeam) {
+        boolean ended = false;
         round = null;
         if (winningTeam.equals(WinningType.TEAM1)) {
             team1Score++;
@@ -142,16 +144,27 @@ public class Game {
             title.send(p);
         }
         if (curRound > rounds) {
-            WinningType winners = WinningType.DRAW;
-            if (team1Score > team2Score) {
-                winners = WinningType.TEAM1;
-            } else if (team2Score > team1Score) {
-                winners = WinningType.TEAM2;
-            }
-            handler.gameEnded(this, winners);
-            return;
+            ended = true;
         }
-        startNewRound();
+        if (team1Score > Math.ceil(rounds / 2) || team2Score > Math.ceil(rounds / 2)) {
+            ended = true;
+        }
+        if (ended) {
+            endGame();
+        } else {
+            startNewRound();
+        }
+    }
+
+    private void endGame() {
+        WinningType winners = WinningType.DRAW;
+        if (team1Score > team2Score) {
+            winners = WinningType.TEAM1;
+        } else if (team2Score > team1Score) {
+            winners = WinningType.TEAM2;
+        }
+        handler.gameEnded(this, winners);
+        return;
     }
 
     protected boolean isPlayerAProbender(Player player) {

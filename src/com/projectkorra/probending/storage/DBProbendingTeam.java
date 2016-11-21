@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.collect.Lists;
 import com.projectkorra.probending.libraries.database.Callback;
+import com.projectkorra.probending.managers.InviteManager.SQLInvitation;
 import com.projectkorra.probending.objects.PBTeam;
 import com.projectkorra.probending.objects.PBTeam.TeamMemberRole;
 
@@ -38,6 +39,14 @@ public class DBProbendingTeam extends DBInterpreter {
                     }
 
                     DatabaseHandler.getDatabase().executeUpdate(query);
+                }
+                if (!DatabaseHandler.getDatabase().tableExists("pb_team_invites")) {
+                	String query = "CREATE TABLE pb_team_invites (id INT NOT NULL AUTO_INCREMENT, teamId INT NOT NULL, uuid VARCHAR(100) NOT NULL, role VARCHAR(50) NOT NULL, PRIMARY KEY (id), UNIQUE INDEX inviteIndex (teamId, uuid));";
+                	if (!DatabaseHandler.isMySQL()) {
+                		query = "CREATE TABLE pb_team_invites (id INTEGER PRIMARY KEY, teamId INTEGER NOT NULL, uuid TEXT NOT NULL, role TEXT NOT NULL);CREATE UNIQUE INDEX inviteIndex ON pb_team_invites (teamId, uuid);";
+                	}
+                	
+                	DatabaseHandler.getDatabase().executeUpdate(query);
                 }
             }
         });
@@ -98,38 +107,56 @@ public class DBProbendingTeam extends DBInterpreter {
         });
     }
 
-    public void updatePBTeam(final PBTeam team) {
+    public void updatePBTeam(final PBTeam team, final Runnable after) {
         DatabaseHandler.getDatabase().executeUpdate("UPDATE pb_teams SET name=?, leader=?, wins=?, games=?, rating=? WHERE id=?;", team.getTeamName(), team.getLeader().toString(), team.getWins(), team.getGamesPlayed(), team.getRating(), team.getID());
+        if (after != null)
+        	after.run();
     }
 
-    public void updatePBTeamAsync(final PBTeam team) {
+    public void updatePBTeamAsync(final PBTeam team, final Runnable after) {
         runAsync(new Runnable() {
             public void run() {
-                updatePBTeam(team);
+                updatePBTeam(team, after != null ? new Runnable() {
+                	public void run() {
+                		runSync(after);
+                	}
+                } : null);
             }
         });
     }
 
-    public void joinTeam(final UUID uuid, final TeamMemberRole role, final PBTeam team) {
+    public void joinTeam(final UUID uuid, final TeamMemberRole role, final PBTeam team, final Runnable after) {
         DatabaseHandler.getDatabase().executeUpdate("INSERT INTO pb_team_members (uuid, teamId, role) VALUES (?, ?, ?) ON DUPLICATE KEY SET teamId=VALUES(teamId), role=VALUES(role);", uuid.toString(), team.getID(), role.toString());
+        if (after != null)
+        	after.run();
     }
 
-    public void joinTeamAsync(final UUID uuid, final TeamMemberRole role, final PBTeam team) {
+    public void joinTeamAsync(final UUID uuid, final TeamMemberRole role, final PBTeam team, final Runnable after) {
         runAsync(new Runnable() {
             public void run() {
-                joinTeam(uuid, role, team);
+                joinTeam(uuid, role, team, after != null ? new Runnable() {
+                	public void run() {
+                		runSync(after);
+                	}
+                } : null);
             }
         });
     }
 
-    public void leaveTeam(final UUID uuid, final PBTeam team) {
+    public void leaveTeam(final UUID uuid, final PBTeam team, final Runnable after) {
         DatabaseHandler.getDatabase().executeUpdate("DELETE FROM pb_team_members WHERE uuid=? AND teamId=?;", uuid.toString(), team.getID());
+        if (after != null)
+        	after.run();
     }
 
-    public void leaveTeamAsync(final UUID uuid, final PBTeam team) {
+    public void leaveTeamAsync(final UUID uuid, final PBTeam team, final Runnable after) {
         runAsync(new Runnable() {
             public void run() {
-                leaveTeam(uuid, team);
+                leaveTeam(uuid, team, after != null ? new Runnable() {
+                	public void run() {
+                		runSync(after);
+                	}
+                } : null);
             }
         });
     }
@@ -141,10 +168,13 @@ public class DBProbendingTeam extends DBInterpreter {
                 try {
                     if (rs.next()) {
                         final int id = rs.getInt(1);
-                        joinTeam(creator, creatorRole, new PBTeam(id, "", creator, new HashMap<UUID, TeamMemberRole>(), 0, 0, 0));
-                        Map<UUID, TeamMemberRole> members = new HashMap<>();
-                        members.put(creator, creatorRole);
-                        callback.run(new PBTeam(id, teamName, creator, members, 0, 0, INITIAL_RATING));
+                        joinTeam(creator, creatorRole, new PBTeam(id, "", creator, new HashMap<UUID, TeamMemberRole>(), 0, 0, 0), new Runnable() {
+                        	public void run() {
+                        		Map<UUID, TeamMemberRole> members = new HashMap<>();
+                                members.put(creator, creatorRole);
+                                callback.run(new PBTeam(id, teamName, creator, members, 0, 0, INITIAL_RATING));
+                        	}
+                        });
                     } else {
                         callback.run(null);
                     }
@@ -172,15 +202,22 @@ public class DBProbendingTeam extends DBInterpreter {
         });
     }
 
-    public void deleteTeam(PBTeam team) {
+    public void deleteTeam(final PBTeam team, final Runnable after) {
         DatabaseHandler.getDatabase().executeUpdate("DELETE FROM pb_teams WHERE id=?;", team.getID());
         DatabaseHandler.getDatabase().executeUpdate("DELETE FROM pb_team_members WHERE teamId=?;", team.getID());
+        DatabaseHandler.getDatabase().executeUpdate("DELETE FROM pb_team_invites WHERE teamId=?;", team.getID());
+        if (after != null)
+        	after.run();
     }
 
-    public void deleteTeamAsync(final PBTeam team) {
+    public void deleteTeamAsync(final PBTeam team, final Runnable after) {
         runAsync(new Runnable() {
             public void run() {
-                deleteTeam(team);
+                deleteTeam(team, after != null ? new Runnable() {
+                	public void run() {
+                		runSync(after);
+                	}
+                } : null);
             }
         });
     }
@@ -218,6 +255,74 @@ public class DBProbendingTeam extends DBInterpreter {
                         });
                     }
                 });
+            }
+        });
+    }
+    
+    public void getInvitationsByUUID(final UUID uuid, final Callback<List<SQLInvitation>> callback) {
+    	DatabaseHandler.getDatabase().executeQuery("", new Callback<ResultSet>() {
+    		public void run(ResultSet rs) {
+    			try {
+					while (rs.next()) {
+						
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+    		}
+    	}, uuid.toString());
+    }
+    
+    public void getInvitationsByUUIDAsync(final UUID uuid, final Callback<List<SQLInvitation>> callback) {
+        runAsync(new Runnable() {
+            public void run() {
+                getInvitationsByUUID(uuid, new Callback<List<SQLInvitation>>() {
+                    public void run(List<SQLInvitation> list) {
+                        final List<SQLInvitation> inviteList = list;
+                        runSync(new Runnable() {
+                            public void run() {
+                                callback.run(inviteList);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+    
+    public void addInvitation(final UUID uuid, final PBTeam team, final String role, Runnable after) {
+    	DatabaseHandler.getDatabase().executeUpdate("", uuid.toString(), team.getID(), role);
+    	if (after != null) {
+    		after.run();
+    	}
+    }
+    
+    public void addInvitationAsync(final UUID uuid, final PBTeam team, final String role, final Runnable after) {
+        runAsync(new Runnable() {
+            public void run() {
+                addInvitation(uuid, team, role, after != null ? new Runnable() {
+                	public void run() {
+                		runSync(after);
+                	}
+                } : null);
+            }
+        });
+    }
+    
+    public void removeInvitation(final UUID uuid, final PBTeam team, Runnable after) {
+    	DatabaseHandler.getDatabase().executeUpdate("", uuid.toString(), team.getID());
+    	if (after != null)
+    		after.run();
+    }
+    
+    public void removeInvitationAsync(final UUID uuid, final PBTeam team, final Runnable after) {
+        runAsync(new Runnable() {
+            public void run() {
+                removeInvitation(uuid, team, after != null ? new Runnable() {
+                	public void run() {
+                		runSync(after);
+                	}
+                } : null);
             }
         });
     }

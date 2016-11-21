@@ -2,19 +2,17 @@ package com.projectkorra.probending.commands;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.projectkorra.probending.Probending;
-import com.projectkorra.probending.managers.FieldCreationManager;
-import com.projectkorra.probending.managers.ProbendingHandler;
+import com.projectkorra.probending.libraries.database.Callback;
 import com.projectkorra.probending.objects.PBTeam;
 import com.projectkorra.probending.objects.PBTeam.TeamMemberRole;
 import com.projectkorra.projectkorra.BendingPlayer;
-import com.projectkorra.projectkorra.Element;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -25,7 +23,7 @@ public class TeamCommand extends PBCommand{
 	}
 
 	@Override
-	public void execute(CommandSender sender, List<String> args, ProbendingHandler pHandler, FieldCreationManager cManager) {
+	public void execute(CommandSender sender, List<String> args) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage("Only players can use this command!");
 		}
@@ -61,21 +59,10 @@ public class TeamCommand extends PBCommand{
 	}
 
 	public void createTeam(Player leader, String name, String element/*, int r, int g, int b*/) {
-		int id = new Random().nextInt(10000);
 		PBTeam team = Probending.get().getTeamManager().getTeamFromPlayer(leader);
 		if (team != null) {
 			leader.sendMessage(ChatColor.RED + "You already have a team!");
 			return;
-		}
-		
-		team = Probending.get().getTeamManager().getTeamFromID(id);
-		while (team != null) {
-			if (id == 9999) {
-				id = 0;
-			} else {
-				id += 1;
-			}
-			team = Probending.get().getTeamManager().getTeamFromID(id);
 		}
 		
 		team = Probending.get().getTeamManager().getTeamFromName(name);
@@ -90,17 +77,30 @@ public class TeamCommand extends PBCommand{
 			return;
 		}
 		
-		if (Probending.get().getTeamManager().createNewTeam(leader, name, id, role/*, new Integer[] {r, g, b}*/)) {
-			leader.sendMessage(ChatColor.GREEN + "Team successfully created!");
-		} else {
-			leader.sendMessage(ChatColor.RED + "Error creating team!");
-		}
+		final UUID leaderUUID = leader.getUniqueId();
+		Probending.get().getTeamManager().createNewTeam(leader, name, role, new Callback<Boolean>() {
+			public void run(Boolean success) {
+				if (Bukkit.getPlayer(leaderUUID) == null) {
+					return;
+				}
+				if (success) {
+					Bukkit.getPlayer(leaderUUID).sendMessage(ChatColor.GREEN + "Team successfully created!");
+				} else {
+					Bukkit.getPlayer(leaderUUID).sendMessage(ChatColor.RED + "Error creating team!");
+				}
+			}
+		});
 	}
 	
 	public void invitePlayer(Player leader, String targetName, String element) {
 		PBTeam team = Probending.get().getTeamManager().getTeamFromPlayer(leader);
 		if (team == null) {
 			leader.sendMessage(ChatColor.RED + "You do not have a team!");
+			return;
+		}
+		if (team.getLeader().toString().equals(leader.getUniqueId().toString())) {
+			leader.sendMessage(ChatColor.RED + "You are not the team leader!");
+			return;
 		}
 		
 		Player target = Bukkit.getPlayer(targetName);
@@ -114,7 +114,6 @@ public class TeamCommand extends PBCommand{
 			return;
 		}
 		
-		Element e = Element.fromString(element);
 		TeamMemberRole role = TeamMemberRole.parseRole(element);
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(target);
 		
@@ -123,7 +122,7 @@ public class TeamCommand extends PBCommand{
 			return;
 		}
 		
-		if (!bPlayer.hasElement(e)) {
+		if (!bPlayer.hasElement(role.getElement())) {
 			leader.sendMessage(ChatColor.RED + "Player does not have requested element!");
 			return;
 		}
@@ -133,6 +132,7 @@ public class TeamCommand extends PBCommand{
 			return;
 		}
 		
+		leader.sendMessage(ChatColor.GREEN + "Sending them an invite!");
 		Probending.get().getInviteManager().sendInvitation(target, team.getTeamName(), role.toString());
 	}
 }
