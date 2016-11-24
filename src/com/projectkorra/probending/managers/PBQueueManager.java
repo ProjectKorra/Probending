@@ -5,6 +5,19 @@
  */
 package com.projectkorra.probending.managers;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import com.projectkorra.probending.PBMessenger;
 import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.enums.GamePlayerMode;
@@ -16,17 +29,6 @@ import com.projectkorra.probending.game.Game;
 import com.projectkorra.probending.game.TeamGame;
 import com.projectkorra.probending.objects.PBPlayer;
 import com.projectkorra.probending.objects.PBTeam;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  *

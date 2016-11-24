@@ -5,15 +5,17 @@
  */
 package com.projectkorra.probending.managers;
 
-import com.projectkorra.probending.PBMessenger;
-import com.projectkorra.probending.objects.ProbendingField;
 import java.util.Map;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import com.projectkorra.probending.PBMessenger;
+import com.projectkorra.probending.objects.ProbendingField;
 
 /**
  *

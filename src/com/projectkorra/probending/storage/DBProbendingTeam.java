@@ -11,7 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.collect.Lists;
 import com.projectkorra.probending.libraries.database.Callback;
-import com.projectkorra.probending.managers.InviteManager.SQLInvitation;
+import com.projectkorra.probending.managers.InviteManager.Invitation;
 import com.projectkorra.probending.objects.PBTeam;
 import com.projectkorra.probending.objects.PBTeam.TeamMemberRole;
 
@@ -259,7 +259,7 @@ public class DBProbendingTeam extends DBInterpreter {
         });
     }
     
-    public void getInvitationsByUUID(final UUID uuid, final Callback<List<SQLInvitation>> callback) {
+    public void getInvitationsByUUID(final UUID uuid, final Callback<List<Invitation>> callback) {
     	DatabaseHandler.getDatabase().executeQuery("", new Callback<ResultSet>() {
     		public void run(ResultSet rs) {
     			try {
@@ -273,12 +273,12 @@ public class DBProbendingTeam extends DBInterpreter {
     	}, uuid.toString());
     }
     
-    public void getInvitationsByUUIDAsync(final UUID uuid, final Callback<List<SQLInvitation>> callback) {
+    public void getInvitationsByUUIDAsync(final UUID uuid, final Callback<List<Invitation>> callback) {
         runAsync(new Runnable() {
             public void run() {
-                getInvitationsByUUID(uuid, new Callback<List<SQLInvitation>>() {
-                    public void run(List<SQLInvitation> list) {
-                        final List<SQLInvitation> inviteList = list;
+                getInvitationsByUUID(uuid, new Callback<List<Invitation>>() {
+                    public void run(List<Invitation> list) {
+                        final List<Invitation> inviteList = list;
                         runSync(new Runnable() {
                             public void run() {
                                 callback.run(inviteList);

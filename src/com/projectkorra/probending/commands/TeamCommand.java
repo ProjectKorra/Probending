@@ -9,7 +9,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.projectkorra.probending.Probending;
+import com.projectkorra.probending.enums.TeamColor;
 import com.projectkorra.probending.libraries.database.Callback;
+import com.projectkorra.probending.managers.InviteManager.Invitation;
 import com.projectkorra.probending.objects.PBTeam;
 import com.projectkorra.probending.objects.PBTeam.TeamMemberRole;
 import com.projectkorra.projectkorra.BendingPlayer;
@@ -42,23 +44,85 @@ public class TeamCommand extends PBCommand{
 		
 		switch (args.get(0).toLowerCase()) {
 			case "create":
-				if (args.size() != 3) {
-					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: " + getProperUse());
+				if (args.size() <= 3 || args.size() >= 8) {
+					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team create [color1] {color2} {color3} {color4}");
 					return;
 				}
-				createTeam(player, args.get(1), args.get(2)/*, Integer.parseInt(args.get(3)), Integer.parseInt(args.get(4)), Integer.parseInt(args.get(5))*/);
+				TeamColor[] colors = new TeamColor[] {};
+				for (int i = 4; i <= 7; i++) {
+					if (args.size() >= i) {
+						colors[(i-4)] = (TeamColor.parseColor(args.get(i)) == null ? TeamColor.WHITE : TeamColor.parseColor(args.get(i)));
+					}
+				}
+				
+				for (int i = 1; i < 4; i++) {
+					if (colors[i] == null) {
+						colors[i] = colors[0];
+					}
+				}
+				
+				for (PBTeam team : Probending.get().getTeamManager().getTeamList()) {
+					if (team.getColors() == colors) {
+						player.sendMessage(ChatColor.RED + "Those colors are taken! Try a different combination!");
+						return;
+					}
+				}
+				
+				createTeam(player, args.get(1), args.get(2), colors[0], colors[1], colors[2], colors[3]);
 				return;
 			case "invite":
 				if (args.size() != 3) {
-					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: " + getProperUse());
+					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team invite [player] [element]");
 					return;
 				}
 				invitePlayer(player, args.get(1), args.get(2));
 				return;
+			case "join":
+				if (args.size() != 2) {
+					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team join [teamName]");
+					return;
+				}
+				attemptJoinTeam(player, args.get(1));
+				return;
+			case "leave":
+				if (args.size() != 1) {
+					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team leave");
+					return;
+				}
+				attemptLeaveTeam(player);
+				return;
+			case "kick":
+				if (args.size() != 2) {
+					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team kick [player]");
+					return;
+				}
+				attemptKickPlayer(player, args.get(1));
+				return;
+			case "setname":
+				if (args.size() != 2) {
+					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team setname [name]");
+					return;
+				}
+				changeTeamName(player, args.get(1));
+				return;
+			case "setcolor":
+				if (args.size() != 3) {
+					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team setcolor [#] [color]");
+					return;
+				}
+				changeTeamColor(player, args.get(1), args.get(2));
+				return;
+			case "setmemberrole":
+				if (args.size() != 2) {
+					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team setmemberrole [player] [element]");
+					return;
+				}
+				changeMemberRole(player, args.get(1), args.get(2));
+				return;
 		}
 	}
 
-	public void createTeam(Player leader, String name, String element/*, int r, int g, int b*/) {
+	public void createTeam(Player leader, String name, String element, TeamColor helmet, TeamColor chest, TeamColor leggings, TeamColor boots) {
 		PBTeam team = Probending.get().getTeamManager().getTeamFromPlayer(leader);
 		if (team != null) {
 			leader.sendMessage(ChatColor.RED + "You already have a team!");
@@ -73,10 +137,14 @@ public class TeamCommand extends PBCommand{
 		
 		TeamMemberRole role = TeamMemberRole.parseRole(element);
 		if (role == null || !role.isEnabled()) {
-			leader.sendMessage(ChatColor.RED + "Unknown team role, try one of these:\n- Earth\n- Fire\n-Water");
+			leader.sendMessage(ChatColor.RED + "Unknown team role, try one of these:");
+			for (TeamMemberRole role2 : TeamMemberRole.getEnabledRoles()) {
+				leader.sendMessage("- " + role2.getDisplay());
+			}
 			return;
 		}
 		
+		leader.sendMessage(ChatColor.GREEN + "Finalizing team creation, do not log off!");
 		final UUID leaderUUID = leader.getUniqueId();
 		Probending.get().getTeamManager().createNewTeam(leader, name, role, new Callback<Boolean>() {
 			public void run(Boolean success) {
@@ -132,7 +200,198 @@ public class TeamCommand extends PBCommand{
 			return;
 		}
 		
-		leader.sendMessage(ChatColor.GREEN + "Sending them an invite!");
-		Probending.get().getInviteManager().sendInvitation(target, team.getTeamName(), role.toString());
+		leader.sendMessage(ChatColor.GREEN + "Invitation sent!");
+		Probending.get().getInviteManager().sendInvitation(target, team.getID(), role.toString());
+	}
+	
+	public void attemptJoinTeam(Player joinee, final String teamName) {
+		PBTeam team = Probending.get().getTeamManager().getTeamFromPlayer(joinee);
+		if (team != null) {
+			joinee.sendMessage(ChatColor.RED + "You must leave your current team before joining another." + ChatColor.GOLD + "/pb team leave");
+			return;
+		}
+		
+		team = Probending.get().getTeamManager().getTeamFromName(teamName);
+		if (team == null) {
+			joinee.sendMessage(ChatColor.RED + "No team with that name was found!");
+			Probending.get().getInviteManager().notifyPlayer(joinee, true);
+			return;
+		}
+		
+		if (!Probending.get().getInviteManager().hasInvitations(joinee)) {
+			joinee.sendMessage(ChatColor.RED + "You have no invitations!");
+			return;
+		}
+		
+		Invitation found = null;
+		List<Invitation> invites = Probending.get().getInviteManager().getInvitations(joinee);
+		for (Invitation invite : invites) {
+			if (invite.getTeamID() == team.getID()) {
+				found = invite;
+				break;
+			}
+		}
+		
+		if (found == null) {
+			joinee.sendMessage(ChatColor.RED + "You do not have an invitation to join that team!");
+			return;
+		}
+		
+		TeamMemberRole role = TeamMemberRole.parseRole(found.getRole());
+		if (role == null) {
+			joinee.sendMessage(ChatColor.RED + "The requested team role is not known!");
+			return;
+		}
+		
+		if (team.getMembers().values().contains(role)) {
+			joinee.sendMessage(ChatColor.RED + "That team role has already been filled. Voiding your invitation.");
+			Probending.get().getInviteManager().removeInvitation(joinee, found);
+			return;
+		}
+		
+		joinee.sendMessage(ChatColor.GREEN + "Finalizing team join, do not log off!");
+		final UUID joineeUUID = joinee.getUniqueId();
+		team.addPlayer(joinee, role, new Callback<Boolean>() {
+
+			@Override
+			public void run(Boolean success) {
+				if (Bukkit.getPlayer(joineeUUID) == null) {
+					return;
+				}
+				
+				if (success) {
+					Bukkit.getPlayer(joineeUUID).sendMessage(ChatColor.GREEN + "Successfully joined " + teamName);
+				} else {
+					Bukkit.getPlayer(joineeUUID).sendMessage(ChatColor.RED + "Unexpected error joining team!");
+				}
+			}
+			
+		});
+	}
+	
+	public void attemptLeaveTeam(Player leaver) {
+		PBTeam team = Probending.get().getTeamManager().getTeamFromPlayer(leaver);
+		if (team == null) {
+			leaver.sendMessage(ChatColor.RED + "You do not belong to any team!");
+			return;
+		}
+		
+		leaver.sendMessage(ChatColor.GREEN + "Finalizing team leave, do not log off!");
+		final PBTeam TEAM = team;
+		final UUID uuid = leaver.getUniqueId();
+		team.removePlayer(leaver, new Callback<Boolean>() {
+
+			@Override
+			public void run(Boolean success) {
+				if (Bukkit.getPlayer(uuid) == null) {
+					return;
+				}
+				
+				if (success) {
+					Bukkit.getPlayer(uuid).sendMessage(ChatColor.GREEN + "Successfully left " + TEAM.getTeamName());
+				} else {
+					Bukkit.getPlayer(uuid).sendMessage(ChatColor.RED + "Unexpected error leaving team!");
+				}
+			}
+			
+		});
+	}
+	
+	public void attemptKickPlayer(Player kicker, final String targetName) {
+		Player target = Bukkit.getPlayer(targetName);
+		if (target == null) {
+			kicker.sendMessage(ChatColor.RED + "Player not found!");
+			return;
+		}
+		
+		final PBTeam team = Probending.get().getTeamManager().getTeamFromPlayer(kicker);
+		if (team.getLeader() != kicker.getUniqueId()) {
+			kicker.sendMessage(ChatColor.RED + "Only the leader can kick people!");
+			return;
+		}
+		
+		if (!team.getMembers().containsKey(target.getUniqueId())) {
+			kicker.sendMessage(ChatColor.RED + "Player is not on your team!");
+			return;
+		}
+		
+		kicker.sendMessage(ChatColor.GREEN + "Finalizing player kick, do not log off!");
+		final UUID uuid = kicker.getUniqueId();
+		team.kickPlayer(target, new Callback<Boolean>() {
+
+			@Override
+			public void run(Boolean success) {
+				if (Bukkit.getPlayer(uuid) == null) {
+					return;
+				}
+				
+				if (success) {
+					Bukkit.getPlayer(uuid).sendMessage(ChatColor.GREEN + "Successfully kicked " + targetName);
+				} else {
+					Bukkit.getPlayer(uuid).sendMessage(ChatColor.RED + "Unexpected error kicking player!");
+				}
+			}
+			
+		});
+	}
+	
+	public void changeTeamName(Player player, String name) {
+		PBTeam team = Probending.get().getTeamManager().getTeamFromPlayer(player);
+		if (team == null) {
+			player.sendMessage(ChatColor.RED + "You do not lead any team!");
+			return;
+		}
+		
+		if (team.getLeader() != player.getUniqueId()) {
+			player.sendMessage(ChatColor.RED + "You are not the leader of the team!");
+			return;
+		}
+		
+		PBTeam check = Probending.get().getTeamManager().getTeamFromName(name);
+		if (check != null) {
+			player.sendMessage(ChatColor.RED + "That name is already taken");
+			return;
+		}
+		
+		team.setName(name, new Callback<Boolean>() {
+
+			@Override
+			public void run(Boolean success) {
+				//Do stuff here
+			}
+			
+		});
+	}
+	
+	public void changeTeamColor(Player player, String s, String colorName) {
+		PBTeam team = Probending.get().getTeamManager().getTeamFromPlayer(player);
+		if (team == null) {
+			player.sendMessage(ChatColor.RED + "You do not lead any team!");
+			return;
+		}
+		
+		if (team.getLeader() != player.getUniqueId()) {
+			player.sendMessage(ChatColor.RED + "You are not the leader of the team!");
+			return;
+		}
+		
+		//Find a way to check if the new combination is already used
+		//team.changeColor
+	}
+	
+	public void changeMemberRole(Player player, String targetName, String roleName) {
+		PBTeam team = Probending.get().getTeamManager().getTeamFromPlayer(player);
+		if (team == null) {
+			player.sendMessage(ChatColor.RED + "You do not lead any team!");
+			return;
+		}
+		
+		if (team.getLeader() != player.getUniqueId()) {
+			player.sendMessage(ChatColor.RED + "You are not the leader of the team!");
+			return;
+		}
+		
+		//Check if role is taken, if player is on team, and if player == null.
+		//team.setMemberRole
 	}
 }
