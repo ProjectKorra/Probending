@@ -8,9 +8,12 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 
 import com.projectkorra.probending.Probending;
+import com.projectkorra.probending.enums.TeamColor;
 import com.projectkorra.probending.game.Game;
 import com.projectkorra.probending.libraries.database.Callback;
 import com.projectkorra.projectkorra.Element;
+
+import net.md_5.bungee.api.ChatColor;
 
 public class PBTeam {
 
@@ -18,7 +21,7 @@ public class PBTeam {
     private String _name;
     private UUID _leader;
     private Map<UUID, TeamMemberRole> _members;
-    private Integer[] _color;
+    private TeamColor[] colors;
     
     private int _wins, _gamesPlayed, _rating;
 
@@ -30,17 +33,27 @@ public class PBTeam {
         _wins = wins;
         _gamesPlayed = gamesPlayed;
         _rating = rating;
-        _color = new Integer[] {10, 10, 10};
+        colors = new TeamColor[] {TeamColor.WHITE, TeamColor.WHITE, TeamColor.WHITE, TeamColor.WHITE};
     }
     
-    public Integer[] getColor() {
-    	return _color;
+    public TeamColor[] getColors() {
+    	return colors;
     }
     
-    public void setColor(int r, int g, int b) {
-    	_color[0] = r;
-    	_color[1] = g;
-    	_color[2] = b;
+    public void setColors(TeamColor helmet, TeamColor chest, TeamColor leggings, TeamColor boots) {
+    	colors[0] = helmet;
+    	colors[1] = chest;
+    	colors[2] = leggings;
+    	colors[3] = boots;
+    }
+    
+    public void changeColor(int spot, TeamColor color, Callback<Boolean> successCallback) {
+    	//DB update
+    	colors[spot] = color;
+    }
+    
+    public ChatColor getDisplayColor() {
+    	return colors[1].getClosest();
     }
 
     public int getID() {
@@ -50,6 +63,11 @@ public class PBTeam {
     public String getTeamName() {
         return _name;
     }
+    
+    public void setName(String name, Callback<Boolean> successCallback) {
+    	//DB update needed here
+    	_name = name;
+    }
 
     public UUID getLeader() {
         return _leader;
@@ -57,6 +75,15 @@ public class PBTeam {
 
     public Map<UUID, TeamMemberRole> getMembers() {
         return _members;
+    }
+    
+    public void setMemberRole(UUID member, TeamMemberRole role, Callback<Boolean> successCallback) {
+    	if (!_members.containsKey(member)) {
+    		successCallback.run(false);
+    		return;
+    	}
+    	//DB update
+    	_members.put(member, role);
     }
     
     public int getGamesPlayed() {
@@ -96,6 +123,24 @@ public class PBTeam {
     	}
     	_members.put(player.getUniqueId(), role);
     	Probending.get().getTeamManager().handleJoinTeam(player, this, role, successCallback);
+    }
+    
+    public void removePlayer(Player player, Callback<Boolean> successCallback) {
+    	if (!_members.containsKey(player.getUniqueId())) {
+    		successCallback.run(false);
+    		return;
+    	}
+    	_members.remove(player.getUniqueId());
+    	Probending.get().getTeamManager().handleLeaveTeam(player, this, successCallback);
+    }
+    
+    public void kickPlayer(Player player, Callback<Boolean> successCallback) {
+    	if (!_members.containsKey(player.getUniqueId())) {
+    		successCallback.run(false);
+    		return;
+    	}
+    	_members.remove(player.getUniqueId());
+    	Probending.get().getTeamManager().handleKickPlayer(player, this, successCallback);
     }
 
     public static enum TeamMemberRole {

@@ -11,7 +11,6 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import com.google.common.collect.Lists;
 import com.projectkorra.probending.PBMessenger;
 import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.libraries.database.Callback;
@@ -23,25 +22,17 @@ import net.md_5.bungee.api.ChatColor;
 
 public class InviteManager {
 	
-	private Probending plugin;
 	private DBProbendingTeam teamDB;
 	private Map<UUID, List<Invitation>> invites = new HashMap<>();
 
-	public InviteManager(Probending plugin, DBProbendingTeam teamDB) {
-		this.plugin = plugin;
+	public InviteManager(DBProbendingTeam teamDB) {
 		this.teamDB = teamDB;
 	}
 	
 	public void handleJoin(final Player player) {
-		teamDB.getInvitationsByUUIDAsync(player.getUniqueId(), new Callback<List<SQLInvitation>>() {
-			public void run(List<SQLInvitation> list) {
-				List<Invitation> invitations = Lists.newArrayList();
-				for (SQLInvitation sql : list) {
-					Invitation invite = convertFromSQL(sql);
-					invitations.add(invite);
-				}
-				
-				invites.put(player.getUniqueId(), invitations);
+		teamDB.getInvitationsByUUIDAsync(player.getUniqueId(), new Callback<List<Invitation>>() {
+			public void run(List<Invitation> list) {
+				invites.put(player.getUniqueId(), list);
 			}
 		});
 	}
@@ -56,8 +47,8 @@ public class InviteManager {
 			List<Invitation> invites = inviteIterator.next().getValue();
 			Iterator<Invitation> invitesIterator = invites.iterator();
 			while (invitesIterator.hasNext()) {
-				String teamName = invitesIterator.next().getTeamName();
-				if (teamName.equalsIgnoreCase(team.getTeamName())) {
+				int teamID = invitesIterator.next().getTeamID();
+				if (teamID == team.getID()) {
 					invitesIterator.remove();
 				}
 			}
@@ -84,9 +75,10 @@ public class InviteManager {
 		if (hasInvitations(player)) {
 			invites.get(player.getUniqueId()).remove(invite);
 		}
+		PBTeam team = Probending.get().getTeamManager().getTeamFromID(invite.getTeamID());
 		final UUID playerUUID = player.getUniqueId();
-		final String teamName = invite.getTeamName();
-		teamDB.removeInvitationAsync(player.getUniqueId(), Probending.get().getTeamManager().getTeamFromName(invite.getTeamName()), new Runnable() {
+		final String teamName = team.getTeamName();
+		teamDB.removeInvitationAsync(player.getUniqueId(), Probending.get().getTeamManager().getTeamFromName(team.getTeamName()), new Runnable() {
 			public void run() {
 				if (Bukkit.getPlayer(playerUUID) != null) {
 					PBMessenger.sendMessage(Bukkit.getPlayer(playerUUID), ChatColor.translateAlternateColorCodes('&', ChatColor.GOLD + "Your invitation to join team " + teamName + " has been revoked!"), true);
@@ -95,14 +87,14 @@ public class InviteManager {
 		});
 	}
 	
-	public void sendInvitation(Player player, String name, String role) {
-		final Invitation invite = new Invitation(name, role);
+	public void sendInvitation(Player player, int id, String role) {
+		final Invitation invite = new Invitation(id, role);
 		if (!invites.containsKey(player.getUniqueId())) {
 			invites.put(player.getUniqueId(), new ArrayList<Invitation>());
 		}
 		invites.get(player.getUniqueId()).add(invite);
 		final UUID playerUUID = player.getUniqueId();
-		teamDB.addInvitationAsync(player.getUniqueId(), Probending.get().getTeamManager().getTeamFromName(name), role, new Runnable() {
+		teamDB.addInvitationAsync(player.getUniqueId(), Probending.get().getTeamManager().getTeamFromID(id), role, new Runnable() {
 			public void run() {
 				if (Bukkit.getPlayer(playerUUID) != null) {
 					notifyPlayerSpecific(Bukkit.getPlayer(playerUUID), invite);
@@ -112,9 +104,10 @@ public class InviteManager {
 	}
 	
 	public void notifyPlayerSpecific(Player player, Invitation invite) {
+		PBTeam team = Probending.get().getTeamManager().getTeamFromID(invite.getTeamID());
 		TeamMemberRole role = TeamMemberRole.parseRole(invite.getRole());
-		String message = ChatColor.GOLD + "You have an invitation to join " + ChatColor.GREEN + invite.getTeamName() + ChatColor.GOLD + " as their " + role.getDisplay() + "\n"
-				   + ChatColor.GOLD + "Use /pb join " + ChatColor.GREEN + invite.getTeamName() + ChatColor.GOLD + " to accept the invitation! Notice: You must leave your current team if you have one!";
+		String message = ChatColor.GOLD + "You have an invitation to join " + ChatColor.GREEN + team.getTeamName() + ChatColor.GOLD + " as their " + role.getDisplay() + "\n"
+				   + ChatColor.GOLD + "Use /pb join " + ChatColor.GREEN + team.getTeamName() + ChatColor.GOLD + " to accept the invitation! Notice: You must leave your current team if you have one!";
 		PBMessenger.sendMessage(player, ChatColor.translateAlternateColorCodes('&', message), true);
 	}
 	
@@ -130,8 +123,9 @@ public class InviteManager {
 		} else {
 			PBMessenger.sendMessage(player, ChatColor.translateAlternateColorCodes('&', ChatColor.GOLD + "You have active invitations to the following teams:"), true);
 			for (Invitation invite : invitations) {
+				PBTeam team = Probending.get().getTeamManager().getTeamFromID(invite.getTeamID());
 				TeamMemberRole role = TeamMemberRole.parseRole(invite.getRole());
-				String message = ChatColor.GOLD + "- " + ChatColor.GREEN + invite.getTeamName() + ChatColor.GOLD + " as their " + role.getDisplay();
+				String message = ChatColor.GOLD + "- " + ChatColor.GREEN + team.getTeamName() + ChatColor.GOLD + " as their " + role.getDisplay();
 				PBMessenger.sendMessage(player, ChatColor.translateAlternateColorCodes('&', message), true);
 			}
 			PBMessenger.sendMessage(player, ChatColor.translateAlternateColorCodes('&', ChatColor.GOLD + "Use /pb join <Team> to accept an invitation! Notice: You must leave your current team if you have one!"), true);
@@ -140,48 +134,20 @@ public class InviteManager {
 	
 	public class Invitation {
 		
-		private String teamName;
+		private int teamID;
 		private String role;
 		
-		public Invitation(String teamName, String role) {
-			this.teamName = teamName;
+		public Invitation(int teamName, String role) {
+			this.teamID = teamName;
 			this.role = role;
 		}
 		
-		public String getTeamName() {
-			return teamName;
+		public int getTeamID() {
+			return teamID;
 		}
 		
 		public String getRole() {
 			return role;
 		}
-	}
-	
-	public class SQLInvitation {
-		
-		private int teamId;
-		private String role;
-		
-		public SQLInvitation(int teamId, String role) {
-			this.teamId = teamId;
-			this.role = role;
-		}
-		
-		public int getTeamId() {
-			return teamId;
-		}
-		
-		public String getRole() {
-			return role;
-		}
-	}
-	
-	public Invitation convertFromSQL(SQLInvitation sql) {
-		PBTeam team = Probending.get().getTeamManager().getTeamFromID(sql.getTeamId());
-		if (team == null) {
-			return null;
-		}
-		
-		return new Invitation(team.getTeamName(), sql.getRole());
 	}
 }

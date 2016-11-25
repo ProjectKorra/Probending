@@ -7,8 +7,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.projectkorra.probending.Probending;
-import com.projectkorra.probending.managers.PBFieldCreationManager;
-import com.projectkorra.probending.managers.ProbendingHandler;
 import com.projectkorra.probending.objects.PBPlayer;
 import com.projectkorra.probending.objects.PBTeam;
 
@@ -35,9 +33,9 @@ public class InfoCommand extends PBCommand{
 			} else {
 				if (sender instanceof Player) {
 					Player player = (Player) sender;
-					Commands.getpHandler().getPlayerInfo(player, target);
+					Commands.getProbendingHandler().getPlayerInfo(player, target);
 				} else {
-					PBPlayer pbTarget = Commands.getpHandler().getPBPlayer(target.getUniqueId());
+					PBPlayer pbTarget = Commands.getProbendingHandler().getPBPlayer(target.getUniqueId());
 					PBTeam team = Probending.get().getTeamManager().getTeamFromPlayer(target);
 					sender.sendMessage("Solo Mode Wins: " + pbTarget.getIndividualWins(true));
 					sender.sendMessage("Triple Mode Wins: " + pbTarget.getIndividualWins(false));

@@ -1,5 +1,6 @@
 package com.projectkorra.probending.managers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -137,13 +138,62 @@ public class PBTeamManager {
 			final UUID uuid = player.getUniqueId();
 			this.teamStorage.joinTeam(uuid, role, team, new Runnable() {
 				public void run() {
-					if (Bukkit.getPlayer(uuid) != null)
-					{
+					if (Bukkit.getPlayer(uuid) == null) {
+						successCallback.run(false);
+					} else {
 						teamsByOnlinePlayer.put(Bukkit.getPlayer(uuid), team);
+						successCallback.run(true);
 					}
-					successCallback.run(true);
 				}
 			});
 		}
+	}
+
+	public void handleLeaveTeam(Player player, PBTeam team, final Callback<Boolean> successCallback) {
+		if (!teamsByOnlinePlayer.containsKey(player)) {
+			successCallback.run(false);
+		} else {
+			final UUID uuid = player.getUniqueId();
+			this.teamStorage.leaveTeam(uuid, team, new Runnable() {
+				public void run() {
+					if (Bukkit.getPlayer(uuid) == null) {
+						successCallback.run(false);
+					} else {
+						teamsByOnlinePlayer.remove(Bukkit.getPlayer(uuid));
+						successCallback.run(true);
+					}
+				}
+			});
+		}
+	}
+	
+	public void handleKickPlayer(Player player, PBTeam team, final Callback<Boolean> successCallback) {
+		if (!teamsByOnlinePlayer.containsKey(player)) {
+			successCallback.run(false);
+			final UUID uuid = player.getUniqueId();
+			this.teamStorage.leaveTeam(uuid, team, new Runnable() {
+				public void run() {
+					if (Bukkit.getPlayer(uuid) == null) {
+						successCallback.run(false);
+					} else {
+						teamsByOnlinePlayer.remove(Bukkit.getPlayer(uuid));
+						successCallback.run(true);
+					}
+				}
+			});
+		}
+	}
+	
+	public List<PBTeam> getTeamList() {
+		List<PBTeam> list = new ArrayList<>();
+		
+		for (PBTeam team : teamsByID.values()) {
+			if (list.contains(team)) {
+				continue;
+			}
+			list.add(team);
+		}
+		
+		return list;
 	}
 }

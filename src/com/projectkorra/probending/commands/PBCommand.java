@@ -6,9 +6,6 @@ import java.util.Map;
 
 import org.bukkit.command.CommandSender;
 
-import com.projectkorra.probending.managers.PBFieldCreationManager;
-import com.projectkorra.probending.managers.ProbendingHandler;
-
 public abstract class PBCommand implements PBSubCommand{
 	
 	public static Map<String, PBCommand> commands = new HashMap<>();

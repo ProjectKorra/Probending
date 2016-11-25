@@ -40,14 +40,14 @@ public class AdminCommand extends PBCommand {
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    Commands.getcManager().createField(player);
+                    Commands.getFieldCreationManager().createField(player);
                     return;
                 case "list":
                     if (!player.hasPermission("probending.command.arena.list")) {
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    Commands.getcManager().getFields(player);
+                    Commands.getFieldCreationManager().getFields(player);
                     return;
             }
         } else if (args.size() == 2) {
@@ -57,14 +57,14 @@ public class AdminCommand extends PBCommand {
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    Commands.getcManager().getFieldInfo(player, args.get(1));
+                    Commands.getFieldCreationManager().getFieldInfo(player, args.get(1));
                     return;
                 case "delete":
                     if (!player.hasPermission("probending.command.arena.delete")) {
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    Commands.getcManager().deleteField(player, args.get(1));
+                    Commands.getFieldCreationManager().deleteField(player, args.get(1));
                     return;
             }
         } else if (args.size() == 3) {
@@ -74,7 +74,7 @@ public class AdminCommand extends PBCommand {
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    Commands.getcManager().setKnockOffName(player, args.get(1), args.get(2));
+                    Commands.getFieldCreationManager().setKnockOffName(player, args.get(1), args.get(2));
                     return;
             }
         } else if (args.size() == 4) {
@@ -84,14 +84,14 @@ public class AdminCommand extends PBCommand {
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    Commands.getcManager().setFieldSpawn(player, args.get(1), args.get(2), args.get(3));
+                    Commands.getFieldCreationManager().setFieldSpawn(player, args.get(1), args.get(2), args.get(3));
                     return;
                 case "setfieldspawn":
                     if (!player.hasPermission("probending.command.arena.setfieldspawn")) {
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    Commands.getcManager().setFieldRegionSpawn(player, args.get(1), args.get(2), args.get(3));
+                    Commands.getFieldCreationManager().setFieldRegionSpawn(player, args.get(1), args.get(2), args.get(3));
                     return;
 
             }
@@ -102,7 +102,7 @@ public class AdminCommand extends PBCommand {
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    Commands.getcManager().setFieldRegionName(player, args.get(1), args.get(2), args.get(3), args.get(4));
+                    Commands.getFieldCreationManager().setFieldRegionName(player, args.get(1), args.get(2), args.get(3), args.get(4));
                     return;
             }
         }

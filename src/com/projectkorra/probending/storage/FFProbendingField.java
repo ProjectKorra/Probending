@@ -1,5 +1,6 @@
 package com.projectkorra.probending.storage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,9 +12,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.collect.Lists;
-import com.projectkorra.probending.objects.ProbendingField;
 import com.projectkorra.probending.libraries.flatfile.FileManager;
-import java.util.ArrayList;
+import com.projectkorra.probending.objects.ProbendingField;
 
 public class FFProbendingField extends FileManager {
 

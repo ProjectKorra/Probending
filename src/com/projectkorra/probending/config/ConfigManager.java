@@ -1,8 +1,8 @@
 package com.projectkorra.probending.config;
 
-import org.bukkit.configuration.file.FileConfiguration;
-
 import java.io.File;
+
+import org.bukkit.configuration.file.FileConfiguration;
 
 public class ConfigManager {
 

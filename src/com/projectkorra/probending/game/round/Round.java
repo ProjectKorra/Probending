@@ -1,13 +1,16 @@
 package com.projectkorra.probending.game.round;
 
-import com.projectkorra.probending.game.scoreboard.PBScoreboard;
-import com.projectkorra.probending.game.Game;
-import com.projectkorra.probending.libraries.Timer;
-import com.projectkorra.probending.libraries.Title;
 import java.util.Set;
-import net.md_5.bungee.api.ChatColor;
+
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.projectkorra.probending.game.Game;
+import com.projectkorra.probending.game.scoreboard.PBScoreboard;
+import com.projectkorra.probending.libraries.Timer;
+import com.projectkorra.probending.libraries.Title;
+
+import net.md_5.bungee.api.ChatColor;
 
 public class Round {
 
