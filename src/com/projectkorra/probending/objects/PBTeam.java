@@ -78,10 +78,6 @@ public class PBTeam {
     }
     
     public void setMemberRole(UUID member, TeamMemberRole role, Callback<Boolean> successCallback) {
-    	if (!_members.containsKey(member)) {
-    		successCallback.run(false);
-    		return;
-    	}
     	//DB update
     	_members.put(member, role);
     }
@@ -117,30 +113,21 @@ public class PBTeam {
     }
     
     public void addPlayer(Player player, TeamMemberRole role, Callback<Boolean> successCallback) {
-    	if (_members.containsKey(player.getUniqueId())) {
-    		successCallback.run(false);
-    		return;
+    	if (Probending.get().getTeamManager().handleJoinTeam(player, this, role, successCallback)) {
+    		_members.put(player.getUniqueId(), role);
     	}
-    	_members.put(player.getUniqueId(), role);
-    	Probending.get().getTeamManager().handleJoinTeam(player, this, role, successCallback);
     }
     
     public void removePlayer(Player player, Callback<Boolean> successCallback) {
-    	if (!_members.containsKey(player.getUniqueId())) {
-    		successCallback.run(false);
-    		return;
+    	if (Probending.get().getTeamManager().handleLeaveTeam(player, this, successCallback)) {
+    		_members.remove(player.getUniqueId());
     	}
-    	_members.remove(player.getUniqueId());
-    	Probending.get().getTeamManager().handleLeaveTeam(player, this, successCallback);
     }
     
     public void kickPlayer(Player player, Callback<Boolean> successCallback) {
-    	if (!_members.containsKey(player.getUniqueId())) {
-    		successCallback.run(false);
-    		return;
+    	if (Probending.get().getTeamManager().handleKickPlayer(player, this, successCallback)) {
+    		_members.remove(player.getUniqueId());
     	}
-    	_members.remove(player.getUniqueId());
-    	Probending.get().getTeamManager().handleKickPlayer(player, this, successCallback);
     }
 
     public static enum TeamMemberRole {
