@@ -41,7 +41,7 @@ public class ColorsCommand extends PBCommand{
 	public String colorInformation(TeamColor color) {
 		StringBuilder sb = new StringBuilder(color.getClosest() + "--- " + color.toString().toLowerCase() + " ---");
 		sb.append(ChatColor.WHITE + "\n- RGB: " + ChatColor.RED + color.getRValue() + ChatColor.RESET + ", " + ChatColor.GREEN + color.getGValue() + ChatColor.RESET + ", " + ChatColor.BLUE + color.getBValue());
-		sb.append(color.getClosest() + "\n- Closest chat color: " + color.getClosest().name());
+		sb.append(color.getClosest() + "\n- Closest chat color: " + color.getClosest().toString());
 		return sb.toString();
 	}
 }
