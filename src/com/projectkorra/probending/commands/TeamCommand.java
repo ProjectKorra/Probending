@@ -21,7 +21,7 @@ import net.md_5.bungee.api.ChatColor;
 public class TeamCommand extends PBCommand{
 
 	public TeamCommand() {
-		super("team", "Access and use the team commands!", "/pb team", new String[] {"team", "t"});
+		super("team", "Access and use the team commands!", "/probending team", new String[] {"team", "t"});
 	}
 
 	@Override
