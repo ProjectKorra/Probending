@@ -11,7 +11,7 @@ import net.md_5.bungee.api.ChatColor;
 public class ColorsCommand extends PBCommand{
 
 	public ColorsCommand() {
-		super("colors", "Lists the colors for teams and gear! Selecting a color will show more about it", "/probending colors {color}", new String[] {"colors", "color", "c", "colours", "colour"});
+		super("colors", "Lists the colors for teams and gear! Selecting a color will show more about it", "/pb colors {color}", new String[] {"colors", "color", "c", "colours", "colour"});
 	}
 
 	@Override
