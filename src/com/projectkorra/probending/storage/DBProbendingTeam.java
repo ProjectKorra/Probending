@@ -260,15 +260,18 @@ public class DBProbendingTeam extends DBInterpreter {
     }
     
     public void getInvitationsByUUID(final UUID uuid, final Callback<List<Invitation>> callback) {
-    	DatabaseHandler.getDatabase().executeQuery("", new Callback<ResultSet>() {
+    	DatabaseHandler.getDatabase().executeQuery("SELECT * FROM pb_team_invites WHERE uuid=?;", new Callback<ResultSet>() {
     		public void run(ResultSet rs) {
+    			List<Invitation> invites = Lists.newArrayList();
     			try {
 					while (rs.next()) {
-						
+						invites.add(new Invitation(rs.getInt("teamId"), rs.getString("role")));
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+    			
+    			callback.run(invites);
     		}
     	}, uuid.toString());
     }
@@ -291,7 +294,7 @@ public class DBProbendingTeam extends DBInterpreter {
     }
     
     public void addInvitation(final UUID uuid, final PBTeam team, final String role, Runnable after) {
-    	DatabaseHandler.getDatabase().executeUpdate("", uuid.toString(), team.getID(), role);
+    	DatabaseHandler.getDatabase().executeUpdate("INSERT INTO pb_team_invites (uuid, teamId, role) VALUES (?, ?, ?);", uuid.toString(), team.getID(), role);
     	if (after != null) {
     		after.run();
     	}
@@ -310,7 +313,7 @@ public class DBProbendingTeam extends DBInterpreter {
     }
     
     public void removeInvitation(final UUID uuid, final PBTeam team, Runnable after) {
-    	DatabaseHandler.getDatabase().executeUpdate("", uuid.toString(), team.getID());
+    	DatabaseHandler.getDatabase().executeUpdate("DELETE * FROM pb_team_invites WHERE uuid=? AND teamId=?;", uuid.toString(), team.getID());
     	if (after != null)
     		after.run();
     }
