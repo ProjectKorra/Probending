@@ -367,19 +367,12 @@ public class TeamCommand extends PBCommand{
 		player.sendMessage(ChatColor.GREEN + "Finalizing changes! Do not log off!");
 		final UUID uuid = player.getUniqueId();
 		final String NAME = name;
-		team.setName(name, new Callback<Boolean>() {
-
-			@Override
-			public void run(Boolean success) {
+		team.setName(name, new Runnable() {
+			public void run() {
 				if (Bukkit.getPlayer(uuid) == null) {
 					return;
 				}
-				
-				if (success) {
-					Bukkit.getPlayer(uuid).sendMessage(ChatColor.GREEN + "Successfully changed team name to " + NAME);
-				} else {
-					Bukkit.getPlayer(uuid).sendMessage(ChatColor.RED + "Unexpected error changing name! It will not be saved!");
-				}
+				Bukkit.getPlayer(uuid).sendMessage(ChatColor.GREEN + "Successfully changed team name to " + NAME);
 			}
 			
 		});
@@ -422,28 +415,21 @@ public class TeamCommand extends PBCommand{
 		TeamColor[] colors = team.getColors().clone();
 		colors[i] = color;
 		
-		PBTeam check = Probending.get().getTeamManager().getTeamFromColors(colors);
+		/*PBTeam check = Probending.get().getTeamManager().getTeamFromColors(colors);
 		if (check != null) {
 			player.sendMessage(ChatColor.RED + "That color combination is already taken!");
 			return;
-		}
+		}*/
 		
-		player.sendMessage(ChatColor.GREEN + "Finalzing changes! Do not log off!");
+		player.sendMessage(ChatColor.GREEN + "Finalizing changes! Do not log off!");
 		final int ii = i;
 		final UUID uuid = player.getUniqueId();
-		team.changeColor(i, color, new Callback<Boolean>() {
-
-			@Override
-			public void run(Boolean success) {
+		team.changeColor(i, color, new Runnable() {
+			public void run() {
 				if (Bukkit.getPlayer(uuid) == null) {
 					return;
 				}
-				
-				if (success) {
-					Bukkit.getPlayer(uuid).sendMessage(ChatColor.GREEN + "Successfully changed color of position " + ii);
-				} else {
-					Bukkit.getPlayer(uuid).sendMessage(ChatColor.GREEN + "Unexpected error changing color. It will not be saved!");
-				}
+				Bukkit.getPlayer(uuid).sendMessage(ChatColor.GREEN + "Successfully changed color of position " + ii);
 			}
 			
 		});
@@ -495,30 +481,19 @@ public class TeamCommand extends PBCommand{
 		
 		final UUID targetUUID = target.getUniqueId();
 		final UUID senderUUID = player.getUniqueId();
-		team.setMemberRole(targetUUID, role, new Callback<Boolean>() {
-
-			@Override
-			public void run(Boolean success) {
+		team.setMemberRole(targetUUID, role, new Runnable() {
+			public void run() {
 				Player sender = Bukkit.getPlayer(senderUUID);
 				Player target = Bukkit.getPlayer(targetUUID);
 				
 				if (sender != null) {
-					if (success) {
-						sender.sendMessage(ChatColor.GREEN + "Successfully changed " + target.getName() + "'s role!");
-					} else {
-						sender.sendMessage(ChatColor.RED + "Unexpected error changing role! It will not be saved!");
-					}
+					sender.sendMessage(ChatColor.GREEN + "Successfully changed " + target.getName() + "'s role!");
 				}
 				
 				if (target != null && target != sender) {
-					if (success) {
-						sender.sendMessage(ChatColor.GREEN + sender.getName() + " successfully changed your role!");
-					} else {
-						sender.sendMessage(ChatColor.RED + "");
-					}
+					sender.sendMessage(ChatColor.GREEN + sender.getName() + " successfully changed your role!");
 				}
 			}
-			
 		});
 	}
 }

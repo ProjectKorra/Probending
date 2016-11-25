@@ -132,13 +132,13 @@ public class InviteManager {
 		}
 	}
 	
-	public class Invitation {
+	public static class Invitation {
 		
 		private int teamID;
 		private String role;
 		
-		public Invitation(int teamName, String role) {
-			this.teamID = teamName;
+		public Invitation(int teamId, String role) {
+			this.teamID = teamId;
 			this.role = role;
 		}
 		
