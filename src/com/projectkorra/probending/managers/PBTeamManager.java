@@ -9,7 +9,6 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import com.projectkorra.probending.enums.TeamColor;
 import com.projectkorra.probending.libraries.database.Callback;
 import com.projectkorra.probending.objects.PBTeam;
 import com.projectkorra.probending.objects.PBTeam.TeamMemberRole;
@@ -22,7 +21,6 @@ public class PBTeamManager {
 	private Map<Player, PBTeam> teamsByOnlinePlayer = new HashMap<>();
 	private Map<Integer, PBTeam> teamsByID = new HashMap<>();
 	private Map<String, PBTeam> teamsByName = new HashMap<>();
-	private Map<TeamColor[], PBTeam> teamsByColor = new HashMap<>();
 
 	public PBTeamManager(DBProbendingTeam teamStorage) {
 		this.teamStorage = teamStorage;
@@ -39,7 +37,6 @@ public class PBTeamManager {
 				for (PBTeam team : teams) {
 					teamsByID.put(team.getID(), team);
 					teamsByName.put(team.getTeamName(), team);
-					teamsByColor.put(team.getColors(), team);
 					for (Player player : Bukkit.getOnlinePlayers()) {
 						if (team.getMembers().containsKey(player.getUniqueId())) {
 							teamsByOnlinePlayer.put(player, team);
@@ -88,10 +85,6 @@ public class PBTeamManager {
 		return teamsByName.containsKey(name) ? teamsByName.get(name) : null;
 	}
 	
-	public PBTeam getTeamFromColors(TeamColor[] colors) {
-		return teamsByColor.containsKey(colors) ? teamsByColor.get(colors) : null;
-	}
-	
 	public void createNewTeam(Player leader, String name, TeamMemberRole leaderRole, final Callback<Boolean> successCallback/*, Integer[] color*/) {
 		if (teamsByOnlinePlayer.containsKey(leader)) {
 			successCallback.run(false);
@@ -127,20 +120,19 @@ public class PBTeamManager {
 		}
 	}
 	
-	public boolean handleJoinTeam(Player player, final PBTeam team, TeamMemberRole role, final Callback<Boolean> successCallback) {
+	public void handleJoinTeam(Player player, final PBTeam team, TeamMemberRole role, final Callback<Boolean> successCallback) {
 		if (teamsByOnlinePlayer.containsKey(player)) {
 			successCallback.run(false);
-			return false;
 		} else {
 			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 			if (!bPlayer.hasElement(role.getElement())) {
 				successCallback.run(false);
-				return false;
+				return;
 			}
 			
 			if (!role.isEnabled()) {
 				successCallback.run(false);
-				return false;
+				return;
 			}
 			
 			final UUID uuid = player.getUniqueId();
@@ -152,17 +144,14 @@ public class PBTeamManager {
 						teamsByOnlinePlayer.put(Bukkit.getPlayer(uuid), team);
 						successCallback.run(true);
 					}
-					return;
 				}
 			});
-			return true;
 		}
 	}
 
-	public boolean handleLeaveTeam(Player player, PBTeam team, final Callback<Boolean> successCallback) {
+	public void handleLeaveTeam(Player player, PBTeam team, final Callback<Boolean> successCallback) {
 		if (!teamsByOnlinePlayer.containsKey(player)) {
 			successCallback.run(false);
-			return false;
 		} else {
 			final UUID uuid = player.getUniqueId();
 			this.teamStorage.leaveTeam(uuid, team, new Runnable() {
@@ -175,11 +164,10 @@ public class PBTeamManager {
 					}
 				}
 			});
-			return true;
 		}
 	}
 	
-	public boolean handleKickPlayer(Player player, PBTeam team, final Callback<Boolean> successCallback) {
+	public void handleKickPlayer(Player player, PBTeam team, final Callback<Boolean> successCallback) {
 		if (!teamsByOnlinePlayer.containsKey(player)) {
 			successCallback.run(false);
 			final UUID uuid = player.getUniqueId();
@@ -193,9 +181,7 @@ public class PBTeamManager {
 					}
 				}
 			});
-			return true;
 		}
-		return false;
 	}
 	
 	public List<PBTeam> getTeamList() {

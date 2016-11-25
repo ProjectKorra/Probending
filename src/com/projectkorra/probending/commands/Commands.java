@@ -1,6 +1,5 @@
 package com.projectkorra.probending.commands;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,16 +37,16 @@ public class Commands {
 		
 		//Load commands
 		new AdminCommand();
-		new ColorsCommand();
 		new InfoCommand();
 		new QueueJoinCommand();
 		new QueueLeaveCommand();
 		new TeamCommand();
 		
-		help = new ArrayList<>();
-		for (PBCommand c : PBCommand.getCommands().values()) {
-			help.add("&6" + c.getProperUse() + " &e" + c.getDescription());
-		}
+		help = Arrays.asList("&6/probending queue {1/3} &eQueue up!", 
+				"&6/probending leave &eLeave the queue!", 
+				"&6/probending info [player] &eShow the stats of a player!", 
+				"&6/probending admin &eShows administrator commands!",
+				"&6/probending team &eTeam Commands!");
 		
 		CommandExecutor exe = new CommandExecutor() {
 

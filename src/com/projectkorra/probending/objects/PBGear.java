@@ -5,43 +5,41 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
-import com.projectkorra.probending.enums.TeamColor;
-
 public class PBGear {
 
     private ItemStack helmet, chestplate, leggings, boots;
 
-    public PBGear(TeamColor color) {
+    public PBGear(Color color) {
         this.helmet = getGear(Material.LEATHER_HELMET, color);
         this.chestplate = getGear(Material.LEATHER_CHESTPLATE, color);
         this.leggings = getGear(Material.LEATHER_LEGGINGS, color);
         this.boots = getGear(Material.LEATHER_BOOTS, color);
     }
 
-    public PBGear(TeamColor helmet, TeamColor chestplate, TeamColor leggins, TeamColor boots) {
+    public PBGear(Color helmet, Color chestplate, Color leggins, Color boots) {
         this.helmet = getGear(Material.LEATHER_HELMET, helmet);
         this.chestplate = getGear(Material.LEATHER_CHESTPLATE, chestplate);
         this.leggings = getGear(Material.LEATHER_LEGGINGS, leggins);
         this.boots = getGear(Material.LEATHER_BOOTS, boots);
     }
 
-    public void setHelmetTeamColor(TeamColor color) {
+    public void setHelmetColor(Color color) {
         helmet = getGear(Material.LEATHER_HELMET, color);
     }
 
-    public void setChestplateTeamColor(TeamColor color) {
+    public void setChestplateColor(Color color) {
         chestplate = getGear(Material.LEATHER_CHESTPLATE, color);
     }
 
-    public void setLeggingsTeamColor(TeamColor color) {
+    public void setLeggingsColor(Color color) {
         leggings = getGear(Material.LEATHER_LEGGINGS, color);
     }
 
-    public void setBootsTeamColor(TeamColor color) {
+    public void setBootsColor(Color color) {
         boots = getGear(Material.LEATHER_BOOTS, color);
     }
 
-    private ItemStack getGear(Material material, TeamColor color) {
+    private ItemStack getGear(Material material, Color color) {
         ItemStack item;
         LeatherArmorMeta meta;
         if (!(material.equals(Material.LEATHER_BOOTS) || material.equals(Material.LEATHER_LEGGINGS) || material.equals(Material.LEATHER_CHESTPLATE) || material.equals(Material.LEATHER_HELMET))) {
@@ -49,7 +47,7 @@ public class PBGear {
         }
         item = new ItemStack(material);
         meta = (LeatherArmorMeta) item.getItemMeta();
-        meta.setColor(Color.fromRGB(color.getRValue(), color.getGValue(), color.getBValue()));
+        meta.setColor(color);
         item.setItemMeta(meta);
         return item;
     }
