@@ -21,7 +21,7 @@ import net.md_5.bungee.api.ChatColor;
 public class TeamCommand extends PBCommand{
 
 	public TeamCommand() {
-		super("team", "Access and use the team commands!", "/pb team", new String[] {"team", "t"});
+		super("team", "Access and use the team commands!", "/probending team", new String[] {"team", "t"});
 	}
 
 	@Override
@@ -34,7 +34,13 @@ public class TeamCommand extends PBCommand{
 		
 		if (args.size() == 0) {
 			List<String> help = Arrays.asList("&6/probending team create {name} {role} &eCreate a team and choose your role!",
-					"&6/probending team invite {player} {role} &eInvite a player to your team for a certain role!");
+					"&6/probending team invite {player} {role} &eInvite a player to your team for a certain role!",
+					"&6/probending team join [team] &eJoin a team. You can only join one that has invited you!",
+					"&6/probending team leave &eLeave your current team!",
+					"&6/probending team kick [player] &eKick a player from your team! &cLeader only!",
+					"&6/probending team setname [name] &eChange the name of your team!",
+					"&6/probending team setcolor [#(0-3)] [color] &eChange the color of a gear piece! /pb colors for color list. &cLeader only!",
+					"&6/probending team setmemberrole [player] [role] &eChange the role of a member! &cLeader only!");
 			
 			for (String s : help) {
 				player.sendMessage(ChatColor.translateAlternateColorCodes('&', s));
@@ -113,7 +119,7 @@ public class TeamCommand extends PBCommand{
 				changeTeamColor(player, args.get(1), args.get(2));
 				return;
 			case "setmemberrole":
-				if (args.size() != 2) {
+				if (args.size() != 3) {
 					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team setmemberrole [player] [element]");
 					return;
 				}
@@ -154,7 +160,7 @@ public class TeamCommand extends PBCommand{
 				if (success) {
 					Bukkit.getPlayer(leaderUUID).sendMessage(ChatColor.GREEN + "Team successfully created!");
 				} else {
-					Bukkit.getPlayer(leaderUUID).sendMessage(ChatColor.RED + "Error creating team!");
+					Bukkit.getPlayer(leaderUUID).sendMessage(ChatColor.RED + "Unexpected error creating team! It will not be saved!");
 				}
 			}
 		});
@@ -179,6 +185,11 @@ public class TeamCommand extends PBCommand{
 		
 		if (leader == target) {
 			leader.sendMessage(ChatColor.RED + "You cannot invite yourself!");
+			return;
+		}
+		
+		if (team.getMembers().containsKey(target.getUniqueId())) {
+			leader.sendMessage(ChatColor.RED + "Player is already on your team!");
 			return;
 		}
 		
@@ -262,7 +273,7 @@ public class TeamCommand extends PBCommand{
 				if (success) {
 					Bukkit.getPlayer(joineeUUID).sendMessage(ChatColor.GREEN + "Successfully joined " + teamName);
 				} else {
-					Bukkit.getPlayer(joineeUUID).sendMessage(ChatColor.RED + "Unexpected error joining team!");
+					Bukkit.getPlayer(joineeUUID).sendMessage(ChatColor.RED + "Unexpected error joining team! It will not be saved!");
 				}
 			}
 			
@@ -290,7 +301,7 @@ public class TeamCommand extends PBCommand{
 				if (success) {
 					Bukkit.getPlayer(uuid).sendMessage(ChatColor.GREEN + "Successfully left " + TEAM.getTeamName());
 				} else {
-					Bukkit.getPlayer(uuid).sendMessage(ChatColor.RED + "Unexpected error leaving team!");
+					Bukkit.getPlayer(uuid).sendMessage(ChatColor.RED + "Unexpected error leaving team! It will not be saved!");
 				}
 			}
 			
@@ -328,7 +339,7 @@ public class TeamCommand extends PBCommand{
 				if (success) {
 					Bukkit.getPlayer(uuid).sendMessage(ChatColor.GREEN + "Successfully kicked " + targetName);
 				} else {
-					Bukkit.getPlayer(uuid).sendMessage(ChatColor.RED + "Unexpected error kicking player!");
+					Bukkit.getPlayer(uuid).sendMessage(ChatColor.RED + "Unexpected error kicking player! It will not be saved!");
 				}
 			}
 			
@@ -353,11 +364,22 @@ public class TeamCommand extends PBCommand{
 			return;
 		}
 		
+		player.sendMessage(ChatColor.GREEN + "Finalizing changes! Do not log off!");
+		final UUID uuid = player.getUniqueId();
+		final String NAME = name;
 		team.setName(name, new Callback<Boolean>() {
 
 			@Override
 			public void run(Boolean success) {
-				//Do stuff here
+				if (Bukkit.getPlayer(uuid) == null) {
+					return;
+				}
+				
+				if (success) {
+					Bukkit.getPlayer(uuid).sendMessage(ChatColor.GREEN + "Successfully changed team name to " + NAME);
+				} else {
+					Bukkit.getPlayer(uuid).sendMessage(ChatColor.RED + "Unexpected error changing name! It will not be saved!");
+				}
 			}
 			
 		});
@@ -375,8 +397,56 @@ public class TeamCommand extends PBCommand{
 			return;
 		}
 		
-		//Find a way to check if the new combination is already used
-		//team.changeColor
+		int i;
+		try {
+			i = Integer.parseInt(s);
+		} catch (NumberFormatException e) {
+			player.sendMessage(ChatColor.RED + "You need a number for the second argument, from 0 to 3.\n0 - helmet\n1 - chestplate\n2 - leggings\n3 - boots");
+			return;
+		}
+		
+		if (i < 0 || i > 3) {
+			player.sendMessage("The number has to be between (including) 0 and 3.\n0 - helmet\n1 - chestplate\n2 - leggings\n3 - boots");
+			return;
+		}
+		
+		TeamColor color = TeamColor.parseColor(colorName);
+		if (color == null) {
+			player.sendMessage(ChatColor.RED + "That is not an acceptable color. Try: ");
+			for (TeamColor display : TeamColor.values()) {
+				player.sendMessage(display.getClosest() + "- " + display.toString().toLowerCase());
+			}
+			return;
+		}
+		
+		TeamColor[] colors = team.getColors().clone();
+		colors[i] = color;
+		
+		PBTeam check = Probending.get().getTeamManager().getTeamFromColors(colors);
+		if (check != null) {
+			player.sendMessage(ChatColor.RED + "That color combination is already taken!");
+			return;
+		}
+		
+		player.sendMessage(ChatColor.GREEN + "Finalzing changes! Do not log off!");
+		final int ii = i;
+		final UUID uuid = player.getUniqueId();
+		team.changeColor(i, color, new Callback<Boolean>() {
+
+			@Override
+			public void run(Boolean success) {
+				if (Bukkit.getPlayer(uuid) == null) {
+					return;
+				}
+				
+				if (success) {
+					Bukkit.getPlayer(uuid).sendMessage(ChatColor.GREEN + "Successfully changed color of position " + ii);
+				} else {
+					Bukkit.getPlayer(uuid).sendMessage(ChatColor.GREEN + "Unexpected error changing color. It will not be saved!");
+				}
+			}
+			
+		});
 	}
 	
 	public void changeMemberRole(Player player, String targetName, String roleName) {
@@ -391,7 +461,64 @@ public class TeamCommand extends PBCommand{
 			return;
 		}
 		
-		//Check if role is taken, if player is on team, and if player == null.
-		//team.setMemberRole
+		Player target = Bukkit.getPlayer(targetName);
+		if (target == null) {
+			player.sendMessage(ChatColor.RED + "Player is not online, try again when they are!");
+			return;
+		}
+		
+		if (!team.getMembers().containsKey(target.getUniqueId())) {
+			player.sendMessage(ChatColor.RED + "That player is not part of your team!");
+			return;
+		}
+		
+		TeamMemberRole role = TeamMemberRole.parseRole(roleName);
+		if (role == null) {
+			player.sendMessage(ChatColor.RED + "The requested role could not be found!");
+			return;
+		}
+		
+		if (team.getMembers().get(target.getUniqueId()) == role) {
+			player.sendMessage(ChatColor.RED + "The player already has that role!");
+			return;
+		}
+		
+		if (team.getMembers().values().contains(role)) {
+			player.sendMessage(ChatColor.RED + "Someone already occupies that role!");
+			return;
+		}
+		
+		player.sendMessage(ChatColor.GREEN + "Finalizing changes! Do not log off!");
+		if (player != target) {
+			target.sendMessage(ChatColor.RED + "Your role is being switched, do not log off!");
+		}
+		
+		final UUID targetUUID = target.getUniqueId();
+		final UUID senderUUID = player.getUniqueId();
+		team.setMemberRole(targetUUID, role, new Callback<Boolean>() {
+
+			@Override
+			public void run(Boolean success) {
+				Player sender = Bukkit.getPlayer(senderUUID);
+				Player target = Bukkit.getPlayer(targetUUID);
+				
+				if (sender != null) {
+					if (success) {
+						sender.sendMessage(ChatColor.GREEN + "Successfully changed " + target.getName() + "'s role!");
+					} else {
+						sender.sendMessage(ChatColor.RED + "Unexpected error changing role! It will not be saved!");
+					}
+				}
+				
+				if (target != null && target != sender) {
+					if (success) {
+						sender.sendMessage(ChatColor.GREEN + sender.getName() + " successfully changed your role!");
+					} else {
+						sender.sendMessage(ChatColor.RED + "");
+					}
+				}
+			}
+			
+		});
 	}
 }
