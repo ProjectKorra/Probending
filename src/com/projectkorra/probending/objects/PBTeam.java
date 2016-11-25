@@ -47,9 +47,9 @@ public class PBTeam {
     	colors[3] = boots;
     }
     
-    public void changeColor(int spot, TeamColor color, Callback<Boolean> successCallback) {
-    	//DB update
+    public void changeColor(int spot, TeamColor color, Runnable after) {
     	colors[spot] = color;
+    	Probending.get().getTeamManager().updateTeam(this, after);
     }
     
     public ChatColor getDisplayColor() {
@@ -64,9 +64,9 @@ public class PBTeam {
         return _name;
     }
     
-    public void setName(String name, Callback<Boolean> successCallback) {
-    	//DB update needed here
+    public void setName(String name, Runnable after) {
     	_name = name;
+    	Probending.get().getTeamManager().updateTeam(this, after);
     }
 
     public UUID getLeader() {
@@ -77,9 +77,9 @@ public class PBTeam {
         return _members;
     }
     
-    public void setMemberRole(UUID member, TeamMemberRole role, Callback<Boolean> successCallback) {
-    	//DB update
+    public void setMemberRole(UUID member, TeamMemberRole role, Runnable after) {
     	_members.put(member, role);
+    	Probending.get().getTeamManager().updateTeam(this, after);
     }
     
     public int getGamesPlayed() {

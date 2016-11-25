@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.collect.Lists;
+import com.projectkorra.probending.enums.TeamColor;
 import com.projectkorra.probending.libraries.database.Callback;
 import com.projectkorra.probending.managers.InviteManager.Invitation;
 import com.projectkorra.probending.objects.PBTeam;
@@ -25,9 +26,9 @@ public class DBProbendingTeam extends DBInterpreter {
         runAsync(new Runnable() {
             public void run() {
                 if (!DatabaseHandler.getDatabase().tableExists("pb_teams")) {
-                    String query = "CREATE TABLE pb_teams (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(100) NOT NULL, leader VARCHAR(100) NOT NULL, wins INT NOT NULL, gamesPlayed INT NOT NULL, rating INT NOT NULL, PRIMARY KEY (id), UNIQUE INDEX nameIndex (name), UNIQUE INDEX leaderIndex (leader), INDEX winIndex (wins), INDEX gameIndex (games), INDEX ratingIndex (rating));";
+                    String query = "CREATE TABLE pb_teams (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(100) NOT NULL, leader VARCHAR(100) NOT NULL, coloring VARCHAR(100) NOT NULL, wins INT NOT NULL, gamesPlayed INT NOT NULL, rating INT NOT NULL, PRIMARY KEY (id), UNIQUE INDEX nameIndex (name), UNIQUE INDEX leaderIndex (leader), INDEX winIndex (wins), INDEX gameIndex (games), INDEX ratingIndex (rating));";
                     if (!DatabaseHandler.isMySQL()) {
-                        query = "CREATE TABLE pb_teams (id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE, leader TEXT NOT NULL UNIQUE, wins INTEGER NOT NULL, games INTEGER NOT NULL, rating INTEGER NOT NULL);CREATE INDEX winIndex ON pb_team_members (wins);CREATE INDEX gameIndex ON pb_team_members (games);CREATE INDEX ratingIndex ON pb_team_members (rating);";
+                        query = "CREATE TABLE pb_teams (id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE, leader TEXT NOT NULL UNIQUE, coloring TEXT NOT NULL, wins INTEGER NOT NULL, games INTEGER NOT NULL, rating INTEGER NOT NULL);CREATE INDEX winIndex ON pb_team_members (wins);CREATE INDEX gameIndex ON pb_team_members (games);CREATE INDEX ratingIndex ON pb_team_members (rating);";
                     }
 
                     DatabaseHandler.getDatabase().executeUpdate(query);
@@ -64,6 +65,14 @@ public class DBProbendingTeam extends DBInterpreter {
                         final int wins = rs.getInt("wins");
                         final int gamesPlayed = rs.getInt("games");
                         final int rating = rs.getInt("rating");
+                        final String colorText = rs.getString("coloring");
+                        final TeamColor[] colors = new TeamColor[4];
+                        int colorIndex = 0;
+                        for (String color : colorText.split(","))
+                        {
+                        	colors[colorIndex] = TeamColor.parseColor(color);
+                        	colorIndex++;
+                        }
                         DatabaseHandler.getDatabase().executeQuery("SELECT * FROM pb_team_members WHERE teamId=?;", new Callback<ResultSet>() {
                         	public void run(ResultSet memberSet)
                         	{
@@ -78,6 +87,7 @@ public class DBProbendingTeam extends DBInterpreter {
 									e.printStackTrace();
 								}
                                 PBTeam team = new PBTeam(id, name, leader, members, wins, gamesPlayed, rating);
+                                team.setColors(colors[0], colors[1], colors[2], colors[3]);
                                 teams.add(team);
                         	}
                         }, id);
@@ -108,7 +118,12 @@ public class DBProbendingTeam extends DBInterpreter {
     }
 
     public void updatePBTeam(final PBTeam team, final Runnable after) {
-        DatabaseHandler.getDatabase().executeUpdate("UPDATE pb_teams SET name=?, leader=?, wins=?, games=?, rating=? WHERE id=?;", team.getTeamName(), team.getLeader().toString(), team.getWins(), team.getGamesPlayed(), team.getRating(), team.getID());
+    	String coloring = team.getColors()[0].toString();
+    	for (int i = 1; i < 4; i++)
+    	{
+    		coloring += ("," + team.getColors()[i].toString());
+    	}
+        DatabaseHandler.getDatabase().executeUpdate("UPDATE pb_teams SET name=?, leader=?, coloring=?, wins=?, games=?, rating=? WHERE id=?;", team.getTeamName(), team.getLeader().toString(), coloring, team.getWins(), team.getGamesPlayed(), team.getRating(), team.getID());
         if (after != null)
         	after.run();
     }

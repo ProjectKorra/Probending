@@ -9,7 +9,6 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import com.projectkorra.probending.enums.TeamColor;
 import com.projectkorra.probending.libraries.database.Callback;
 import com.projectkorra.probending.objects.PBTeam;
 import com.projectkorra.probending.objects.PBTeam.TeamMemberRole;
@@ -22,7 +21,7 @@ public class PBTeamManager {
 	private Map<Player, PBTeam> teamsByOnlinePlayer = new HashMap<>();
 	private Map<Integer, PBTeam> teamsByID = new HashMap<>();
 	private Map<String, PBTeam> teamsByName = new HashMap<>();
-	private Map<TeamColor[], PBTeam> teamsByColor = new HashMap<>();
+	//private Map<TeamColor[], PBTeam> teamsByColor = new HashMap<>();
 
 	public PBTeamManager(DBProbendingTeam teamStorage) {
 		this.teamStorage = teamStorage;
@@ -39,7 +38,7 @@ public class PBTeamManager {
 				for (PBTeam team : teams) {
 					teamsByID.put(team.getID(), team);
 					teamsByName.put(team.getTeamName(), team);
-					teamsByColor.put(team.getColors(), team);
+					//teamsByColor.put(team.getColors(), team);
 					for (Player player : Bukkit.getOnlinePlayers()) {
 						if (team.getMembers().containsKey(player.getUniqueId())) {
 							teamsByOnlinePlayer.put(player, team);
@@ -88,9 +87,9 @@ public class PBTeamManager {
 		return teamsByName.containsKey(name) ? teamsByName.get(name) : null;
 	}
 	
-	public PBTeam getTeamFromColors(TeamColor[] colors) {
+	/*public PBTeam getTeamFromColors(TeamColor[] colors) {
 		return teamsByColor.containsKey(colors) ? teamsByColor.get(colors) : null;
-	}
+	}*/
 	
 	public void createNewTeam(Player leader, String name, TeamMemberRole leaderRole, final Callback<Boolean> successCallback/*, Integer[] color*/) {
 		if (teamsByOnlinePlayer.containsKey(leader)) {
