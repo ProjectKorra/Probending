@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.projectkorra.probending.game;
 
 import org.bukkit.ChatColor;
@@ -17,10 +12,9 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-/**
- *
- * @author Ivo
- */
+import com.projectkorra.probending.Probending;
+import com.projectkorra.projectkorra.event.AbilityStartEvent;
+
 public class GameListener implements Listener {
 
     private Game game;
@@ -56,11 +50,11 @@ public class GameListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void DamgeEvent(EntityDamageEvent event) {
+    public void DamageEvent(EntityDamageEvent event) {
         Entity e = event.getEntity();
         if (e instanceof Player) {
             Player player = (Player) e;
-            if (game.isPlayerAProbender(player)) {
+            if (game.isPlayerInMatch(player)) {
                 event.setDamage(0);
             }
         }
@@ -71,9 +65,21 @@ public class GameListener implements Listener {
         Entity e = event.getEntity();
         if (e instanceof Player) {
             Player player = (Player) e;
-            if (game.isPlayerAProbender(player)) {
+            if (game.isPlayerInMatch(player)) {
                 event.setCancelled(true);
             }
         }
+    }
+    
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void playerBendEvent(AbilityStartEvent event) {
+    	Player p = event.getAbility().getPlayer();
+    	if (game.isPlayerInMatch(p)) {
+    		
+    	}
+    }
+    
+    public static boolean isAbilityAllowed(String ability) {
+    	return Probending.get().getConfig().getStringList("RoundSettings.AllowedMoves").contains(ability);
     }
 }

@@ -72,11 +72,11 @@ public class ProbendingHandler implements Listener {
         }
         for (Game game : games) {
             if (game.getField().getFieldName().equals(fieldNumber)) {
-                PBMessenger.sendMessage(player, ChatColor.RED + "Field is in use, and cannot be edit!", true);
+                PBMessenger.sendMessage(player, ChatColor.RED + "Field is in use, and cannot be edited!", true);
                 return null;
             }
         }
-        PBMessenger.sendMessage(player, ChatColor.RED + "Field has not been found!", true);
+        PBMessenger.sendMessage(player, ChatColor.RED + "Field could not be found!", true);
         return null;
     }
 

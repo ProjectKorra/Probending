@@ -132,11 +132,11 @@ public class PBTeam {
 
     public static enum TeamMemberRole {
 
-        WATER(Element.WATER.getColor() + "Waterbender", Element.WATER, true),
-        AIR(Element.AIR.getColor() + "Airbender", Element.AIR, false),
-        FIRE(Element.FIRE.getColor() + "Firebender", Element.FIRE, true),
-        EARTH(Element.EARTH.getColor() + "Earthbender", Element.EARTH, true),
-        CHI(Element.CHI.getColor() + "Chiblocker", Element.CHI, false);
+        WATER(Element.WATER.getColor() + "Waterbender", Element.WATER, Probending.get().getConfig().getBoolean("TeamSettings.AllowWater")),
+        AIR(Element.AIR.getColor() + "Airbender", Element.AIR, Probending.get().getConfig().getBoolean("TeamSettings.AllowAir")),
+        FIRE(Element.FIRE.getColor() + "Firebender", Element.FIRE, Probending.get().getConfig().getBoolean("TeamSettings.AllowFire")),
+        EARTH(Element.EARTH.getColor() + "Earthbender", Element.EARTH, Probending.get().getConfig().getBoolean("TeamSettings.AllowEarth")),
+        CHI(Element.CHI.getColor() + "Chiblocker", Element.CHI, Probending.get().getConfig().getBoolean("TeamSettings.AllowChi"));
 
         private String _display;
         private boolean _enabled;
