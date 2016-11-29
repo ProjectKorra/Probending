@@ -7,8 +7,6 @@ import org.bukkit.entity.Player;
 
 import com.projectkorra.probending.PBMessenger;
 import com.projectkorra.probending.PBMessenger.PBMessage;
-import com.projectkorra.probending.managers.PBFieldCreationManager;
-import com.projectkorra.probending.managers.ProbendingHandler;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -29,7 +27,7 @@ public class QueueLeaveCommand extends PBCommand{
 			if (args.size() > 0) {
 				PBMessenger.sendMessage(player, PBMessage.ERROR);
 			} else {
-				Commands.getqManager().removePlayerFromQueue(player);
+				Commands.getQueueManager().removePlayerFromQueue(player);
 			}
 		} else {
 			sender.sendMessage(ChatColor.RED + "Only players can use this command!");

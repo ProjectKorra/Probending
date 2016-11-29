@@ -42,7 +42,7 @@ public class Probending extends JavaPlugin {
 		new Commands(pHandler, cManager, qManager);
 		DBProbendingTeam teamDb = new DBProbendingTeam(this);
 		tManager = new PBTeamManager(teamDb);
-		iManager = new InviteManager(this, teamDb);
+		iManager = new InviteManager(teamDb);
 	}
 
 	public void onDisable() {
@@ -59,6 +59,10 @@ public class Probending extends JavaPlugin {
 
 	public PBFieldCreationManager getFieldCreationManager() {
 		return cManager;
+	}
+	
+	public PBQueueManager getQueueManager() {
+		return qManager;
 	}
 
 	public PBTeamManager getTeamManager() {

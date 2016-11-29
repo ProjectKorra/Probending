@@ -1,5 +1,6 @@
 package com.projectkorra.probending.commands;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,16 +20,17 @@ import net.md_5.bungee.api.ChatColor;
 
 public class Commands {
 	
-	private static ProbendingHandler pHandler;
-	private static PBFieldCreationManager cManager;
-        private static PBQueueManager qManager;
+
+	private static ProbendingHandler _pHandler;
+	private static PBFieldCreationManager _cManager;
+        private static PBQueueManager _qManager;
 	
 	private List<String> help;
 
 	public Commands(ProbendingHandler pHandler, PBFieldCreationManager cManager, PBQueueManager qManager) {
-		Commands.pHandler = pHandler;
-		Commands.cManager = cManager;
-                Commands.qManager = qManager;
+		_pHandler = pHandler;
+		_cManager = cManager;
+                _qManager = qManager;
 		init();
 	}
 	
@@ -37,16 +39,16 @@ public class Commands {
 		
 		//Load commands
 		new AdminCommand();
+		new ColorsCommand();
 		new InfoCommand();
 		new QueueJoinCommand();
 		new QueueLeaveCommand();
 		new TeamCommand();
 		
-		help = Arrays.asList("&6/probending queue {1/3} &eQueue up!", 
-				"&6/probending leave &eLeave the queue!", 
-				"&6/probending info [player] &eShow the stats of a player!", 
-				"&6/probending admin &eShows administrator commands!",
-				"&6/probending team &eTeam Command!");
+		help = new ArrayList<>();
+		for (PBCommand c : PBCommand.getCommands().values()) {
+			help.add("&6" + c.getProperUse() + " &e" + c.getDescription());
+		}
 		
 		CommandExecutor exe = new CommandExecutor() {
 
@@ -76,16 +78,16 @@ public class Commands {
 		};
 		probending.setExecutor(exe);
 	}
-
-        public static PBFieldCreationManager getcManager() {
-            return cManager;
+        
+        public static PBFieldCreationManager getFieldCreationManager() {
+            return _cManager;
         }
 
-        public static ProbendingHandler getpHandler() {
-            return pHandler;
+        public static ProbendingHandler getProbendingHandler() {
+            return _pHandler;
         }
 
-        public static PBQueueManager getqManager() {
-            return qManager;
+        public static PBQueueManager getQueueManager() {
+            return _qManager;
         }
 }

@@ -5,22 +5,24 @@
  */
 package com.projectkorra.probending.game.field;
 
-import com.projectkorra.probending.objects.ProbendingField;
-import com.projectkorra.probending.game.Game;
-import com.projectkorra.probending.enums.WinningType;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+
+import com.projectkorra.probending.enums.WinningType;
+import com.projectkorra.probending.game.Game;
+import com.projectkorra.probending.objects.ProbendingField;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 /**
  *

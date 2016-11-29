@@ -5,8 +5,9 @@
  */
 package com.projectkorra.probending;
 
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
+
+import net.md_5.bungee.api.ChatColor;
 
 /**
  *

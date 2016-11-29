@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.bukkit.command.CommandSender;
 
-import com.projectkorra.probending.managers.PBFieldCreationManager;
-import com.projectkorra.probending.managers.ProbendingHandler;
 import com.projectkorra.projectkorra.command.PKCommand;
 
 public interface PBSubCommand {

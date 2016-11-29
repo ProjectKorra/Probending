@@ -2,6 +2,7 @@ package com.projectkorra.probending.objects;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.bukkit.Location;
 
 public class ProbendingField {

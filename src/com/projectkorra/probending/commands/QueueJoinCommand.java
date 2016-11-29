@@ -27,14 +27,14 @@ public class QueueJoinCommand extends PBCommand {
 			Player player = (Player) sender;
 			if (args.size() > 0) {
 				if (args.get(0).equalsIgnoreCase("1")) {
-					Commands.getqManager().quePlayer(player, GamePlayerMode.SINGLE);
+					Commands.getQueueManager().quePlayer(player, GamePlayerMode.SINGLE);
 				} else if (args.get(0).equalsIgnoreCase("3")) {
-					Commands.getqManager().quePlayer(player, GamePlayerMode.TRIPLE);
+					Commands.getQueueManager().quePlayer(player, GamePlayerMode.TRIPLE);
 				} else {
 					PBMessenger.sendMessage(player, PBMessage.ERROR);
 				}
 			} else {
-				Commands.getqManager().quePlayer(player, GamePlayerMode.ANY);
+				Commands.getQueueManager().quePlayer(player, GamePlayerMode.ANY);
 			}
 		} else {
 			sender.sendMessage(ChatColor.RED + "Only players can use this command!");
