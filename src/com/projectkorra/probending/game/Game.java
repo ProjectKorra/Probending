@@ -14,7 +14,6 @@ import com.projectkorra.probending.game.field.FieldManager;
 import com.projectkorra.probending.game.round.Round;
 import com.projectkorra.probending.libraries.Title;
 import com.projectkorra.probending.managers.PBQueueManager;
-import com.projectkorra.probending.managers.ProbendingHandler;
 import com.projectkorra.probending.objects.ProbendingField;
 
 public class Game {
@@ -32,6 +31,7 @@ public class Game {
     private Integer playTime;
 
     private Boolean suddenDeath;
+    private Boolean hasSuddenDeath;
     private Boolean forcedSuddenDeath;
 
     private Set<Player> team1Players;
@@ -54,6 +54,7 @@ public class Game {
         this.rounds = type.getRounds();
         this.curRound = 1;
         this.playTime = type.getPlayTime();
+        this.hasSuddenDeath = type.hasSuddenDeath();
         this.forcedSuddenDeath = type.isForcedSuddenDeath();
         this.suddenDeath = false;
         this.field = field;
@@ -125,15 +126,17 @@ public class Game {
     private void manageEnd(WinningType winningTeam) {
         boolean ended = false;
         round = null;
+        suddenDeath = false;
         if (winningTeam.equals(WinningType.TEAM1)) {
             team1Score++;
         } else if (winningTeam.equals(WinningType.TEAM2)) {
             team2Score++;
         } else {
-//            Should be implemented soon!
-//            suddenDeath = true;
-//            startNewRound();
-//            return;
+            if (hasSuddenDeath) {
+                suddenDeath = true;
+                startNewRound();
+                return;
+            }
         }
         curRound++;
         Title title = new Title(ChatColor.BLUE + "" + team1Score + ChatColor.WHITE + " - " + ChatColor.RED + "" + team2Score, "", 1, 1, 1);

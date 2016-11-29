@@ -13,6 +13,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import org.bukkit.Bukkit;
@@ -56,55 +57,125 @@ public class FieldManager {
                 newRegions.remove(rg);
             }
         }
-        if (newRegions.isEmpty()) {
-            return;
-        }
-        oldPlayerRegions.get(player.getUniqueId()).clear();
-        oldPlayerRegions.get(player.getUniqueId()).addAll(toRegions);
-        for (ProtectedRegion rg : newRegions) {
-            if (playerLocation.containsKey(player.getUniqueId())) {
-                String regionName = rg.getId();
-                if (field.getTeam1Field1().equalsIgnoreCase(regionName) || field.getTeam1Field2().equalsIgnoreCase(regionName)
-                        || field.getTeam1Field3().equalsIgnoreCase(regionName) || field.getTeam2Field1().equalsIgnoreCase(regionName)
-                        || field.getTeam2Field2().equalsIgnoreCase(regionName) || field.getTeam2Field3().equalsIgnoreCase(regionName)
-                        || field.getKnockOffArea().equalsIgnoreCase(regionName)) {
-                    gamePlaces(player, regionName);
+        if (!game.isSuddenDeath()) {
+            if (newRegions.isEmpty()) {
+                return;
+            }
+            oldPlayerRegions.get(player.getUniqueId()).clear();
+            oldPlayerRegions.get(player.getUniqueId()).addAll(toRegions);
+            for (ProtectedRegion rg : newRegions) {
+                if (playerLocation.containsKey(player.getUniqueId())) {
+                    String regionName = rg.getId();
+                    if (field.getTeam1Field1().equalsIgnoreCase(regionName) || field.getTeam1Field2().equalsIgnoreCase(regionName)
+                            || field.getTeam1Field3().equalsIgnoreCase(regionName) || field.getTeam2Field1().equalsIgnoreCase(regionName)
+                            || field.getTeam2Field2().equalsIgnoreCase(regionName) || field.getTeam2Field3().equalsIgnoreCase(regionName)
+                            || field.getKnockOffArea().equalsIgnoreCase(regionName)) {
+                        gamePlaces(player, regionName);
+                    }
                 }
+            }
+        } else {
+            if (oldPlayerRegions.get(player.getUniqueId()).isEmpty()) {
+                oldPlayerRegions.get(player.getUniqueId()).addAll(toRegions);
+            }
+            boolean isDMPlayer = false;
+            for (ProtectedRegion rg : oldPlayerRegions.get(player.getUniqueId())) {
+                String regionName = rg.getId();
+                if (field.getDeathMathArea().equalsIgnoreCase(regionName)) {
+                    isDMPlayer = true;
+                    break;
+                }
+            }
+            boolean leftDMArea = true;
+            for (ProtectedRegion rg : newRegions) {
+                String regionName = rg.getId();
+                if (field.getDeathMathArea().equalsIgnoreCase(regionName)) {
+                    leftDMArea = false;
+                    break;
+                }
+            }
+            if (!isDMPlayer && leftDMArea) {
+                //Nothing happend, was never a DM player and did not step in!
+            } else if (isDMPlayer && leftDMArea) {
+                //A DM player left the area!
+                gameDMPlaces(player, true);
+            } else if (!isDMPlayer && !leftDMArea) {
+                //A not DM player entered the area!!!
+                gameDMPlaces(player, false);
+            } else if (isDMPlayer && !leftDMArea) {
+                //Nothing happend, a DM player stayed in his area!
             }
         }
     }
 
     public void reset() {
         int i = 1;
-        boolean differentSpawnPoints = false;
-        if (field.getStartPointTeam1(game.getTeam1Players().size()) != null) {
-            differentSpawnPoints = true;
-        }
-        for (Player p : game.getTeam1Players()) {
-            playerLocation.put(p.getUniqueId(), 4);
-            playerFaults.put(p.getUniqueId(), 0);
-            Location loc = field.getStartPointTeam1(i);
-            if (loc != null) {
-                p.teleport(loc);
+        oldPlayerRegions.clear();
+        if (game.isSuddenDeath()) {
+            boolean differentSpawnPoints = false;
+            if (field.getStartPointTeam1(game.getTeam1Players().size()) != null) {
+                differentSpawnPoints = true;
             }
-            if (differentSpawnPoints) {
-                i++;
+            for (Player p : game.getTeam1Players()) {
+                playerLocation.put(p.getUniqueId(), 4);
+                playerFaults.put(p.getUniqueId(), 0);
+                Location loc = field.getStartPointTeam1(i);
+                if (loc != null) {
+                    p.teleport(loc);
+                }
+                if (differentSpawnPoints) {
+                    i++;
+                }
             }
-        }
-        i = 1;
-        differentSpawnPoints = false;
-        if (field.getStartPointTeam2(game.getTeam2Players().size()) != null) {
-            differentSpawnPoints = true;
-        }
-        for (Player p : game.getTeam2Players()) {
-            playerLocation.put(p.getUniqueId(), 3);
-            playerFaults.put(p.getUniqueId(), 0);
-            Location loc = field.getStartPointTeam2(i);
-            if (loc != null) {
-                p.teleport(loc);
+            i = 1;
+            differentSpawnPoints = false;
+            if (field.getStartPointTeam2(game.getTeam2Players().size()) != null) {
+                differentSpawnPoints = true;
             }
-            if (differentSpawnPoints) {
-                i++;
+            for (Player p : game.getTeam2Players()) {
+                playerLocation.put(p.getUniqueId(), 3);
+                playerFaults.put(p.getUniqueId(), 0);
+                Location loc = field.getStartPointTeam2(i);
+                if (loc != null) {
+                    p.teleport(loc);
+                }
+                if (differentSpawnPoints) {
+                    i++;
+                }
+            }
+        } else {
+            //TODO: pick the player that should do the deathmatch, rather than picking a random one!
+            int dmPlayer = 0;
+            int random = new Random().nextInt(game.getTeam1Players().size());
+            for (Player p : game.getTeam1Players()) {
+                if (dmPlayer == random) {
+                    Location loc = field.getTeam1DMLocation();
+                    if (loc != null) {
+                        p.teleport(loc);
+                    }
+                } else {
+                    Location loc = field.getTeam1Location2();
+                    if (loc != null) {
+                        p.teleport(loc);
+                    }
+                }
+                dmPlayer++;
+            }
+            dmPlayer = 0;
+            random = new Random().nextInt(game.getTeam2Players().size());
+            for (Player p : game.getTeam2Players()) {
+                if (dmPlayer == random) {
+                    Location loc = field.getTeam1DMLocation();
+                    if (loc != null) {
+                        p.teleport(loc);
+                    }
+                } else {
+                    Location loc = field.getTeam2Location2();
+                    if (loc != null) {
+                        p.teleport(loc);
+                    }
+                }
+                dmPlayer++;
             }
         }
     }
@@ -135,7 +206,36 @@ public class FieldManager {
         }
     }
 
-    //Game in progress!
+    private void gameDMPlaces(Player player, boolean dmPlayer) {
+        String teamName = "N/A";
+        if (game.getTeam1Players().contains(player)) {
+            teamName = "team1";
+        } else if (game.getTeam2Players().contains(player)) {
+            teamName = "team2";
+        } else {
+            return;
+        }
+        if (dmPlayer) {
+            if (teamName.equalsIgnoreCase("team1")) {
+                game.endRound(WinningType.TEAM2);
+            } else {
+                game.endRound(WinningType.TEAM1);
+            }
+        } else {
+            if (teamName.equalsIgnoreCase("team1")) {
+                Location loc = field.getTeam1Location2();
+                if (loc != null) {
+                    player.teleport(loc);
+                }
+            } else {
+                Location loc = field.getTeam2Location2();
+                if (loc != null) {
+                    player.teleport(loc);
+                }
+            }
+        }
+    }
+
     private void gamePlaces(Player player, String toPlaceStr) {
         gamePlaces(player, fromRegionToNumber(toPlaceStr));
     }
@@ -158,6 +258,7 @@ public class FieldManager {
         int fromPlace = playerLocation.get(player.getUniqueId());
 
         if (!game.isSuddenDeath()) {
+            //SHOULD NOT BE CALLED IN DEATHMATCH USE gameDMPlaces
             if (fromPlace >= 1 && fromPlace <= 6) {
                 if (toPlace >= 1 && toPlace <= 6) {
                     if (toPlace == fromPlace - fDir) {//Hit line behind!
@@ -192,8 +293,6 @@ public class FieldManager {
                     game.endRound(WinningType.TEAM1);
                 }
             }
-        } else {
-            //DeathMatch!
         }
     }
 
