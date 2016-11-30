@@ -7,42 +7,30 @@ import org.bukkit.Location;
 
 public class ProbendingField {
 
-    private static Integer INDEX = 0;
-    
     private String _fieldName;
     //These are all teleport locations
     private Map<Integer, Location> _team1StartLocs, _team2StartLocs;
     private Location _team1Location1, _team1Location2, _team1Location3, _team1KnockedOffLocation;
     private Location _team2Location1, _team2Location2, _team2Location3, _team2KnockedOffLocation;
+    private Location _team1DMLocation, _team2DMLocation;
 
     //These are all names of the regions
     private String _team1Field1, _team1Field2, _team1Field3;
     private String _team2Field1, _team2Field2, _team2Field3;
+    private String _deathMathArea;
     private String _knockOffArea;
 
     public ProbendingField() {
-        _fieldName = "" + INDEX;
         _team1StartLocs = new HashMap<>();
         _team2StartLocs = new HashMap<>();
-        INDEX++;
     }
 
     public ProbendingField(String fieldName, Map<Integer, Location> team1StartLocs, Map<Integer, Location> team2StartLocs,
             Location team1Location1, Location team1Location2, Location team1Location3, Location team1KnockedOffLocation,
             Location team2Location1, Location team2Location2, Location team2Location3, Location team2KnockedOffLocation,
+            Location team1DMLocation, Location team2DMLocation,
             String team1Field1, String team1Field2, String team1Field3, String team2Field1, String team2Field2, String team2Field3,
-            String knockOffArea) {
-        Integer fieldNumber;
-        try { 
-            fieldNumber = Integer.parseInt(fieldName);
-        } catch (Exception ex) {
-            return;
-        }
-        if (fieldNumber >= INDEX) {
-            INDEX = fieldNumber + 1;
-        } else {
-            return;
-        }
+            String knockOffArea, String deathMatchArena) {
         _fieldName = fieldName;
         _team1StartLocs = team1StartLocs;
         _team2StartLocs = team2StartLocs;
@@ -61,6 +49,9 @@ public class ProbendingField {
         _team2Field2 = team2Field2;
         _team2Field3 = team2Field3;
         _knockOffArea = knockOffArea;
+        _team1DMLocation = team1DMLocation;
+        _team2DMLocation = team2DMLocation;
+        _deathMathArea = deathMatchArena;
     }
 
     public String getFieldName() {
@@ -71,9 +62,10 @@ public class ProbendingField {
         if (_fieldName.isEmpty() || _team1StartLocs.isEmpty() || _team2StartLocs.isEmpty() || _team1Location1 == null
                 || _team1Location2 == null || _team1Location3 == null || _team1KnockedOffLocation == null
                 || _team2Location1 == null || _team2Location2 == null || _team2Location3 == null
-                || _team2KnockedOffLocation == null || _team1Field1 == null || _team1Field2 == null
-                || _team1Field3 == null || _team2Field1 == null || _team2Field2 == null
-                || _team2Field3 == null || _knockOffArea == null) {
+                || _team2KnockedOffLocation == null || _team1DMLocation == null || _team2DMLocation == null
+                || _team1Field1 == null || _team1Field2 == null || _team1Field3 == null
+                || _team2Field1 == null || _team2Field2 == null || _team2Field3 == null
+                || _knockOffArea == null || _deathMathArea == null) {
             return false;
         }
         return true;
@@ -231,5 +223,30 @@ public class ProbendingField {
 
     public void setKnockOffArea(String knockOffArea) {
         _knockOffArea = knockOffArea;
+    }
+
+    //DEATHMATCH ONLY
+    public Location getTeam1DMLocation() {
+        return _team1DMLocation;
+    }
+
+    public Location getTeam2DMLocation() {
+        return _team2DMLocation;
+    }
+
+    public String getDeathMathArea() {
+        return _deathMathArea;
+    }
+
+    public void setTeam1DMLocation(Location _team1DMLocation) {
+        this._team1DMLocation = _team1DMLocation;
+    }
+
+    public void setTeam2DMLocation(Location _team2DMLocation) {
+        this._team2DMLocation = _team2DMLocation;
+    }
+
+    public void setDeathMathArea(String _deathMathArena) {
+        this._deathMathArea = _deathMathArena;
     }
 }

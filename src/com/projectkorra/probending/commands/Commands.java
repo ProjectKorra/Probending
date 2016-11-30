@@ -20,16 +20,17 @@ import net.md_5.bungee.api.ChatColor;
 
 public class Commands {
 	
+
 	private static ProbendingHandler _pHandler;
 	private static PBFieldCreationManager _cManager;
-    private static PBQueueManager _qManager;
+        private static PBQueueManager _qManager;
 	
 	private List<String> help;
 
 	public Commands(ProbendingHandler pHandler, PBFieldCreationManager cManager, PBQueueManager qManager) {
 		_pHandler = pHandler;
 		_cManager = cManager;
-        _qManager = qManager;
+                _qManager = qManager;
 		init();
 	}
 	
@@ -77,16 +78,16 @@ public class Commands {
 		};
 		probending.setExecutor(exe);
 	}
+        
+        public static PBFieldCreationManager getFieldCreationManager() {
+            return _cManager;
+        }
 
-    public static PBFieldCreationManager getFieldCreationManager() {
-        return _cManager;
-    }
+        public static ProbendingHandler getProbendingHandler() {
+            return _pHandler;
+        }
 
-    public static ProbendingHandler getProbendingHandler() {
-        return _pHandler;
-    }
-
-    public static PBQueueManager getQueueManager() {
-        return _qManager;
-    }
+        public static PBQueueManager getQueueManager() {
+            return _qManager;
+        }
 }

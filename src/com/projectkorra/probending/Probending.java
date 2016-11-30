@@ -7,8 +7,8 @@ import java.util.logging.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.projectkorra.probending.commands.Commands;
-import com.projectkorra.probending.managers.InviteManager;
 import com.projectkorra.probending.managers.PBFieldCreationManager;
+import com.projectkorra.probending.managers.InviteManager;
 import com.projectkorra.probending.managers.PBQueueManager;
 import com.projectkorra.probending.managers.PBTeamManager;
 import com.projectkorra.probending.managers.ProbendingHandler;
@@ -21,7 +21,7 @@ public class Probending extends JavaPlugin {
 
 	private ProbendingHandler pHandler;
 	private PBFieldCreationManager cManager;
-    private PBQueueManager qManager;
+        private PBQueueManager qManager;
 	private PBTeamManager tManager;
 	private InviteManager iManager;
 

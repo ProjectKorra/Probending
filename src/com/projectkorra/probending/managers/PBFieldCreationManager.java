@@ -268,6 +268,8 @@ public class PBFieldCreationManager implements Listener {
                     if (arg.equalsIgnoreCase("yes")) {
                         bigStep++;
                         sendMessage(player, "Next few steps will be the basic probending fields!");
+                        sendMessage(player, ChatColor.DARK_RED + "DO NOT SET A SPAWN POINT/REGION LOCATION IN THE DEATHMATH AREA"
+                                + ", only deathmatch related stuff is allowed to be there!");
                         createFieldStep(player, null);
                     } else if (arg.equalsIgnoreCase("no")) {
                         stopCreating(player);
@@ -450,16 +452,47 @@ public class PBFieldCreationManager implements Listener {
                     sendMessage(player, ChatColor.GRAY + "A region below the arena, where they fall through");
                 } else {
                     field.setKnockOffArea(arg);
-                    finishCreating(player);
+                    bigStep++;
+                    createFieldStep(player, null);
                 }
                 break;
             case 12:
+                if (arg == null) {
+                    sendMessage(player, ChatColor.YELLOW + "What's the name of the death match area. [WG region, example: 'PB1DMArea']");
+                    sendMessage(player, ChatColor.GRAY + "The region where they play the deathmatch");
+                } else {
+                    field.setDeathMathArea(arg);
+                    bigStep++;
+                    createFieldStep(player, null);
+                }
+                break;
+            case 13:
+                if (arg == null) {
+                    sendMessage(player, ChatColor.YELLOW + "Where is the spawn location of team " + smallStep + " in the death match!");
+                    sendMessage(player, ChatColor.YELLOW + "Type: 'here' when your at the location!");
+                } else {
+                    if (arg.equalsIgnoreCase("here")) {
+                        if (smallStep == 1) {
+                            field.setTeam1DMLocation(player.getLocation());
+                        } else {
+                            field.setTeam2DMLocation(player.getLocation());
+                            smallStep = 1;
+                            bigStep++;
+                            createFieldStep(player, null);
+                        }
+                    } else {
+                        sendMessage(player, ChatColor.YELLOW + "Options: [here]");
+                    }
+                }
+                break;
+            case 14:
                 if (arg == null) {
                     sendMessage(player, ChatColor.YELLOW + "What is the name of this Probending Field?");
                 } else {
                     field.setFieldName(arg);
                     finishCreating(player);
                 }
+                break;
         }
     }
 
