@@ -176,8 +176,9 @@ public class DBProbendingTeam extends DBInterpreter {
         });
     }
 
-    public void createTeam(final UUID creator, final String teamName, final TeamMemberRole creatorRole, final Callback<PBTeam> callback) {
-    	DatabaseHandler.getDatabase().executeUpdate("INSERT INTO pb_teams (name, leader, wins, games, rating) VALUES (?, ?, 0, 0, ?);", teamName, creator.toString(), INITIAL_RATING);
+    public void createTeam(final UUID creator, final String teamName, final TeamMemberRole creatorRole, final TeamColor[] colors, final Callback<PBTeam> callback) {
+    	String coloring = colors[0].toString() + "," + colors[1].toString() + "," + colors[2].toString() + "," + colors[3].toString();
+    	DatabaseHandler.getDatabase().executeUpdate("INSERT INTO pb_teams (name, leader, coloring, wins, games, rating) VALUES (?, ?, ?, 0, 0, ?);", teamName, creator.toString(), coloring, INITIAL_RATING);
         DatabaseHandler.getDatabase().executeQuery("SELECT id FROM pb_teams WHERE name=? AND leader=?;", new Callback<ResultSet>() {
             public void run(ResultSet rs) {
                 try {
@@ -200,10 +201,10 @@ public class DBProbendingTeam extends DBInterpreter {
         }, teamName, creator.toString());
     }
 
-    public void createTeamAsync(final UUID creator, final String teamName, final TeamMemberRole creatorRole, final Callback<PBTeam> callback) {
+    public void createTeamAsync(final UUID creator, final String teamName, final TeamMemberRole creatorRole, final TeamColor[] colors, final Callback<PBTeam> callback) {
         runAsync(new Runnable() {
             public void run() {
-                createTeam(creator, teamName, creatorRole, new Callback<PBTeam>() {
+                createTeam(creator, teamName, creatorRole, colors, new Callback<PBTeam>() {
                     public void run(PBTeam team) {
                         final PBTeam pbTeam = team;
                         runSync(new Runnable() {
