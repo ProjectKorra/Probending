@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -33,8 +34,8 @@ public class TeamCommand extends PBCommand{
 		Player player = (Player) sender;
 		
 		if (args.size() == 0) {
-			List<String> help = Arrays.asList("&6/probending team create {name} {role} &eCreate a team and choose your role!",
-					"&6/probending team invite {player} {role} &eInvite a player to your team for a certain role!",
+			List<String> help = Arrays.asList("&6/probending team create [name] [role] [color1] {color2} {color3} {color4} &eCreate a team and choose your role, and select the team colors!",
+					"&6/probending team invite [player] [role] &eInvite a player to your team for a certain role!",
 					"&6/probending team join [team] &eJoin a team. You can only join one that has invited you!",
 					"&6/probending team leave &eLeave your current team!",
 					"&6/probending team kick [player] &eKick a player from your team! &cLeader only!",
@@ -48,29 +49,27 @@ public class TeamCommand extends PBCommand{
 			return;
 		}
 		
+		if (!player.hasPermission("probending.command.team." + args.get(0).toLowerCase())) {
+			player.sendMessage(ChatColor.RED + "You do not have permission to do that!");
+			return;
+		}
+		
 		switch (args.get(0).toLowerCase()) {
 			case "create":
-				if (args.size() <= 3 || args.size() >= 8) {
-					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team create [color1] {color2} {color3} {color4}");
+				if (args.size() <= 4 || args.size() >= 9) {
+					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team create [name] [role] [color1] {color2} {color3} {color4}");
 					return;
 				}
-				TeamColor[] colors = new TeamColor[] {};
+				TeamColor[] colors = new TeamColor[] {null, null, null, null};
 				for (int i = 4; i <= 7; i++) {
 					if (args.size() >= i) {
-						colors[(i-4)] = (TeamColor.parseColor(args.get(i)) == null ? TeamColor.WHITE : TeamColor.parseColor(args.get(i)));
+						colors[(i-4)] = (TeamColor.parseColor(args.get(i-1)) == null ? TeamColor.WHITE : TeamColor.parseColor(args.get(i-1)));
 					}
 				}
 				
 				for (int i = 1; i < 4; i++) {
 					if (colors[i] == null) {
 						colors[i] = colors[0];
-					}
-				}
-				
-				for (PBTeam team : Probending.get().getTeamManager().getTeamList()) {
-					if (team.getColors() == colors) {
-						player.sendMessage(ChatColor.RED + "Those colors are taken! Try a different combination!");
-						return;
 					}
 				}
 				
@@ -125,6 +124,20 @@ public class TeamCommand extends PBCommand{
 				}
 				changeMemberRole(player, args.get(1), args.get(2));
 				return;
+			case "info":
+				if (args.size() != 2) {
+					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team info [team]");
+					return;
+				}
+				attemptTeamLookup(player, args.get(1));
+				return;
+			case "disband":
+				if (args.size() != 1) {
+					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team disband");
+					return;
+				}
+				attemptTeamDisband(player);
+				return;
 		}
 	}
 
@@ -152,7 +165,7 @@ public class TeamCommand extends PBCommand{
 		
 		leader.sendMessage(ChatColor.GREEN + "Finalizing team creation, do not log off!");
 		final UUID leaderUUID = leader.getUniqueId();
-		Probending.get().getTeamManager().createNewTeam(leader, name, role, new Callback<Boolean>() {
+		Probending.get().getTeamManager().createNewTeam(leader, name, role, new TeamColor[] {helmet, chest, leggings, boots}, new Callback<Boolean>() {
 			public void run(Boolean success) {
 				if (Bukkit.getPlayer(leaderUUID) == null) {
 					return;
@@ -164,6 +177,22 @@ public class TeamCommand extends PBCommand{
 				}
 			}
 		});
+	}
+	
+	public void attemptTeamDisband(Player player) {
+		PBTeam team = Probending.get().getTeamManager().getTeamFromPlayer(player);
+		if (team == null) {
+			player.sendMessage(ChatColor.RED + "You do not belong to a team!");
+			return;
+		}
+		
+		if (team.getLeader() != player.getUniqueId()) {
+			player.sendMessage(ChatColor.RED + "You are not the leader of your team!");
+			return;
+		}
+		
+		player.sendMessage(ChatColor.GREEN + "Finalizing team disband, do not log off!");
+		team.disband();
 	}
 	
 	public void invitePlayer(Player leader, String targetName, String element) {
@@ -412,15 +441,6 @@ public class TeamCommand extends PBCommand{
 			return;
 		}
 		
-		TeamColor[] colors = team.getColors().clone();
-		colors[i] = color;
-		
-		/*PBTeam check = Probending.get().getTeamManager().getTeamFromColors(colors);
-		if (check != null) {
-			player.sendMessage(ChatColor.RED + "That color combination is already taken!");
-			return;
-		}*/
-		
 		player.sendMessage(ChatColor.GREEN + "Finalizing changes! Do not log off!");
 		final int ii = i;
 		final UUID uuid = player.getUniqueId();
@@ -495,5 +515,28 @@ public class TeamCommand extends PBCommand{
 				}
 			}
 		});
+	}
+	
+	public void attemptTeamLookup(Player player, String name) {
+		PBTeam team = Probending.get().getTeamManager().getTeamFromName(name);
+		if (team == null) {
+			player.sendMessage(ChatColor.RED + "Team not found!");
+			return;
+		}
+		
+		player.sendMessage(team.getColors()[1].getClosest() + team.getTeamName());
+		String colors = "Colors: " + team.getColors()[0].toString();
+		for (int i = 1; i < 4; i++) {
+			colors += (", " + team.getColors()[i].toString());
+		}
+		player.sendMessage(colors);
+		player.sendMessage("Rating: " + team.getRating());
+		player.sendMessage("Wins: " + team.getWins());
+		player.sendMessage("Games Played: " + team.getGamesPlayed());
+		player.sendMessage("Members: ");
+		for (UUID uuid : team.getMembers().keySet()) {
+			OfflinePlayer oPlayer = Bukkit.getOfflinePlayer(uuid);
+			player.sendMessage("- " + oPlayer.getName() + ChatColor.AQUA + " (" + ChatColor.RESET + uuid.toString() + ChatColor.AQUA + ")");
+		}
 	}
 }

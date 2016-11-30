@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import com.projectkorra.probending.enums.TeamColor;
 import com.projectkorra.probending.libraries.database.Callback;
 import com.projectkorra.probending.objects.PBTeam;
 import com.projectkorra.probending.objects.PBTeam.TeamMemberRole;
@@ -91,7 +92,7 @@ public class PBTeamManager {
 		return teamsByColor.containsKey(colors) ? teamsByColor.get(colors) : null;
 	}*/
 	
-	public void createNewTeam(Player leader, String name, TeamMemberRole leaderRole, final Callback<Boolean> successCallback/*, Integer[] color*/) {
+	public void createNewTeam(Player leader, String name, TeamMemberRole leaderRole, TeamColor[] colors, final Callback<Boolean> successCallback) {
 		if (teamsByOnlinePlayer.containsKey(leader)) {
 			successCallback.run(false);
 			return;
@@ -111,7 +112,7 @@ public class PBTeamManager {
 			}
 			
 			final UUID leaderUUID = leader.getUniqueId();
-			this.teamStorage.createTeamAsync(leaderUUID, name, leaderRole, new Callback<PBTeam>() {
+			this.teamStorage.createTeamAsync(leaderUUID, name, leaderRole, colors, new Callback<PBTeam>() {
 				public void run(PBTeam team) {
 					teamsByID.put(team.getID(), team);
 					teamsByName.put(team.getTeamName(), team);
@@ -124,6 +125,30 @@ public class PBTeamManager {
 				}
 			});
 		}
+	}
+	
+	public boolean disbandTeam(final PBTeam team, final Callback<Boolean> successCallback) {
+		if (teamsByID.containsValue(team)) {
+			this.teamStorage.deleteTeam(team, new Runnable() {
+
+				@Override
+				public void run() {
+					for (UUID uuid : team.getMembers().keySet()) {
+						if (Bukkit.getPlayer(uuid) == null) {
+							continue;
+						} else {
+							teamsByOnlinePlayer.remove(Bukkit.getPlayer(uuid));
+						}
+					}
+					teamsByID.remove(team.getID());
+					teamsByName.remove(team.getTeamName());
+					successCallback.run(true);
+				}
+			});
+			return true;
+		}
+		successCallback.run(false);
+		return false;
 	}
 	
 	public boolean handleJoinTeam(Player player, final PBTeam team, TeamMemberRole role, final Callback<Boolean> successCallback) {

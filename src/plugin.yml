@@ -19,3 +19,13 @@ permissions:
     children:
       probending.command.join: true
       probending.command.info: true
+      probending.command.team.create: true
+      probending.command.team.disband: true
+      probending.command.team.invite: true
+      probending.command.team.join: true
+      probending.command.team.leave: true
+      probending.command.team.info: true
+      probending.command.team.kick: true
+      probending.command.team.setname: true
+      probending.command.team.setcolor: true
+      probending.command.team.setmemberrole: true

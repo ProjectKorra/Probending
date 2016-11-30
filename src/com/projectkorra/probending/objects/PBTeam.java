@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import com.projectkorra.probending.PBMessenger;
 import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.enums.TeamColor;
 import com.projectkorra.probending.game.Game;
@@ -127,6 +129,24 @@ public class PBTeam {
     public void kickPlayer(Player player, Callback<Boolean> successCallback) {
     	if (Probending.get().getTeamManager().handleKickPlayer(player, this, successCallback)) {
     		_members.remove(player.getUniqueId());
+    	}
+    }
+    
+    public void disband() {
+    	if (Probending.get().getTeamManager().disbandTeam(this, new Callback<Boolean>() {
+
+			@Override
+			public void run(Boolean success) {
+				for (UUID uuid : _members.keySet()) {
+					Player p = Bukkit.getPlayer(uuid);
+					if (p != null) {
+						PBMessenger.sendMessage(p, ChatColor.RED + "Your team leader has disbanded the team!", true);
+					}
+				}
+			}
+    		
+    	})) {
+    		_members.clear();
     	}
     }
 

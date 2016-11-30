@@ -34,13 +34,13 @@ public class Probending extends JavaPlugin {
 			Logger.getLogger(Probending.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		new DatabaseHandler(this);
-
+		DBProbendingTeam teamDb = new DBProbendingTeam(this);
+		
 		pHandler = new ProbendingHandler(this);
 		cManager = new PBFieldCreationManager(pHandler);
 		qManager = new PBQueueManager(this, pHandler);
 		this.getServer().getPluginManager().registerEvents(cManager, this);
 		new Commands(pHandler, cManager, qManager);
-		DBProbendingTeam teamDb = new DBProbendingTeam(this);
 		tManager = new PBTeamManager(teamDb);
 		iManager = new InviteManager(teamDb);
 	}

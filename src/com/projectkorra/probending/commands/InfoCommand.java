@@ -24,6 +24,7 @@ public class InfoCommand extends PBCommand{
 			sender.sendMessage(ChatColor.RED + "Insufficient Permissions");
 			return;
 		}
+		
 		if (args.size() != 1) {
 			sender.sendMessage(ChatColor.RED + "Incorrect argument length! Try: " + getProperUse());
 		} else {
