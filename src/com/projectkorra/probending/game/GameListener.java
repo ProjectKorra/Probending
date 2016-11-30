@@ -17,69 +17,69 @@ import com.projectkorra.projectkorra.event.AbilityStartEvent;
 
 public class GameListener implements Listener {
 
-    private Game game;
+	private Game game;
 
-    public GameListener(Game game) {
-        this.game = game;
-    }
+	public GameListener(Game game) {
+		this.game = game;
+	}
 
-    @EventHandler(ignoreCancelled = true)
-    public void PlayerMoveEvent(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
-        Location from = event.getFrom();
-        Location to = event.getTo();
-        if (!game.canPlayerMove(player)) {
-            if (from.getX() != to.getX() || from.getZ() != to.getZ()) {
-                event.getPlayer().sendMessage(ChatColor.RED + "Do not move yet!");
-                event.getPlayer().teleport(from);
-                event.setCancelled(true);
-                return;
-            }
-        }
-        if (from.getBlockX() != to.getBlockX() || from.getBlockY() != to.getBlockY() || from.getBlockZ() != to.getBlockZ()) {
-            game.playerMove(player, from, to);
-        }
-    }
+	@EventHandler(ignoreCancelled = true)
+	public void PlayerMoveEvent(PlayerMoveEvent event) {
+		Player player = event.getPlayer();
+		Location from = event.getFrom();
+		Location to = event.getTo();
+		if (!game.canPlayerMove(player)) {
+			if (from.getX() != to.getX() || from.getZ() != to.getZ()) {
+				event.getPlayer().sendMessage(ChatColor.RED + "Do not move yet!");
+				event.getPlayer().teleport(from);
+				event.setCancelled(true);
+				return;
+			}
+		}
+		if (from.getBlockX() != to.getBlockX() || from.getBlockY() != to.getBlockY() || from.getBlockZ() != to.getBlockZ()) {
+			game.playerMove(player, from, to);
+		}
+	}
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
-    public void PlayerAnimationEvent(PlayerAnimationEvent event) {
-        Player player = event.getPlayer();
-        if (!game.canPlayerMove(player)) {
-            event.setCancelled(true);
-        }
-    }
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+	public void PlayerAnimationEvent(PlayerAnimationEvent event) {
+		Player player = event.getPlayer();
+		if (!game.canPlayerMove(player)) {
+			event.setCancelled(true);
+		}
+	}
 
-    @EventHandler(ignoreCancelled = true)
-    public void DamageEvent(EntityDamageEvent event) {
-        Entity e = event.getEntity();
-        if (e instanceof Player) {
-            Player player = (Player) e;
-            if (game.isPlayerInMatch(player)) {
-                event.setDamage(0);
-            }
-        }
-    }
+	@EventHandler(ignoreCancelled = true)
+	public void DamageEvent(EntityDamageEvent event) {
+		Entity e = event.getEntity();
+		if (e instanceof Player) {
+			Player player = (Player) e;
+			if (game.isPlayerInMatch(player)) {
+				event.setDamage(0);
+			}
+		}
+	}
 
-    @EventHandler(ignoreCancelled = true)
-    public void FoodLevelChangeEvent(FoodLevelChangeEvent event) {
-        Entity e = event.getEntity();
-        if (e instanceof Player) {
-            Player player = (Player) e;
-            if (game.isPlayerInMatch(player)) {
-                event.setCancelled(true);
-            }
-        }
-    }
-    
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void playerBendEvent(AbilityStartEvent event) {
-    	Player p = event.getAbility().getPlayer();
-    	if (game.isPlayerInMatch(p)) {
-    		
-    	}
-    }
-    
-    public static boolean isAbilityAllowed(String ability) {
-    	return Probending.get().getConfig().getStringList("RoundSettings.AllowedMoves").contains(ability);
-    }
+	@EventHandler(ignoreCancelled = true)
+	public void FoodLevelChangeEvent(FoodLevelChangeEvent event) {
+		Entity e = event.getEntity();
+		if (e instanceof Player) {
+			Player player = (Player) e;
+			if (game.isPlayerInMatch(player)) {
+				event.setCancelled(true);
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void playerBendEvent(AbilityStartEvent event) {
+		Player p = event.getAbility().getPlayer();
+		if (game.isPlayerInMatch(p)) {
+
+		}
+	}
+
+	public static boolean isAbilityAllowed(String ability) {
+		return Probending.get().getConfig().getStringList("RoundSettings.AllowedMoves").contains(ability);
+	}
 }

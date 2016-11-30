@@ -10,10 +10,10 @@ import com.projectkorra.probending.PBMessenger.PBMessage;
 
 import net.md_5.bungee.api.ChatColor;
 
-public class QueueLeaveCommand extends PBCommand{
+public class QueueLeaveCommand extends PBCommand {
 
 	public QueueLeaveCommand() {
-		super("leave", "Leave the probending match queue!", "/probending leave", new String[] {"leave", "l"});
+		super("leave", "Leave the probending match queue!", "/probending leave", new String[] { "leave", "l" });
 	}
 
 	@Override

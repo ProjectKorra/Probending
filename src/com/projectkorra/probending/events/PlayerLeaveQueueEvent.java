@@ -5,17 +5,17 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class PlayerLeaveQueueEvent extends Event implements Cancellable{
-	
+public class PlayerLeaveQueueEvent extends Event implements Cancellable {
+
 	public static final HandlerList HANDLERS = new HandlerList();
-	
+
 	private Player player;
 	private boolean cancel;
-	
+
 	public PlayerLeaveQueueEvent(Player player) {
 		this.player = player;
 	}
-	
+
 	public Player getPlayer() {
 		return player;
 	}
@@ -34,7 +34,7 @@ public class PlayerLeaveQueueEvent extends Event implements Cancellable{
 	public HandlerList getHandlers() {
 		return HANDLERS;
 	}
-	
+
 	public static HandlerList getHanderList() {
 		return HANDLERS;
 	}

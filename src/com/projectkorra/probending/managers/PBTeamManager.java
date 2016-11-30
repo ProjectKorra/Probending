@@ -17,7 +17,7 @@ import com.projectkorra.probending.storage.DBProbendingTeam;
 import com.projectkorra.projectkorra.BendingPlayer;
 
 public class PBTeamManager {
-	
+
 	private DBProbendingTeam teamStorage;
 	private Map<Player, PBTeam> teamsByOnlinePlayer = new HashMap<>();
 	private Map<Integer, PBTeam> teamsByID = new HashMap<>();
@@ -28,11 +28,11 @@ public class PBTeamManager {
 		this.teamStorage = teamStorage;
 		populateTeamMap();
 	}
-	
+
 	public void updateTeam(PBTeam team, Runnable after) {
 		this.teamStorage.updatePBTeamAsync(team, after);
 	}
-	
+
 	public void populateTeamMap() {
 		teamStorage.loadPBTeamsAsync(new Callback<List<PBTeam>>() {
 			public void run(List<PBTeam> teams) {
@@ -49,7 +49,7 @@ public class PBTeamManager {
 			}
 		});
 	}
-	
+
 	public void updatePlayerMapsForLogin(final Player player) {
 		getTeamFromUUIDAsync(player.getUniqueId(), new Callback<PBTeam>() {
 			public void run(PBTeam team) {
@@ -59,15 +59,15 @@ public class PBTeamManager {
 			}
 		});
 	}
-	
+
 	public void updatePlayerMapsForLogout(Player player) {
 		teamsByOnlinePlayer.remove(player);
 	}
-	
+
 	public PBTeam getTeamFromPlayer(Player player) {
 		return teamsByOnlinePlayer.containsKey(player) ? teamsByOnlinePlayer.get(player) : null;
 	}
-	
+
 	public void getTeamFromUUIDAsync(final UUID uuid, final Callback<PBTeam> callback) {
 		this.teamStorage.getTeamIdByMemberAsync(uuid, new Callback<Integer>() {
 			public void run(Integer teamId) {
@@ -79,19 +79,20 @@ public class PBTeamManager {
 			}
 		});
 	}
-	
+
 	public PBTeam getTeamFromID(int id) {
 		return teamsByID.containsKey(id) ? teamsByID.get(id) : null;
 	}
-	
+
 	public PBTeam getTeamFromName(String name) {
 		return teamsByName.containsKey(name) ? teamsByName.get(name) : null;
 	}
-	
-	/*public PBTeam getTeamFromColors(TeamColor[] colors) {
-		return teamsByColor.containsKey(colors) ? teamsByColor.get(colors) : null;
-	}*/
-	
+
+	/*
+	 * public PBTeam getTeamFromColors(TeamColor[] colors) { return
+	 * teamsByColor.containsKey(colors) ? teamsByColor.get(colors) : null; }
+	 */
+
 	public void createNewTeam(Player leader, String name, TeamMemberRole leaderRole, TeamColor[] colors, final Callback<Boolean> successCallback) {
 		if (teamsByOnlinePlayer.containsKey(leader)) {
 			successCallback.run(false);
@@ -105,28 +106,27 @@ public class PBTeamManager {
 				successCallback.run(false);
 				return;
 			}
-			
+
 			if (!leaderRole.isEnabled()) {
 				successCallback.run(false);
 				return;
 			}
-			
+
 			final UUID leaderUUID = leader.getUniqueId();
 			this.teamStorage.createTeamAsync(leaderUUID, name, leaderRole, colors, new Callback<PBTeam>() {
 				public void run(PBTeam team) {
 					teamsByID.put(team.getID(), team);
 					teamsByName.put(team.getTeamName(), team);
-					if (Bukkit.getPlayer(leaderUUID) != null)
-					{
+					if (Bukkit.getPlayer(leaderUUID) != null) {
 						teamsByOnlinePlayer.put(Bukkit.getPlayer(leaderUUID), team);
 					}
-					
+
 					successCallback.run(true);
 				}
 			});
 		}
 	}
-	
+
 	public boolean disbandTeam(final PBTeam team, final Callback<Boolean> successCallback) {
 		if (teamsByID.containsValue(team)) {
 			this.teamStorage.deleteTeam(team, new Runnable() {
@@ -150,7 +150,7 @@ public class PBTeamManager {
 		successCallback.run(false);
 		return false;
 	}
-	
+
 	public boolean handleJoinTeam(Player player, final PBTeam team, TeamMemberRole role, final Callback<Boolean> successCallback) {
 		if (teamsByOnlinePlayer.containsKey(player)) {
 			successCallback.run(false);
@@ -161,12 +161,12 @@ public class PBTeamManager {
 				successCallback.run(false);
 				return false;
 			}
-			
+
 			if (!role.isEnabled()) {
 				successCallback.run(false);
 				return false;
 			}
-			
+
 			final UUID uuid = player.getUniqueId();
 			this.teamStorage.joinTeam(uuid, role, team, new Runnable() {
 				public void run() {
@@ -202,7 +202,7 @@ public class PBTeamManager {
 			return true;
 		}
 	}
-	
+
 	public boolean handleKickPlayer(Player player, PBTeam team, final Callback<Boolean> successCallback) {
 		if (!teamsByOnlinePlayer.containsKey(player)) {
 			successCallback.run(false);
@@ -221,17 +221,17 @@ public class PBTeamManager {
 		}
 		return false;
 	}
-	
+
 	public List<PBTeam> getTeamList() {
 		List<PBTeam> list = new ArrayList<>();
-		
+
 		for (PBTeam team : teamsByID.values()) {
 			if (list.contains(team)) {
 				continue;
 			}
 			list.add(team);
 		}
-		
+
 		return list;
 	}
 }

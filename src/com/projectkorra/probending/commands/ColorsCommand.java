@@ -8,10 +8,10 @@ import com.projectkorra.probending.enums.TeamColor;
 
 import net.md_5.bungee.api.ChatColor;
 
-public class ColorsCommand extends PBCommand{
+public class ColorsCommand extends PBCommand {
 
 	public ColorsCommand() {
-		super("colors", "Lists the colors for teams and gear! Selecting a color will show more about it", "/probending colors {color}", new String[] {"colors", "color", "c", "colours", "colour"});
+		super("colors", "Lists the colors for teams and gear! Selecting a color will show more about it", "/probending colors {color}", new String[] { "colors", "color", "c", "colours", "colour" });
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class ColorsCommand extends PBCommand{
 				}
 				return;
 			}
-			
+
 			sender.sendMessage(colorInformation(color));
 		} else {
 			sender.sendMessage(ChatColor.RED + "Incorrect arguments. Try: " + getProperUse());

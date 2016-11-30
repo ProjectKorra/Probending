@@ -7,23 +7,23 @@ import org.bukkit.event.HandlerList;
 
 import com.projectkorra.probending.enums.GamePlayerMode;
 
-public class PlayerJoinQueueEvent extends Event implements Cancellable{
-	
+public class PlayerJoinQueueEvent extends Event implements Cancellable {
+
 	private static final HandlerList HANDLERS = new HandlerList();
-	
+
 	private Player player;
 	private GamePlayerMode mode;
 	private boolean cancel;
-	
+
 	public PlayerJoinQueueEvent(Player player, GamePlayerMode mode) {
 		this.player = player;
 		this.mode = mode;
 	}
-	
+
 	public Player getPlayer() {
 		return player;
 	}
-	
+
 	public GamePlayerMode getGamePlayerMode() {
 		return mode;
 	}
