@@ -28,11 +28,9 @@ public class SQLiteDatabase extends AbstractDatabase {
 			Class.forName("org.sqlite.JDBC");
 			_connection = DriverManager.getConnection("jdbc:sqlite:" + sqlFile.getAbsolutePath());
 			printInfo("Connection established!");
-		}
-		catch (ClassNotFoundException e) {
+		} catch (ClassNotFoundException e) {
 			printErr("JDBC driver not found!", true);
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			printErr("SQL exception during connection.", true);
 		}
 	}
@@ -46,8 +44,7 @@ public class SQLiteDatabase extends AbstractDatabase {
 	public void close() {
 		try {
 			_connection.close();
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
@@ -60,21 +57,19 @@ public class SQLiteDatabase extends AbstractDatabase {
 					statement.setObject(i + 1, values[i]);
 				}
 			}
-
+			
 			try (ResultSet result = statement.executeQuery()) {
 				if (callback != null) {
 					callback.run(result);
 				}
 			}
-		}
-		catch (SQLException exception) {
+		} catch (SQLException exception) {
 			exception.printStackTrace();
-		}
-		catch (Exception exception) {
+		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
 	}
-
+	
 	@Override
 	public void executeUpdate(String query, Object... values) {
 		try (PreparedStatement statement = getConnection().prepareStatement(query)) {
@@ -83,13 +78,11 @@ public class SQLiteDatabase extends AbstractDatabase {
 					statement.setObject(i + 1, values[i]);
 				}
 			}
-
+			
 			statement.executeUpdate();
-		}
-		catch (SQLException exception) {
+		} catch (SQLException exception) {
 			exception.printStackTrace();
-		}
-		catch (Exception exception) {
+		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
 	}
@@ -104,8 +97,7 @@ public class SQLiteDatabase extends AbstractDatabase {
 			} else {
 				return false;
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}

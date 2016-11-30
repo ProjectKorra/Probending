@@ -6,21 +6,21 @@ import java.util.Map;
 
 import org.bukkit.command.CommandSender;
 
-public abstract class PBCommand implements PBSubCommand {
-
+public abstract class PBCommand implements PBSubCommand{
+	
 	public static Map<String, PBCommand> commands = new HashMap<>();
-
+	
 	private String[] aliases;
 	private String description;
 	private String name;
 	private String properUse;
-
+	
 	public PBCommand(String name, String description, String properUse, String[] aliases) {
 		this.name = name;
 		this.description = description;
 		this.properUse = properUse;
 		this.aliases = aliases;
-
+		
 		commands.put(name.toLowerCase(), this);
 	}
 
