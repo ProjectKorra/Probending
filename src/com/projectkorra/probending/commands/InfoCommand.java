@@ -3,18 +3,19 @@ package com.projectkorra.probending.commands;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.objects.PBPlayer;
 import com.projectkorra.probending.objects.PBTeam;
+import org.bukkit.ChatColor;
 
-public class InfoCommand extends PBCommand {
+
+public class InfoCommand extends PBCommand{
 
 	public InfoCommand() {
-		super("info", "Shows the probending stats for a player!", "/probending info [player]", new String[] { "info", "i" });
+		super("info", "Shows the probending stats for a player!", "/probending info [player]", new String[] {"info", "i"});
 	}
 
 	@Override
@@ -23,7 +24,7 @@ public class InfoCommand extends PBCommand {
 			sender.sendMessage(ChatColor.RED + "Insufficient Permissions");
 			return;
 		}
-
+		
 		if (args.size() != 1) {
 			sender.sendMessage(ChatColor.RED + "Incorrect argument length! Try: " + getProperUse());
 		} else {
