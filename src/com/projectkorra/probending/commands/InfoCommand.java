@@ -9,8 +9,8 @@ import org.bukkit.entity.Player;
 import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.objects.PBPlayer;
 import com.projectkorra.probending.objects.PBTeam;
+import org.bukkit.ChatColor;
 
-import net.md_5.bungee.api.ChatColor;
 
 public class InfoCommand extends PBCommand{
 
