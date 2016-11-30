@@ -75,7 +75,9 @@ public class GameListener implements Listener {
     public void playerBendEvent(AbilityStartEvent event) {
     	Player p = event.getAbility().getPlayer();
     	if (game.isPlayerInMatch(p)) {
-    		
+    		if (!isAbilityAllowed(event.getAbility().getName())) {
+    			event.setCancelled(true);
+    		}
     	}
     }
     
