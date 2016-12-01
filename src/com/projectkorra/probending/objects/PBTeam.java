@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import com.projectkorra.probending.PBMessenger;
 import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.enums.TeamColor;
 import com.projectkorra.probending.game.Game;
@@ -129,14 +131,32 @@ public class PBTeam {
     		_members.remove(player.getUniqueId());
     	}
     }
+    
+    public void disband() {
+    	if (Probending.get().getTeamManager().disbandTeam(this, new Callback<Boolean>() {
+
+			@Override
+			public void run(Boolean success) {
+				for (UUID uuid : _members.keySet()) {
+					Player p = Bukkit.getPlayer(uuid);
+					if (p != null) {
+						PBMessenger.sendMessage(p, ChatColor.RED + "Your team leader has disbanded the team!", true);
+					}
+				}
+			}
+    		
+    	})) {
+    		_members.clear();
+    	}
+    }
 
     public static enum TeamMemberRole {
 
-        WATER(Element.WATER.getColor() + "Waterbender", Element.WATER, true),
-        AIR(Element.AIR.getColor() + "Airbender", Element.AIR, false),
-        FIRE(Element.FIRE.getColor() + "Firebender", Element.FIRE, true),
-        EARTH(Element.EARTH.getColor() + "Earthbender", Element.EARTH, true),
-        CHI(Element.CHI.getColor() + "Chiblocker", Element.CHI, false);
+        WATER(Element.WATER.getColor() + "Waterbender", Element.WATER, Probending.get().getConfig().getBoolean("TeamSettings.AllowWater")),
+        AIR(Element.AIR.getColor() + "Airbender", Element.AIR, Probending.get().getConfig().getBoolean("TeamSettings.AllowAir")),
+        FIRE(Element.FIRE.getColor() + "Firebender", Element.FIRE, Probending.get().getConfig().getBoolean("TeamSettings.AllowFire")),
+        EARTH(Element.EARTH.getColor() + "Earthbender", Element.EARTH, Probending.get().getConfig().getBoolean("TeamSettings.AllowEarth")),
+        CHI(Element.CHI.getColor() + "Chiblocker", Element.CHI, Probending.get().getConfig().getBoolean("TeamSettings.AllowChi"));
 
         private String _display;
         private boolean _enabled;
