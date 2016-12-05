@@ -170,7 +170,7 @@ public class Game {
         return;
     }
 
-    protected boolean isPlayerAProbender(Player player) {
+    protected boolean isPlayerInMatch(Player player) {
         if (team1Players.contains(player) || team2Players.contains(player)) {
             return true;
         }

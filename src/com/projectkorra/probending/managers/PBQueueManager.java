@@ -12,13 +12,18 @@ import com.projectkorra.probending.enums.GameType;
 import com.projectkorra.probending.enums.WinningType;
 import com.projectkorra.probending.events.PlayerJoinQueueEvent;
 import com.projectkorra.probending.events.PlayerLeaveQueueEvent;
+import com.projectkorra.probending.events.TeamJoinQueueEvent;
+import com.projectkorra.probending.events.TeamLeaveQueueEvent;
 import com.projectkorra.probending.game.Game;
 import com.projectkorra.probending.game.TeamGame;
 import com.projectkorra.probending.objects.PBPlayer;
 import com.projectkorra.probending.objects.PBTeam;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,7 +32,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-
 
 /**
  *
@@ -41,17 +45,21 @@ public class PBQueueManager implements Listener {
     private Set<PBPlayer> queuedUpPlayers;
     private List<PBPlayer> playerMode1P;
     private List<PBPlayer> playerMode3P;
+    private Map<PBTeam, List<PBPlayer>> playerModeTeam;
 
     private long informDelay = 2000;
     private long curTime;
+    private long curTeamTime;
 
     public PBQueueManager(JavaPlugin plugin, ProbendingHandler pHandler) {
         this.plugin = plugin;
         this.pHandler = pHandler;
         this.curTime = System.currentTimeMillis();
+        this.curTeamTime = System.currentTimeMillis();
         this.queuedUpPlayers = new HashSet<>();
         this.playerMode1P = new ArrayList<>();
         this.playerMode3P = new ArrayList<>();
+        this.playerModeTeam = new HashMap<>();
     }
 
     public void quePlayer(Player player, GamePlayerMode gameMode) {
@@ -82,7 +90,7 @@ public class PBQueueManager implements Listener {
             player.sendMessage(ChatColor.RED + "You are already queued up!");
             return;
         }
-        informPlayers();
+        informPlayers(true);
         tryStartGame();
     }
 
@@ -112,7 +120,40 @@ public class PBQueueManager implements Listener {
             player.sendMessage(ChatColor.RED + "You are not queued up!");
             return;
         }
-        informPlayers();
+        informPlayers(true);
+    }
+    
+    public void queTeam(PBTeam team, Player leader, Player one, Player two) {
+    	PBPlayer leaderPB = pHandler.getPBPlayer(leader.getUniqueId());
+    	PBPlayer onePB = pHandler.getPBPlayer(one.getUniqueId());
+    	PBPlayer twoPB = pHandler.getPBPlayer(two.getUniqueId());
+    	List<PBPlayer> participants = Arrays.asList(leaderPB, onePB, twoPB);
+    	
+    	if (!playerModeTeam.containsKey(team)) {
+    		TeamJoinQueueEvent event = new TeamJoinQueueEvent(team, participants);
+    		Probending.get().getServer().getPluginManager().callEvent(event);
+    		if (!event.isCancelled()) {
+    			playerModeTeam.put(team, participants);
+    			leader.sendMessage(ChatColor.GREEN + "Entering team queue");
+    			one.sendMessage(ChatColor.GREEN + "Entering team queue");
+    			two.sendMessage(ChatColor.GREEN + "Entering team queue");
+    		}
+    	} else {
+    		leader.sendMessage(ChatColor.RED + "Your team is already queued");
+    	}
+    	informTeams(true);
+    	tryStartTeamGame();
+    }
+    
+    public void removeTeamFromQueue(PBTeam team) {
+    	if (playerModeTeam.containsKey(team)) {
+    		TeamLeaveQueueEvent event = new TeamLeaveQueueEvent(team);
+    		Probending.get().getServer().getPluginManager().callEvent(event);
+    		if (!event.isCancelled()) {
+    			playerModeTeam.remove(team);
+    		}
+    	}
+    	informTeams(true);
     }
 
     public void gameEnded(Game game, WinningType winners) {
@@ -207,8 +248,8 @@ public class PBQueueManager implements Listener {
         tryStartGame();
     }
 
-    private void informPlayers() {
-        if (curTime + informDelay < System.currentTimeMillis()) {
+    private void informPlayers(boolean override) {
+        if (curTime + informDelay < System.currentTimeMillis() || override) {
             curTime = System.currentTimeMillis();
             for (PBPlayer pbPlayer : queuedUpPlayers) {
                 if (Bukkit.getPlayer(pbPlayer.getUUID()) != null) {
@@ -220,6 +261,22 @@ public class PBQueueManager implements Listener {
                 }
             }
         }
+    }
+    
+    private void informTeams(boolean override) {
+    	if (curTeamTime + informDelay < System.currentTimeMillis() || override) {
+    		curTeamTime = System.currentTimeMillis();
+    		for (List<PBPlayer> players : playerModeTeam.values()) {
+    			for (PBPlayer pbPlayer : players) {
+    				if (Bukkit.getPlayer(pbPlayer.getUUID()) != null) {
+    					Player p = Bukkit.getPlayer(pbPlayer.getUUID());
+                        p.sendMessage(ChatColor.GRAY + "===================");
+                        p.sendMessage(ChatColor.YELLOW + "Teams: " + ChatColor.AQUA + playerModeTeam.size() + ChatColor.GRAY + "/2");
+                        p.sendMessage(ChatColor.GRAY + "===================");
+    				}
+    			}
+    		}
+    	}
     }
 
     private void tryStartGame() {
@@ -276,6 +333,49 @@ public class PBQueueManager implements Listener {
             }
             game.startNewRound();
         }
+    }
+    
+    public void tryStartTeamGame() {
+    	if (playerModeTeam.size() >= 2) {
+    		Game game;
+    		Set<Player> team1 = new HashSet<>();
+            Set<Player> team2 = new HashSet<>();
+            PBTeam teamA = null;
+            PBTeam teamB = null;
+    		if (pHandler.availableFields.isEmpty()) {
+                return;
+            }
+    		if (playerModeTeam.size() >= 2) {
+    			for (PBTeam team : playerModeTeam.keySet()) {
+    				if (team1.isEmpty()) {
+    					for (PBPlayer pbPlayer : playerModeTeam.get(team)) {
+    						team1.add(Bukkit.getPlayer(pbPlayer.getUUID()));
+    					}
+    					teamA = team;
+    				} else if (team2.isEmpty()) {
+    					for (PBPlayer pbPlayer : playerModeTeam.get(team)) {
+    						team2.add(Bukkit.getPlayer(pbPlayer.getUUID()));
+    					}
+    					teamB = team;
+    				} else {
+    					break;
+    				}
+    			}
+    		}
+    		if (teamA == null) {
+    			return;
+    		}
+    		
+    		if (teamB == null) {
+    			return;
+    		}
+    		game = new TeamGame(plugin, this, GameType.DEFAULT, GamePlayerMode.TEAM, pHandler.availableFields.get(0), team1, team2, teamA, teamB);
+            pHandler.games.add(game);
+            pHandler.availableFields.remove(0);
+            playerModeTeam.remove(teamA);
+            playerModeTeam.remove(teamB);
+            game.startNewRound();
+    	}
     }
     
     @EventHandler
