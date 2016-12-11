@@ -1,25 +1,19 @@
 package com.projectkorra.probending.game;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.projectkorra.probending.enums.GamePlayerMode;
 import com.projectkorra.probending.enums.GameType;
-import com.projectkorra.probending.enums.TeamColor;
 import com.projectkorra.probending.enums.WinningType;
 import com.projectkorra.probending.game.field.FieldManager;
 import com.projectkorra.probending.game.round.Round;
 import com.projectkorra.probending.libraries.Title;
 import com.projectkorra.probending.managers.PBQueueManager;
-import com.projectkorra.probending.objects.PBGear;
 import com.projectkorra.probending.objects.ProbendingField;
 
 public class Game {
@@ -40,10 +34,8 @@ public class Game {
     private Boolean hasSuddenDeath;
     private Boolean forcedSuddenDeath;
 
-    protected Set<Player> team1Players;
-    protected Set<Player> team2Players;
-    
-    protected Map<Player, ItemStack[]> gear;
+    private Set<Player> team1Players;
+    private Set<Player> team2Players;
 
     private Integer team1Score;
     private Integer team2Score;
@@ -73,12 +65,6 @@ public class Game {
         this.fieldManager = new FieldManager(this, field);
         this.listener = new GameListener(this);
         plugin.getServer().getPluginManager().registerEvents(listener, plugin);
-        if (this instanceof TeamGame) {
-        	TeamGame tGame = (TeamGame) this;
-        	tGame.setupTeamGear();
-        } else {
-        	setupPlayerGear();
-        }
     }
 
     public GameType getGameType() {
@@ -181,7 +167,6 @@ public class Game {
             winners = WinningType.TEAM2;
         }
         handler.gameEnded(this, winners);
-        removeGear();
         return;
     }
 
@@ -205,40 +190,5 @@ public class Game {
         if (round != null) {
             fieldManager.playerMove(player, from, to);
         }
-    }
-    
-    public void setupPlayerGear() {
-    	gear = new HashMap<>();
-    	for (Player player : team1Players) {
-    		PlayerInventory inv = player.getInventory();
-    		ItemStack[] armor = {inv.getBoots(), inv.getLeggings(), inv.getChestplate(), inv.getHelmet()};
-    		gear.put(player, armor);
-    		PBGear pbGear = new PBGear(TeamColor.BLUE);
-    		inv.setHelmet(pbGear.Helmet());
-    		inv.setChestplate(pbGear.Chestplate());
-    		inv.setLeggings(pbGear.Leggings());
-    		inv.setBoots(pbGear.Boots());
-    	}
-    	
-    	for (Player player : team2Players) {
-    		PlayerInventory inv = player.getInventory();
-    		ItemStack[] armor = {inv.getBoots(), inv.getLeggings(), inv.getChestplate(), inv.getHelmet()};
-    		gear.put(player, armor);
-    		PBGear pbGear = new PBGear(TeamColor.RED);
-    		inv.setHelmet(pbGear.Helmet());
-    		inv.setChestplate(pbGear.Chestplate());
-    		inv.setLeggings(pbGear.Leggings());
-    		inv.setBoots(pbGear.Boots());
-    	}
-    }
-    
-    public void removeGear() {
-    	for (Player player : gear.keySet()) {
-    		if (!player.isOnline()) {
-    			continue;
-    		}
-    		player.getInventory().setArmorContents(gear.get(player));
-    	}
-    	gear.clear();
     }
 }

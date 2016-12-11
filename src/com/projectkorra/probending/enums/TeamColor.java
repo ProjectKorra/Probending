@@ -64,9 +64,6 @@ public enum TeamColor {
 	}
 	
 	public static TeamColor parseColor(String color) {
-		for (TeamColor c : TeamColor.values()) {
-			if (c.toString().equalsIgnoreCase(color)) return c;
-		}
-		return null;
+		return TeamColor.valueOf(color.toUpperCase());
 	}
 }

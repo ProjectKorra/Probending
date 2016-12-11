@@ -56,7 +56,7 @@ public class TeamCommand extends PBCommand{
 		
 		switch (args.get(0).toLowerCase()) {
 			case "create":
-				if (args.size() <= 3 || args.size() >= 9) {
+				if (args.size() <= 4 || args.size() >= 9) {
 					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team create [name] [role] [color1] {color2} {color3} {color4}");
 					return;
 				}
@@ -341,11 +341,6 @@ public class TeamCommand extends PBCommand{
 		Player target = Bukkit.getPlayer(targetName);
 		if (target == null) {
 			kicker.sendMessage(ChatColor.RED + "Player not found!");
-			return;
-		}
-		
-		if (kicker == target) {
-			kicker.sendMessage(ChatColor.RED + "You cannot kick yourself!");
 			return;
 		}
 		
