@@ -19,20 +19,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.projectkorra.probending.PBMessenger;
 import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.game.Game;
-import com.projectkorra.probending.game.scoreboard.PBScoreboard;
 import com.projectkorra.probending.libraries.database.Callback;
 import com.projectkorra.probending.objects.PBPlayer;
+import com.projectkorra.probending.objects.PBPlayerScoreboard;
 import com.projectkorra.probending.objects.ProbendingField;
 import com.projectkorra.probending.storage.DBProbendingPlayer;
 import com.projectkorra.probending.storage.FFProbendingField;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 
 public class ProbendingHandler implements Listener {
-
-    private final JavaPlugin plugin;
 
     protected Map<UUID, PBPlayer> players;
 
@@ -43,7 +37,6 @@ public class ProbendingHandler implements Listener {
     private DBProbendingPlayer _playerStorage;
 
     public ProbendingHandler(JavaPlugin plugin) {
-        this.plugin = plugin;
         this.players = new HashMap<>();
         this.availableFields = new ArrayList<>();
         this.games = new HashSet<>();
@@ -117,7 +110,11 @@ public class ProbendingHandler implements Listener {
             return;
         }
         if (players.containsKey(infoPlayer.getUniqueId())) {
-            PBScoreboard.showInformation(player, players.get(infoPlayer.getUniqueId()), plugin);
+        	PBPlayerScoreboard pbps = PBPlayerScoreboard.getFromPlayer(player);
+        	if (pbps == null) {
+        		pbps = new PBPlayerScoreboard(player);
+        	}
+            pbps.displayInfo(infoPlayer);
         } else {
             PBMessenger.sendMessage(player, PBMessenger.PBMessage.ERROR);
         }
@@ -137,6 +134,7 @@ public class ProbendingHandler implements Listener {
         });
         Probending.get().getTeamManager().updatePlayerMapsForLogin(player);
         Probending.get().getInviteManager().handleJoin(player);
+        new PBPlayerScoreboard(player);
     }
 
     @EventHandler
@@ -148,5 +146,6 @@ public class ProbendingHandler implements Listener {
         players.remove(player.getUniqueId());
         Probending.get().getTeamManager().updatePlayerMapsForLogout(player);
         Probending.get().getInviteManager().handleQuit(player);
+        PBPlayerScoreboard.removePlayer(player);
     }
 }
