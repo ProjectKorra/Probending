@@ -474,6 +474,8 @@ public class PBFieldCreationManager implements Listener {
                     if (arg.equalsIgnoreCase("here")) {
                         if (smallStep == 1) {
                             field.setTeam1DMLocation(player.getLocation());
+                            smallStep++;
+                            createFieldStep(player, null);
                         } else {
                             field.setTeam2DMLocation(player.getLocation());
                             smallStep = 1;

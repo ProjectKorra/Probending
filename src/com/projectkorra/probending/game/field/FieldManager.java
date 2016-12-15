@@ -113,7 +113,7 @@ public class FieldManager {
     public void reset() {
         int i = 1;
         oldPlayerRegions.clear();
-        if (game.isSuddenDeath()) {
+        if (!game.isSuddenDeath()) {
             boolean differentSpawnPoints = false;
             if (field.getStartPointTeam1(game.getTeam1Players().size()) != null) {
                 differentSpawnPoints = true;
@@ -172,7 +172,7 @@ public class FieldManager {
                         p.teleport(loc);
                     }
                 } else {
-                    Location loc = field.getTeam2Location2();
+                    Location loc = field.getTeam2DMLocation();
                     if (loc != null) {
                         p.teleport(loc);
                     }

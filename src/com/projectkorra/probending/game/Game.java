@@ -103,9 +103,6 @@ public class Game {
     }
 
     public void startNewRound() {
-        if (round != null) {
-            round.forceStop();
-        }
         fieldManager.reset();
         if (!isSuddenDeath()) {
             round = new Round(plugin, this);
@@ -119,13 +116,12 @@ public class Game {
     }
 
     public void endRound(WinningType winningTeam) {
-        round.forceStop();
         manageEnd(winningTeam);
     }
 
     private void manageEnd(WinningType winningTeam) {
         boolean ended = false;
-        round = null;
+        round.forceStop();
         suddenDeath = false;
         if (winningTeam.equals(WinningType.TEAM1)) {
             team1Score++;
