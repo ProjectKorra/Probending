@@ -17,10 +17,12 @@ import com.projectkorra.probending.enums.TeamColor;
 import com.projectkorra.probending.enums.WinningType;
 import com.projectkorra.probending.game.field.FieldManager;
 import com.projectkorra.probending.game.round.Round;
+import com.projectkorra.probending.game.scoreboard.PBScoreboard;
 import com.projectkorra.probending.libraries.Title;
 import com.projectkorra.probending.managers.PBQueueManager;
 import com.projectkorra.probending.objects.PBGear;
 import com.projectkorra.probending.objects.ProbendingField;
+import org.bukkit.event.HandlerList;
 
 public class Game {
 
@@ -52,6 +54,8 @@ public class Game {
 
     private GameType type;
     private GamePlayerMode mode;
+    
+    private final PBScoreboard pbScoreboard;
 
     public Game(JavaPlugin plugin, PBQueueManager handler, GameType type, GamePlayerMode mode,
             ProbendingField field, Set<Player> team1, Set<Player> team2) {
@@ -72,6 +76,7 @@ public class Game {
         this.team2Score = 0;
         this.fieldManager = new FieldManager(this, field);
         this.listener = new GameListener(this);
+        this.pbScoreboard = new PBScoreboard(plugin);
         plugin.getServer().getPluginManager().registerEvents(listener, plugin);
         if (this instanceof TeamGame) {
         	TeamGame tGame = (TeamGame) this;
@@ -79,6 +84,8 @@ public class Game {
         } else {
         	setupPlayerGear();
         }
+        setupPlayerTeams();
+        startNewRound();
     }
 
     public GameType getGameType() {
@@ -116,10 +123,10 @@ public class Game {
         return suddenDeath;
     }
 
-    public void startNewRound() {
+    private void startNewRound() {
         fieldManager.reset();
         if (!isSuddenDeath()) {
-            round = new Round(plugin, this);
+            round = new Round(plugin, this, pbScoreboard);
             round.start();
         }
     }
@@ -177,6 +184,8 @@ public class Game {
             winners = WinningType.TEAM2;
         }
         handler.gameEnded(this, winners);
+        HandlerList.unregisterAll(listener);
+        resetPlayerTeams();
         removeGear();
         return;
     }
@@ -236,5 +245,25 @@ public class Game {
     		player.getInventory().setArmorContents(gear.get(player));
     	}
     	gear.clear();
+    }
+
+    private void setupPlayerTeams() {
+        for (Player p : team1Players) {
+            pbScoreboard.addPlayerToScoreboard(p);
+            pbScoreboard.addPlayerToTeam1(p);
+        }
+        for (Player p : team2Players) {
+            pbScoreboard.addPlayerToScoreboard(p);
+            pbScoreboard.addPlayerToTeam2(p);
+        }
+    }
+    
+    private void resetPlayerTeams() {
+        for (Player p : team1Players) {
+            pbScoreboard.removePlayerFromScorebard(p);
+        }
+        for (Player p : team2Players) {
+            pbScoreboard.removePlayerFromScorebard(p);
+        }
     }
 }

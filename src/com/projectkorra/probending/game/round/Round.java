@@ -26,10 +26,10 @@ public class Round {
     private Boolean isOnCountdown;
     private Integer countdownDuration;
     private Integer roundDuration;
-
+    
     private PBScoreboard pbScoreboard;
 
-    public Round(JavaPlugin plugin, Game game) {
+    public Round(JavaPlugin plugin, Game game, PBScoreboard board) {
         this.plugin = plugin;
         this.game = game;
         this.team1 = game.getTeam1Players();
@@ -38,7 +38,7 @@ public class Round {
         this.isOnCountdown = true;
         this.countdownDuration = 5;
         this.roundDuration = 180;
-        this.pbScoreboard = new PBScoreboard(plugin);
+        this.pbScoreboard = board;
     }
 
     public Round setRoundDuration(Integer timeInSecs) {
@@ -52,14 +52,6 @@ public class Round {
     }
 
     public void start() {
-        for (Player p : team1) {
-            pbScoreboard.addPlayerToScoreboard(p);
-            pbScoreboard.addPlayerToTeam1(p);
-        }
-        for (Player p : team2) {
-            pbScoreboard.addPlayerToScoreboard(p);
-            pbScoreboard.addPlayerToTeam2(p);
-        }
         timer = new Timer(plugin) {
 
             @Override
@@ -96,24 +88,13 @@ public class Round {
         }
     }
 
-    private void resetPlayers() {
-        for (Player p : team1) {
-            pbScoreboard.removePlayerFromScorebard(p);
-        }
-        for (Player p : team2) {
-            pbScoreboard.removePlayerFromScorebard(p);
-        }
-    }
-
     public void stopGame() {
-        resetPlayers();
         game.timerEnded();
         timer.stop();
     }
 
     public void forceStop() {
         //FORCESTOP SHOULD BE IMPLEMENTED!
-        resetPlayers();
         timer.stop();
     }
 

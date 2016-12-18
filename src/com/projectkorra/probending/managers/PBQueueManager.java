@@ -245,6 +245,7 @@ public class PBQueueManager implements Listener {
                 }
             }
         }
+        tryStartTeamGame();
         tryStartGame();
     }
 
@@ -331,7 +332,6 @@ public class PBQueueManager implements Listener {
                     queuedUpPlayers.remove(pbPlayer);
                 }
             }
-            game.startNewRound();
         }
     }
     
@@ -374,7 +374,6 @@ public class PBQueueManager implements Listener {
             pHandler.availableFields.remove(0);
             playerModeTeam.remove(teamA);
             playerModeTeam.remove(teamB);
-            game.startNewRound();
     	}
     }
     

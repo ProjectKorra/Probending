@@ -167,12 +167,12 @@ public class FieldManager {
             random = new Random().nextInt(game.getTeam2Players().size());
             for (Player p : game.getTeam2Players()) {
                 if (dmPlayer == random) {
-                    Location loc = field.getTeam1DMLocation();
+                    Location loc = field.getTeam2DMLocation();
                     if (loc != null) {
                         p.teleport(loc);
                     }
                 } else {
-                    Location loc = field.getTeam2DMLocation();
+                    Location loc = field.getTeam2Location2();
                     if (loc != null) {
                         p.teleport(loc);
                     }
