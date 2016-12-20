@@ -5,6 +5,19 @@
  */
 package com.projectkorra.probending.managers;
 
+import com.projectkorra.probending.PBMessenger;
+import com.projectkorra.probending.Probending;
+import com.projectkorra.probending.enums.GamePlayerMode;
+import com.projectkorra.probending.enums.GameType;
+import com.projectkorra.probending.enums.WinningType;
+import com.projectkorra.probending.events.PlayerJoinQueueEvent;
+import com.projectkorra.probending.events.PlayerLeaveQueueEvent;
+import com.projectkorra.probending.events.TeamJoinQueueEvent;
+import com.projectkorra.probending.events.TeamLeaveQueueEvent;
+import com.projectkorra.probending.game.Game;
+import com.projectkorra.probending.game.TeamGame;
+import com.projectkorra.probending.objects.PBPlayer;
+import com.projectkorra.probending.objects.PBTeam;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,20 +32,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.projectkorra.probending.PBMessenger;
-import com.projectkorra.probending.Probending;
-import com.projectkorra.probending.enums.GamePlayerMode;
-import com.projectkorra.probending.enums.GameType;
-import com.projectkorra.probending.enums.WinningType;
-import com.projectkorra.probending.events.PlayerJoinQueueEvent;
-import com.projectkorra.probending.events.PlayerLeaveQueueEvent;
-import com.projectkorra.probending.events.TeamJoinQueueEvent;
-import com.projectkorra.probending.events.TeamLeaveQueueEvent;
-import com.projectkorra.probending.game.Game;
-import com.projectkorra.probending.game.TeamGame;
-import com.projectkorra.probending.objects.PBPlayer;
-import com.projectkorra.probending.objects.PBTeam;
 
 /**
  *
@@ -246,6 +245,7 @@ public class PBQueueManager implements Listener {
                 }
             }
         }
+        tryStartTeamGame();
         tryStartGame();
     }
 
@@ -332,7 +332,6 @@ public class PBQueueManager implements Listener {
                     queuedUpPlayers.remove(pbPlayer);
                 }
             }
-            game.startNewRound();
         }
     }
     
@@ -375,7 +374,6 @@ public class PBQueueManager implements Listener {
             pHandler.availableFields.remove(0);
             playerModeTeam.remove(teamA);
             playerModeTeam.remove(teamB);
-            game.startNewRound();
     	}
     }
     
