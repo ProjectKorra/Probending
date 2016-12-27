@@ -68,7 +68,7 @@ public class Commands {
 				List<String> sendingArgs = Arrays.asList(args).subList(1, args.length);
 				for (PBCommand command : PBCommand.getCommands().values()) {
 					if (Arrays.asList(command.getAliases()).contains(args[0].toLowerCase())) {
-						command.execute(sender, sendingArgs);
+						command.execute(sender, sendingArgs.toArray(new String[sendingArgs.size()]));
 						return true;
 					}
 				}

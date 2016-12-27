@@ -83,7 +83,7 @@ public class FieldManager {
             boolean isDMPlayer = false;
             for (ProtectedRegion rg : oldPlayerRegions.get(player.getUniqueId())) {
                 String regionName = rg.getId();
-                if (field.getDeathMathArea().equalsIgnoreCase(regionName)) {
+                if (field.getDeathMatchArea().equalsIgnoreCase(regionName)) {
                     isDMPlayer = true;
                     break;
                 }
@@ -91,13 +91,13 @@ public class FieldManager {
             boolean leftDMArea = true;
             for (ProtectedRegion rg : newRegions) {
                 String regionName = rg.getId();
-                if (field.getDeathMathArea().equalsIgnoreCase(regionName)) {
+                if (field.getDeathMatchArea().equalsIgnoreCase(regionName)) {
                     leftDMArea = false;
                     break;
                 }
             }
             if (!isDMPlayer && leftDMArea) {
-                //Nothing happend, was never a DM player and did not step in!
+                //Nothing happened, was never a DM player and did not step in!
             } else if (isDMPlayer && leftDMArea) {
                 //A DM player left the area!
                 gameDMPlaces(player, true);
@@ -105,7 +105,7 @@ public class FieldManager {
                 //A not DM player entered the area!!!
                 gameDMPlaces(player, false);
             } else if (isDMPlayer && !leftDMArea) {
-                //Nothing happend, a DM player stayed in his area!
+                //Nothing happened, a DM player stayed in his area!
             }
         }
     }

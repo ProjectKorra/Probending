@@ -26,14 +26,14 @@ public class TeamCommand extends PBCommand{
 	}
 
 	@Override
-	public void execute(CommandSender sender, List<String> args) {
+	public void execute(CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage("Only players can use this command!");
 		}
 		
 		Player player = (Player) sender;
 		
-		if (args.size() == 0) {
+		if (args.length == 0) {
 			List<String> help = Arrays.asList("&6/probending team create [name] [role] [color1] {color2} {color3} {color4} &eCreate a team and choose your role, and select the team colors!",
 					"&6/probending team invite [player] [role] &eInvite a player to your team for a certain role!",
 					"&6/probending team join [team] &eJoin a team. You can only join one that has invited you!",
@@ -49,21 +49,21 @@ public class TeamCommand extends PBCommand{
 			return;
 		}
 		
-		if (!player.hasPermission("probending.command.team." + args.get(0).toLowerCase())) {
+		if (!player.hasPermission("probending.command.team." + args[0].toLowerCase())) {
 			player.sendMessage(ChatColor.RED + "You do not have permission to do that!");
 			return;
 		}
 		
-		switch (args.get(0).toLowerCase()) {
+		switch (args[0].toLowerCase()) {
 			case "create":
-				if (args.size() <= 3 || args.size() >= 9) {
+				if (args.length <= 3 || args.length >= 9) {
 					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team create [name] [role] [color1] {color2} {color3} {color4}");
 					return;
 				}
 				TeamColor[] colors = new TeamColor[] {null, null, null, null};
 				for (int i = 4; i <= 7; i++) {
-					if (args.size() >= i) {
-						colors[(i-4)] = (TeamColor.parseColor(args.get(i-1)) == null ? TeamColor.WHITE : TeamColor.parseColor(args.get(i-1)));
+					if (args.length >= i) {
+						colors[(i-4)] = (TeamColor.parseColor(args[i-1]) == null ? TeamColor.WHITE : TeamColor.parseColor(args[i-1]));
 					}
 				}
 				
@@ -73,66 +73,66 @@ public class TeamCommand extends PBCommand{
 					}
 				}
 				
-				createTeam(player, args.get(1), args.get(2), colors[0], colors[1], colors[2], colors[3]);
+				createTeam(player, args[1], args[2], colors[0], colors[1], colors[2], colors[3]);
 				return;
 			case "invite":
-				if (args.size() != 3) {
+				if (args.length != 3) {
 					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team invite [player] [element]");
 					return;
 				}
-				invitePlayer(player, args.get(1), args.get(2));
+				invitePlayer(player, args[1], args[2]);
 				return;
 			case "join":
-				if (args.size() != 2) {
+				if (args.length != 2) {
 					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team join [teamName]");
 					return;
 				}
-				attemptJoinTeam(player, args.get(1));
+				attemptJoinTeam(player, args[1]);
 				return;
 			case "leave":
-				if (args.size() != 1) {
+				if (args.length != 1) {
 					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team leave");
 					return;
 				}
 				attemptLeaveTeam(player);
 				return;
 			case "kick":
-				if (args.size() != 2) {
+				if (args.length != 2) {
 					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team kick [player]");
 					return;
 				}
-				attemptKickPlayer(player, args.get(1));
+				attemptKickPlayer(player, args[1]);
 				return;
 			case "setname":
-				if (args.size() != 2) {
+				if (args.length != 2) {
 					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team setname [name]");
 					return;
 				}
-				changeTeamName(player, args.get(1));
+				changeTeamName(player, args[1]);
 				return;
 			case "setcolor":
-				if (args.size() != 3) {
+				if (args.length != 3) {
 					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team setcolor [#] [color]");
 					return;
 				}
-				changeTeamColor(player, args.get(1), args.get(2));
+				changeTeamColor(player, args[1], args[2]);
 				return;
 			case "setmemberrole":
-				if (args.size() != 3) {
+				if (args.length != 3) {
 					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team setmemberrole [player] [element]");
 					return;
 				}
-				changeMemberRole(player, args.get(1), args.get(2));
+				changeMemberRole(player, args[1], args[2]);
 				return;
 			case "info":
-				if (args.size() != 2) {
+				if (args.length != 2) {
 					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team info [team]");
 					return;
 				}
-				attemptTeamLookup(player, args.get(1));
+				attemptTeamLookup(player, args[1]);
 				return;
 			case "disband":
-				if (args.size() != 1) {
+				if (args.length != 1) {
 					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team disband");
 					return;
 				}

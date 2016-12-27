@@ -45,6 +45,18 @@ public class ProbendingHandler implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         loadFields();
     }
+    
+    public boolean isInGame(Player player) {
+    	for (Game game : games)
+    	{
+    		if (game.isPlayerInMatch(player))
+    		{
+    			return true;
+    		}
+    	}
+    	
+    	return false;
+    }
 
     public boolean addField(ProbendingField field) {
         if (!availableFields.contains(field)) {
@@ -59,6 +71,11 @@ public class ProbendingHandler implements Listener {
             availableFields.remove(field);
             _fieldStorage.deleteField(field);
         }
+    }
+    
+    public void saveField(ProbendingField field) {
+    	_fieldStorage.deleteField(field);
+    	_fieldStorage.insertField(field);
     }
 
     public ProbendingField getField(Player player, String fieldNumber) {

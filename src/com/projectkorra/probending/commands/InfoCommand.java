@@ -1,15 +1,13 @@
 package com.projectkorra.probending.commands;
 
-import java.util.List;
-
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.projectkorra.probending.Probending;
 import com.projectkorra.probending.objects.PBPlayer;
 import com.projectkorra.probending.objects.PBTeam;
-import org.bukkit.ChatColor;
 
 
 public class InfoCommand extends PBCommand{
@@ -19,16 +17,16 @@ public class InfoCommand extends PBCommand{
 	}
 
 	@Override
-	public void execute(CommandSender sender, List<String> args) {
+	public void execute(CommandSender sender, String[] args) {
 		if (!sender.hasPermission("probending.command.info")) {
 			sender.sendMessage(ChatColor.RED + "Insufficient Permissions");
 			return;
 		}
 		
-		if (args.size() != 1) {
+		if (args.length != 1) {
 			sender.sendMessage(ChatColor.RED + "Incorrect argument length! Try: " + getProperUse());
 		} else {
-			Player target = Bukkit.getPlayer(args.get(0));
+			Player target = Bukkit.getPlayer(args[0]);
 			if (target == null) {
 				sender.sendMessage(ChatColor.RED + "Player not found!");
 			} else {

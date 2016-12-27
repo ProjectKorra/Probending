@@ -1,12 +1,11 @@
 package com.projectkorra.probending.commands;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.bukkit.command.CommandSender;
 
-public abstract class PBCommand implements PBSubCommand{
+public abstract class PBCommand implements PBSubCommand {
 	
 	public static Map<String, PBCommand> commands = new HashMap<>();
 	
@@ -49,7 +48,7 @@ public abstract class PBCommand implements PBSubCommand{
 	}
 
 	@Override
-	public abstract void execute(CommandSender sender, List<String> args);
+	public abstract void execute(CommandSender sender, String[] args);
 
 	public static Map<String, PBCommand> getCommands() {
 		return commands;

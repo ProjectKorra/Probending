@@ -62,7 +62,7 @@ public class PBQueueManager implements Listener {
         this.playerModeTeam = new HashMap<>();
     }
 
-    public void quePlayer(Player player, GamePlayerMode gameMode) {
+    public void queuePlayer(Player player, GamePlayerMode gameMode) {
         if (!pHandler.players.containsKey(player.getUniqueId()) || gameMode == null) {
             return;
         }
@@ -123,7 +123,7 @@ public class PBQueueManager implements Listener {
         informPlayers(true);
     }
     
-    public void queTeam(PBTeam team, Player leader, Player one, Player two) {
+    public void queueTeam(PBTeam team, Player leader, Player one, Player two) {
     	PBPlayer leaderPB = pHandler.getPBPlayer(leader.getUniqueId());
     	PBPlayer onePB = pHandler.getPBPlayer(one.getUniqueId());
     	PBPlayer twoPB = pHandler.getPBPlayer(two.getUniqueId());

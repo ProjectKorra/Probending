@@ -9,6 +9,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -78,6 +79,15 @@ public class GameListener implements Listener {
     		if (!isAbilityAllowed(event.getAbility().getName())) {
     			event.setCancelled(true);
     		}
+    	}
+    }
+    
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+    	Player p = (Player) event.getWhoClicked();
+    	if (game.isPlayerInMatch(p))
+    	{
+    		event.setCancelled(true);
     	}
     }
     

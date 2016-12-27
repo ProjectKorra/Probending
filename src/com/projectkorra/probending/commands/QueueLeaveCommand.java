@@ -1,7 +1,5 @@
 package com.projectkorra.probending.commands;
 
-import java.util.List;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -17,14 +15,14 @@ public class QueueLeaveCommand extends PBCommand{
 	}
 
 	@Override
-	public void execute(CommandSender sender, List<String> args) {
+	public void execute(CommandSender sender, String[] args) {
 		if (!sender.hasPermission("probending.command.leave")) {
 			sender.sendMessage(ChatColor.RED + "Insufficient Permissions");
 			return;
 		}
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			if (args.size() > 0) {
+			if (args.length > 0) {
 				PBMessenger.sendMessage(player, PBMessage.ERROR);
 			} else {
 				Commands.getQueueManager().removePlayerFromQueue(player);
