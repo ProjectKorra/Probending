@@ -164,6 +164,7 @@ public class Game {
         for (Player p : team2Players) {
             title.send(p);
         }
+        pbScoreboard.setTeamScore(winningTeam == WinningType.TEAM1 ? 1 : 2, winningTeam == WinningType.TEAM1 ? team1Score : team2Score);
         if (curRound > rounds) {
             ended = true;
         }
