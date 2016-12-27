@@ -43,15 +43,15 @@ public class PBFieldCreationManager implements Listener {
                     switch (point.toLowerCase()) {
                         case "1":
                             f.setStartPointTeam1(1, player.getLocation());
-                            //TODO: DB > Save data
+                            pHandler.saveField(f);
                             break;
                         case "2":
                             f.setStartPointTeam1(2, player.getLocation());
-                            //TODO: DB > Save data
+                            pHandler.saveField(f);
                             break;
                         case "3":
                             f.setStartPointTeam1(3, player.getLocation());
-                            //TODO: DB > Save data
+                            pHandler.saveField(f);
                             break;
                         default:
                             PBMessenger.sendMessage(player, "No such region, 1, 2 and 3 are the options!", true);
@@ -62,15 +62,15 @@ public class PBFieldCreationManager implements Listener {
                     switch (point.toLowerCase()) {
                         case "1":
                             f.setStartPointTeam2(1, player.getLocation());
-                            //TODO: DB > Save data
+                            pHandler.saveField(f);
                             break;
                         case "2":
                             f.setStartPointTeam2(2, player.getLocation());
-                            //TODO: DB > Save data
+                            pHandler.saveField(f);
                             break;
                         case "3":
                             f.setStartPointTeam2(3, player.getLocation());
-                            //TODO: DB > Save data
+                            pHandler.saveField(f);
                             break;
                         default:
                             PBMessenger.sendMessage(player, "No such region, 1, 2 and 3 are the options!", true);
@@ -84,6 +84,36 @@ public class PBFieldCreationManager implements Listener {
             PBMessenger.sendMessage(player, "Data has been succesfully set!", true);
         }
     }
+    
+    public void setDeathMatchSpawn(Player player, String field, String team) {
+        ProbendingField f = pHandler.getField(player, field);
+        if (f != null) {
+            switch (team.toLowerCase()) {
+                case "1":
+                    f.setTeam1DMLocation(player.getLocation());
+                    pHandler.saveField(f);
+                    break;
+                case "2":
+                    f.setTeam2DMLocation(player.getLocation());
+                    pHandler.saveField(f);
+                    break;
+                default:
+                    PBMessenger.sendMessage(player, "No such team, try 1 or 2 for [team]", true);
+                    return;
+            }
+            PBMessenger.sendMessage(player, "Data has been succesfully set!", true);
+        }
+    }
+    
+    public void setFieldRegionDeathMatch(Player player, String field, String region)
+    {
+        ProbendingField f = pHandler.getField(player, field);
+        if (f != null) {
+        	f.setDeathMatchArea(region);
+        	pHandler.saveField(f);
+            PBMessenger.sendMessage(player, "Data has been succesfully set!", true);
+        }
+    }
 
     public void setFieldRegionSpawn(Player player, String field, String team, String point) {
         ProbendingField f = pHandler.getField(player, field);
@@ -93,15 +123,15 @@ public class PBFieldCreationManager implements Listener {
                     switch (point.toLowerCase()) {
                         case "1":
                             f.setTeam1Location1(player.getLocation());
-                            //TODO: DB > Save data
+                            pHandler.saveField(f);
                             break;
                         case "2":
                             f.setTeam1Location2(player.getLocation());
-                            //TODO: DB > Save data
+                            pHandler.saveField(f);
                             break;
                         case "3":
                             f.setTeam1Location3(player.getLocation());
-                            //TODO: DB > Save data
+                            pHandler.saveField(f);
                             break;
                         default:
                             PBMessenger.sendMessage(player, "No such region, 1, 2 and 3 are the options!", true);
@@ -112,15 +142,15 @@ public class PBFieldCreationManager implements Listener {
                     switch (point.toLowerCase()) {
                         case "1":
                             f.setTeam2Location1(player.getLocation());
-                            //TODO: DB > Save data
+                            pHandler.saveField(f);
                             break;
                         case "2":
                             f.setTeam2Location2(player.getLocation());
-                            //TODO: DB > Save data
+                            pHandler.saveField(f);
                             break;
                         case "3":
                             f.setTeam2Location3(player.getLocation());
-                            //TODO: DB > Save data
+                            pHandler.saveField(f);
                             break;
                         default:
                             PBMessenger.sendMessage(player, "No such region, 1, 2 and 3 are the options!", true);
@@ -143,15 +173,15 @@ public class PBFieldCreationManager implements Listener {
                     switch (point.toLowerCase()) {
                         case "1":
                             f.setTeam1Field1(name);
-                            //TODO: DB > Save data
+                            pHandler.saveField(f);
                             break;
                         case "2":
                             f.setTeam1Field2(name);
-                            //TODO: DB > Save data
+                            pHandler.saveField(f);
                             break;
                         case "3":
                             f.setTeam1Field3(name);
-                            //TODO: DB > Save data
+                            pHandler.saveField(f);
                             break;
                         default:
                             PBMessenger.sendMessage(player, "No such region, 1, 2 and 3 are the options!", true);
@@ -162,15 +192,15 @@ public class PBFieldCreationManager implements Listener {
                     switch (point.toLowerCase()) {
                         case "1":
                             f.setTeam2Field1(name);
-                            //TODO: DB > Save data
+                            pHandler.saveField(f);
                             break;
                         case "2":
                             f.setTeam2Field2(name);
-                            //TODO: DB > Save data
+                            pHandler.saveField(f);
                             break;
                         case "3":
                             f.setTeam2Field3(name);
-                            //TODO: DB > Save data
+                            pHandler.saveField(f);
                             break;
                         default:
                             PBMessenger.sendMessage(player, "No such region, 1, 2 and 3 are the options!", true);
@@ -190,13 +220,18 @@ public class PBFieldCreationManager implements Listener {
         if (f != null) {
             f.setKnockOffArea(name);
             PBMessenger.sendMessage(player, "Data has been succesfully set!", true);
-            //TODO: DB > Save data
+            pHandler.saveField(f);
         }
     }
 
     //TODO: ALL FIELD, THE ONE IN USE AND NOT IN USE!
     public void getFields(Player player) {
         Map<ProbendingField, Boolean> fields = pHandler.getAllFields();
+        if (fields.isEmpty())
+        {
+        	player.sendMessage(ChatColor.RED + "There are no fields loaded!");
+        	return;
+        }
         for (Map.Entry<ProbendingField, Boolean> entry : fields.entrySet()) {
             ProbendingField field = entry.getKey();
             if (entry.getValue()) {
@@ -221,6 +256,10 @@ public class PBFieldCreationManager implements Listener {
                     + ChatColor.AQUA + ((f.getTeam1Location1().getX() + f.getTeam2Location1().getX()) / 2)
                     + ChatColor.WHITE + "|"
                     + ChatColor.AQUA + ((f.getTeam1Location1().getZ() + f.getTeam2Location1().getZ()) / 2));
+            player.sendMessage(ChatColor.GOLD + "Deathmatch Location: "
+            		+ ChatColor.AQUA + ((f.getTeam1DMLocation().getX() + f.getTeam2DMLocation().getX()) / 2)
+                    + ChatColor.WHITE + "|"
+                    + ChatColor.AQUA + ((f.getTeam1DMLocation().getZ() + f.getTeam2DMLocation().getZ()) / 2));
             player.sendMessage(ChatColor.GOLD + "Team 1 RG 1: " + ChatColor.AQUA + f.getTeam1Field1());
             player.sendMessage(ChatColor.GOLD + "Team 1 RG 2: " + ChatColor.AQUA + f.getTeam1Field2());
             player.sendMessage(ChatColor.GOLD + "Team 1 RG 3: " + ChatColor.AQUA + f.getTeam1Field3());
@@ -228,6 +267,7 @@ public class PBFieldCreationManager implements Listener {
             player.sendMessage(ChatColor.GOLD + "Team 2 RG 2: " + ChatColor.AQUA + f.getTeam2Field2());
             player.sendMessage(ChatColor.GOLD + "Team 2 RG 3: " + ChatColor.AQUA + f.getTeam2Field3());
             player.sendMessage(ChatColor.GOLD + "Knock Off: " + ChatColor.AQUA + f.getKnockOffArea());
+            player.sendMessage(ChatColor.GOLD + "Deathmatch: " + ChatColor.AQUA + f.getDeathMatchArea());
         }
     }
 
@@ -461,7 +501,7 @@ public class PBFieldCreationManager implements Listener {
                     sendMessage(player, ChatColor.YELLOW + "What's the name of the death match area. [WG region, example: 'PB1DMArea']");
                     sendMessage(player, ChatColor.GRAY + "The region where they play the deathmatch");
                 } else {
-                    field.setDeathMathArea(arg);
+                    field.setDeathMatchArea(arg);
                     bigStep++;
                     createFieldStep(player, null);
                 }
@@ -469,7 +509,7 @@ public class PBFieldCreationManager implements Listener {
             case 13:
                 if (arg == null) {
                     sendMessage(player, ChatColor.YELLOW + "Where is the spawn location of team " + smallStep + " in the death match!");
-                    sendMessage(player, ChatColor.YELLOW + "Type: 'here' when your at the location!");
+                    sendMessage(player, ChatColor.YELLOW + "Type: 'here' when you're at the location!");
                 } else {
                     if (arg.equalsIgnoreCase("here")) {
                         if (smallStep == 1) {
