@@ -7,6 +7,7 @@ import java.util.Set;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,8 +22,8 @@ import com.projectkorra.probending.game.scoreboard.PBScoreboard;
 import com.projectkorra.probending.libraries.Title;
 import com.projectkorra.probending.managers.PBQueueManager;
 import com.projectkorra.probending.objects.PBGear;
+import com.projectkorra.probending.objects.Pair;
 import com.projectkorra.probending.objects.ProbendingField;
-import org.bukkit.event.HandlerList;
 
 public class Game {
 
@@ -45,7 +46,7 @@ public class Game {
     protected Set<Player> team1Players;
     protected Set<Player> team2Players;
     
-    protected Map<Player, ItemStack[]> gear;
+    protected Map<Player, Pair<ItemStack[], ItemStack[]>> gear;
 
     private Integer team1Score;
     private Integer team2Score;
@@ -216,8 +217,7 @@ public class Game {
     	gear = new HashMap<>();
     	for (Player player : team1Players) {
     		PlayerInventory inv = player.getInventory();
-    		ItemStack[] armor = {inv.getBoots(), inv.getLeggings(), inv.getChestplate(), inv.getHelmet()};
-    		gear.put(player, armor);
+    		gear.put(player, new Pair<>(inv.getContents(), inv.getArmorContents()));
     		PBGear pbGear = new PBGear(TeamColor.BLUE);
     		inv.setHelmet(pbGear.Helmet());
     		inv.setChestplate(pbGear.Chestplate());
@@ -227,8 +227,7 @@ public class Game {
     	
     	for (Player player : team2Players) {
     		PlayerInventory inv = player.getInventory();
-    		ItemStack[] armor = {inv.getBoots(), inv.getLeggings(), inv.getChestplate(), inv.getHelmet()};
-    		gear.put(player, armor);
+    		gear.put(player, new Pair<>(inv.getContents(), inv.getArmorContents()));
     		PBGear pbGear = new PBGear(TeamColor.RED);
     		inv.setHelmet(pbGear.Helmet());
     		inv.setChestplate(pbGear.Chestplate());
@@ -242,7 +241,8 @@ public class Game {
     		if (!player.isOnline()) {
     			continue;
     		}
-    		player.getInventory().setArmorContents(gear.get(player));
+    		player.getInventory().setContents(gear.get(player).getFirst());
+    		player.getInventory().setArmorContents(gear.get(player).getSecond());
     	}
     	gear.clear();
     }
