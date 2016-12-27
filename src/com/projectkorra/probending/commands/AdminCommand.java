@@ -25,9 +25,12 @@ public class AdminCommand extends PBCommand {
                     PBMessenger.sendMessage(player, ChatColor.GOLD + "/probending admin setSpawn [FIELD] [team] [point] " + ChatColor.YELLOW + "Set spawn!", false);
                     PBMessenger.sendMessage(player, ChatColor.GOLD + "/probending admin setFieldSpawn [FIELD] [team] [field]", false);
                     PBMessenger.sendMessage(player, ChatColor.DARK_RED + "                 - " + ChatColor.YELLOW + "Set field spawn!", false);
+                    PBMessenger.sendMessage(player, ChatColor.GOLD + "/probending admin setDeathmatchSpawn [FIELD] [team]", false);
+                    PBMessenger.sendMessage(player, ChatColor.DARK_RED + "                 - " + ChatColor.YELLOW + "Set deathmatch spawn!", false);
                     PBMessenger.sendMessage(player, ChatColor.GOLD + "/probending admin setRegionName [FIELD] [team] [field] [NAME]", false);
                     PBMessenger.sendMessage(player, ChatColor.DARK_RED + "                 - " + ChatColor.YELLOW + "Set region name!", false);
-                    PBMessenger.sendMessage(player, ChatColor.GOLD + "/probending admin setKnockOff [FIELD] [NAME] " + ChatColor.YELLOW + "Set knockoff name!", false);
+                    PBMessenger.sendMessage(player, ChatColor.GOLD + "/probending admin setKnockOff [FIELD] [NAME] " + ChatColor.YELLOW + "Set knockoff region name!", false);
+                    PBMessenger.sendMessage(player, ChatColor.GOLD + "/probending admin setDeathmatch [FIELD] [NAME] " + ChatColor.YELLOW + "Set deathmatch region name!", false);
                     PBMessenger.sendMessage(player, ChatColor.GREEN + "[FIELD]" + ChatColor.WHITE + " = " + ChatColor.YELLOW + "FieldNumber" + ChatColor.AQUA + " | "
                             + ChatColor.GREEN + "[team]" + ChatColor.WHITE + " = " + ChatColor.YELLOW + "1 or 2" + ChatColor.AQUA + " | ", false);
                     PBMessenger.sendMessage(player, ChatColor.GREEN + "[field]" + ChatColor.WHITE + " = " + ChatColor.YELLOW + "FieldPart 1 to 3" + ChatColor.AQUA + " | "
@@ -74,6 +77,22 @@ public class AdminCommand extends PBCommand {
                     }
                     Commands.getFieldCreationManager().setKnockOffName(player, args[1], args[2]);
                     return;
+                case "setdeathmatchspawn":
+                	if (!player.hasPermission("probending.command.arena.setdeathmatchspawn"))
+                	{
+                		PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
+                		return;
+                	}
+                	Commands.getFieldCreationManager().setDeathMatchSpawn(player, args[1], args[2]);
+                	return;
+                case "setdeathmatch":
+                	if (!player.hasPermission("probending.command.arena.setdeathmatch"))
+                	{
+                		PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
+                		return;
+                	}
+                	Commands.getFieldCreationManager().setFieldRegionDeathMatch(player, args[1], args[2]);
+                	return;
             }
         } else if (args.length == 4) {
             switch (args[0].toLowerCase()) {
@@ -91,7 +110,6 @@ public class AdminCommand extends PBCommand {
                     }
                     Commands.getFieldCreationManager().setFieldRegionSpawn(player, args[1], args[2], args[3]);
                     return;
-
             }
         } else if (args.length == 5) {
             switch (args[0].toLowerCase()) {
