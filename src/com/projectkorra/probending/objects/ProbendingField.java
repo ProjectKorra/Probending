@@ -17,7 +17,7 @@ public class ProbendingField {
     //These are all names of the regions
     private String _team1Field1, _team1Field2, _team1Field3;
     private String _team2Field1, _team2Field2, _team2Field3;
-    private String _deathMathArea;
+    private String _deathMatchArea;
     private String _knockOffArea;
 
     public ProbendingField() {
@@ -51,7 +51,7 @@ public class ProbendingField {
         _knockOffArea = knockOffArea;
         _team1DMLocation = team1DMLocation;
         _team2DMLocation = team2DMLocation;
-        _deathMathArea = deathMatchArena;
+        _deathMatchArea = deathMatchArena;
     }
 
     public String getFieldName() {
@@ -65,7 +65,7 @@ public class ProbendingField {
                 || _team2KnockedOffLocation == null || _team1DMLocation == null || _team2DMLocation == null
                 || _team1Field1 == null || _team1Field2 == null || _team1Field3 == null
                 || _team2Field1 == null || _team2Field2 == null || _team2Field3 == null
-                || _knockOffArea == null || _deathMathArea == null) {
+                || _knockOffArea == null || _deathMatchArea == null) {
             return false;
         }
         return true;
@@ -234,19 +234,19 @@ public class ProbendingField {
         return _team2DMLocation;
     }
 
-    public String getDeathMathArea() {
-        return _deathMathArea;
+    public String getDeathMatchArea() {
+        return _deathMatchArea;
     }
 
-    public void setTeam1DMLocation(Location _team1DMLocation) {
-        this._team1DMLocation = _team1DMLocation;
+    public void setTeam1DMLocation(Location team1DMLocation) {
+        _team1DMLocation = team1DMLocation;
     }
 
-    public void setTeam2DMLocation(Location _team2DMLocation) {
-        this._team2DMLocation = _team2DMLocation;
+    public void setTeam2DMLocation(Location team2DMLocation) {
+        _team2DMLocation = team2DMLocation;
     }
 
-    public void setDeathMathArea(String _deathMathArena) {
-        this._deathMathArea = _deathMathArena;
+    public void setDeathMatchArea(String deathMatchArena) {
+        _deathMatchArea = deathMatchArena;
     }
 }
