@@ -72,6 +72,11 @@ public class ProbendingHandler implements Listener {
             _fieldStorage.deleteField(field);
         }
     }
+    
+    public void saveField(ProbendingField field) {
+    	_fieldStorage.deleteField(field);
+    	_fieldStorage.insertField(field);
+    }
 
     public ProbendingField getField(Player player, String fieldNumber) {
         for (ProbendingField f : availableFields) {
