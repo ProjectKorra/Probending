@@ -47,7 +47,7 @@ public class FFProbendingField extends FileManager {
         } else {
             l = location.getBlock().getLocation();
         }
-        return l.getWorld().getName() + "@" + l.getX() + "@" + l.getY() + "@" + l.getZ() + "@" + l.getPitch() + "@" + l.getYaw();
+        return l.getWorld().getName() + "@" + l.getX() + "@" + l.getY() + "@" + l.getZ() + "@" + location.getPitch() + "@" + location.getYaw();
     }
 
     public List<ProbendingField> loadFields() {
@@ -109,7 +109,7 @@ public class FFProbendingField extends FileManager {
         set("fields." + name + ".Team2RG2", field.getTeam2Field2(), false);
         set("fields." + name + ".Team2RG3", field.getTeam2Field3(), false);
         set("fields." + name + ".KnockOff", field.getKnockOffArea(), false);
-        set("fields." + name + ".DeathMatch", field.getDeathMathArea(), false);
+        set("fields." + name + ".DeathMatch", field.getDeathMatchArea(), false);
         set("fields." + name + ".Team1LC1", locToString(field.getTeam1Location1(), true), false);
         set("fields." + name + ".Team1LC2", locToString(field.getTeam1Location2(), true), false);
         set("fields." + name + ".Team1LC3", locToString(field.getTeam1Location3(), true), false);
@@ -133,6 +133,6 @@ public class FFProbendingField extends FileManager {
     }
 
     public void deleteField(ProbendingField field) {
-        set("fields.name", null, true);
+        set("fields." + field.getFieldName(), null, true);
     }
 }
