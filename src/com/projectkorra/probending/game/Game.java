@@ -219,6 +219,7 @@ public class Game {
     		PlayerInventory inv = player.getInventory();
     		gear.put(player, new Pair<>(inv.getContents(), inv.getArmorContents()));
     		PBGear pbGear = new PBGear(TeamColor.BLUE);
+    		inv.clear();
     		inv.setHelmet(pbGear.Helmet());
     		inv.setChestplate(pbGear.Chestplate());
     		inv.setLeggings(pbGear.Leggings());
@@ -229,6 +230,7 @@ public class Game {
     		PlayerInventory inv = player.getInventory();
     		gear.put(player, new Pair<>(inv.getContents(), inv.getArmorContents()));
     		PBGear pbGear = new PBGear(TeamColor.RED);
+    		inv.clear();
     		inv.setHelmet(pbGear.Helmet());
     		inv.setChestplate(pbGear.Chestplate());
     		inv.setLeggings(pbGear.Leggings());

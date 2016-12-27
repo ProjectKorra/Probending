@@ -4,16 +4,15 @@ import java.util.HashMap;
 import java.util.Set;
 
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.projectkorra.probending.enums.GamePlayerMode;
 import com.projectkorra.probending.enums.GameType;
-import com.projectkorra.probending.enums.TeamColor;
 import com.projectkorra.probending.managers.PBQueueManager;
 import com.projectkorra.probending.objects.PBGear;
 import com.projectkorra.probending.objects.PBTeam;
+import com.projectkorra.probending.objects.Pair;
 import com.projectkorra.probending.objects.ProbendingField;
 
 public class TeamGame extends Game {
@@ -39,9 +38,8 @@ public class TeamGame extends Game {
     	gear = new HashMap<>();
     	for (Player player : team1Players) {
     		PlayerInventory inv = player.getInventory();
-    		ItemStack[] armor = {inv.getBoots(), inv.getLeggings(), inv.getChestplate(), inv.getHelmet()};
-    		gear.put(player, armor);
-    		PBGear pbGear = new PBGear(team1.getColors()[0], team1.getColors()[0], team1.getColors()[0], team1.getColors()[0]);
+    		gear.put(player, new Pair<>(inv.getContents(), inv.getArmorContents()));
+    		PBGear pbGear = new PBGear(team1.getColors()[0], team1.getColors()[1], team1.getColors()[2], team1.getColors()[3]);
     		inv.setHelmet(pbGear.Helmet());
     		inv.setChestplate(pbGear.Chestplate());
     		inv.setLeggings(pbGear.Leggings());
@@ -50,9 +48,8 @@ public class TeamGame extends Game {
     	
     	for (Player player : team2Players) {
     		PlayerInventory inv = player.getInventory();
-    		ItemStack[] armor = {inv.getBoots(), inv.getLeggings(), inv.getChestplate(), inv.getHelmet()};
-    		gear.put(player, armor);
-    		PBGear pbGear = new PBGear(TeamColor.RED);
+    		gear.put(player, new Pair<>(inv.getContents(), inv.getArmorContents()));
+    		PBGear pbGear = new PBGear(team2.getColors()[0], team2.getColors()[1], team2.getColors()[2], team2.getColors()[3]);
     		inv.setHelmet(pbGear.Helmet());
     		inv.setChestplate(pbGear.Chestplate());
     		inv.setLeggings(pbGear.Leggings());
