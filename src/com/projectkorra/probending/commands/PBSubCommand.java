@@ -1,7 +1,5 @@
 package com.projectkorra.probending.commands;
 
-import java.util.List;
-
 import org.bukkit.command.CommandSender;
 
 import com.projectkorra.projectkorra.command.PKCommand;
@@ -52,5 +50,5 @@ public interface PBSubCommand {
 	 * @param sender The CommandSender who issued the command
 	 * @param args the command's arguments
 	 */
-	public void execute(CommandSender sender, List<String> args);
+	public void execute(CommandSender sender, String[] args);
 }

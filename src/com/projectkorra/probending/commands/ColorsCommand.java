@@ -1,7 +1,5 @@
 package com.projectkorra.probending.commands;
 
-import java.util.List;
-
 import org.bukkit.command.CommandSender;
 
 import com.projectkorra.probending.enums.TeamColor;
@@ -15,14 +13,14 @@ public class ColorsCommand extends PBCommand{
 	}
 
 	@Override
-	public void execute(CommandSender sender, List<String> args) {
-		if (args.size() == 0) {
+	public void execute(CommandSender sender, String[] args) {
+		if (args.length == 0) {
 			sender.sendMessage("--- Colors ---");
 			for (TeamColor color : TeamColor.values()) {
 				sender.sendMessage(color.getClosest() + "- " + color.toString().toLowerCase());
 			}
-		} else if (args.size() == 1) {
-			TeamColor color = TeamColor.parseColor(args.get(0));
+		} else if (args.length == 1) {
+			TeamColor color = TeamColor.parseColor(args[0]);
 			if (color == null) {
 				sender.sendMessage(ChatColor.RED + "Color not found!");
 				for (TeamColor color1 : TeamColor.values()) {

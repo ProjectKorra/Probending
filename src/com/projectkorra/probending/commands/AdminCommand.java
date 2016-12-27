@@ -1,7 +1,5 @@
 package com.projectkorra.probending.commands;
 
-import java.util.List;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,14 +13,14 @@ public class AdminCommand extends PBCommand {
     }
 
     @Override
-    public void execute(CommandSender sender, List<String> args) {
+    public void execute(CommandSender sender, String[] args) {
         if (!(sender instanceof Player)) {
             return;
         }
 
         Player player = (Player) sender;
-        if (args.size() == 1) {
-            switch (args.get(0).toLowerCase()) {
+        if (args.length == 1) {
+            switch (args[0].toLowerCase()) {
                 case "2":
                     PBMessenger.sendMessage(player, ChatColor.GOLD + "/probending admin setSpawn [FIELD] [team] [point] " + ChatColor.YELLOW + "Set spawn!", false);
                     PBMessenger.sendMessage(player, ChatColor.GOLD + "/probending admin setFieldSpawn [FIELD] [team] [field]", false);
@@ -50,59 +48,59 @@ public class AdminCommand extends PBCommand {
                     Commands.getFieldCreationManager().getFields(player);
                     return;
             }
-        } else if (args.size() == 2) {
-            switch (args.get(0).toLowerCase()) {
+        } else if (args.length == 2) {
+            switch (args[0].toLowerCase()) {
                 case "info":
                     if (!player.hasPermission("probending.command.arena.info")) {
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    Commands.getFieldCreationManager().getFieldInfo(player, args.get(1));
+                    Commands.getFieldCreationManager().getFieldInfo(player, args[1]);
                     return;
                 case "delete":
                     if (!player.hasPermission("probending.command.arena.delete")) {
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    Commands.getFieldCreationManager().deleteField(player, args.get(1));
+                    Commands.getFieldCreationManager().deleteField(player, args[1]);
                     return;
             }
-        } else if (args.size() == 3) {
-            switch (args.get(0).toLowerCase()) {
+        } else if (args.length == 3) {
+            switch (args[0].toLowerCase()) {
                 case "setknockoff":
                     if (!player.hasPermission("probending.command.arena.setknockoff")) {
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    Commands.getFieldCreationManager().setKnockOffName(player, args.get(1), args.get(2));
+                    Commands.getFieldCreationManager().setKnockOffName(player, args[1], args[2]);
                     return;
             }
-        } else if (args.size() == 4) {
-            switch (args.get(0).toLowerCase()) {
+        } else if (args.length == 4) {
+            switch (args[0].toLowerCase()) {
                 case "setspawn":
                     if (!player.hasPermission("probending.command.arena.setspawn")) {
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    Commands.getFieldCreationManager().setFieldSpawn(player, args.get(1), args.get(2), args.get(3));
+                    Commands.getFieldCreationManager().setFieldSpawn(player, args[1], args[2], args[3]);
                     return;
                 case "setfieldspawn":
                     if (!player.hasPermission("probending.command.arena.setfieldspawn")) {
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    Commands.getFieldCreationManager().setFieldRegionSpawn(player, args.get(1), args.get(2), args.get(3));
+                    Commands.getFieldCreationManager().setFieldRegionSpawn(player, args[1], args[2], args[3]);
                     return;
 
             }
-        } else if (args.size() == 5) {
-            switch (args.get(0).toLowerCase()) {
+        } else if (args.length == 5) {
+            switch (args[0].toLowerCase()) {
                 case "setregionname":
                     if (!player.hasPermission("probending.command.arena.setregionname")) {
                         PBMessenger.sendMessage(player, PBMessenger.PBMessage.NOPERMS);
                         return;
                     }
-                    Commands.getFieldCreationManager().setFieldRegionName(player, args.get(1), args.get(2), args.get(3), args.get(4));
+                    Commands.getFieldCreationManager().setFieldRegionName(player, args[1], args[2], args[3], args[4]);
                     return;
             }
         }

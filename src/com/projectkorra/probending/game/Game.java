@@ -190,7 +190,7 @@ public class Game {
         return;
     }
 
-    protected boolean isPlayerInMatch(Player player) {
+    public boolean isPlayerInMatch(Player player) {
         if (team1Players.contains(player) || team2Players.contains(player)) {
             return true;
         }
