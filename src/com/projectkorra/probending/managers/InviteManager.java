@@ -107,7 +107,7 @@ public class InviteManager {
 		PBTeam team = Probending.get().getTeamManager().getTeamFromID(invite.getTeamID());
 		TeamMemberRole role = TeamMemberRole.parseRole(invite.getRole());
 		String message = ChatColor.GOLD + "You have an invitation to join " + ChatColor.GREEN + team.getTeamName() + ChatColor.GOLD + " as their " + role.getDisplay() + "\n"
-				   + ChatColor.GOLD + "Use /pb join " + ChatColor.GREEN + team.getTeamName() + ChatColor.GOLD + " to accept the invitation! Notice: You must leave your current team if you have one!";
+				   + ChatColor.GOLD + "Use /pb team join " + ChatColor.GREEN + team.getTeamName() + ChatColor.GOLD + " to accept the invitation! Notice: You must leave your current team if you have one!";
 		PBMessenger.sendMessage(player, ChatColor.translateAlternateColorCodes('&', message), true);
 	}
 	

@@ -35,11 +35,11 @@ public class TeamCommand extends PBCommand{
 		
 		if (args.length == 0) {
 			List<String> help = Arrays.asList("&6/probending team create [name] [role] [color1] {color2} {color3} {color4} &eCreate a team and choose your role, and select the team colors!",
-					"&6/probending team invite [player] [role] &eInvite a player to your team for a certain role!",
+					"&6/probending team invite [player] [role] &eInvite a player to your team for a certain role! &cLeader only!",
 					"&6/probending team join [team] &eJoin a team. You can only join one that has invited you!",
 					"&6/probending team leave &eLeave your current team!",
 					"&6/probending team kick [player] &eKick a player from your team! &cLeader only!",
-					"&6/probending team setname [name] &eChange the name of your team!",
+					"&6/probending team setname [name] &eChange the name of your team! &cLeader only!",
 					"&6/probending team setcolor [#(0-3)] [color] &eChange the color of a gear piece! /pb colors for color list. &cLeader only!",
 					"&6/probending team setmemberrole [player] [role] &eChange the role of a member! &cLeader only!");
 			
@@ -245,13 +245,13 @@ public class TeamCommand extends PBCommand{
 	}
 	
 	public void attemptJoinTeam(Player joinee, final String teamName) {
-		PBTeam team = Probending.get().getTeamManager().getTeamFromPlayer(joinee);
-		if (team != null) {
-			joinee.sendMessage(ChatColor.RED + "You must leave your current team before joining another." + ChatColor.GOLD + "/pb team leave");
+		PBTeam current = Probending.get().getTeamManager().getTeamFromPlayer(joinee);
+		if (current != null) {
+			joinee.sendMessage(ChatColor.RED + "You must leave your current team before joining another. " + ChatColor.GOLD + "/pb team leave " + current.getTeamName());
 			return;
 		}
 		
-		team = Probending.get().getTeamManager().getTeamFromName(teamName);
+		final PBTeam team = Probending.get().getTeamManager().getTeamFromName(teamName);
 		if (team == null) {
 			joinee.sendMessage(ChatColor.RED + "No team with that name was found!");
 			Probending.get().getInviteManager().notifyPlayer(joinee, true);
@@ -301,6 +301,13 @@ public class TeamCommand extends PBCommand{
 				
 				if (success) {
 					Bukkit.getPlayer(joineeUUID).sendMessage(ChatColor.GREEN + "Successfully joined " + teamName);
+					for (UUID tUUID : team.getMembers().keySet())
+					{
+						if (!tUUID.toString().equals(joineeUUID.toString()) && Bukkit.getPlayer(tUUID) != null)
+						{
+							Bukkit.getPlayer(joineeUUID).sendMessage(ChatColor.GREEN + Bukkit.getPlayer(joineeUUID).getName() + " joined " + teamName);
+						}
+					}
 				} else {
 					Bukkit.getPlayer(joineeUUID).sendMessage(ChatColor.RED + "Unexpected error joining team! It will not be saved!");
 				}
