@@ -153,6 +153,7 @@ public class Game {
             if (hasSuddenDeath) {
                 suddenDeath = true;
                 startNewRound();
+                pbScoreboard.setTeamScore(winningTeam == WinningType.TEAM1 ? 1 : 2, winningTeam == WinningType.TEAM1 ? team1Score : team2Score);
                 return;
             }
         }

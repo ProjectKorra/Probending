@@ -141,7 +141,7 @@ public class DBProbendingTeam extends DBInterpreter {
     }
 
     public void joinTeam(final UUID uuid, final TeamMemberRole role, final PBTeam team, final Runnable after) {
-        DatabaseHandler.getDatabase().executeUpdate("INSERT INTO pb_team_members (uuid, teamId, role) VALUES (?, ?, ?) ON DUPLICATE KEY SET teamId=VALUES(teamId), role=VALUES(role);", uuid.toString(), team.getID(), role.toString());
+        DatabaseHandler.getDatabase().executeUpdate("INSERT INTO pb_team_members (uuid, teamId, role) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE teamId=VALUES(teamId), role=VALUES(role);", uuid.toString(), team.getID(), role.toString());
         if (after != null)
         	after.run();
     }
