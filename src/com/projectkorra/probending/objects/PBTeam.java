@@ -68,6 +68,7 @@ public class PBTeam {
     
     public void setName(String name, Runnable after) {
     	_name = name;
+    	Probending.get().getTeamManager().handleTeamRename(this, name);
     	Probending.get().getTeamManager().updateTeam(this, after);
     }
 
