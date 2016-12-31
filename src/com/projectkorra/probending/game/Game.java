@@ -79,14 +79,11 @@ public class Game {
         this.listener = new GameListener(this);
         this.pbScoreboard = new PBScoreboard(plugin);
         plugin.getServer().getPluginManager().registerEvents(listener, plugin);
-        if (this instanceof TeamGame) {
-        	TeamGame tGame = (TeamGame) this;
-        	tGame.setupTeamGear();
-        } else {
+        if (!(this instanceof TeamGame)) {
         	setupPlayerGear();
+        	setupPlayerTeams();
+        	startNewRound();
         }
-        setupPlayerTeams();
-        startNewRound();
     }
 
     public GameType getGameType() {
@@ -124,7 +121,7 @@ public class Game {
         return suddenDeath;
     }
 
-    private void startNewRound() {
+    protected void startNewRound() {
         fieldManager.reset();
         if (!isSuddenDeath()) {
             round = new Round(plugin, this, pbScoreboard);
