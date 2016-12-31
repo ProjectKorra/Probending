@@ -225,6 +225,11 @@ public class TeamCommand extends PBCommand{
 		TeamMemberRole role = TeamMemberRole.parseRole(element);
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(target);
 		
+		if (role == null) {
+			leader.sendMessage(ChatColor.RED + "That role does not exist!");
+			return;
+		}
+		
 		if (!role.isEnabled()) {
 			leader.sendMessage(ChatColor.RED + "That role is disabled!");
 			return;
