@@ -7,13 +7,13 @@ import org.bukkit.configuration.file.FileConfiguration;
 public class ConfigManager {
 
     public static Config defaultConfig;
-    public static Config messageConfig;
+    //public static Config messageConfig;
 
     public ConfigManager() {
         defaultConfig = new Config(new File("config.yml"));
-        messageConfig = new Config(new File("language.yml"));
+        //messageConfig = new Config(new File("language.yml"));
         configCheck(ConfigType.DEFAULT);
-        configCheck(ConfigType.MESSAGES);
+        //configCheck(ConfigType.MESSAGES);
     }
 
     public static void configCheck(ConfigType type) {
@@ -22,7 +22,7 @@ public class ConfigManager {
             case DEFAULT:
                 config = defaultConfig.get();
                 
-                config.addDefault("Database.MySQL.Enabled", true);
+                config.addDefault("Database.MySQL.Enabled", false);
                 config.addDefault("Database.MySQL.Hostname", "localhost");
                 config.addDefault("Database.MySQL.Port", 3306);
                 config.addDefault("Database.MySQL.Database", "Probending");
@@ -31,8 +31,8 @@ public class ConfigManager {
                 
                 defaultConfig.save();
                 break;
-            case MESSAGES:
-                config = messageConfig.get();
+            //case MESSAGES:
+                //config = messageConfig.get();
                 
                 //I'll do this later...
                 /*
@@ -60,8 +60,8 @@ public class ConfigManager {
                 config.addDefault("Messages.Player.PlayerAddedElement", "");
                 */
                         
-                messageConfig.save();
-                break;
+                //messageConfig.save();
+                //break;
         }
     }
 
