@@ -305,7 +305,7 @@ public class TeamCommand extends PBCommand{
 					{
 						if (!tUUID.toString().equals(joineeUUID.toString()) && Bukkit.getPlayer(tUUID) != null)
 						{
-							Bukkit.getPlayer(joineeUUID).sendMessage(ChatColor.GREEN + Bukkit.getPlayer(joineeUUID).getName() + " joined " + teamName);
+							Bukkit.getPlayer(tUUID).sendMessage(ChatColor.GREEN + Bukkit.getPlayer(joineeUUID).getName() + " joined " + teamName);
 						}
 					}
 				} else {
@@ -336,6 +336,13 @@ public class TeamCommand extends PBCommand{
 				
 				if (success) {
 					Bukkit.getPlayer(uuid).sendMessage(ChatColor.GREEN + "Successfully left " + TEAM.getTeamName());
+					for (UUID tUUID : TEAM.getMembers().keySet())
+					{
+						if (!tUUID.toString().equals(uuid.toString()) && Bukkit.getPlayer(tUUID) != null)
+						{
+							Bukkit.getPlayer(uuid).sendMessage(ChatColor.GREEN + Bukkit.getPlayer(uuid).getName() + " left " + TEAM.getTeamName());
+						}
+					}
 				} else {
 					Bukkit.getPlayer(uuid).sendMessage(ChatColor.RED + "Unexpected error leaving team! It will not be saved!");
 				}
@@ -537,18 +544,25 @@ public class TeamCommand extends PBCommand{
 		}
 		
 		player.sendMessage(team.getColors()[1].getClosest() + team.getTeamName());
-		String colors = "Colors: " + team.getColors()[0].toString();
+		String colors = ChatColor.GOLD + "Colors: " + team.getColors()[0].getClosest() + team.getColors()[0].toString();
 		for (int i = 1; i < 4; i++) {
-			colors += (", " + team.getColors()[i].toString());
+			colors += (", " + team.getColors()[i].getClosest() + team.getColors()[i].toString());
 		}
 		player.sendMessage(colors);
-		player.sendMessage("Rating: " + team.getRating());
-		player.sendMessage("Wins: " + team.getWins());
-		player.sendMessage("Games Played: " + team.getGamesPlayed());
-		player.sendMessage("Members: ");
+		player.sendMessage(ChatColor.GOLD + "Rating: " + ChatColor.GREEN + team.getRating());
+		player.sendMessage(ChatColor.GOLD + "Wins: " + ChatColor.GREEN + team.getWins());
+		player.sendMessage(ChatColor.GOLD + "Games Played: " + ChatColor.GREEN + team.getGamesPlayed());
+		player.sendMessage(ChatColor.GOLD + "Members: ");
 		for (UUID uuid : team.getMembers().keySet()) {
 			OfflinePlayer oPlayer = Bukkit.getOfflinePlayer(uuid);
-			player.sendMessage("- " + oPlayer.getName() + ChatColor.AQUA + " (" + ChatColor.RESET + uuid.toString() + ChatColor.AQUA + ")");
+			if (oPlayer != null)
+			{
+				player.sendMessage(ChatColor.GOLD + "- " + ChatColor.GREEN + oPlayer.getName() + ChatColor.AQUA + " (" + ChatColor.RESET + ChatColor.GREEN + uuid.toString() + ChatColor.AQUA + ")");
+			}
+			else
+			{
+				player.sendMessage(ChatColor.GOLD + "- " + ChatColor.GREEN + "Unknown" + ChatColor.AQUA + " (" + ChatColor.RESET + ChatColor.GREEN + uuid.toString() + ChatColor.AQUA + ")");
+			}
 		}
 	}
 }

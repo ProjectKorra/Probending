@@ -188,7 +188,9 @@ public class DBProbendingTeam extends DBInterpreter {
                         	public void run() {
                         		Map<UUID, TeamMemberRole> members = new HashMap<>();
                                 members.put(creator, creatorRole);
-                                callback.run(new PBTeam(id, teamName, creator, members, 0, 0, INITIAL_RATING));
+                                PBTeam team = new PBTeam(id, teamName, creator, members, 0, 0, INITIAL_RATING);
+                                team.setColors(colors[0], colors[1], colors[2], colors[3]);
+                                callback.run(team);
                         	}
                         });
                     } else {
