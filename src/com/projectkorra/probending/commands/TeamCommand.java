@@ -305,7 +305,7 @@ public class TeamCommand extends PBCommand{
 					{
 						if (!tUUID.toString().equals(joineeUUID.toString()) && Bukkit.getPlayer(tUUID) != null)
 						{
-							Bukkit.getPlayer(joineeUUID).sendMessage(ChatColor.GREEN + Bukkit.getPlayer(joineeUUID).getName() + " joined " + teamName);
+							Bukkit.getPlayer(tUUID).sendMessage(ChatColor.GREEN + Bukkit.getPlayer(joineeUUID).getName() + " joined " + teamName);
 						}
 					}
 				} else {
@@ -336,6 +336,13 @@ public class TeamCommand extends PBCommand{
 				
 				if (success) {
 					Bukkit.getPlayer(uuid).sendMessage(ChatColor.GREEN + "Successfully left " + TEAM.getTeamName());
+					for (UUID tUUID : TEAM.getMembers().keySet())
+					{
+						if (!tUUID.toString().equals(uuid.toString()) && Bukkit.getPlayer(tUUID) != null)
+						{
+							Bukkit.getPlayer(uuid).sendMessage(ChatColor.GREEN + Bukkit.getPlayer(uuid).getName() + " left " + TEAM.getTeamName());
+						}
+					}
 				} else {
 					Bukkit.getPlayer(uuid).sendMessage(ChatColor.RED + "Unexpected error leaving team! It will not be saved!");
 				}

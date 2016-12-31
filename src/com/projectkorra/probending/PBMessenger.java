@@ -25,7 +25,7 @@ public class PBMessenger {
 
     public static void sendMessage(Player player, PBMessage message) {
         if (message.hasPrefix()) {
-            player.sendMessage(ChatColor.DARK_RED + "[" + ChatColor.RED + "Probending" + ChatColor.DARK_RED + "]" + message.getMessage());
+            player.sendMessage(ChatColor.DARK_RED + "[" + ChatColor.RED + "Probending" + ChatColor.DARK_RED + "] " + message.getMessage());
         } else {
             player.sendMessage(message.getMessage());
         }

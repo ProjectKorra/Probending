@@ -33,12 +33,17 @@ public class PBTeamManager {
 		this.teamStorage.updatePBTeamAsync(team, after);
 	}
 	
+	public void handleTeamRename(PBTeam team, String newName) {
+		teamsByName.remove(team.getTeamName().toUpperCase());
+		teamsByName.put(newName.toUpperCase(), team);
+	}
+	
 	public void populateTeamMap() {
 		teamStorage.loadPBTeamsAsync(new Callback<List<PBTeam>>() {
 			public void run(List<PBTeam> teams) {
 				for (PBTeam team : teams) {
 					teamsByID.put(team.getID(), team);
-					teamsByName.put(team.getTeamName(), team);
+					teamsByName.put(team.getTeamName().toUpperCase(), team);
 					//teamsByColor.put(team.getColors(), team);
 					for (Player player : Bukkit.getOnlinePlayers()) {
 						if (team.getMembers().containsKey(player.getUniqueId())) {
@@ -85,7 +90,7 @@ public class PBTeamManager {
 	}
 	
 	public PBTeam getTeamFromName(String name) {
-		return teamsByName.containsKey(name) ? teamsByName.get(name) : null;
+		return teamsByName.containsKey(name.toUpperCase()) ? teamsByName.get(name.toUpperCase()) : null;
 	}
 	
 	/*public PBTeam getTeamFromColors(TeamColor[] colors) {
@@ -96,7 +101,7 @@ public class PBTeamManager {
 		if (teamsByOnlinePlayer.containsKey(leader)) {
 			successCallback.run(false);
 			return;
-		} else if (teamsByName.containsKey(name)) {
+		} else if (teamsByName.containsKey(name.toUpperCase())) {
 			successCallback.run(false);
 			return;
 		} else {
@@ -115,7 +120,7 @@ public class PBTeamManager {
 			this.teamStorage.createTeamAsync(leaderUUID, name, leaderRole, colors, new Callback<PBTeam>() {
 				public void run(PBTeam team) {
 					teamsByID.put(team.getID(), team);
-					teamsByName.put(team.getTeamName(), team);
+					teamsByName.put(team.getTeamName().toUpperCase(), team);
 					if (Bukkit.getPlayer(leaderUUID) != null)
 					{
 						teamsByOnlinePlayer.put(Bukkit.getPlayer(leaderUUID), team);
@@ -141,7 +146,7 @@ public class PBTeamManager {
 						}
 					}
 					teamsByID.remove(team.getID());
-					teamsByName.remove(team.getTeamName());
+					teamsByName.remove(team.getTeamName().toUpperCase());
 					successCallback.run(true);
 				}
 			});
