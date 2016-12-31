@@ -138,6 +138,13 @@ public class TeamCommand extends PBCommand{
 				}
 				attemptTeamDisband(player);
 				return;
+			case "queue":
+				if (args.length != 3) {
+					player.sendMessage(ChatColor.RED + "Incorrect arguments. Try: /pb team queue [team mate] [another team mate]");
+					return;
+				}
+				queueTeam(player, args[1], args[2]);
+				return;
 		}
 	}
 
@@ -569,5 +576,26 @@ public class TeamCommand extends PBCommand{
 				player.sendMessage(ChatColor.GOLD + "- " + ChatColor.GREEN + "Unknown" + ChatColor.AQUA + " (" + ChatColor.RESET + ChatColor.GREEN + uuid.toString() + ChatColor.AQUA + ")");
 			}
 		}
+	}
+	
+	public void queueTeam(Player leader, String player1, String player2) {
+		PBTeam team = Probending.get().getTeamManager().getTeamFromPlayer(leader);
+		if (team.getLeader() != leader.getUniqueId()) {
+			leader.sendMessage(ChatColor.RED + "You are not the team's leader!");
+			return;
+		}
+		
+		Player one = Bukkit.getPlayer(player1);
+		Player two = Bukkit.getPlayer(player2);
+		if (one == null || two == null) {
+			leader.sendMessage(ChatColor.RED + "One or both of your team mate selections is offline!");
+			return;
+		}
+		if (!team.getMembers().containsKey(one.getUniqueId()) || !team.getMembers().containsKey(two.getUniqueId())) {
+			leader.sendMessage(ChatColor.RED + "One or both of your team mate selections isn't on your team!");
+			return;
+		}
+		
+		Commands.getQueueManager().queueTeam(team, leader, one, two);
 	}
 }

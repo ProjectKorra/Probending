@@ -24,6 +24,8 @@ public class TeamGame extends Game {
         super(plugin, handler, type, mode, field, team1Players, team2Players);
         this.team1 = team1;
         this.team2 = team2;
+        setupTeamGear();
+        startNewRound();
     }
 
     public PBTeam getTeam1() {
