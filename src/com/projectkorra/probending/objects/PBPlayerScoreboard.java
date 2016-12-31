@@ -48,7 +48,7 @@ public class PBPlayerScoreboard{
 		objectiveSidebar.getScore(ChatColor.YELLOW + "- Rating: " + ChatColor.AQUA + "N/A").setScore(6);
 		objectiveSidebar.getScore(ChatColor.BOLD + "Team stats:").setScore(5);
 
-		PBTeam team = Probending.get().getTeamManager().getTeamFromPlayer(player);
+		PBTeam team = Probending.get().getTeamManager().getTeamFromPlayer(infoPlayer);
 		if (team != null) {
 			objectiveSidebar.getScore(ChatColor.YELLOW + "- Role: " + ChatColor.AQUA + team.getMembers().get(player.getUniqueId()).getDisplay()).setScore(4);
 			objectiveSidebar.getScore(ChatColor.YELLOW + "- Name: " + ChatColor.AQUA + team.getTeamName()).setScore(3);
