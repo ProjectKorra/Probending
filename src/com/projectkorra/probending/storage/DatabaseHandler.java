@@ -18,7 +18,9 @@ public class DatabaseHandler {
         if (INSTANCE != null) {
             return;
         }
-
+        
+        _useMySQL = ConfigManager.defaultConfig.get().getBoolean("Database.MySQL.Enabled");
+        
         if (!_useMySQL) {
             _database = new SQLiteDatabase(plugin.getLogger(), "probending.db", plugin.getDataFolder().getAbsolutePath());
         } else {
