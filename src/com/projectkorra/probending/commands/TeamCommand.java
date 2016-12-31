@@ -186,7 +186,7 @@ public class TeamCommand extends PBCommand{
 			return;
 		}
 		
-		if (team.getLeader() != player.getUniqueId()) {
+		if (!team.getLeader().toString().equals(player.getUniqueId().toString())) {
 			player.sendMessage(ChatColor.RED + "You are not the leader of your team!");
 			return;
 		}
@@ -201,7 +201,7 @@ public class TeamCommand extends PBCommand{
 			leader.sendMessage(ChatColor.RED + "You do not have a team!");
 			return;
 		}
-		if (team.getLeader().toString().equals(leader.getUniqueId().toString())) {
+		if (!team.getLeader().toString().equals(leader.getUniqueId().toString())) {
 			leader.sendMessage(ChatColor.RED + "You are not the team leader!");
 			return;
 		}
@@ -212,7 +212,7 @@ public class TeamCommand extends PBCommand{
 			return;
 		}
 		
-		if (leader == target) {
+		if (leader.getUniqueId().toString().equals(target.getUniqueId().toString())) {
 			leader.sendMessage(ChatColor.RED + "You cannot invite yourself!");
 			return;
 		}
@@ -344,13 +344,13 @@ public class TeamCommand extends PBCommand{
 			return;
 		}
 		
-		if (kicker == target) {
+		if (kicker.getUniqueId().toString().equals(target.getUniqueId().toString())) {
 			kicker.sendMessage(ChatColor.RED + "You cannot kick yourself!");
 			return;
 		}
 		
 		final PBTeam team = Probending.get().getTeamManager().getTeamFromPlayer(kicker);
-		if (team.getLeader() != kicker.getUniqueId()) {
+		if (team.getLeader().toString().equals(kicker.getUniqueId().toString())) {
 			kicker.sendMessage(ChatColor.RED + "Only the leader can kick people!");
 			return;
 		}
@@ -387,7 +387,7 @@ public class TeamCommand extends PBCommand{
 			return;
 		}
 		
-		if (team.getLeader() != player.getUniqueId()) {
+		if (team.getLeader().toString().equals(player.getUniqueId().toString())) {
 			player.sendMessage(ChatColor.RED + "You are not the leader of the team!");
 			return;
 		}
@@ -419,7 +419,7 @@ public class TeamCommand extends PBCommand{
 			return;
 		}
 		
-		if (team.getLeader() != player.getUniqueId()) {
+		if (team.getLeader().toString().equals(player.getUniqueId().toString())) {
 			player.sendMessage(ChatColor.RED + "You are not the leader of the team!");
 			return;
 		}
@@ -467,7 +467,7 @@ public class TeamCommand extends PBCommand{
 			return;
 		}
 		
-		if (team.getLeader() != player.getUniqueId()) {
+		if (team.getLeader().toString().equals(player.getUniqueId().toString())) {
 			player.sendMessage(ChatColor.RED + "You are not the leader of the team!");
 			return;
 		}
