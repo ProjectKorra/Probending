@@ -5,7 +5,7 @@ import java.io.File;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import com.projectkorra.projectkorra.ProjectKorra;
+import com.projectkorra.probending.Probending;
 
 /**
  * A config utility class for Project Korra. To get the config itself use
@@ -13,7 +13,7 @@ import com.projectkorra.projectkorra.ProjectKorra;
  */
 public class Config {
 
-	private ProjectKorra plugin;
+	private Probending plugin;
 
 	private File file;
 	private FileConfiguration config;
@@ -24,7 +24,7 @@ public class Config {
 	 * @param file The file to create/load
 	 */
 	public Config(File file) {
-		this.plugin = ProjectKorra.plugin;
+		this.plugin = Probending.get();
 		this.file = new File(plugin.getDataFolder() + File.separator + file);
 		this.config = YamlConfiguration.loadConfiguration(this.file);
 		reload();
