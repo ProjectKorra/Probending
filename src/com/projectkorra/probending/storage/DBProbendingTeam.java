@@ -26,7 +26,7 @@ public class DBProbendingTeam extends DBInterpreter {
         runAsync(new Runnable() {
             public void run() {
                 if (!DatabaseHandler.getDatabase().tableExists("pb_teams")) {
-                    String query = "CREATE TABLE pb_teams (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(100) NOT NULL, leader VARCHAR(100) NOT NULL, coloring VARCHAR(100) NOT NULL, wins INT NOT NULL, gamesPlayed INT NOT NULL, rating INT NOT NULL, PRIMARY KEY (id), UNIQUE INDEX nameIndex (name), UNIQUE INDEX leaderIndex (leader), INDEX winIndex (wins), INDEX gameIndex (games), INDEX ratingIndex (rating));";
+                    String query = "CREATE TABLE pb_teams (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(100) NOT NULL, leader VARCHAR(100) NOT NULL, coloring VARCHAR(100) NOT NULL, wins INT NOT NULL, games INT NOT NULL, rating INT NOT NULL, PRIMARY KEY (id), UNIQUE INDEX nameIndex (name), UNIQUE INDEX leaderIndex (leader), INDEX winIndex (wins), INDEX gameIndex (games), INDEX ratingIndex (rating));";
                     if (!DatabaseHandler.isMySQL()) {
                         query = "CREATE TABLE pb_teams (id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE, leader TEXT NOT NULL UNIQUE, coloring TEXT NOT NULL, wins INTEGER NOT NULL, games INTEGER NOT NULL, rating INTEGER NOT NULL);CREATE INDEX winIndex ON pb_team_members (wins);CREATE INDEX gameIndex ON pb_team_members (games);CREATE INDEX ratingIndex ON pb_team_members (rating);";
                     }
