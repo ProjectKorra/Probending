@@ -41,7 +41,8 @@ public class TeamCommand extends PBCommand{
 					"&6/probending team kick [player] &eKick a player from your team! &cLeader only!",
 					"&6/probending team setname [name] &eChange the name of your team! &cLeader only!",
 					"&6/probending team setcolor [#(0-3)] [color] &eChange the color of a gear piece! /pb colors for color list. &cLeader only!",
-					"&6/probending team setmemberrole [player] [role] &eChange the role of a member! &cLeader only!");
+					"&6/probending team setmemberrole [player] [role] &eChange the role of a member! &cLeader only!",
+					"&6/probending team queue [team mate] [another team mate] &eQueue your team for a team match!");
 			
 			for (String s : help) {
 				player.sendMessage(ChatColor.translateAlternateColorCodes('&', s));
