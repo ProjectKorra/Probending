@@ -22,7 +22,7 @@ public class Probending extends JavaPlugin {
 
 	private ProbendingHandler pHandler;
 	private PBFieldCreationManager cManager;
-    private PBQueueManager qManager;
+    	private PBQueueManager qManager;
 	private PBTeamManager tManager;
 	private InviteManager iManager;
 
