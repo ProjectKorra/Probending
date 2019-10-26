@@ -215,3 +215,12 @@ pip-log.txt
 .mr.developer.cfg
 /target/
 /dependency-reduced-pom.xml
+
+#################
+## IntelliJ Idea
+#################
+
+.idea/
+classes/
+out/
+Probending.iml
